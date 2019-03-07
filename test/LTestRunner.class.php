@@ -35,15 +35,8 @@ class LTestRunner {
             $filename = array_pop($path_parts);
             $filename_parts = explode('.',$filename);
             $class_name = array_shift($filename_parts);
-            $all_methods = get_class_methods($test_class);
-            foreach ($all_methods as $method_name) {
-                if (strpos($method_name,'test')===0) {
-                    $test_class_instance = new $class_name();
-                    $test_class_instance->setUp();
-                    $test_class_instance->$method_name();
-                    $test_class_instance->tearDown();
-                }
-            }
+            //run unit tests
+            $class_name::run();
             
         }
     }

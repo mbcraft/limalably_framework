@@ -10,7 +10,15 @@ require_once ('test/LTestRunner.class.php');
 //alla fine il core
 require_once ('Lym.class.php');
 
-echo "Hello world! :) \n";
+echo "Clear\n";
+LTestRunner::clear();
+echo "Collect\n";
+LTestRunner::collect('test/');
+echo "Run\n";
+LTestRunner::run();
 
+/*
+echo "Hello world! :) \n";
 echo "Hostname found : ".$_SERVER['HOSTNAME']."\n";
-echo "Route found : ".$_SERVER['ROUTE']."\n";
+echo "Route found : ".$_SERVER['ROUTE']."\n"; 
+*/

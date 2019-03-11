@@ -95,19 +95,22 @@ class Lym {
 
     private static function start() {
         $route = $_SERVER['ROUTE'];
-        if ($route == 'internal/framework_tests') {
+        if ($route == 'internal/set_execution_mode') {
+            
+        }
+        if ($route == 'internal/run_framework_tests') {
             LTestRunner::clear();
             LTestRunner::collect($_SERVER['FRAMEWORK_DIR'], 'tests/');
             LTestRunner::run();
             exit(0);
         }
-        if ($route == 'internal/tests') {
+        if ($route == 'internal/run_tests') {
             LTestRunner::clear();
             LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests/');
             LTestRunner::run();
             exit(0);
         }
-        if ($route == 'internal/tests_fast') {
+        if ($route == 'internal/run_tests_fast') {
             LTestRunner::clear();
             LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests_fast/');
             LTestRunner::run();

@@ -13,12 +13,6 @@ require_once ('Lym.class.php');
 echo "Clear\n";
 LTestRunner::clear();
 echo "Collect\n";
-LTestRunner::collect('test/');
+LTestRunner::collect($_SERVER['PROJECT_DIR'],'tests/');
 echo "Run\n";
 LTestRunner::run();
-
-/*
-echo "Hello world! :) \n";
-echo "Hostname found : ".$_SERVER['HOSTNAME']."\n";
-echo "Route found : ".$_SERVER['ROUTE']."\n"; 
-*/

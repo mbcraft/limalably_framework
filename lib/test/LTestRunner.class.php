@@ -8,20 +8,20 @@ class LTestRunner {
         self::$test_classes = [];
     }
     
-    static function collect($folder) {
+    static function collect($root_dir,$folder) {
         
-        $elements = scandir($_SERVER['PROJECT_DIR'].$folder); 
+        $elements = scandir($root_dir.$folder); 
         
         foreach ($elements as $elem) {
             if ($elem!='.' && $elem!='..')
             {    
-                $full_path = $_SERVER['PROJECT_DIR'].$folder.$elem;
+                $full_path = $root_dir.$folder.$elem;
                 
                 if (is_file($full_path) && strpos($elem,'Test.class.php')===(strlen($elem)-strlen('Test.class.php'))) {
                     self::$test_classes[] = $folder.$elem;
                 }
                 if (is_dir($full_path.'/')) {
-                    self::collect(substr($full_path, strlen($_SERVER['PROJECT_DIR'])).'/');
+                    self::collect(substr($full_path, strlen($root_dir)).'/');
                 }
             }
         }

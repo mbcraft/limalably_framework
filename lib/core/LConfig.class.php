@@ -2,7 +2,10 @@
 
 class LConfig {
     
+    use LReadHashMap;
+    
     private static $data = [];
+    private static $init_called = false;
     private static $php_config_found = false;
     private static $json_config_found = false;
     
@@ -23,10 +26,10 @@ class LConfig {
         
     public static function init() {
         
-        if (self::$data !== null) {
-            LOutput::framework_debug('Error : LConfig::init called more than one time ...');
-            return;
+        if (self::$init_called) {
+            throw new \Exception('Error : LConfig::init() called more than one time ...');
         }
+        self::$init_called = true;
         
         // loading config ...
 
@@ -47,6 +50,7 @@ class LConfig {
         if (is_file($config_dir_path . 'config.php')) {
             self::$php_config_found = true;
             require_once($config_dir_path . 'config.php');
+            $php_config = $_CONFIG;
         } else {
             $php_config = [];
         }
@@ -70,11 +74,11 @@ class LConfig {
             // config loaded
             $message = "Config loaded : ";
             if (self::phpConfigFound())
-                $message .= '/config/hostnames/' . $hostname . '/config.php';
-            if ($php_config_found && $json_config_found)
+                $message .= '/config/hostnames/' .  $_SERVER['HOSTNAME'] . '/config.php';
+            if (self::phpConfigFound() && self::jsonConfigFound())
                 $message .= ' + ';
             if (self::jsonConfigFound())
-                $message .= '/config/hostnames/' . $hostname . '/config.json';
+                $message .= '/config/hostnames/' .  $_SERVER['HOSTNAME'] . '/config.json';
             Loutput::framework_debug($message);
         } 
     }

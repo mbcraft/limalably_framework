@@ -10,22 +10,22 @@ class LOutput {
     }
 
     static function framework_debug($message) {
-        if (!isset($_CONFIG['execution_mode']) || $_CONFIG['execution_mode'] == 'framework_debug') {
+        if (LExecutionMode::isFrameworkDebug()) {
             echo $message;
-            newline();
+            self::newline();
         }
     }
 
     static function debug($message) {
-        if (!isset($_CONFIG['execution_mode']) || $_CONFIG['execution_mode'] != 'production') {
+        if (LExecutionMode::isDebug()) {
             echo $message;
-            newline();
+            self::newline();
         }
     }
 
     static function output($message) {
         echo $message;
-        newline();
+        self::newline();
     }
 
 }

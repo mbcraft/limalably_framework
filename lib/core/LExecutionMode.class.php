@@ -41,7 +41,9 @@ class LExecutionMode {
     }
     
     private static function getModeDir() {
-        $mode_dir = LConfig::get('PROJECT_DIR',null).'config/mode/';
+        $project_dir = $_SERVER['PROJECT_DIR'];
+        if (LConfig::get('PROJECT_DIR',null)!=null) $project_dir = LConfig::get('PROJECT_DIR',null);
+        $mode_dir = $project_dir.'config/mode/';
         if (is_dir($mode_dir)) {
             return $mode_dir;
         } else throw new \Exception('/config/mode/ inside the project directory does not exists or is not writable.');
@@ -61,11 +63,18 @@ class LExecutionMode {
     }
     
     private static function deleteModeFile($filename) {
-        @unlink(self::getModeDir().$filename);
+        return @unlink(self::getModeDir().$filename);
     }
     
-    private static function createModeFile($filename) {      
-        file_put_contents(self::getModeDir().$filename, self::getCurrentUser());
+    private static function createModeFileAndDeleteOthers($filename) {      
+        $result = file_put_contents(self::getModeDir().$filename, self::getCurrentUser()) !== false;
+        $mode_files = self::listModeFiles();
+        foreach ($mode_files as $mode_file) {
+            if ($mode_file!=$filename)  {
+                $result &= self::deleteModeFile ($mode_file);
+            }
+        }
+        return $result;
     }
     
     public static function get() {
@@ -91,44 +100,28 @@ class LExecutionMode {
     
     public static function setByName($mode_name) {
         switch ($mode_name) {
-            case self::MAINTENANCE_MODE : self::setMaintenance();break;
-            case self::FRAMEWORK_DEBUG_MODE : self::setFrameworkDebug();break;
-            case self::DEBUG_MODE : self::setDebug();break;
-            case self::PRODUCTION_MODE : self::setProduction(); break;
+            case self::MAINTENANCE_MODE : return self::setMaintenance();
+            case self::FRAMEWORK_DEBUG_MODE : return self::setFrameworkDebug();
+            case self::DEBUG_MODE : return self::setDebug();
+            case self::PRODUCTION_MODE : return self::setProduction();
             default : throw self::invalidExecutionModeException();
         }
     }
     
     public static function setMaintenance() {
-        self::createModeFile(self::MAINTENANCE_FILENAME);
-        $mode_files = self::listModeFiles();
-        foreach ($mode_files as $mode_file) {
-            if ($mode_file!=self::MAINTENANCE_FILENAME) self::deleteModeFile ($mode_file);
-        }
+        return self::createModeFileAndDeleteOthers(self::MAINTENANCE_FILENAME);
     }
     
     public static function setFrameworkDebug() {
-        self::createModeFile(self::FRAMEWORK_DEBUG_FILENAME);
-        $mode_files = self::listModeFiles();
-        foreach ($mode_files as $mode_file) {
-            if ($mode_file!=self::FRAMEWORK_DEBUG_FILENAME) self::deleteModeFile ($mode_file);
-        }
+        return self::createModeFileAndDeleteOthers(self::FRAMEWORK_DEBUG_FILENAME);
     }
     
     public static function setDebug() {
-        self::createModeFile(self::DEBUG_FILENAME);
-        $mode_files = self::listModeFiles();
-        foreach ($mode_files as $mode_file) {
-            if ($mode_file!=self::DEBUG_FILENAME) self::deleteModeFile ($mode_file);
-        }
+        return self::createModeFileAndDeleteOthers(self::DEBUG_FILENAME);
     }
     
     public static function setProduction() {
-        self::createModeFile(self::PRODUCTION_FILENAME);
-        $mode_files = self::listModeFiles();
-        foreach ($mode_files as $mode_file) {
-            if ($mode_file!=self::PRODUCTION_FILENAME) self::deleteModeFile ($mode_file);
-        }
+        return self::createModeFileAndDeleteOthers(self::PRODUCTION_FILENAME);
     }
     
 }

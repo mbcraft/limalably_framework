@@ -1,19 +1,29 @@
 <?php
 
 class Lym {
+    
+    private static $boot_calles = false;
 
-    private static function detectAndSaveHostnameEnvironmentAndRawRoute() {
+    private static function detectAndSaveEnvironment() {
+        $_SERVER['ENVIRONMENT'] = 'script';
+        if (isset($_SERVER['SERVER_NAME'])) { //is a virtual host?
+            $_SERVER['ENVIRONMENT'] = 'web';
+        }
+        
+        LConfig::saveServerVar('ENVIRONMENT');
+        LOutput::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
+    }
+    
+    private static function detectAndSaveHostnameAndRawRoute() {
         // hostname to detect
 
         $hostname = 'localhost'; //default set as localhost
         $hostname_found = false;
-        $_SERVER['ENVIRONMENT'] = 'script';
-
+        
         if (isset($_SERVER['SERVER_NAME'])) { //is a virtual host?
             $hostname = $_SERVER['SERVER_NAME'];
             $hostname_found = true;
             $_SERVER['RAW_ROUTE'] = $_REQUEST['routemap'];
-            $_SERVER['ENVIRONMENT'] = 'web';
         }
 
         if (!$hostname_found && isset($_SERVER['SESSION_MANAGER'])) { //is a console window inside a window manager?
@@ -28,7 +38,7 @@ class Lym {
             if (isset($_SERVER['argv'][1])) {
                 $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
             } else {
-                echo "Route not found in command-line execution.\n";
+                LOutput::output("Route not found in command-line execution.");
                 exit(1);
             }
         }
@@ -38,13 +48,12 @@ class Lym {
             if (isset($_SERVER['argv'][1])) {
                 $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
             } else {
-                echo "Route not found in command-line execution.\n";
+                LOutput::output("Route not found in command-line execution.");
                 exit(1);
             }
         }
         
-        LConfig::saveServerVar('ENVIRONMENT');
-        LOutput::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
+
 
         $_SERVER['HOSTNAME'] = $hostname;
         LConfig::saveServerVar('HOSTNAME');
@@ -76,15 +85,20 @@ class Lym {
 
 
     public static function boot() {
+        if (self::$boot_calles) throw new \Exception("Framework boot function already called.");
+        self::$boot_calles = true;
         
         ob_start();
-
-        LOutput::framework_debug("Execution mode : framework_debug");
-        LConfig::saveServerVar('FRAMEWORK_DIR');
-        LOutput::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);  
+        
+        self::detectAndSaveEnvironment();
+        
         LConfig::saveServerVar('PROJECT_DIR');
         LOutput::framework_debug("Project dir detected : " . $_SERVER['PROJECT_DIR']);
-        self::detectAndSaveHostnameEnvironmentAndRawRoute();
+        LConfig::saveServerVar('FRAMEWORK_DIR');
+        LOutput::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);  
+
+        self::detectAndSaveHostnameAndRawRoute();
+        LOutput::framework_debug("Execution mode : ".LExecutionMode::get());
 
         LConfig::init();
 
@@ -92,30 +106,66 @@ class Lym {
         
         self::start();
     }
+    
+    private static function handleSetExecutionMode() {
+        if (!isset($_SERVER['argv'][2])) {
+            LOutput::output("Mode name not set. Choose between 'maintenance','framework_debug','debug' or 'production'.");
+            exit(1);
+        }
+        $mode_name = $_SERVER['argv'][2];
+        try {
+            LExecutionMode::setByName($mode_name);
+            LOutput::output("Execution mode set to '".$mode_name."' successfully.");
+            exit(0);
+        } catch (\Exception $ex) {
+            LOutput::output($ex->getMessage());
+            exit(1);
+        }
+        
+    }
+    
+    private static function handleGetExecutionMode() {
+        LOutput::output("Execution mode is now '".LExecutionMode::get()."'.");
+        exit(0);
+    }
+    
+    private static function handleRunFrameworkTests() {
+        LTestRunner::clear();
+        LTestRunner::collect($_SERVER['FRAMEWORK_DIR'], 'tests/');
+        LTestRunner::run();
+        exit(0);
+    }
+    
+    private static function handleRunTests() {
+        LTestRunner::clear();
+        LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests/');
+        LTestRunner::run();
+        exit(0);
+    }
+    
+    private static function handleRunTestsFast() {
+        LTestRunner::clear();
+        LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests_fast/');
+        LTestRunner::run();
+        exit(0);
+    }
+    
+    private static function handleInternalProcedures() {
+        $route = $_SERVER['ROUTE'];
+        switch ($route) {
+            case 'internal/set_execution_mode' : self::handleSetExecutionMode();
+            case 'internal/get_execution_mode' : self::handleGetExecutionMode();
+            case 'internal/run_framework_tests' : self::handleRunFrameworkTests();
+            case 'internal/run_tests' : self::handleRunTests();
+            case 'internal/run_tests_fast' : self::handleRunTestsFast();
+        }
+
+    }
 
     private static function start() {
-        $route = $_SERVER['ROUTE'];
-        if ($route == 'internal/set_execution_mode') {
-            
-        }
-        if ($route == 'internal/run_framework_tests') {
-            LTestRunner::clear();
-            LTestRunner::collect($_SERVER['FRAMEWORK_DIR'], 'tests/');
-            LTestRunner::run();
-            exit(0);
-        }
-        if ($route == 'internal/run_tests') {
-            LTestRunner::clear();
-            LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests/');
-            LTestRunner::run();
-            exit(0);
-        }
-        if ($route == 'internal/run_tests_fast') {
-            LTestRunner::clear();
-            LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests_fast/');
-            LTestRunner::run();
-            exit(0);
-        }
+        self::handleInternalProcedures(); //maybe exit if one is found
+        
+        //more to come ...
     }
 
 }

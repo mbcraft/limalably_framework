@@ -38,7 +38,7 @@ class Lym {
             if (isset($_SERVER['argv'][1])) {
                 $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
             } else {
-                LOutput::output("Route not found in command-line execution.");
+                LOutput::error_message("Route not found in command-line execution.");
                 exit(1);
             }
         }
@@ -48,7 +48,7 @@ class Lym {
             if (isset($_SERVER['argv'][1])) {
                 $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
             } else {
-                LOutput::output("Route not found in command-line execution.");
+                LOutput::error_message("Route not found in command-line execution.");
                 exit(1);
             }
         }
@@ -109,23 +109,23 @@ class Lym {
     
     private static function handleSetExecutionMode() {
         if (!isset($_SERVER['argv'][2])) {
-            LOutput::output("Mode name not set. Choose between 'maintenance','framework_debug','debug' or 'production'.");
+            LOutput::error_message("Mode name not set. Choose between 'maintenance','framework_debug','debug' or 'production'.");
             exit(1);
         }
         $mode_name = $_SERVER['argv'][2];
         try {
             LExecutionMode::setByName($mode_name);
-            LOutput::output("Execution mode set to '".$mode_name."' successfully.");
+            LOutput::message("Execution mode set to '".$mode_name."' successfully.");
             exit(0);
         } catch (\Exception $ex) {
-            LOutput::output($ex->getMessage());
+            LOutput::exception($ex);
             exit(1);
         }
         
     }
     
     private static function handleGetExecutionMode() {
-        LOutput::output("Execution mode is now '".LExecutionMode::get()."'.");
+        LOutput::message("Execution mode is now '".LExecutionMode::get()."'.");
         exit(0);
     }
     

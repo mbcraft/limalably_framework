@@ -40,7 +40,7 @@ class LConfig {
         $config_dir_path = $_SERVER['PROJECT_DIR'].implode('/', $path_parts) . '/';
 
         if (!is_dir($config_dir_path)) {
-            LOutput::output("Config dir not found : " . $config_dir_path);
+            LOutput::error_message("Config dir not found : " . $config_dir_path);
             exit(1);
         } else {
             // config dir found
@@ -62,8 +62,8 @@ class LConfig {
                 if (empty($json_content))
                     throw new \Exception("Empty config found or error in json decoding ...");
             } catch (\Exception $ex) {
-                echo "Errore nella lettura del file di configurazione " . $config_dir_path . "config.json ...\n";
-                echo $ex->getMessage();
+                LOutput::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config.json ...");
+                Loutput::exception($ex);
                 exit(1);
             }
 

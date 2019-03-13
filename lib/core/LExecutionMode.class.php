@@ -9,29 +9,48 @@ class LExecutionMode {
     const MAINTENANCE_MODE = 'maintenance';
     const MAINTENANCE_FILENAME = 'maintenance.txt';
     
-    const FRAMEWORK_DEBUG_MODE = 'framework_debug';
-    const FRAMEWORK_DEBUG_FILENAME = 'framework_debug.txt';
+    const FRAMEWORK_DEVELOPMENT_MODE = 'framework_development';
+    const FRAMEWORK_DEVELOPMENT_FILENAME = 'framework_development.txt';
     
-    const DEBUG_MODE = 'debug';
-    const DEBUG_FILENAME = 'debug.txt';
+    const DEVELOPMENT_MODE = 'development';
+    const DEVELOPMENT_FILENAME = 'development.txt';
+    
+    const TESTING_MODE = 'testing';
+    const TESTING_FILENAME = 'testing.txt';
     
     const PRODUCTION_MODE = 'production';
     const PRODUCTION_FILENAME = 'production.txt';
     
+    static $my_mode = null;
+    
     public static function isMaintenance() {
-        return !self::modeFileExists(self::FRAMEWORK_DEBUG_FILENAME) && !self::modeFileExists(self::DEBUG_FILENAME) && !self::modeFileExists(self::PRODUCTION_FILENAME);
+        if (self::$my_mode) return self::$my_mode == self::MAINTENANCE_MODE;
+        
+        return !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME) && !self::modeFileExists(self::DEVELOPMENT_FILENAME) && !self::modeFileExists(self::TESTING_FILENAME) && !self::modeFileExists(self::PRODUCTION_FILENAME);
     }
     
-    public static function isFrameworkDebug() {
-        return self::modeFileExists(self::FRAMEWORK_DEBUG_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME);
+    public static function isFrameworkDevelopment() {
+        if (self::$my_mode) return self::$my_mode == self::FRAMEWORK_DEVELOPMENT_MODE;
+        
+        return self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME);
     }
     
-    public static function isDebug() {
-        return self::modeFileExists(self::DEBUG_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEBUG_FILENAME);
+    public static function isDevelopment() {
+        if (self::$my_mode) return self::$my_mode == self::DEVELOPMENT_MODE;
+        
+        return self::modeFileExists(self::DEVELOPMENT_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME);
+    }
+    
+    public static function isTesting() {
+        if (self::$my_mode) return self::$my_mode == self::TESTING_MODE;
+        
+        return self::modeFileExists(self::TESTING_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME) && !self::modeFileExists(self::DEVELOPMENT_FILENAME);
     }
     
     public static function isProduction() {
-        return self::modeFileExists(self::PRODUCTION_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::DEBUG_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEBUG_FILENAME);
+        if (self::$my_mode) return self::$my_mode == self::PRODUCTION_MODE;
+        
+        return self::modeFileExists(self::PRODUCTION_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::DEVELOPMENT_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME);
     }
    
     private static function modeFileExists($filename) {
@@ -49,9 +68,7 @@ class LExecutionMode {
         } else throw new \Exception('/config/mode/ inside the project directory does not exists or is not writable.');
     }
     
-    private static function getCurrentUser() {
-        return isset($_SERVER['USER']) ? $_SERVER['USER'] : $_ENV['APACHE_RUN_USER'];
-    }
+
     
     private static function listModeFiles() {
         $file_list = scandir(self::getModeDir());
@@ -67,7 +84,7 @@ class LExecutionMode {
     }
     
     private static function createModeFileAndDeleteOthers($filename) {      
-        $result = file_put_contents(self::getModeDir().$filename, self::getCurrentUser()) !== false;
+        $result = file_put_contents(self::getModeDir().$filename, LEnvironmentUtils::getServerUser()) !== false;
         $mode_files = self::listModeFiles();
         foreach ($mode_files as $mode_file) {
             if ($mode_file!=$filename)  {
@@ -77,22 +94,30 @@ class LExecutionMode {
         return $result;
     }
     
+    public static function init() {
+        self::$my_mode = self::get();
+    }
+    
     public static function get() {
+        if (self::$my_mode) return self::$my_mode;
+        
         if (self::isMaintenance()) return self::MAINTENANCE_MODE;
-        if (self::isFrameworkDebug()) return self::FRAMEWORK_DEBUG_MODE;
-        if (self::isDebug()) return self::DEBUG_MODE;
+        if (self::isFrameworkDevelopment()) return self::FRAMEWORK_DEVELOPMENT_MODE;
+        if (self::isDevelopment()) return self::DEVELOPMENT_MODE;
+        if (self::isTesting()) return self::TESTING_MODE;
         if (self::isProduction()) return self::PRODUCTION_MODE;
     }
     
     private static function invalidExecutionModeException() {
-        return new \Exception('Invalid execution mode name. Allowed only : '.implode(',',[self::MAINTENANCE_MODE,self::FRAMEWORK_DEBUG_MODE,self::DEBUG_MODE,self::PRODUCTION_MODE]));
+        return new \Exception('Invalid execution mode name. Allowed only : '.implode(',',[self::MAINTENANCE_MODE,self::FRAMEWORK_DEVELOPMENT_MODE,self::DEVELOPMENT_MODE,self::TESTING_MODE,self::PRODUCTION_MODE]));
     }
     
     public static function isByName($mode_name) {
         switch ($mode_name) {
             case self::MAINTENANCE_MODE : return self::isMaintenance();
-            case self::FRAMEWORK_DEBUG_MODE : return self::isFrameworkDebug();
-            case self::DEBUG_MODE : return self::isDebug();
+            case self::FRAMEWORK_DEVELOPMENT_MODE : return self::isFrameworkDevelopment();
+            case self::DEVELOPMENT_MODE : return self::isDevelopment();
+            case self::TESTING_MODE : return self::isTesting();
             case self::PRODUCTION_MODE : return self::isProduction();
             default : throw self::invalidExecutionModeException();
         }
@@ -101,8 +126,9 @@ class LExecutionMode {
     public static function setByName($mode_name) {
         switch ($mode_name) {
             case self::MAINTENANCE_MODE : return self::setMaintenance();
-            case self::FRAMEWORK_DEBUG_MODE : return self::setFrameworkDebug();
-            case self::DEBUG_MODE : return self::setDebug();
+            case self::FRAMEWORK_DEVELOPMENT_MODE : return self::setFrameworkDevelopment();
+            case self::DEVELOPMENT_MODE : return self::setDevelopment();
+            case self::TESTING_MODE : return self::setTesting();
             case self::PRODUCTION_MODE : return self::setProduction();
             default : throw self::invalidExecutionModeException();
         }
@@ -112,12 +138,16 @@ class LExecutionMode {
         return self::createModeFileAndDeleteOthers(self::MAINTENANCE_FILENAME);
     }
     
-    public static function setFrameworkDebug() {
-        return self::createModeFileAndDeleteOthers(self::FRAMEWORK_DEBUG_FILENAME);
+    public static function setFrameworkDevelopment() {
+        return self::createModeFileAndDeleteOthers(self::FRAMEWORK_DEVELOPMENT_FILENAME);
     }
     
-    public static function setDebug() {
-        return self::createModeFileAndDeleteOthers(self::DEBUG_FILENAME);
+    public static function setDevelopment() {
+        return self::createModeFileAndDeleteOthers(self::DEVELOPMENT_FILENAME);
+    }
+    
+    public static function setTesting() {
+        return self::createModeFileAndDeleteOthers(self::TESTING_FILENAME);
     }
     
     public static function setProduction() {

@@ -10,14 +10,14 @@ class LOutput {
     }
 
     static function framework_debug($message) {
-        if (LExecutionMode::isFrameworkDebug()) {
+        if (LExecutionMode::isFrameworkDevelopment()) {
             echo $message;
             self::newline();
         }
     }
 
     static function debug($message) {
-        if (LExecutionMode::isDebug()) {
+        if (LExecutionMode::isDevelopment()) {
             echo $message;
             self::newline();
         }

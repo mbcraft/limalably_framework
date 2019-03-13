@@ -3,6 +3,7 @@
 //core
 require_once ('lib/core/LReadHashMap.trait.php');
 
+require_once ('lib/core/LEnvironmentUtils.class.php');
 require_once ('lib/core/LOutput.class.php');
 require_once ('lib/core/LConfig.class.php');
 require_once ('lib/core/LExecutionMode.class.php');

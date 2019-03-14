@@ -73,8 +73,7 @@ class LConfig {
 
         if (is_file($config_dir_path . 'config.php')) {
             self::$php_config_found = true;
-            require_once($config_dir_path . 'config.php');
-            $php_config = $_CONFIG;
+            $php_config = include_once($config_dir_path . 'config.php');
         } else {
             $php_config = [];
         }

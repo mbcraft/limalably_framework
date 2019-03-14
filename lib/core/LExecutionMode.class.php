@@ -24,30 +24,40 @@ class LExecutionMode {
     static $my_mode = null;
     
     public static function isMaintenance() {
+        if (!isset($_SERVER['PROJECT_DIR'])) return false;
+        
         if (self::$my_mode) return self::$my_mode == self::MAINTENANCE_MODE;
         
         return !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME) && !self::modeFileExists(self::DEVELOPMENT_FILENAME) && !self::modeFileExists(self::TESTING_FILENAME) && !self::modeFileExists(self::PRODUCTION_FILENAME);
     }
     
     public static function isFrameworkDevelopment() {
+        if (!isset($_SERVER['PROJECT_DIR'])) return true;
+        
         if (self::$my_mode) return self::$my_mode == self::FRAMEWORK_DEVELOPMENT_MODE;
         
         return self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME);
     }
     
     public static function isDevelopment() {
+        if (!isset($_SERVER['PROJECT_DIR'])) return false;
+        
         if (self::$my_mode) return self::$my_mode == self::DEVELOPMENT_MODE;
         
         return self::modeFileExists(self::DEVELOPMENT_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME);
     }
     
     public static function isTesting() {
+        if (!isset($_SERVER['PROJECT_DIR'])) return false;
+        
         if (self::$my_mode) return self::$my_mode == self::TESTING_MODE;
         
         return self::modeFileExists(self::TESTING_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME) && !self::modeFileExists(self::DEVELOPMENT_FILENAME);
     }
     
     public static function isProduction() {
+        if (!isset($_SERVER['PROJECT_DIR'])) return false;
+        
         if (self::$my_mode) return self::$my_mode == self::PRODUCTION_MODE;
         
         return self::modeFileExists(self::PRODUCTION_FILENAME) && !self::modeFileExists(self::MAINTENANCE_FILENAME) && !self::modeFileExists(self::DEVELOPMENT_FILENAME) && !self::modeFileExists(self::FRAMEWORK_DEVELOPMENT_FILENAME);
@@ -99,6 +109,8 @@ class LExecutionMode {
     }
     
     public static function get() {
+        if (!isset($_SERVER['PROJECT_DIR'])) return self::FRAMEWORK_DEVELOPMENT_MODE;
+        
         if (self::$my_mode) return self::$my_mode;
         
         if (self::isMaintenance()) return self::MAINTENANCE_MODE;

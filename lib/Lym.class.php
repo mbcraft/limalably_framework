@@ -83,8 +83,26 @@ class Lym {
         LOutput::framework_debug("Route detected : " . $_SERVER['ROUTE']);
     }
 
+    public static function framework_boot() {
+        if (self::$boot_calles) throw new \Exception("Framework boot function already called.");
+        self::$boot_calles = true;
+        
+        ob_start();
+        
+        self::detectAndSaveEnvironment();
+        
+        LConfig::saveServerVar('FRAMEWORK_DIR');
+        LOutput::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']); 
+        
+        self::detectAndSaveHostnameAndRawRoute();
+        LOutput::framework_debug("Execution mode : ".LExecutionMode::get());
+        
+        self::initRoute();
+        
+        self::framework_start();
+    }
 
-    public static function boot() {
+    public static function project_boot() {
         if (self::$boot_calles) throw new \Exception("Framework boot function already called.");
         self::$boot_calles = true;
         
@@ -104,7 +122,7 @@ class Lym {
 
         self::initRoute();
         
-        self::start();
+        self::project_start();
     }
     
     private static function handleSetExecutionMode() {
@@ -150,20 +168,31 @@ class Lym {
         exit(0);
     }
     
-    private static function handleInternalProcedures() {
+    private static function handleInternalFrameworkProcedures() {
+        $route = $_SERVER['ROUTE'];
+        switch ($route) {
+            case 'internal/run_framework_tests' : self::handleRunFrameworkTests();
+        }
+
+    }
+    
+    private static function handleInternalProjectProcedures() {
         $route = $_SERVER['ROUTE'];
         switch ($route) {
             case 'internal/set_execution_mode' : self::handleSetExecutionMode();
             case 'internal/get_execution_mode' : self::handleGetExecutionMode();
-            case 'internal/run_framework_tests' : self::handleRunFrameworkTests();
             case 'internal/run_tests' : self::handleRunTests();
             case 'internal/run_tests_fast' : self::handleRunTestsFast();
         }
 
     }
+    
+    private static function framework_start() {
+        self::handleInternalFrameworkProcedures();
+    }
 
-    private static function start() {
-        self::handleInternalProcedures(); //maybe exit if one is found
+    private static function project_start() {
+        self::handleInternalProjectProcedures(); //maybe exit if one is found
         
         //more to come ...
     }

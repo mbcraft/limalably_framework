@@ -1,0 +1,7 @@
+{
+    "routemap" : {
+        "hash_db" : {
+            "levels" : 5
+        }
+    }
+}

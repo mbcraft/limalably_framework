@@ -17,9 +17,12 @@ class EnvironmentUtilsTest extends LTestCase {
                 $current_langs[] = $lang_tok;
             }
         }
-        $final_result = [];
+        ksort($langs_array);
+        $final_result = [];        
         foreach ($langs_array as $k => $val_array) {
-            array_push($final_result, $val_array);
+            foreach ($val_array as $val) {
+                array_push($final_result, $val);
+            }
         }
         return $final_result;
     }
@@ -28,7 +31,7 @@ class EnvironmentUtilsTest extends LTestCase {
         $lang_string = 'en-US,en;q=0.9,it;q=0.8';
         $lang_array = $this->getLanguageArrayFromLanguageString($lang_string);
         
-        $this->assertEqual(count($lang_array),3,"Il numero di lingue atteso non corrisponde");
+        $this->assertEqual(count($lang_array),3,"Il numero di lingue atteso non corrisponde : ".count($lang_array)." vs 3");
         $this->assertEqual($lang_array[0],'en_US',"La prima lingua non corrisponde");
         $this->assertEqual($lang_array[1],'en',"La seconda lingua non corrisponde");
         $this->assertEqual($lang_array[2],'it',"La terza lingua non corrisponde"); 
@@ -38,7 +41,7 @@ class EnvironmentUtilsTest extends LTestCase {
         $lang_string = 'it;q=0.8,en-US,en;q=0.9';
         $lang_array = $this->getLanguageArrayFromLanguageString($lang_string);
         
-        $this->assertEqual(count($lang_array),3,"Il numero di lingue atteso non corrisponde");
+        $this->assertEqual(count($lang_array),3,"Il numero di lingue atteso non corrisponde : ".count($lang_array)." vs 3");
         $this->assertEqual($lang_array[0],'en_US',"La prima lingua non corrisponde");
         $this->assertEqual($lang_array[1],'en',"La seconda lingua non corrisponde");
         $this->assertEqual($lang_array[2],'it',"La terza lingua non corrisponde"); 

@@ -30,9 +30,12 @@ class LEnvironmentUtils {
                     $current_langs[] = $lang_tok;
                 }
             }
-            $final_result = [];
+            ksort($langs_array);
+            $final_result = [];        
             foreach ($langs_array as $k => $val_array) {
-                array_push($final_result, $val_array);
+                foreach ($val_array as $val) {
+                    array_push($final_result, $val);
+                }
             }
             return $final_result;
         }

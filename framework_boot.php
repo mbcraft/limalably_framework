@@ -18,4 +18,3 @@ require_once ('lib/test/LTestRunner.class.php');
 //alla fine la classe Lym
 require_once ('lib/Lym.class.php');
 
-Lym::boot();

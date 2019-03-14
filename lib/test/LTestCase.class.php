@@ -44,8 +44,12 @@ class LTestCase extends LAssert {
             $this->{$method_name}();
         } catch (\Exception $ex) {
             self::$total_failures++;
+            
             if (!($ex instanceof LTestException)) {
+                LOutput::message('E');
                 LOutput::exception($ex,false);
+            } else {
+                LOutput::message('F',false);
             }
         }
         try {

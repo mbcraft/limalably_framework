@@ -39,11 +39,15 @@ class LTestRunner {
             $class_name::run();
             
         }
+        self::printSummary();
     }
     
     static function printSummary() {
         //uso LOutput ...
         //$NL = $_SERVER['ENVIRONMENT'] == 'script' ? "\n" : "<br>";
+        LOutput::message('');
+        LOutput::message('Unit test summary : ',false);
+        LOutput::message(LTestCase::getTestCaseCount().' TEST CASES, '.LTestCase::getTestErrorsCount().' ERRORS, '.LTestCase::getTestMethodsCount().' METHODS, '.LTestCase::getAssertionsCount().' ASSERTIONS, '.LTestCase::getFailuresCount().' FAILURES.');
     }
     
     

@@ -15,7 +15,7 @@ class LAssert {
         
     private static function success() {
         self::$total_assertions++;
-        LOutput::raw_output(".");
+        LOutput::message(".",false);
     }
     
     private static function failure($message) {

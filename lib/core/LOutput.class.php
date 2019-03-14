@@ -39,20 +39,13 @@ class LOutput {
      * 
      * @param type $message
      */
-    static function message($message) {
+    static function message($message,bool $new_line_after=true) {
         echo $message;
-        self::newline();
+        if ($new_line_after) {
+            self::newline();
+        }
     }
-    
-    /**
-     * Output is always shown. Does not append newline.
-     * 
-     * @param type $text
-     */
-    static function raw_output($text) {
-        echo $text;
-    }
-    
+        
     /**
      * Same behaviour as error_message, hides output only in production, but still saves error on logs.
      * 

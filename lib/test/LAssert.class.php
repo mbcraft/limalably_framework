@@ -12,23 +12,15 @@ class LAssert {
     public static function getAssertionsCount() {
         return self::$total_assertions;
     }
-    
-    protected static function output($message) {
-        echo "\n".$message."\n";
-    }
-    
-    protected static function exceptionDumpMessage(\Exception $ex) {
-        return "File : ".$ex->getFile()."- Code : ".$ex->getCode()." - Line : ".$ex->getLine()." - Message :".$ex->getMessage()." \n Stack Trace : ".$ex->getTraceAsString();
-    }
-    
+        
     private static function success() {
         self::$total_assertions++;
-        LAssert::output(".");
+        LOutput::raw_output(".");
     }
     
     private static function failure($message) {
         self::$total_assertions++;
-        LAssert::output($message);
+        LOutput::error_message($message);
         throw new LTestException();
     }
     

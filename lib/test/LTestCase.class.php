@@ -37,27 +37,27 @@ class LTestCase extends LAssert {
             $this->setUp();
         } catch (\Exception $ex) {
             self::$total_test_errors++;
-            $this->output("Exception during setUp : " . self::exceptionDumpMessage($ex));
+            LOutput::error_message("Exception during setUp in test class ".static::class);
         }
         try {
-            echo "Eseguo metodo ".$method_name."\n";
+            //echo "Eseguo metodo ".$method_name."\n";
             $this->{$method_name}();
         } catch (\Exception $ex) {
             self::$total_failures++;
             if (!($ex instanceof LTestException)) {
-                self::output(self::exceptionDumpMessage($ex));
+                LOutput::exception($ex,false);
             }
         }
         try {
             $this->tearDown();
         } catch (\Exception $ex) {
             self::$total_test_errors++;
-            $this->output("Exception during tearDown : " . self::exceptionDumpMessage($ex));
+            LOutput::error_message("Exception during tearDown in test class ".static::class);
         }
     }
 
     public static function run() {
-        echo "Running test ...\n";
+        //echo "Running test ...\n";
         self::$total_test_cases++;
         $clazz_name = static::class;
         $all_methods = get_class_methods($clazz_name);

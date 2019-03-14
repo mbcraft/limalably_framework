@@ -58,11 +58,13 @@ class LOutput {
      * 
      * @param \Exception $ex
      */
-    static function exception(\Exception $ex) {
+    static function exception(\Exception $ex,bool $print_stack_trace = true) {
         echo 'Exception : '.$ex->getMessage()."\n";
         echo 'File : '.$ex->getFile().' Line : '.$ex->getLine()."\n";
-        echo 'Stack Trace : '.$ex->getTraceAsString();
-        if ($ex->getPrevious()) self::exception ($ex->getPrevious ());
+        if ($print_stack_trace) {
+            echo 'Stack Trace : '.$ex->getTraceAsString();
+            if ($ex->getPrevious()) self::exception ($ex->getPrevious ());
+        }
     }
 
 }

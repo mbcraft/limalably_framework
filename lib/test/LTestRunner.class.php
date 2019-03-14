@@ -21,7 +21,7 @@ class LTestRunner {
                     self::$test_classes[] = $folder.$elem;
                 }
                 if (is_dir($full_path.'/')) {
-                    self::collect(substr($full_path, strlen($root_dir)).'/');
+                    self::collect($root_dir,substr($full_path, strlen($root_dir)).'/');
                 }
             }
         }
@@ -29,7 +29,7 @@ class LTestRunner {
     
     static function run() {
         foreach (self::$test_classes as $test_class) {
-            echo "Test class  : ".$test_class."\n";
+            //echo "Test class  : ".$test_class."\n";
             require_once($test_class);
             $path_parts = explode('/',$test_class);
             $filename = array_pop($path_parts);
@@ -42,7 +42,8 @@ class LTestRunner {
     }
     
     static function printSummary() {
-        $NL = $_SERVER['ENVIRONMENT'] == 'script' ? "\n" : "<br>";
+        //uso LOutput ...
+        //$NL = $_SERVER['ENVIRONMENT'] == 'script' ? "\n" : "<br>";
     }
     
     

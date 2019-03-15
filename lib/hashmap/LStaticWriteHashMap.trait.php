@@ -1,5 +1,11 @@
 <?php
 
+/*
+Some help from :
+ * https://stackoverflow.com/questions/36515677/php-instanceof-for-traits
+ * https://stackoverflow.com/users/5732351/rod-elias
+ *  */
+
 trait LStaticWriteHashMap {
     
     /*

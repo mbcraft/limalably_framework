@@ -1,6 +1,7 @@
 <?php
 
 trait LFormatLog {
+    
     static function formatLog($message,$level,$format) {
         $my_date = date('d/m/Y H:i:s');
         

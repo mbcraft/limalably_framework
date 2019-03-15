@@ -14,4 +14,5 @@ interface LILogger {
     
     function fatal($message);
     
+    function close();
 }

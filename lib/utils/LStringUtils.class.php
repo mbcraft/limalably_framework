@@ -49,6 +49,13 @@ class LStringUtils {
         return strpos($string,$needle)!==false;
     }
     
+    static function getErrorMessage(string $error,string $file,int $line,$use_newline=true) {
+        $NL = $use_newline ? "\n" : '<br>';
+        $message = 'Error : '.$error.$NL;
+        $message .= 'File : '.$file.' Line : '.$line.$NL;
+        return $message;
+    }
+    
     static function getExceptionMessage(\Exception $ex,bool $print_stack_trace = true,bool $use_newline=true) {
         $exceptions = [$ex];
         if ($print_stack_trace) {
@@ -61,6 +68,7 @@ class LStringUtils {
         foreach ($exceptions as $ex) {
             $message .= self::internalGetExceptionMessage($ex, $print_stack_trace, $use_newline);
         }
+        return $message;
     }
     
     private static function internalGetExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {

@@ -1,6 +1,8 @@
 <?php
 
-class LRollingFileLogger {
+class LRollingFileLogWriter {
+    
+    use LFormatLog;
     
     private $my_log_file = null;
     private $my_log_format = null;
@@ -46,7 +48,7 @@ class LRollingFileLogger {
     }
     
     public function close() {
-        if ($this->is_rolling) {
+        if ($this->is_rolling && file_exists($this->my_log_file)) {
             $this->checkSizeAndRoll();
         }
     }

@@ -49,7 +49,7 @@ class LOutput {
      * @param \Exception $ex
      */
     static function exception(\Exception $ex,bool $print_stack_trace = true) {
-        echo LStringUtils::getExceptionMessage($ex, $print_stack_trace);
+        echo LStringUtils::getExceptionMessage($ex, $print_stack_trace, $_SERVER['ENVIRONMENT'] == 'script');
     }
 
 }

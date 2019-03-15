@@ -49,15 +49,30 @@ class LStringUtils {
         return strpos($string,$needle)!==false;
     }
     
-    static function getExceptionMessage(\Exception $ex,bool $print_stack_trace = true) {
-        $message = 'Exception : '.$ex->getMessage()."\n";
-        $message .= 'File : '.$ex->getFile().' Line : '.$ex->getLine()."\n";
+    static function getExceptionMessage(\Exception $ex,bool $print_stack_trace = true,bool $use_newline=true) {
+        $exceptions = [$ex];
         if ($print_stack_trace) {
-            $message .= 'Stack Trace : '.$ex->getTraceAsString()."\n";
-            if ($ex->getPrevious()) $message .= self::getExceptionMessage($ex->getPrevious ());
+            while ($ex->getPrevious()!=null) {
+                $ex = $ex->getPrevious();
+                array_unshift ($exceptions, $ex);
+            }
         }
-        return str_replace("\n",LStringUtils::getNewlineString(),$message);
+        $message = '';
+        foreach ($exceptions as $ex) {
+            $message .= self::internalGetExceptionMessage($ex, $print_stack_trace, $use_newline);
+        }
     }
+    
+    private static function internalGetExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {
+        $NL = $use_newline ? "\n" : '<br>';
+        $message = 'Exception : '.$ex->getMessage().$NL;
+        $message .= 'File : '.$ex->getFile().' Line : '.$ex->getLine().$NL;
+        if ($print_stack_trace) {
+            $message .= 'Stack Trace : '.$ex->getTraceAsString().$NL;
+        }
+        return $message;
+    }
+    
     
     public static function getNewlineString() {
         if ($_SERVER['ENVIRONMENT'] == 'script')

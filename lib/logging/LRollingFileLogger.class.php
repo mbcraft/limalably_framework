@@ -51,21 +51,10 @@ class LRollingFileLogger {
         }
     }
     
-    public function exception(\Exception $ex) {
-        $exceptions = [$ex];
-        while ($ex->getPrevious()!=null) {
-            $ex = $ex->getPrevious();
-            array_unshift ($exceptions, $ex);
-        }
-        
-        foreach ($exceptions as $ex) {
-            $this->write_exception($ex);
-        }
-        
-    }
     
-    private function write_exception(\Exception $ex) {
-        $message = LStringUtils::getExceptionMessage($ex);
+    public function exception(\Exception $ex) {
+        $message = LStringUtils::getExceptionMessage($ex,true,true);
         $this->write($message);
+        
     }
 } 

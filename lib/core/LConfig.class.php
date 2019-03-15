@@ -2,9 +2,9 @@
 
 class LConfig {
 
+    use LStaticHashMapBase;
     use LStaticReadHashMap;
 
-    private static $data = [];
     private static $init_called = false;
     private static $php_config_found = false;
     private static $json_config_found = false;

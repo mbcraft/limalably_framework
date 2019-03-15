@@ -20,6 +20,9 @@
                 "rolling" : true,
                 "max_mb" : 10
             }
+        },
+        "hashmaps" : {
+            "false_strings" : ["false","0","no",false]
         }
     }
 }

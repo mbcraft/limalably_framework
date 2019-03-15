@@ -1,10 +1,11 @@
 <?php
 
-
+//hashmap
+require_once ('lib/hashmap/LStaticHashMapBase.trait.php');
+require_once ('lib/hashmap/LStaticReadHashMap.trait.php');
 
 //core
 require_once ('lib/core/LInvalidParameterException.class.php');
-require_once ('lib/core/LStaticReadHashMap.trait.php');
 
 require_once ('lib/core/LOutput.class.php');
 require_once ('lib/core/LConfig.class.php');

@@ -124,5 +124,13 @@ class LConfig {
             $message .= '/config/hostnames/' . $_SERVER['HOSTNAME'] . '/config.json';
         Loutput::framework_debug($message);
     }
+    
+    
+    /*
+    //to be removed
+    static function dump() {
+        var_dump(self::$data);
+    } 
+    */
 
 }

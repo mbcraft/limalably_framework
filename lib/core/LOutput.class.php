@@ -2,11 +2,15 @@
 
 class LOutput {
 
-    private static function newline() {
+    private static function getNewlineString() {
         if ($_SERVER['ENVIRONMENT'] == 'script')
-            echo "\n";
+            return "\n";
         else
-            echo '<br>';
+            return '<br>';
+    }
+    
+    private static function newline() {
+        echo self::getNewlineString();
     }
 
     static function framework_debug($message) {
@@ -52,12 +56,7 @@ class LOutput {
      * @param \Exception $ex
      */
     static function exception(\Exception $ex,bool $print_stack_trace = true) {
-        echo 'Exception : '.$ex->getMessage()."\n";
-        echo 'File : '.$ex->getFile().' Line : '.$ex->getLine()."\n";
-        if ($print_stack_trace) {
-            echo 'Stack Trace : '.$ex->getTraceAsString();
-            if ($ex->getPrevious()) self::exception ($ex->getPrevious ());
-        }
+        echo str_replace("\n",self::getNewlineString(),LStringUtils::getExceptionMessage($ex, $print_stack_trace));
     }
 
 }

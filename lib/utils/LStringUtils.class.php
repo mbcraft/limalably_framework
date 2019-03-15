@@ -49,4 +49,14 @@ class LStringUtils {
         return strpos($string,$needle)!==false;
     }
     
+    static function getExceptionMessage(\Exception $ex,bool $print_stack_trace = true) {
+        $message = 'Exception : '.$ex->getMessage()."\n";
+        $message .= 'File : '.$ex->getFile().' Line : '.$ex->getLine()."\n";
+        if ($print_stack_trace) {
+            $message .= 'Stack Trace : '.$ex->getTraceAsString();
+            if ($ex->getPrevious()) $message .= self::getExceptionMessage($ex->getPrevious ());
+        }
+        return $message;
+    }
+        
 }

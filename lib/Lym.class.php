@@ -99,6 +99,7 @@ class Lym {
         
         LConfig::init();
         
+        
         self::initRoute();
         
         self::framework_start();
@@ -121,6 +122,7 @@ class Lym {
         LOutput::framework_debug("Execution mode : ".LExecutionMode::get());
 
         LConfig::init();
+        
 
         self::initRoute();
         

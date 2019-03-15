@@ -53,10 +53,16 @@ class LStringUtils {
         $message = 'Exception : '.$ex->getMessage()."\n";
         $message .= 'File : '.$ex->getFile().' Line : '.$ex->getLine()."\n";
         if ($print_stack_trace) {
-            $message .= 'Stack Trace : '.$ex->getTraceAsString();
+            $message .= 'Stack Trace : '.$ex->getTraceAsString()."\n";
             if ($ex->getPrevious()) $message .= self::getExceptionMessage($ex->getPrevious ());
         }
-        return $message;
+        return str_replace("\n",LStringUtils::getNewlineString(),$message);
     }
-        
+    
+    public static function getNewlineString() {
+        if ($_SERVER['ENVIRONMENT'] == 'script')
+            return "\n";
+        else
+            return '<br>';
+    }    
 }

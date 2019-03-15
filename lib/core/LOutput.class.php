@@ -1,16 +1,9 @@
 <?php
 
 class LOutput {
-
-    private static function getNewlineString() {
-        if ($_SERVER['ENVIRONMENT'] == 'script')
-            return "\n";
-        else
-            return '<br>';
-    }
     
     private static function newline() {
-        echo self::getNewlineString();
+        echo LStringUtils::getNewlineString();
     }
 
     static function framework_debug($message) {
@@ -56,7 +49,7 @@ class LOutput {
      * @param \Exception $ex
      */
     static function exception(\Exception $ex,bool $print_stack_trace = true) {
-        echo str_replace("\n",self::getNewlineString(),LStringUtils::getExceptionMessage($ex, $print_stack_trace));
+        echo LStringUtils::getExceptionMessage($ex, $print_stack_trace);
     }
 
 }

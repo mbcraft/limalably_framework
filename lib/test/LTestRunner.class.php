@@ -48,6 +48,8 @@ class LTestRunner {
         LOutput::message('');
         LOutput::message('Unit test summary : ',false);
         LOutput::message(LTestCase::getTestCaseCount().' TEST CASES, '.LTestCase::getTestErrorsCount().' ERRORS, '.LTestCase::getTestMethodsCount().' METHODS, '.LTestCase::getAssertionsCount().' ASSERTIONS, '.LTestCase::getFailuresCount().' FAILURES.');
+        LOutput::message('');
+        
     }
     
     

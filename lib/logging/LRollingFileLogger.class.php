@@ -1,16 +1,29 @@
 <?php
 
-class LRollingFileLog {
+class LRollingFileLogger {
     
     private $my_log_file = null;
+    private $my_log_format = null;
+    private $is_rolling = null;
     private $max_size_bytes = null;
     
-    function __construct($file_path,$max_mb=10) {
-        if (!is_writable(dirname($file_path)))
-            throw new \Exception("Log directory is not writable : ".dirname($file_path));
-        $this->my_log_file = $file_path;
-        if ($max_mb==null) throw new \Exception("Max mb can't be null or 0.");
-        if ($max_mb>100) throw new \Exception("Max mb of log file can't be greater than 100 and less than or equal to 0.");
+    function __construct($log_dir,$filename,$log_format,bool $is_rolling=true,$max_mb=10) {
+        if ($log_dir==null)
+            throw new \Exception("Log dir can't be null");
+        if ($filename==null)
+            throw new \Exception("Log filename can't be null");
+        if (!is_writable($log_dir))
+            throw new \Exception("Log directory is not writable : ".$log_dir);
+        
+        $this->my_log_file = $log_dir.$filename;
+        if ($log_format==null)
+            throw new \Exception("Log format can't be null");
+        $this->my_log_format = $log_format;
+        if ($max_mb==null) {
+            $max_mb = 0;
+            $is_rolling = false;
+        }
+        $this->is_rolling = $is_rolling;
         $this->max_size_bytes = 1000 * 1000 * $max_mb;
     }
     

@@ -2,7 +2,7 @@
 
 class LConfig {
 
-    use LReadHashMap;
+    use LStaticReadHashMap;
 
     private static $data = [];
     private static $init_called = false;

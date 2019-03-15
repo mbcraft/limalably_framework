@@ -1,12 +1,18 @@
 <?php
 
-//core
-require_once ('lib/core/LReadHashMap.trait.php');
 
-require_once ('lib/core/LEnvironmentUtils.class.php');
+
+//core
+require_once ('lib/core/LInvalidParameterException.class.php');
+require_once ('lib/core/LStaticReadHashMap.trait.php');
+
 require_once ('lib/core/LOutput.class.php');
 require_once ('lib/core/LConfig.class.php');
 require_once ('lib/core/LExecutionMode.class.php');
+
+//utils
+require_once ('lib/utils/LStringUtils.class.php');
+require_once ('lib/utils/LEnvironmentUtils.class.php');
 
 //... misc others
 

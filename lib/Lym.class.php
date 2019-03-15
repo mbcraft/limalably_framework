@@ -97,6 +97,8 @@ class Lym {
         self::detectAndSaveHostnameAndRawRoute();
         LOutput::framework_debug("Execution mode : ".LExecutionMode::get());
         
+        LConfig::init();
+        
         self::initRoute();
         
         self::framework_start();

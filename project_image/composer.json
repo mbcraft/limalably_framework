@@ -1,12 +1,4 @@
 {
-    "name": "vendor/lym-sample-project",
-    "description": "Description of project LymSampleProject.",
-    "authors": [
-        {
-            "name": "Marco Bagnaresi",
-            "email": "marco.bagnaresi@gmail.com"
-        }
-    ],
     "require": {
         "twig/twig": "v2.6.2"
     }

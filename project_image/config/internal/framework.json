@@ -1,23 +1,25 @@
 {
-    "routemap" : {
-        "hash_db" : {
-            "levels" : 5
-        }
-    },
-    "logging" : {
-        "distict-rollable-file" : {
-            "format" : "[ %date - %user ] : %message",
-            "rolling" : true,
-            "max_mb" : 10
+    "defaults" : {
+        "routemap" : {
+            "hash_db" : {
+                "levels" : 5
+            }
         },
-        "together-rollable-file" : {
-            "format" : "[ %date - %user - %level ] : %message",
-            "rolling" : true,
-            "max_mb" : 10
-        },
-        "rollable-db" : {
-            "rolling" : true,
-            "max_mb" : 10
+        "logging" : {
+            "distict-rollable-file" : {
+                "format" : "[ %date - %user ] : %message",
+                "rolling" : true,
+                "max_mb" : 10
+            },
+            "together-rollable-file" : {
+                "format" : "[ %date - %user - %level ] : %message",
+                "rolling" : true,
+                "max_mb" : 10
+            },
+            "rollable-db" : {
+                "rolling" : true,
+                "max_mb" : 10
+            }
         }
     }
 }

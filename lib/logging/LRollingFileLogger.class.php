@@ -41,7 +41,7 @@ class LRollingFileLogger {
         }
     }
     
-    public function write($message) {
+    public function write($message,$level) {
         file_put_contents($this->my_log_file, $message, FILE_APPEND | LOCK_EX);
     }
     
@@ -51,10 +51,4 @@ class LRollingFileLogger {
         }
     }
     
-    
-    public function exception(\Exception $ex) {
-        $message = LStringUtils::getExceptionMessage($ex,true,true);
-        $this->write($message);
-        
-    }
 } 

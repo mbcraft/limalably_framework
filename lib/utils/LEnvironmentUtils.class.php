@@ -49,4 +49,32 @@ class LEnvironmentUtils {
         return date("Y-m-d H:i:s", $_SERVER['REQUEST_TIME']);
     }
     
+    public static function getHostname() {
+        return $_SERVER['HOSTNAME'];
+    }
+    
+    public static function getEnvironment() {
+        return $_SERVER['ENVIRONMENT'];
+    }
+    
+    public static function getRawRoute() {
+        return $_SERVER['RAW_ROUTE'];
+    }
+    
+    public static function getRoute() {
+        return $_SERVER['ROUTE'];
+    }
+    
+    public static function getFrameworkDir() {
+        return $_SERVER['FRAMEWORK_DIR'];
+    }
+    
+    public static function hasProjectDir() {
+        return isset($_SERVER['PROJECT_DIR']);
+    }
+    
+    public static function getProjectDir() {
+        return $_SERVER['PROJECT_DIR'];
+    }
+    
 }

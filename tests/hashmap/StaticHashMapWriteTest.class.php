@@ -1,6 +1,6 @@
 <?php
 
-class HashMapWriteTest extends LTestCase {
+class StaticHashMapWriteTest extends LTestCase {
 
     use LStaticHashMapBase;
     use LStaticReadHashMap;
@@ -16,8 +16,6 @@ class HashMapWriteTest extends LTestCase {
         $this->assertFalse(self::getBoolean('/abc/a'),"Il booleano non è corretto");
         $this->assertFalse(self::getBoolean('/abc/b'),"Il booleano non è corretto");
         $this->assertFalse(self::getBoolean('/abc/c'),"Il booleano non è corretto");
-        
-        
     }
 
     function testSimpleLevel1() {

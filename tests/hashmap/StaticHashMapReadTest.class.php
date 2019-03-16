@@ -1,6 +1,6 @@
 <?php
 
-class HashMapReadTest extends LTestCase {
+class StaticHashMapReadTest extends LTestCase {
     function testPathTokensFunctions1()
     {
         $path = "/html/head/keywords";

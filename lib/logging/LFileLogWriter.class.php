@@ -1,18 +1,24 @@
 <?php
 
-class LRollingFileLogWriter {
+class LFileLogWriter {
+    
+    const NORMAL_MODE = 'normal';
+    const RESET_MODE = 'reset';
+    const ROLLING_MODE = 'rolling';
+    
+    const LOG_MODES_ARRAY = [self::NORMAL_MODE,self::RESET_MODE,self::ROLLING_MODE];
     
     use LFormatLog;
     
     private $my_log_file = null;
     private $my_log_format = null;
-    private $is_rolling = null;
+    private $my_log_mode = null;
     private $max_size_bytes = null;
     
     private $my_log_dir = null;
     private $my_filename = null;
     
-    function __construct($log_dir,$filename,$log_format,bool $is_rolling=true,$max_mb=10) {
+    function __construct($log_dir,$filename,$log_format,string $log_mode,$max_mb=10) {
         if ($log_dir==null)
             throw new \Exception("Log dir can't be null");
         if ($filename==null)
@@ -28,10 +34,18 @@ class LRollingFileLogWriter {
         $this->my_log_format = $log_format;
         if ($max_mb==null) {
             $max_mb = 0;
-            $is_rolling = false;
+            $log_mode = 'normal';
         }
-        $this->is_rolling = $is_rolling;
+        if (!in_array($log_mode, self::LOG_MODES_ARRAY))
+                throw new \Exception('Invalid log mode. Allowed values : '.implode(',',self::LOG_MODES_ARRAY));
+        $this->my_log_mode = $log_mode;
         $this->max_size_bytes = 1000 * 1000 * $max_mb;
+    }
+    
+    function init() {
+        if ($this->my_log_mode==self::RESET_MODE && file_exists($this->my_log_file)) {
+            @unlink($this->my_log_file);
+        }
     }
     
     private function checkSizeAndRoll() {
@@ -48,7 +62,7 @@ class LRollingFileLogWriter {
     }
     
     public function close() {
-        if ($this->is_rolling && file_exists($this->my_log_file)) {
+        if ($this->my_log_mode==self::ROLLING_MODE && file_exists($this->my_log_file)) {
             $this->checkSizeAndRoll();
         }
     }

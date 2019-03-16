@@ -2,22 +2,34 @@
 
 class LDistinctFileLog implements LILogger {
     
+    const DEBUG_FILENAME = 'log.debug.txt';
+    const INFO_FILENAME = 'log.info.txt';
+    const WARNING_FILENAME = 'log.warning.txt';
+    const ERROR_FILENAME = 'log.error.txt';
+    const FATAL_FILENAME = 'log.fatal.txt';
+    
     private $debug_log_writer = null;
     private $info_log_writer = null;
     private $warning_log_writer = null;
     private $error_log_writer = null;
     private $fatal_log_writer = null;
     
-    function __construct($log_dir) {
+    function __construct($log_dir,$log_format,$log_mode,$max_mb=10) {
     
-        $log_format;
-    
-        $this->debug_log_writer = new LRollingFileLogWriter($log_dir, 'log.debug.txt', $log_format);
-        $this->info_log_writer = new LRollingFileLogWriter($log_dir, 'log.info.txt', $log_format);
-        $this->warning_log_writer = new LRollingFileLogWriter($log_dir, 'log.warning.txt', $log_format);
-        $this->error_log_writer = new LRollingFileLogWriter($log_dir, 'log.error.txt', $log_format);
-        $this->fatal_log_writer = new LRollingFileLogWriter($log_dir, 'log.fatal.txt', $log_format);
+        $this->debug_log_writer = new LFileLogWriter($log_dir, self::DEBUG_FILENAME, $log_format,$log_mode,$max_mb);
+        $this->info_log_writer = new LFileLogWriter($log_dir, self::INFO_FILENAME, $log_format,$log_mode,$max_mb);
+        $this->warning_log_writer = new LFileLogWriter($log_dir, self::WARNING_FILENAME, $log_format,$log_mode,$max_mb);
+        $this->error_log_writer = new LFileLogWriter($log_dir, self::ERROR_FILENAME, $log_format,$log_mode,$max_mb);
+        $this->fatal_log_writer = new LFileLogWriter($log_dir, self::FATAL_FILENAME, $log_format,$log_mode,$max_mb);
         
+    }
+    
+    public function init() {
+        $this->debug_log_writer->init();
+        $this->info_log_writer->init();
+        $this->warning_log_writer->init();
+        $this->error_log_writer->init();
+        $this->fatal_log_writer->init();
     }
     
     public function debug($message) {

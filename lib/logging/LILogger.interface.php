@@ -2,6 +2,8 @@
 
 interface LILogger {
     
+    function init();
+    
     function debug($message);
     
     function info($message);

@@ -16,6 +16,14 @@ require_once ('lib/core/LExecutionMode.class.php');
 require_once ('lib/utils/LStringUtils.class.php');
 require_once ('lib/utils/LEnvironmentUtils.class.php');
 
+//logging
+
+require_once ('lib/logging/LILogger.interface.php');
+require_once ('lib/logging/LFormatLog.trait.php');
+require_once ('lib/logging/LFileLogWriter.class.php');
+require_once ('lib/logging/LDistinctFileLog.class.php');
+require_once ('lib/logging/LTogetherFileLog.class.php');
+
 //... misc others
 
 //unit test

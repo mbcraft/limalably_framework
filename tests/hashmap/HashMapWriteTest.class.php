@@ -6,7 +6,19 @@ class HashMapWriteTest extends LTestCase {
     use LStaticReadHashMap;
     use LStaticWriteHashMap;
 
-    
+    function testFalseStrings() {
+        self::clear();
+        
+        self::set('/abc/a','false');
+        self::set('/abc/b','0');
+        self::set('/abc/c','no');
+        
+        $this->assertFalse(self::getBoolean('/abc/a'),"Il booleano non è corretto");
+        $this->assertFalse(self::getBoolean('/abc/b'),"Il booleano non è corretto");
+        $this->assertFalse(self::getBoolean('/abc/c'),"Il booleano non è corretto");
+        
+        
+    }
 
     function testSimpleLevel1() {
         self::clear();

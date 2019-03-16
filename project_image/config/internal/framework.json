@@ -6,18 +6,18 @@
             }
         },
         "logging" : {
-            "distict-rollable-file" : {
+            "distict-file" : {
                 "format" : "[ %date - %user ] : %message",
-                "rolling" : true,
+                "mode" : "rolling",
                 "max_mb" : 10
             },
-            "together-rollable-file" : {
+            "together-file" : {
                 "format" : "[ %date - %user - %level ] : %message",
-                "rolling" : true,
+                "mode" : "rolling",
                 "max_mb" : 10
             },
-            "rollable-db" : {
-                "rolling" : true,
+            "db" : {
+                "mode" : "rolling",
                 "max_mb" : 10
             }
         },

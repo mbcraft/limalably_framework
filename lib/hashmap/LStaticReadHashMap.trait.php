@@ -47,6 +47,17 @@ trait LStaticReadHashMap {
         else return true;
     }
     
+    private static function recursiveFilterVar(array $var_array) {
+        foreach ($var_array as $k => $val) {
+            if (is_array($val)) {
+                $var_array[$k] = self::recursiveFilterVar($val);
+            } else {
+                $var_array[$k] = filter_var($val);
+            }
+        }
+        return $var_array;
+    }
+    
     /*
      * Ritorna il contenuto nella posizione specificata.
      * 
@@ -71,7 +82,12 @@ trait LStaticReadHashMap {
             $current_node = $current_node[$p];
         }
         
-        return filter_var($current_node);
+        $return_value = $current_node;
+        if (is_array($return_value)) {
+            $return_value = self::recursiveFilterVar($return_value);
+            return $return_value;
+        }
+        else return filter_var($return_value,FILTER_DEFAULT);
     }
     
     /**

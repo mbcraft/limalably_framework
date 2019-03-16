@@ -16,7 +16,7 @@ trait LStaticWriteHashMap {
      * path : /html/head/title
      * value = "Benvenuti nel sito XYZ!!"
      */
-    function set($path,$value)
+    public static function set($path,$value)
     {
         $path_used = self::all_but_last_path_tokens($path);
         
@@ -32,9 +32,9 @@ trait LStaticWriteHashMap {
         }
         
         if (is_object($value) && in_array('LStaticReadHashMap',class_uses(get_class($value))))
-            $current_node[self::last_path_token($path)] = $value::get("/");
+            $current_node[self::last_path_token($path)] = get_class($value)::get("/");
         else
-            $current_node[self::last_path_token($path)] = self::normalize_data($value);
+            $current_node[self::last_path_token($path)] = $value;
     }
     
     /*
@@ -49,7 +49,7 @@ trait LStaticWriteHashMap {
      * 
      * 
      */
-    function add($path,$value)
+    public static function add($path,$value)
     {
         $path_parts = self::path_tokens($path);
         
@@ -63,10 +63,12 @@ trait LStaticWriteHashMap {
         }
         
         if (is_object($value) && in_array('LStaticReadHashMap',class_uses(get_class($value))))
-            
-            $current_node[] = $value::get("/");
-        else
+        {
+            $current_node[] = get_class($value)::get("/");
+        }
+        else {
             $current_node[] = $value;
+        }
     }
     
     /*
@@ -74,9 +76,9 @@ trait LStaticWriteHashMap {
      * La differenza rispetto ad add sta nel fondere i due array.
      * Da usare se non si vogliono aggiungere i valori ad un array.
      */
-    function merge($path,$value)
+    public static function merge($path,$value)
     {
-        $real_value = self::normalize_data($value);
+        $real_value = $value;
 
         if (!is_array($real_value)) throw new InvalidParameterException("Il parametro passato non e' un array!!");
 
@@ -97,7 +99,7 @@ trait LStaticWriteHashMap {
     /*
      * Rimuove le chiavi trovate nel path specificato.
      */
-    function purge($path,$keys)
+    public static function purge($path,$keys)
     {
         $path_parts = self::path_tokens($path);
         
@@ -113,7 +115,7 @@ trait LStaticWriteHashMap {
         $current_node = array_diff($current_node,$keys);
     }
     
-    function remove($path)
+    public static function remove($path)
     {
         if (!self::is_set($path)) return;
         else

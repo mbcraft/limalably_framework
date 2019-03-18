@@ -22,6 +22,7 @@ require_once ('lib/logging/LILogger.interface.php');
 require_once ('lib/logging/LFileLogWriter.class.php');
 require_once ('lib/logging/LDistinctFileLog.class.php');
 require_once ('lib/logging/LTogetherFileLog.class.php');
+require_once ('lib/logging/LLog.class.php');
 
 //... misc others
 

@@ -8,8 +8,6 @@ class LFileLogWriter {
     
     const LOG_MODES_ARRAY = [self::NORMAL_MODE,self::RESET_MODE,self::ROLLING_MODE];
     
-    use LFormatLog;
-    
     private $my_log_file = null;
     private $my_log_format = null;
     private $my_log_type = null;

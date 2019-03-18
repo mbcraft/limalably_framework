@@ -78,13 +78,13 @@ class StaticHashMapReadTest extends LTestCase {
 
         $this->assertEqual(count($all_but_last),2,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($all_but_last[0],"html","Il token non corrisponde");
-        $this->assertEqual($all_but_last[1],"head","Il token non corrisponde");
+        $this->assertEqual($all_but_last[1],"headz","Il token non corrisponde");
         
     }
     
     function testBasicConfigReadData() {
         
-        $value = LConfig::keys('/defaults');
+        $value = LConfig::keys('/defaults/execution_mode');
         
         $this->assertTrue(is_array($value),"Il valore ritornato non è un array!");
         $this->assertEqual(count($value),3,"Il numero di chiavi non corrisponde!");

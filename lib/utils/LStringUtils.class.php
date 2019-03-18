@@ -73,7 +73,7 @@ class LStringUtils {
     
     private static function internalGetExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {
         $NL = $use_newline ? "\n" : '<br>';
-        $message = 'Exception : '.$ex->getMessage().$NL;
+        $message = $ex->getMessage().$NL;
         $message .= 'File : '.$ex->getFile().' Line : '.$ex->getLine().$NL;
         if ($print_stack_trace) {
             $message .= 'Stack Trace : '.$ex->getTraceAsString().$NL;

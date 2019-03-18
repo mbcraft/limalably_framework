@@ -50,6 +50,24 @@ class LTestRunner {
         LOutput::message(LTestCase::getTestCaseCount().' TEST CASES, '.LTestCase::getTestErrorsCount().' ERRORS, '.LTestCase::getTestMethodsCount().' METHODS, '.LTestCase::getAssertionsCount().' ASSERTIONS, '.LTestCase::getFailuresCount().' FAILURES.');
         LOutput::message('');
         
+        $failures_and_exceptions = LTestCase::getCollectedFailuresAndExceptions();
+        foreach ($failures_and_exceptions as $ex) {
+            if ($ex instanceof LUnitTestException) {
+                LOutput::message("Unit Test Exception : ", false);
+                LOutput::exception($ex, true);
+            }
+            elseif ($ex instanceof LTestFailure) {
+                LOutput::message("Failure : ", false);
+                $ex->printFailure();
+            } else {
+                LOutput::message("Exception : ",false);
+                LOutput::exception($ex, true);
+            }
+            
+            LOutput::message('');
+            
+        }
+        
     }
     
     

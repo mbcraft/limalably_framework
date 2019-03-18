@@ -1,5 +1,42 @@
 {
     "defaults" : {
+        "execution_mode" : {
+            "maintenance" : {
+                "logging" : {
+                    "type" : "together-file",
+                    "level" : "debug"
+                },
+                "route_manager" : "LMaintenanceRouteManager"
+            },
+            "framework_debug" : {
+                "logging" : {
+                    "type" : "together-file",
+                    "level" : "debug"
+                },
+                "route_manager" : "LDefaultRouteManager"
+            },
+            "debug" : {
+                "logging" : {
+                    "type" : "distinct-file",
+                    "level" : "debug"
+                },
+                "route_manager" : "LDefaultRouteManager"
+            },
+            "testing" : {
+                "logging" : {
+                    "type" : "distinct-file",
+                    "level" : "error"
+                },
+                "route_manager" : "LDefaultRouteManager"
+            },
+            "production" : {
+                "logging" : {
+                    "type" : "db",
+                    "database" : "default"
+                },
+                "route_manager" : "LDefaultRouteManager"
+            }
+        },
         "routemap" : {
             "hash_db" : {
                 "levels" : 5
@@ -18,9 +55,9 @@
                 "log_mode" : "rolling",
                 "max_mb" : 10
             },
-            "db" : {
+            "mysql-db" : {
                 "log_mode" : "normal",
-                "max_mb" : 10
+                "COMMENT_max_records" : 100000
             }
         },
         "hashmaps" : {

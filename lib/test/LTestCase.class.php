@@ -1,12 +1,22 @@
 <?php
 
-class LTestCase extends LAssert {
+class LUnitTestException extends \Exception {
+    
+}
+
+class LTestCase extends \LAssert {
 
     private static $total_test_cases = 0;
     private static $total_test_methods = 0;
     private static $total_test_errors = 0;
     private static $total_failures = 0;
+    
+    private static $failures_and_exceptions = [];
 
+    public static function getCollectedFailuresAndExceptions() {
+        return self::$failures_and_exceptions;
+    }
+    
     public static function getTestCaseCount() {
         return self::$total_test_cases;
     }
@@ -37,7 +47,8 @@ class LTestCase extends LAssert {
             $this->setUp();
         } catch (\Exception $ex) {
             self::$total_test_errors++;
-            LOutput::error_message("Exception during setUp in test class ".static::class);
+            LOutput::message('X', false);
+            self::$failures_and_exceptions[] = new LUnitTestException("Exception during setUp in test class ".static::class,0,$ex);
         }
         try {
             //echo "Eseguo metodo ".$method_name."\n";
@@ -45,18 +56,21 @@ class LTestCase extends LAssert {
         } catch (\Exception $ex) {
             self::$total_failures++;
             
-            if (!($ex instanceof LTestException)) {
-                LOutput::message('E');
-                LOutput::exception($ex,false);
+            if (!($ex instanceof LTestFailure)) {
+                LOutput::message('E',false);
+                
             } else {
                 LOutput::message('F',false);
             }
+            self::$failures_and_exceptions[] = $ex;
+            
         }
         try {
             $this->tearDown();
         } catch (\Exception $ex) {
             self::$total_test_errors++;
-            LOutput::error_message("Exception during tearDown in test class ".static::class);
+            LOutput::message('X', false);
+            self::$failures_and_exceptions[] = new LUnitTestException("Exception during tearDown in test class ".static::class,0,$ex);
         }
     }
 

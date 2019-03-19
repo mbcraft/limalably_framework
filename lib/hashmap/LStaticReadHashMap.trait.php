@@ -2,33 +2,23 @@
 
 trait LStaticReadHashMap {
     
+    
     static function mustGetOriginal($path) {
-        if (!self::is_set($path))
-            throw new \Exception('Value not found in path : '.$path);
+        self::setupIfNeeded();
         
-        return self::getOriginal($path);
+        return self::$hash_map->mustGetOriginal($path);
     }
     
     static function getOriginal($path,$default_value = null) {
-        if (!self::is_set($path))
-            return $default_value;
+        self::setupIfNeeded();
         
-        $path_parts = self::path_tokens($path);
-        
-        $current_node = self::$data;
-        foreach ($path_parts as $p)
-        {
-            $current_node = $current_node[$p];
-        }
-        
-        return $current_node;
+        return self::$hash_map->getOriginal($path,$default_value);
     }
     
     public static function mustGetBoolean($path) {
-        if (!self::is_set($path))
-            throw new \Exception('Value not found in path : '.$path);
+        self::setupIfNeeded();
         
-        return self::getBoolean($path);
+        return self::$hash_map->mustGetBoolean($path);
     }
     
     /**
@@ -38,24 +28,9 @@ trait LStaticReadHashMap {
      * @return boolean
      */
     public static function getBoolean($path,$default_value = null) {
-        if (!self::is_set($path)) return $default_value;
+        self::setupIfNeeded();
         
-        $value = self::get($path,$default_value);
-        
-        $false_values = LConfig::mustGet('/defaults/hashmaps/false_strings');
-        if (in_array($value, $false_values)) return false;
-        else return true;
-    }
-    
-    private static function recursiveFilterVar(array $var_array) {
-        foreach ($var_array as $k => $val) {
-            if (is_array($val)) {
-                $var_array[$k] = self::recursiveFilterVar($val);
-            } else {
-                $var_array[$k] = filter_var($val);
-            }
-        }
-        return $var_array;
+        return self::$hash_map->getBoolean($path,$default_value);
     }
     
     /*
@@ -71,23 +46,9 @@ trait LStaticReadHashMap {
     
     public static function get($path,$default_value=null)
     {
-        if (!self::is_set($path))
-            return $default_value;
+        self::setupIfNeeded();
         
-        $path_parts = self::path_tokens($path);
-        
-        $current_node = self::$data;
-        foreach ($path_parts as $p)
-        {
-            $current_node = $current_node[$p];
-        }
-        
-        $return_value = $current_node;
-        if (is_array($return_value)) {
-            $return_value = self::recursiveFilterVar($return_value);
-            return $return_value;
-        }
-        else return filter_var($return_value,FILTER_DEFAULT);
+        return self::$hash_map->get($path,$default_value);
     }
     
     /**
@@ -98,10 +59,9 @@ trait LStaticReadHashMap {
      * @throws \Exception Se il percorso specificato non contiene niente
      */
     public static function mustGet($path) {
-        if (!self::is_set($path))
-            throw new \Exception('Value not found in path : '.$path);
+        self::setupIfNeeded();
         
-        return self::get($path);
+        return self::$hash_map->mustGet($path);
     }
     
 
@@ -111,18 +71,9 @@ trait LStaticReadHashMap {
      */
     public static function is_set($path)
     {
-        $path_parts = self::path_tokens($path);
+        self::setupIfNeeded();
         
-        $current_node = self::$data;
-        foreach ($path_parts as $p)
-        {
-            if (!isset($current_node[$p]))
-                return false;
-
-            $current_node = $current_node[$p];
-        }
-        
-        return true;
+        return self::$hash_map->is_set($path);
     }
 
     /*
@@ -132,19 +83,21 @@ trait LStaticReadHashMap {
      */
     public static function keys($path)
     {
-        if (!self::is_set($path))
-            return null;
+        self::setupIfNeeded();
+        
+        return self::$hash_map->keys($path);
 
-        $path_parts = self::path_tokens($path);
-
-        $current_node = self::$data;
-        foreach ($path_parts as $p)
-        {
-            $current_node = $current_node[$p];
-        }
-
-        return array_keys($current_node);
-
+    }
+    
+    /*
+     * Crea una vista sul percorso specificato.
+     * 
+     */
+    public static function view($path)
+    {
+        self::setupIfNeeded();
+        
+        return self::$hash_map->view($path);
     }
     
 }

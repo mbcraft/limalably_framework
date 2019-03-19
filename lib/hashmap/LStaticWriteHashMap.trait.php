@@ -18,23 +18,9 @@ trait LStaticWriteHashMap {
      */
     public static function set($path,$value)
     {
-        $path_used = self::all_but_last_path_tokens($path);
+        self::setupIfNeeded();
         
-        $current_node = &self::$data;
-        
-        foreach ($path_used as $p)
-        {            
-            if (!isset($current_node[$p]))
-                $current_node[$p] = array();
-
-            $current_node = &$current_node[$p];
-            
-        }
-        
-        if (is_object($value) && in_array('LStaticReadHashMap',class_uses(get_class($value))))
-            $current_node[self::last_path_token($path)] = get_class($value)::get("/");
-        else
-            $current_node[self::last_path_token($path)] = $value;
+        self::$hash_map->set($path,$value);
     }
     
     /*
@@ -51,24 +37,9 @@ trait LStaticWriteHashMap {
      */
     public static function add($path,$value)
     {
-        $path_parts = self::path_tokens($path);
+        self::setupIfNeeded();
         
-        $current_node = &self::$data;
-        
-        foreach ($path_parts as $p)
-        {
-            if (!isset($current_node[$p]))
-                $current_node[$p] = array();
-            $current_node = &$current_node[$p];
-        }
-        
-        if (is_object($value) && in_array('LStaticReadHashMap',class_uses(get_class($value))))
-        {
-            $current_node[] = get_class($value)::get("/");
-        }
-        else {
-            $current_node[] = $value;
-        }
+        self::$hash_map->add($path,$value);
     }
     
     /*
@@ -78,22 +49,10 @@ trait LStaticWriteHashMap {
      */
     public static function merge($path,$value)
     {
-        $real_value = $value;
-
-        if (!is_array($real_value)) throw new InvalidParameterException("Il parametro passato non e' un array!!");
-
-        $path_parts = self::path_tokens($path);
+        self::setupIfNeeded();
         
-        $current_node = &self::$data;
+        self::$hash_map->merge($path,$value);
         
-        foreach ($path_parts as $p)
-        {
-            if (!isset($current_node[$p]))
-                $current_node[$p] = array();
-            $current_node = &$current_node[$p];
-        }
-        
-        $current_node = array_merge($current_node,$real_value);
     }
     
     /*
@@ -101,35 +60,16 @@ trait LStaticWriteHashMap {
      */
     public static function purge($path,$keys)
     {
-        $path_parts = self::path_tokens($path);
+        self::setupIfNeeded();
         
-        $current_node = &self::$data;
-        
-        foreach ($path_parts as $p)
-        {
-            if (!isset($current_node[$p]))
-                $current_node[$p] = array();
-            $current_node = &$current_node[$p];
-        }
-        
-        $current_node = array_diff($current_node,$keys);
+        self::$hash_map->purge($path,$keys);
     }
     
     public static function remove($path)
     {
-        if (!self::is_set($path)) return;
-        else
-        {
-            $path_parts = self::all_but_last_path_tokens($path);
+        self::setupIfNeeded();
         
-            $current_node = &self::$data;
-            foreach ($path_parts as $p)
-            {
-                $current_node = &$current_node[$p];
-            }
-            unset($current_node[self::last_path_token($path)]);
-        
-        }
+        self::$hash_map->remove($path);
     }
     
     /**
@@ -137,6 +77,8 @@ trait LStaticWriteHashMap {
      */
     public static function clear()
     {
-        self::$data = array();
+        self::setupIfNeeded();
+        
+        self::$hash_map->clear();
     } 
 }

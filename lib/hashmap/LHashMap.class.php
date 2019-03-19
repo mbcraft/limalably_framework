@@ -92,6 +92,10 @@ class LHashMap {
         return $var_array;
     }
     
+    function setRoot(&$value) {
+        $this->data = $value;
+    }
+    
     /*
      * Imposta un valore. L'ultima parte del path diventa la chiave.
      * Se il valore è un Tree viene creato un link.
@@ -214,7 +218,14 @@ class LHashMap {
         
         }
     }
-        
+      
+    function mustGet($path) {
+        if (!$this->is_set($path))
+            throw new \Exception('Value not found in path : '.$path);
+                
+        return $this->get($path);        
+    }
+    
     /*
      * Ritorna il contenuto nella posizione specificata.
      * 

@@ -18,8 +18,10 @@ class LConfig {
     }
 
     public static function saveServerVar($var_name) {
-        if (!isset(self::$data[$var_name])) {
-            self::$data[$var_name] = $_SERVER[$var_name];
+        self::setupIfNeeded();
+        
+        if (!self::is_set($var_name)) {
+            self::$hash_map->set($var_name,$_SERVER[$var_name]);
             LOutput::framework_debug('Server var ' . $var_name . ' persisted into configuration ...');
         }
     }
@@ -108,11 +110,13 @@ class LConfig {
 
             $all_config = array_replace_recursive($all_config, $json_config);
 
-            self::$data = array_replace_recursive($all_config, self::$data);
+            $final_data = array_replace_recursive($all_config, self::get('/'));
 
         } else {
-            self::$data = array_replace_recursive($internal_json_config,self::$data);
+            $final_data = array_replace_recursive($internal_json_config,self::get('/'));
         }
+        
+        self::$hash_map->setRoot($final_data);
         
         // config loaded
         $message = "Config loaded ...";
@@ -126,11 +130,11 @@ class LConfig {
     }
     
     
-    /*
+    
     //to be removed
     static function dump() {
-        var_dump(self::$data);
+        var_dump(self::$hash_map);
     } 
-    */
+    
 
 }

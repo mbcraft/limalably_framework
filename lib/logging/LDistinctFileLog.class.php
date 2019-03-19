@@ -16,6 +16,11 @@ class LDistinctFileLog implements LILogger {
     
     function __construct($log_dir,$log_format,$log_mode,$max_mb=10) {
     
+        if (!file_exists($log_dir) && is_dir($log_dir)) {
+            mkdir($log_dir);
+            chmod($log_dir, 0775);
+        }
+        
         $this->debug_log_writer = new LFileLogWriter($log_dir, self::DEBUG_FILENAME, $log_format,$log_mode,$max_mb);
         $this->info_log_writer = new LFileLogWriter($log_dir, self::INFO_FILENAME, $log_format,$log_mode,$max_mb);
         $this->warning_log_writer = new LFileLogWriter($log_dir, self::WARNING_FILENAME, $log_format,$log_mode,$max_mb);
@@ -33,27 +38,27 @@ class LDistinctFileLog implements LILogger {
     }
     
     public function debug($message) {
-        $this->debug_log_writer->write($message, 'debug');
+        $this->debug_log_writer->write($message, self::LEVEL_DEBUG);
     }
 
     public function error($message) {
-        $this->error_log_writer->write($message, 'error');
+        $this->error_log_writer->write($message, self::LEVEL_ERROR);
     }
 
     public function exception(\Exception $ex) {
-        $this->error_log_writer->write(LStringUtils::getExceptionMessage($ex), 'error');
+        $this->error_log_writer->write(LStringUtils::getExceptionMessage($ex), self::LEVEL_ERROR);
     }
 
     public function fatal($message) {
-        $this->fatal_log_writer->write($message, 'fatal');
+        $this->fatal_log_writer->write($message, self::LEVEL_FATAL);
     }
 
     public function info($message) {
-        $this->info_log_writer->write($message, 'info');
+        $this->info_log_writer->write($message, self::LEVEL_INFO);
     }
 
     public function warning($message) {
-        $this->warning_log_writer->write($message, 'warning');
+        $this->warning_log_writer->write($message, self::LEVEL_WARNING);
     }
     
     public function close() {

@@ -54,8 +54,18 @@ class LFileLogWriter {
     private function formatLog($message,$level) {
         $my_date = date(LConfig::mustGet('/defaults/logging/'.$this->my_log_type.'/date_format'));
         
+        switch ($level) {
+            case self::LEVEL_DEBUG : $level_string = 'debug';break;
+            case self::LEVEL_INFO : $level_string = 'info';break;
+            case self::LEVEL_WARNING : $level_string = 'warning';break;
+            case self::LEVEL_ERROR : $level_string = 'error';break;
+            case self::LEVEL_FATAL : $level_string = 'fatal';break;
+            default : $level_string = 'unknown';break;
+        }
+        
         $format = $this->my_log_format;
         $format = str_replace('%date', $my_date, $format);
+        $format = str_replace('%level_string', $level_string, $format);
         $format = str_replace('%level', $level, $format);
         $format = str_replace('%user', LEnvironmentUtils::getServerUser(), $format);
         $format = str_replace('%route', LEnvironmentUtils::getRoute(), $format);

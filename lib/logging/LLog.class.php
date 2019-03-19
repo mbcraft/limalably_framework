@@ -16,6 +16,12 @@ class LLog {
         $logger_name = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/type');
         $logger_level = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/level');
         $logger_options = LConfig::mustGet('defaults/logging/'.$logger_name);
+        
+        switch ($logger_name) {
+            case 'distinct-file' : self::$my_logger = new LDistinctFileLog($_SERVER['PROJECT_DIR'].'logs/', $logger_options['log_format'], $logger_options['log_mode'],$logger_options['max_mb']);break;
+            case 'together-file' : self::$my_logger = new LTogetherFileLog($_SERVER['PROJECT_DIR'].'logs/', $logger_options['log_format'], $logger_options['log_mode'],$logger_options['max_mb']);break;
+            case 'mysql-db' : self::$my_logger = new LDbLog();break;
+        }
     }
     
     static function getLevel() {

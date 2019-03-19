@@ -21,7 +21,7 @@ class LExecutionMode {
     const PRODUCTION_MODE = 'production';
     const PRODUCTION_FILENAME = 'production.txt';
     
-    static $my_mode = null;
+    private static $my_mode = null;
     
     public static function isMaintenance() {
         if (!isset($_SERVER['PROJECT_DIR'])) return false;

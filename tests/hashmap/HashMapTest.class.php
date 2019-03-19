@@ -209,7 +209,6 @@ class HashMapTest extends LTestCase {
         
     }
     
-    
     function testGetChangeData()
     {
         $r = new LHashMap();
@@ -220,7 +219,38 @@ class HashMapTest extends LTestCase {
         
         $this->assertTrue($r->is_set("/html/head/keywords"),"Il nodo /html/head/keywords non e' stato trovato!!");
         $this->assertEqual(count($r->get("/html/head/keywords")),2,"Il numero di keywords non corrisponde!!");
+       
         
+        $html = $r->view("/html");
+        
+        $html->set("/head/keywords",array("pippo","pluto","paperino"));
+        
+        $this->assertEqual(count($html->get("/head/keywords")),3,"Il numero di keywords non corrisponde!!");
+        
+        $this->assertEqual(count($r->get("/html/head/keywords")),3,"Il numero di keywords non corrisponde!!");
+        
+    }
+    
+    function testBidirectionalView()
+    {
+        $t1 = new LHashMap();
+        
+        $t1->set("/prova","ciao");
+        $t1->set("/altro/prove/valori",array("primo","secondo","terzo"));
+        
+        $t2 = $t1->view("/altro/prove");
+        
+        $this->assertEqual(count($t1->get("/altro/prove/valori")),3,"il numero dei valori non corrisponde!!");
+        $this->assertEqual(count($t2->get("/valori")),3,"il numero dei valori non corrisponde!!");
+    
+        $t1->add("/altro/prove/valori","quarto");
+        $this->assertEqual(count($t1->get("/altro/prove/valori")),4,"il numero dei valori non corrisponde!!");
+        $this->assertEqual(count($t2->get("/valori")),4,"il numero dei valori non corrisponde!!");
+    
+        $t1->add("/altro/prove/valori","quinto");
+        $this->assertEqual(count($t1->get("/altro/prove/valori")),5,"il numero dei valori non corrisponde!!");
+        $this->assertEqual(count($t2->get("/valori")),5,"il numero dei valori non corrisponde!!");
+     
     }
     
     function testComposedTrees()

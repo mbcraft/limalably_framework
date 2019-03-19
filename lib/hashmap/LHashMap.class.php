@@ -248,6 +248,18 @@ class LHashMap {
     }
     
     /*
+     * Crea una vista sul percorso specificato.
+     * 
+     */
+    public function view($path)
+    {
+        if (!$this->is_set($path))
+                return null;
+        
+        return new LHashMapView($path,$this);
+    }
+    
+    /*
      * Ritorna true se un nodo dell'albero è stato definito, false altrimenti.
      */
     function is_set($path)

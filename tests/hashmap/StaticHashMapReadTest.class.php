@@ -78,7 +78,7 @@ class StaticHashMapReadTest extends LTestCase {
 
         $this->assertEqual(count($all_but_last),2,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($all_but_last[0],"html","Il token non corrisponde");
-        $this->assertEqual($all_but_last[1],"headz","Il token non corrisponde");
+        $this->assertEqual($all_but_last[1],"head","Il token non corrisponde");
         
     }
     
@@ -87,7 +87,7 @@ class StaticHashMapReadTest extends LTestCase {
         $value = LConfig::keys('/defaults/execution_mode');
         
         $this->assertTrue(is_array($value),"Il valore ritornato non è un array!");
-        $this->assertEqual(count($value),3,"Il numero di chiavi non corrisponde!");
+        $this->assertEqual(count($value),5,"Il numero di chiavi non corrisponde!");
         
         $value2 = LConfig::mustGet('/defaults/routemap/hash_db/levels');
         

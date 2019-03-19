@@ -2,6 +2,7 @@
 
 //hashmap
 require_once ('lib/hashmap/LHashMap.class.php');
+require_once ('lib/hashmap/LHashMapView.class.php');
 require_once ('lib/hashmap/LStaticHashMapBase.trait.php');
 require_once ('lib/hashmap/LStaticReadHashMap.trait.php');
 require_once ('lib/hashmap/LStaticWriteHashMap.trait.php');

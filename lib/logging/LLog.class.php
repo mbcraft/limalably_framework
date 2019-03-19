@@ -12,7 +12,10 @@ class LLog {
     const LEVEL_FATAL = 5;
     
     static function init() {
-        
+        $exec_mode = LExecutionMode::get();
+        $logger_name = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/type');
+        $logger_level = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/level');
+        $logger_options = LConfig::mustGet('defaults/logging/'.$logger_name);
     }
     
     static function getLevel() {

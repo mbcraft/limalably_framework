@@ -7,12 +7,14 @@ class LDbLog implements LILogger {
     
     private $my_logger;
     
-    function __construct($connection_name,$log_mode) {
+    function __construct($connection_name,$log_mode, $max_records = 1000000, $table_name = 'logs') {
         
         $params = LConfig::view('/database/'.$connection_name);
-        
-        switch ($params['type']) {
-            case self::CONNECTION_TYPE_MYSQL : $this->my_logger == new LMysqlLogWriter ($connection_name, $log_mode);break;
+        if (!isset($params['type']))
+            throw new \Exception("Database type is not set in database params.");
+        $type = $params['type'];
+        switch ($type) {
+            case self::CONNECTION_TYPE_MYSQL : $this->my_logger == new LMysqlLogWriter ($connection_name, $log_mode, $max_records, $table_name);break;
         
             default : throw new \Exception("Unsupported connection type for db logging : ".$type);
         }

@@ -3,7 +3,7 @@
 class LLog {
     
     static $my_logger = null;
-    static $my_log_level = null;
+    static $my_min_level = null;
     
     const LEVEL_DEBUG = 1;
     const LEVEL_INFO = 2;
@@ -11,36 +11,73 @@ class LLog {
     const LEVEL_ERROR = 4;
     const LEVEL_FATAL = 5;
     
+    private static function safeGetLoggerConfig($exec_mode,$logger_type,$config_name) {
+        return LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/',$config_name, LConfig::mustGet('defaults/logging/'.$logger_type.'/'.$config_name));
+    }
+    
+    private static function adjustLogFolder($log_folder) {
+        if (!LStringUtils::startsWith($log_folder, '/')) {
+            return $_SERVER['PROJECT_DIR'].$log_folder;
+        } else {
+            return $log_folder;
+        }
+    }
+    
     static function init() {
         $exec_mode = LExecutionMode::get();
-        $logger_name = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/type');
-        $logger_level = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/level');
-        $logger_options = LConfig::mustGet('defaults/logging/'.$logger_name);
+        $logger_type = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/type');
+        $this->my_min_level = self::safeGetLoggerConfig($exec_mode, $logger_type, 'min_level');
+        $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
+                
+        switch ($logger_type) {
+            case 'distinct-file' : {
+                $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
+                $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
+                $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb');
         
-        switch ($logger_name) {
-            case 'distinct-file' : self::$my_logger = new LDistinctFileLog($_SERVER['PROJECT_DIR'].'logs/', $logger_options['log_format'], $logger_options['log_mode'],$logger_options['max_mb']);break;
-            case 'together-file' : self::$my_logger = new LTogetherFileLog($_SERVER['PROJECT_DIR'].'logs/', $logger_options['log_format'], $logger_options['log_mode'],$logger_options['max_mb']);break;
-            case 'mysql-db' : self::$my_logger = new LDbLog();break;
+                $log_folder = self::adjustLogFolder($log_folder);
+                
+                self::$my_logger = new LDistinctFileLog($log_folder, $log_format, $log_mode,$max_mb);
+                break;
+            }
+            case 'together-file' : {
+                $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
+                $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
+                $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb'); 
+                
+                $log_folder = self::adjustLogFolder($log_folder);
+                
+                self::$my_logger = new LTogetherFileLog($log_folder, $log_format, $log_mode,$max_mb);
+                break;
+            }
+            case 'db' : { 
+                $connection_name = self::safeGetLoggerConfig($exec_mode, $logger_type, 'connection_name');
+                $max_records = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_records');
+                $table_name = self::safeGetLoggerConfig($exec_mode, $logger_type, 'table_name');
+                
+                self::$my_logger = new LDbLog($connection_name,$log_mode,$max_records,$table_name);
+                break;
+            }
         }
     }
     
     static function getLevel() {
-        return self::$my_log_level;
+        return self::$my_min_level;
     }
     
     static function getLevelString() {
-        switch (self::$my_log_level) {
+        switch (self::$my_min_level) {
             case self::LEVEL_DEBUG:return 'debug';
             case self::LEVEL_INFO:return 'info';
             case self::LEVEL_WARNING:return 'warning';
             case self::LEVEL_ERROR:return 'error';
             case self::LEVEL_FATAL:return 'fatal';
-            default: throw new \Exception('Invalid level value : '.self::$my_log_level);
+            default: throw new \Exception('Invalid level value : '.self::$my_min_level);
         }
     }
     
     static function isDebug() {
-        return self::$my_log_level!=null && self::$my_log_level<=self::LEVEL_DEBUG;
+        return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_DEBUG;
     }
     
     static function debug($message) {
@@ -50,7 +87,7 @@ class LLog {
     }
     
     static function isInfo() {
-        return self::$my_log_level!=null && self::$my_log_level<=self::LEVEL_INFO;
+        return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_INFO;
     }
     
     static function info($message) {
@@ -60,7 +97,7 @@ class LLog {
     }
     
     static function isWarning() {
-        return self::$my_log_level!=null && self::$my_log_level<=self::LEVEL_WARNING;
+        return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_WARNING;
     }
     
     static function warning($message) {
@@ -70,7 +107,7 @@ class LLog {
     }
     
     static function isError() {
-        return self::$my_log_level!=null && self::$my_log_level<=self::LEVEL_ERROR;
+        return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_ERROR;
     }
     
     static function error($message) {
@@ -86,7 +123,7 @@ class LLog {
     }
     
     static function isFatal() {
-        return self::$my_log_level!=null && self::$my_log_level<=self::LEVEL_FATAL;
+        return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_FATAL;
     }
     
     static function fatal($message) {

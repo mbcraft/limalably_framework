@@ -4,35 +4,35 @@
             "maintenance" : {
                 "logging" : {
                     "type" : "together-file",
-                    "level" : "debug"
+                    "min_level" : "debug"
                 },
                 "route_manager" : "LMaintenanceRouteManager"
             },
             "framework_debug" : {
                 "logging" : {
                     "type" : "together-file",
-                    "level" : "debug"
+                    "min_level" : "debug"
                 },
                 "route_manager" : "LDefaultRouteManager"
             },
             "debug" : {
                 "logging" : {
                     "type" : "distinct-file",
-                    "level" : "debug"
+                    "min_level" : "debug"
                 },
                 "route_manager" : "LDefaultRouteManager"
             },
             "testing" : {
                 "logging" : {
                     "type" : "distinct-file",
-                    "level" : "error"
+                    "min_level" : "error"
                 },
                 "route_manager" : "LDefaultRouteManager"
             },
             "production" : {
                 "logging" : {
                     "type" : "db",
-                    "database" : "default"
+                    "min_level" : "error"
                 },
                 "route_manager" : "LDefaultRouteManager"
             }
@@ -47,17 +47,24 @@
                 "date_format" : "d/m/Y H:i:s",
                 "log_format" : "[ %date - %user ] : %message",
                 "log_mode" : "normal",
-                "max_mb" : 10
+                "max_mb" : 10,
+                "log_folder" : "logs/",
+                "min_level" : "debug"
             },
             "together-file" : {
                 "date_format" : "d/m/Y H:i:s",
                 "log_format" : "[ %date - %user - %level ] : %message",
                 "log_mode" : "rolling",
-                "max_mb" : 10
+                "max_mb" : 10,
+                "log_folder" : "logs/",
+                "min_level" : "debug"
             },
-            "mysql-db" : {
+            "db" : {
                 "log_mode" : "normal",
-                "COMMENT_max_records" : 100000
+                "connection_name" : "default",
+                "max_records" : 1000000,
+                "table_name" : "logs",
+                "min_level" : "debug"
             }
         },
         "hashmaps" : {

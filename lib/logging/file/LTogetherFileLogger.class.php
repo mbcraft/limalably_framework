@@ -1,6 +1,6 @@
 <?php
 
-class LTogetherFileLog implements LILogger {
+class LTogetherFileLogger implements LILogger {
     
     const TOGETHER_FILENAME = 'log.all.txt';
     

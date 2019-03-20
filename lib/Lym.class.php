@@ -99,7 +99,6 @@ class Lym {
         
         LConfig::init();
         
-        
         self::initRoute();
         
         self::framework_start();

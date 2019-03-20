@@ -23,11 +23,11 @@ require_once ('lib/logging/LILogWriter.interface.php');
 require_once ('lib/logging/LLog.class.php');
 
 require_once ('lib/logging/file/LFileLogWriter.class.php');
-require_once ('lib/logging/file/LDistinctFileLog.class.php');
-require_once ('lib/logging/file/LTogetherFileLog.class.php');
-
+require_once ('lib/logging/file/LDistinctFileLogger.class.php');
+require_once ('lib/logging/file/LTogetherFileLogger.class.php');
+require_once ('lib/logging/output/LOutputLogger.class.php');
 require_once ('lib/logging/db/LMysqlLogWriter.class.php');
-require_once ('lib/logging/db/LDbLog.class.php');
+require_once ('lib/logging/db/LDbLogger.class.php');
 
 
 

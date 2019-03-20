@@ -37,7 +37,7 @@ class LLog {
         
                 $log_folder = self::adjustLogFolder($log_folder);
                 
-                self::$my_logger = new LDistinctFileLog($log_folder, $log_format, $log_mode,$max_mb);
+                self::$my_logger = new LDistinctFileLogger($log_folder, $log_format, $log_mode,$max_mb);
                 break;
             }
             case 'together-file' : {
@@ -47,7 +47,7 @@ class LLog {
                 
                 $log_folder = self::adjustLogFolder($log_folder);
                 
-                self::$my_logger = new LTogetherFileLog($log_folder, $log_format, $log_mode,$max_mb);
+                self::$my_logger = new LTogetherFileLogger($log_folder, $log_format, $log_mode,$max_mb);
                 break;
             }
             case 'db' : { 
@@ -55,7 +55,7 @@ class LLog {
                 $max_records = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_records');
                 $table_name = self::safeGetLoggerConfig($exec_mode, $logger_type, 'table_name');
                 
-                self::$my_logger = new LDbLog($connection_name,$log_mode,$max_records,$table_name);
+                self::$my_logger = new LDbLogger($connection_name,$log_mode,$max_records,$table_name);
                 break;
             }
         }

@@ -1,6 +1,6 @@
 <?php
 
-class LDbLog implements LILogger {
+class LDbLogger implements LILogger {
     
     const CONNECTION_TYPE_MYSQL = 'mysql';
     const CONNECTION_TYPE_SQLITE = 'sqlite';

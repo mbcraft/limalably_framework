@@ -1,6 +1,6 @@
 <?php
 
-class LDistinctFileLog implements LILogger {
+class LDistinctFileLogger implements LILogger {
     
     const DEBUG_FILENAME = 'log.debug.txt';
     const INFO_FILENAME = 'log.info.txt';

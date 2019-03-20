@@ -25,11 +25,21 @@ class LLog {
     
     static function init() {
         $exec_mode = LExecutionMode::get();
-        $logger_type = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/type');
+        if (!isset($_SERVER['PROJECT_DIR'])) {
+            $logger_type = 'output';
+        } else {
+            $logger_type = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/type');
+        }
         $this->my_min_level = self::safeGetLoggerConfig($exec_mode, $logger_type, 'min_level');
         $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
                 
         switch ($logger_type) {
+            case 'output' : {
+                self::$my_logger = new LOutputLogger();
+                
+                break;
+            }
+            
             case 'distinct-file' : {
                 $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
                 $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');

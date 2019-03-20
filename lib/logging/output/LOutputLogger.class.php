@@ -7,7 +7,7 @@ class LOutputLogger implements LILogger {
     }
 
     public function debug($message) {
-        LOutput::message("LOG Debug : ".$message);
+        LOutput::framework_debug("LOG Debug : ".$message);
     }
 
     public function error($message) {
@@ -23,7 +23,7 @@ class LOutputLogger implements LILogger {
     }
 
     public function info($message) {
-        LOutput::message("LOG Info : ".$message);
+        LOutput::debug("LOG Info : ".$message);
     }
 
     public function init() {

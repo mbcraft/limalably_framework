@@ -23,6 +23,14 @@ class LExecutionMode {
     
     private static $my_mode = null;
     
+    public static function logErrors() {
+        return !self::isFrameworkDevelopment();
+    }
+    
+    public static function displayErrors() {
+        return self::isFrameworkDevelopment() || self::isDevelopment() || self::isTesting();
+    }
+    
     public static function isMaintenance() {
         if (!isset($_SERVER['PROJECT_DIR'])) return false;
         

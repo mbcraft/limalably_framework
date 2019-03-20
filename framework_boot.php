@@ -30,6 +30,13 @@ require_once ('lib/routing/manager/LIRouteManager.interface.php');
 require_once ('lib/routing/manager/LDefaultRouteManager.class.php');
 require_once ('lib/routing/manager/LMaintenanceRouteManager.class.php');
 
+//database
+require_once ('lib/db/connection/LIDbConnection.interface.php');
+require_once ('lib/db/connection/LMysqlConnection.class.php');
+require_once ('lib/db/connection/LSqliteConnection.class.php');
+
+require_once ('lib/db/connection/LDbConnectionManager.class.php');
+
 //unit test
 require_once ('lib/test/LAssert.class.php');
 require_once ('lib/test/LTestCase.class.php');

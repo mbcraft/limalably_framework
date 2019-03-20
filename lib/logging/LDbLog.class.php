@@ -2,9 +2,20 @@
 
 class LDbLog implements LILogger {
     
+    const CONNECTION_TYPE_MYSQL = 'mysql';
+    const CONNECTION_TYPE_SQLITE = 'sqlite';
+    
     private $my_logger;
     
     function __construct($connection_name,$log_mode) {
+        
+        $params = LConfig::view('/database/'.$connection_name);
+        
+        switch ($params['type']) {
+            case self::CONNECTION_TYPE_MYSQL : $this->my_logger == new LMysqlLogWriter ($connection_name, $log_mode);break;
+        
+            default : throw new \Exception("Unsupported connection type for db logging : ".$type);
+        }
         
     }
     

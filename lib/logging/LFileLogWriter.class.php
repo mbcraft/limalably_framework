@@ -1,12 +1,6 @@
 <?php
 
-class LFileLogWriter {
-    
-    const NORMAL_MODE = 'normal';
-    const RESET_MODE = 'reset';
-    const ROLLING_MODE = 'rolling';
-    
-    const LOG_MODES_ARRAY = [self::NORMAL_MODE,self::RESET_MODE,self::ROLLING_MODE];
+class LFileLogWriter implements LILogWriter {
     
     private $my_log_file = null;
     private $my_log_format = null;
@@ -46,7 +40,7 @@ class LFileLogWriter {
     }
     
     function init() {
-        if ($this->my_log_mode==self::RESET_MODE && file_exists($this->my_log_file)) {
+        if ($this->my_log_mode==self::MODE_RESET && file_exists($this->my_log_file)) {
             @unlink($this->my_log_file);
         }
     }
@@ -88,7 +82,7 @@ class LFileLogWriter {
     }
     
     public function close() {
-        if ($this->my_log_mode==self::ROLLING_MODE && file_exists($this->my_log_file)) {
+        if ($this->my_log_mode==self::MODE_ROLLING && file_exists($this->my_log_file)) {
             $this->checkSizeAndRoll();
         }
     }

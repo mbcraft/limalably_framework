@@ -101,7 +101,14 @@ class Lym {
         
         self::initRoute();
         
-        self::framework_start();
+        LLog::init();
+        
+        try {
+            self::framework_start();
+        } catch (\Exception $ex) {
+            LOutput::exception($ex);
+        }
+        self::finish();
     }
 
     public static function project_boot() {
@@ -122,53 +129,56 @@ class Lym {
 
         LConfig::init();
         
-
         self::initRoute();
         
-        self::project_start();
+        LLog::init();
+        
+        try {
+            self::project_start();
+        } catch (\Exception $ex) {
+            LOutput::exception($ex);
+        }
+        self::finish();
     }
     
     private static function handleSetExecutionMode() {
         if (!isset($_SERVER['argv'][2])) {
-            LOutput::error_message("Mode name not set. Choose between 'maintenance','framework_debug','debug' or 'production'.");
-            exit(1);
+            LOutput::error_message("Mode name not set. Choose between 'maintenance','framework_debug','debug','testing' or 'production'.");
+            return;
         }
         $mode_name = $_SERVER['argv'][2];
         try {
             LExecutionMode::setByName($mode_name);
             LOutput::message("Execution mode set to '".$mode_name."' successfully.");
-            exit(0);
         } catch (\Exception $ex) {
             LOutput::exception($ex);
-            exit(1);
         }
         
     }
     
     private static function handleGetExecutionMode() {
         LOutput::message("Execution mode is now '".LExecutionMode::get()."'.");
-        exit(0);
     }
     
     private static function handleRunFrameworkTests() {
         LTestRunner::clear();
         LTestRunner::collect($_SERVER['FRAMEWORK_DIR'], 'tests/');
         LTestRunner::run();
-        exit(0);
+        
     }
     
     private static function handleRunTests() {
         LTestRunner::clear();
         LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests/');
         LTestRunner::run();
-        exit(0);
+        
     }
     
     private static function handleRunTestsFast() {
         LTestRunner::clear();
         LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests_fast/');
         LTestRunner::run();
-        exit(0);
+        
     }
     
     private static function handleInternalFrameworkProcedures() {
@@ -198,6 +208,14 @@ class Lym {
         self::handleInternalProjectProcedures(); //maybe exit if one is found
         
         //more to come ...
+    }
+    
+    private static function finish() {
+        ob_end_flush();
+        
+        LDbConnectionManager::dispose();
+        
+        LLog::close();
     }
 
 }

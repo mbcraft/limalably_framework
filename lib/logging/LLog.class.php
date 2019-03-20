@@ -12,7 +12,7 @@ class LLog {
     const LEVEL_FATAL = 5;
     
     private static function safeGetLoggerConfig($exec_mode,$logger_type,$config_name) {
-        return LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/',$config_name, LConfig::mustGet('defaults/logging/'.$logger_type.'/'.$config_name));
+        return LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logging/',$config_name, LConfig::mustGet('defaults/logging/'.$logger_type.'/'.$config_name));
     }
     
     private static function adjustLogFolder($log_folder) {
@@ -28,10 +28,10 @@ class LLog {
         if (!isset($_SERVER['PROJECT_DIR'])) {
             $logger_type = 'output';
         } else {
-            $logger_type = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logger/type');
+            $logger_type = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logging/type');
         }
-        $this->my_min_level = self::safeGetLoggerConfig($exec_mode, $logger_type, 'min_level');
-        $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
+        self::$my_min_level = self::safeGetLoggerConfig($exec_mode, $logger_type, 'min_level');
+        
                 
         switch ($logger_type) {
             case 'output' : {
@@ -41,6 +41,7 @@ class LLog {
             }
             
             case 'distinct-file' : {
+                $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
                 $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
                 $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
                 $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb');
@@ -51,6 +52,7 @@ class LLog {
                 break;
             }
             case 'together-file' : {
+                $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
                 $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
                 $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
                 $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb'); 
@@ -61,6 +63,7 @@ class LLog {
                 break;
             }
             case 'db' : { 
+                $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
                 $connection_name = self::safeGetLoggerConfig($exec_mode, $logger_type, 'connection_name');
                 $max_records = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_records');
                 $table_name = self::safeGetLoggerConfig($exec_mode, $logger_type, 'table_name');

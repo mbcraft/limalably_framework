@@ -8,9 +8,9 @@
                 },
                 "route_manager" : "LMaintenanceRouteManager"
             },
-            "framework_debug" : {
+            "framework_development" : {
                 "logging" : {
-                    "type" : "together-file",
+                    "type" : "output",
                     "min_level" : "debug"
                 },
                 "route_manager" : "LDefaultRouteManager"
@@ -64,6 +64,9 @@
                 "connection_name" : "default",
                 "max_records" : 1000000,
                 "table_name" : "logs",
+                "min_level" : "debug"
+            },
+            "output" : {
                 "min_level" : "debug"
             }
         },

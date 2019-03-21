@@ -47,13 +47,13 @@ class LMysqlLogWriter implements LILogWriter {
         
         //create table if not exists 
         $query = self::QUERY_CREATE_TABLE;
-        $query = str_replace('%table_name',$this->table_name,$query);
+        $query = str_replace('%table_name%',$this->table_name,$query);
         mysqli_query($this->my_handle, $query);
         
         // truncate table if reset mode
         if ($this->log_mode == self::MODE_RESET) {
             $query = self::QUERY_RESET_TABLE;
-            $query = str_replace('%table_name',$this->table_name,$query);
+            $query = str_replace('%table_name%',$this->table_name,$query);
             
             mysqli_query($this->my_handle, $query);
         }
@@ -62,7 +62,7 @@ class LMysqlLogWriter implements LILogWriter {
     public function write($message, $level) {
         //write message into db
         $query = self::QUERY_WRITE_LOG;
-        $query = str_replace('%table_name',$this->table_name,$query);
+        $query = str_replace('%table_name%',$this->table_name,$query);
         $query = str_replace('%level%',mysqli_escape_string($this->my_handle, $level),$query);
         
         switch ($level) {

@@ -84,6 +84,8 @@ class LLog {
                 break;
             }
         }
+        
+        self::$my_logger->init();
     }
     
     static function getLevel() {

@@ -56,6 +56,13 @@ class StringUtilsTest extends LTestCase {
         $this->assertFalse(LStringUtils::endsWith("ProvaDiRegistrazione","zionerr"),"Il controllo di fine stringa non e' corretto!!");
         $this->assertFalse(LStringUtils::endsWith("ProvaDiRegistrazione","Prova"),"Il controllo di fine stringa non e' corretto!!");
     }
+    
+    function testEndsWith2()
+    {
+        $this->assertTrue(LStringUtils::endsWith("ProvaDiRegistrazione",["Test","Calcolo","Registrazione"]),"Il controllo di fine stringa non e' corretto!!");
+        $this->assertFalse(LStringUtils::endsWith("ProvaDiRegistrazione",["zionerr","quasimodo","alcuna"]),"Il controllo di fine stringa non e' corretto!!");
+        $this->assertFalse(LStringUtils::endsWith("ProvaDiRegistrazione",["Prova","Di","Registraz"]),"Il controllo di fine stringa non e' corretto!!");
+    }
 
     function testTrimEndingChars()
     {

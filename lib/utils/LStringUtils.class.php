@@ -38,15 +38,41 @@ class LStringUtils {
     }
     
     static function startsWith($string,$needle) {
-        return strpos($string,$needle)===0;
+        if (is_array($needle)) {
+            $result = false;
+            foreach ($needle as $n) {
+                $result |= strpos($string,$n)===0;
+            }
+            return $result;
+        } else {
+            return strpos($string,$needle)===0;
+        }
     }
     
     static function endsWith($string,$needle) {
-        return strpos($string,$needle,strlen($string)-strlen($needle))===(strlen($string)-strlen($needle));
+        if (is_array($needle)) {
+            $result = false;
+            foreach ($needle as $n) {
+                $result |= strpos($string,$n,strlen($string)-strlen($n))===(strlen($string)-strlen($n));
+            }
+            return $result;
+        }
+        else {
+            return strpos($string,$needle,strlen($string)-strlen($needle))===(strlen($string)-strlen($needle));
+        }
     }
     
     static function contains($string,$needle) {
-        return strpos($string,$needle)!==false;
+        if (is_array($needle)) {
+            $result = false;
+            foreach ($needle as $n) {
+                $result |= strpos($string,$n)!==false;
+            }
+            return $result;
+        }
+        else {
+            return strpos($string,$needle)!==false;
+        }
     }
     
     static function getErrorMessage(string $error,string $file,int $line,$use_newline=true) {

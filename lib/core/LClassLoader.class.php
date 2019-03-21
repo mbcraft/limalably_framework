@@ -57,8 +57,16 @@ class LClassLoader {
         }
     }
     
+    private static function isValidCodeFile($full_filename) {
+        return is_file($full_filename) && LStringUtils::endsWith($full_filename, LConfig::mustGet('/defaults/classloader/code_file_ends_with'));
+    }
+    
     private static function recursiveParseFolder($full_folder_path) {
+        $dir_elements = scandir($full_folder_path);
         
+        foreach ($dir_elements as $element) {
+            if (is_file($full_folder_path.$element))
+        }
     }
     
 }

@@ -72,8 +72,6 @@ EOS;
         
 EOS;
         
-    
-    
     function testMatchingNamespace1() {
         
         $namespace_pattern = "/namespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/";
@@ -84,6 +82,21 @@ EOS;
         
         $this->assertEqual(count($matches),1,"Il numero di match non corrisponde!");
         $this->assertEqual($matches[0]['namespace'][0],'\Pippo\Pluto\Paperino',"Il namespace trovato non corrisponde!");
+        
+        
+    }
+    
+    function testMatchingNamespace2() {
+        
+        $namespace_pattern = "/namespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/";
+        
+        $matches = null;
+        
+        preg_match_all($namespace_pattern,$this->data3,$matches,PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+        
+        $this->assertEqual(count($matches),2,"Il numero di match non corrisponde!");
+        $this->assertEqual($matches[0]['namespace'][0],'\Pippo\Pluto\Topolino',"Il namespace trovato non corrisponde!");
+        $this->assertEqual($matches[1]['namespace'][0],'\Ancora\Un\Namespace\Particolare',"Il namespace trovato non corrisponde!");
         
         
     }
@@ -120,5 +133,5 @@ EOS;
         $this->assertEqual(count($matches),1,"Il numero di match non corrisponde!");
         $this->assertEqual($matches[0]['interface'][0],'ANewInterface',"L'interfaccia trovata non corrisponde!");
     }
-    
+        
 }

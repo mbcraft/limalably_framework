@@ -32,7 +32,11 @@ class LClassLoader {
     }
     
     public static function registerAutoloader() {
-        spl_autoload_register('LClassLoader::autoload',true,true);
+        spl_autoload_register('LClassLoader::autoload',true);
+        
+        self::attachComposerInFramework();
+        
+        self::attachComposerInProject();
     }
     
     private static function attachComposerInFramework() {
@@ -57,6 +61,10 @@ class LClassLoader {
     
     public static function loadClassMapFromFile($filename) {
         self::$class_map = include($filename);
+    }
+    
+    public static function parseFoldersFromConfig() {
+        self::parseFolders(LConfig::mustGet('/defaults/classloader/folder_list'));
     }
     
     public static function parseFolders(array $folder_list) {

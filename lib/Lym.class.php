@@ -168,11 +168,14 @@ class Lym {
     private static function project_start() {
 
         LClassLoader::parseFolders(['lib/']);
-        LClassLoader::dump();
+        
         LClassLoader::registerAutoloader();
         
         $obj =  new Prova\Qualcosa();
-        echo "funzione prova : ".$obj->prova();
+        echo "funzione prova : ".$obj->prova()."\n";
+        
+        $env = new Twig\Loader\FilesystemLoader(['template/'],$_SERVER['PROJECT_DIR']);
+        
         //more to come ...
     }
     

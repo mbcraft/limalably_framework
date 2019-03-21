@@ -49,6 +49,11 @@ require_once ('lib/test/LAssert.class.php');
 require_once ('lib/test/LTestCase.class.php');
 require_once ('lib/test/LTestRunner.class.php');
 
+//commands
+require_once ('lib/command/LICommandExecutor.interface.php');
+require_once ('lib/command/LFrameworkCommandExecutor.class.php');
+require_once ('lib/command/LProjectCommandExecutor.class.php');
+
 //alla fine la classe Lym
 require_once ('lib/Lym.class.php');
 

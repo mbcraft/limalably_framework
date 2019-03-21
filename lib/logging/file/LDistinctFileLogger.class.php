@@ -1,7 +1,7 @@
 <?php
 
 class LDistinctFileLogger implements LILogger {
-    
+        
     const DEBUG_FILENAME = 'log.debug.txt';
     const INFO_FILENAME = 'log.info.txt';
     const WARNING_FILENAME = 'log.warning.txt';
@@ -14,18 +14,13 @@ class LDistinctFileLogger implements LILogger {
     private $error_log_writer = null;
     private $fatal_log_writer = null;
     
-    function __construct($log_dir,$log_format,$log_mode,$max_mb=10) {
-    
-        if (!file_exists($log_dir) && is_dir($log_dir)) {
-            mkdir($log_dir);
-            chmod($log_dir, 0775);
-        }
-        
-        $this->debug_log_writer = new LFileLogWriter($log_dir, self::DEBUG_FILENAME, $log_format,$log_mode,$max_mb);
-        $this->info_log_writer = new LFileLogWriter($log_dir, self::INFO_FILENAME, $log_format,$log_mode,$max_mb);
-        $this->warning_log_writer = new LFileLogWriter($log_dir, self::WARNING_FILENAME, $log_format,$log_mode,$max_mb);
-        $this->error_log_writer = new LFileLogWriter($log_dir, self::ERROR_FILENAME, $log_format,$log_mode,$max_mb);
-        $this->fatal_log_writer = new LFileLogWriter($log_dir, self::FATAL_FILENAME, $log_format,$log_mode,$max_mb);
+    function __construct($log_dir,$format_info,$log_mode,$max_mb=10) {
+            
+        $this->debug_log_writer = new LFileLogWriter($log_dir, self::DEBUG_FILENAME, $format_info,$log_mode,$max_mb);
+        $this->info_log_writer = new LFileLogWriter($log_dir, self::INFO_FILENAME, $format_info,$log_mode,$max_mb);
+        $this->warning_log_writer = new LFileLogWriter($log_dir, self::WARNING_FILENAME, $format_info,$log_mode,$max_mb);
+        $this->error_log_writer = new LFileLogWriter($log_dir, self::ERROR_FILENAME, $format_info,$log_mode,$max_mb);
+        $this->fatal_log_writer = new LFileLogWriter($log_dir, self::FATAL_FILENAME, $format_info,$log_mode,$max_mb);
         
     }
     

@@ -24,6 +24,11 @@ class LLog {
     }
     
     static function init() {
+        self::$my_logger = new LOutputLogger();
+        self::$my_min_level = self::LEVEL_DEBUG;
+    }
+    
+    static function initWithConfig() {
         $exec_mode = LExecutionMode::get();
         if (!isset($_SERVER['PROJECT_DIR'])) {
             $logger_type = 'output';
@@ -44,22 +49,29 @@ class LLog {
                 $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
                 $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
                 $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
+                $date_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'date_format');
+                
                 $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb');
         
-                $log_folder = self::adjustLogFolder($log_folder);
+                $format_info = ['log' => $log_format,'date' => $date_format];
                 
-                self::$my_logger = new LDistinctFileLogger($log_folder, $log_format, $log_mode,$max_mb);
+                $log_folder_ok = self::adjustLogFolder($log_folder);
+                
+                self::$my_logger = new LDistinctFileLogger($log_folder_ok, $format_info, $log_mode,$max_mb);
                 break;
             }
             case 'together-file' : {
                 $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
                 $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
                 $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
+                $date_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'date_format');
                 $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb'); 
                 
-                $log_folder = self::adjustLogFolder($log_folder);
+                $format_info = ['log' => $log_format,'date' => $date_format];
                 
-                self::$my_logger = new LTogetherFileLogger($log_folder, $log_format, $log_mode,$max_mb);
+                $log_folder_ok = self::adjustLogFolder($log_folder);
+                
+                self::$my_logger = new LTogetherFileLogger($log_folder_ok, $format_info, $log_mode,$max_mb);
                 break;
             }
             case 'db' : { 

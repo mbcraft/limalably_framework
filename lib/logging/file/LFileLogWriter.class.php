@@ -3,32 +3,32 @@
 class LFileLogWriter implements LILogWriter {
     
     private $my_log_file = null;
-    private $my_log_format = null;
-    private $my_log_type = null;
+    private $my_format_info = null;
     private $my_log_mode = null;
     private $max_size_bytes = null;
     
     private $my_log_dir = null;
     private $my_filename = null;
     
-    function __construct($log_dir,$filename,$log_type,$log_format,string $log_mode,$max_mb=10) {
+    function __construct($log_dir,$filename,array $format_info,string $log_mode,$max_mb=10) {
         if ($log_dir==null)
             throw new \Exception("Log dir can't be null");
         if ($filename==null)
             throw new \Exception("Log filename can't be null");
+        if (!file_exists($log_dir)) {
+            mkdir($log_dir,0666);
+            chmod($log_dir,0666);
+        }
         if (!is_writable($log_dir))
             throw new \Exception("Log directory is not writable : ".$log_dir);
         $this->my_log_dir = $log_dir;
         $this->my_filename = $filename;
         
         $this->my_log_file = $log_dir.$filename;
-        if ($log_type==null || !in_array($log_type, ['distinct-file','together-file']))
-            throw new \Exception('Invalid log type.');
-        $this->my_log_type = $log_type;
         
-        if ($log_format==null)
-            throw new \Exception("Log format can't be null");
-        $this->my_log_format = $log_format;
+        if ($format_info==null)
+            throw new \Exception("Log format info can't be null");
+        $this->my_format_info = $format_info;
         if ($max_mb==null) {
             $max_mb = 0;
             $log_mode = 'normal';
@@ -46,7 +46,7 @@ class LFileLogWriter implements LILogWriter {
     }
     
     private function formatLog($message,$level) {
-        $my_date = date(LConfig::mustGet('/defaults/logging/'.$this->my_log_type.'/date_format'));
+        $my_date = date($this->my_format_info['date']);
         
         switch ($level) {
             case self::LEVEL_DEBUG : $level_string = 'debug';break;
@@ -57,13 +57,13 @@ class LFileLogWriter implements LILogWriter {
             default : $level_string = 'unknown';break;
         }
         
-        $format = $this->my_log_format;
-        $format = str_replace('%date', $my_date, $format);
-        $format = str_replace('%level_string', $level_string, $format);
-        $format = str_replace('%level', $level, $format);
-        $format = str_replace('%user', LEnvironmentUtils::getServerUser(), $format);
-        $format = str_replace('%route', LEnvironmentUtils::getRoute(), $format);
-        $format = str_replace('%message', $message, $format);
+        $format = $this->my_format_info['log'];
+        $format = str_replace('%date%', $my_date, $format);
+        $format = str_replace('%level_string%', $level_string, $format);
+        $format = str_replace('%level%', $level, $format);
+        $format = str_replace('%user%', LEnvironmentUtils::getServerUser(), $format);
+        $format = str_replace('%route%', LEnvironmentUtils::getRoute(), $format);
+        $format = str_replace('%message%', $message, $format);
         
         return $format;
     }

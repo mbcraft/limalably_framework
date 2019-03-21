@@ -2,7 +2,15 @@
 
 class Lym {
     
-    private static $boot_calles = false;
+    private static $boot_called = false;
+    
+    private static function isBootCalled() {
+        return self::$boot_called;
+    }
+    
+    private static function setBootAsCalled() {
+        self::$boot_called = true;
+    }
 
     private static function detectAndSaveEnvironment() {
         $_SERVER['ENVIRONMENT'] = 'script';
@@ -84,8 +92,10 @@ class Lym {
     }
 
     public static function framework_boot() {
-        if (self::$boot_calles) throw new \Exception("Framework boot function already called.");
-        self::$boot_calles = true;
+        if (self::isBootCalled()) throw new \Exception("Boot function already called.");
+        self::setBootAsCalled();
+        
+        LLog::init();
         
         ob_start();
         
@@ -101,7 +111,7 @@ class Lym {
         
         self::initRoute();
         
-        LLog::init();
+        LLog::initWithConfig();
         
         try {
             self::framework_start();
@@ -112,8 +122,10 @@ class Lym {
     }
 
     public static function project_boot() {
-        if (self::$boot_calles) throw new \Exception("Framework boot function already called.");
-        self::$boot_calles = true;
+        if (self::isBootCalled()) throw new \Exception("Boot function already called.");
+        self::setBootAsCalled();
+        
+        LLog::init();
         
         ob_start();
         
@@ -131,81 +143,30 @@ class Lym {
         
         self::initRoute();
         
-        LLog::init();
+        $executor = new LProjectCommandExecutor();
+        $executor->tryExecuteCommand();
+        if (!$executor->hasExecutedCommand()) {
         
-        try {
-            self::project_start();
-        } catch (\Exception $ex) {
-            LOutput::exception($ex);
+            LLog::initWithConfig();
+
+            try {
+                self::project_start();
+            } catch (\Exception $ex) {
+                LOutput::exception($ex);
+            }
         }
         self::finish();
     }
-    
-    private static function handleSetExecutionMode() {
-        if (!isset($_SERVER['argv'][2])) {
-            LOutput::error_message("Mode name not set. Choose between 'maintenance','framework_debug','debug','testing' or 'production'.");
-            return;
-        }
-        $mode_name = $_SERVER['argv'][2];
-        try {
-            LExecutionMode::setByName($mode_name);
-            LOutput::message("Execution mode set to '".$mode_name."' successfully.");
-        } catch (\Exception $ex) {
-            LOutput::exception($ex);
-        }
         
-    }
-    
-    private static function handleGetExecutionMode() {
-        LOutput::message("Execution mode is now '".LExecutionMode::get()."'.");
-    }
-    
-    private static function handleRunFrameworkTests() {
-        LTestRunner::clear();
-        LTestRunner::collect($_SERVER['FRAMEWORK_DIR'], 'tests/');
-        LTestRunner::run();
-        
-    }
-    
-    private static function handleRunTests() {
-        LTestRunner::clear();
-        LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests/');
-        LTestRunner::run();
-        
-    }
-    
-    private static function handleRunTestsFast() {
-        LTestRunner::clear();
-        LTestRunner::collect($_SERVER['PROJECT_DIR'], 'tests_fast/');
-        LTestRunner::run();
-        
-    }
-    
-    private static function handleInternalFrameworkProcedures() {
-        $route = $_SERVER['ROUTE'];
-        switch ($route) {
-            case 'internal/run_framework_tests' : self::handleRunFrameworkTests();
-        }
-
-    }
-    
-    private static function handleInternalProjectProcedures() {
-        $route = $_SERVER['ROUTE'];
-        switch ($route) {
-            case 'internal/set_execution_mode' : self::handleSetExecutionMode();
-            case 'internal/get_execution_mode' : self::handleGetExecutionMode();
-            case 'internal/run_tests' : self::handleRunTests();
-            case 'internal/run_tests_fast' : self::handleRunTestsFast();
-        }
-
-    }
-    
     private static function framework_start() {
-        self::handleInternalFrameworkProcedures();
+        
+        $executor = new LFrameworkCommandExecutor();
+        $executor->tryExecuteCommand();
+        
     }
 
     private static function project_start() {
-        self::handleInternalProjectProcedures(); //maybe exit if one is found
+
         
         //more to come ...
     }

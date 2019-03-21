@@ -11,7 +11,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
     private function handleSetExecutionMode() {
         $this->setCommandAsExecuted();
         if (!isset($_SERVER['argv'][2])) {
-            LOutput::error_message("Mode name not set. Choose between 'maintenance','framework_debug','debug','testing' or 'production'.");
+            LOutput::error_message("Mode name not set. Choose between 'maintenance','framework_development','development','testing' or 'production'.");
             return;
         }
         $mode_name = $_SERVER['argv'][2];

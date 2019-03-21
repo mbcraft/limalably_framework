@@ -31,6 +31,24 @@ class LClassLoader {
         if (isset(self::$class_map[$clazz])) require_once(self::$class_map[$clazz]);
     }
     
+    public static function init() {
+        $cache_filename = LConfig::mustGet('/defaults/classloader/cache_path');
+            
+        if (LExecutionMode::isTesting() || LExecutionMode::isProduction()) {
+            if (self::hasClassCacheFile($cache_filename)) {
+                self::loadClassMapFromCacheFile($cache_filename);
+            } else {
+                self::parseFoldersFromConfig();
+                self::saveClassMapToCacheFile($cache_filename);
+            }
+        } else {
+            self::parseFoldersFromConfig();
+            self::deleteClassLoaderCacheFile($cache_filename);
+        }
+        
+        self::registerAutoloader();
+    }
+    
     public static function registerAutoloader() {
         spl_autoload_register('LClassLoader::autoload',true);
         
@@ -51,15 +69,32 @@ class LClassLoader {
         }
     }
     
-    public static function saveClassMapToFile($filename) {
-        $prefix = "<php \n return ";
+    private static function hasClassCacheFile($filename) {
+        return is_file($filename);
+    }
+    
+    private static function canSaveClassMapToCacheFile($filename) {
+        return is_dir(dirname($filename));
+    }
+    
+    private static function deleteClassLoaderCacheFile($filename) {
+        if (is_file($filename)) @unlink($filename);
+    }
+    
+    private static function saveClassMapToCacheFile($filename) {
+        if (!self::canSaveClassMapToCacheFile($filename)) {
+            mkdir(dirname($filename),0777,true);
+            chmod(dirname($filename),0777);
+        }
+        
+        $prefix = "<?php \n return ";
         $suffix = ";";
         $content = $prefix.var_export(self::$class_map, true).$suffix;
         
         file_put_contents($filename, $content);
     }
     
-    public static function loadClassMapFromFile($filename) {
+    private static function loadClassMapFromCacheFile($filename) {
         self::$class_map = include($filename);
     }
     

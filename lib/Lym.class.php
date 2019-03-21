@@ -143,6 +143,8 @@ class Lym {
         
         self::initRoute();
         
+        LClassLoader::init();
+        
         $executor = new LProjectCommandExecutor();
         $executor->tryExecuteCommand();
         if (!$executor->hasExecutedCommand()) {
@@ -166,11 +168,7 @@ class Lym {
     }
 
     private static function project_start() {
-
-        LClassLoader::parseFolders(['lib/']);
-        
-        LClassLoader::registerAutoloader();
-        
+       
         $obj =  new Prova\Qualcosa();
         echo "funzione prova : ".$obj->prova()."\n";
         

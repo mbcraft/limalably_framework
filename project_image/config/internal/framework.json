@@ -75,7 +75,9 @@
             "false_strings" : ["false","0","no",false]
         },
         "classloader" : {
-            "code_file_ends_with" : [".class.php",".interface.php",".trait.php"]
+            "code_file_ends_with" : [".class.php",".interface.php",".trait.php"],
+            "folder_list" : ["lib/","blogic/"],
+            "cache_path" : "temp/classloader/classloader_cache.php"
         }
     }
 }

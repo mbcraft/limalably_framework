@@ -12,7 +12,7 @@ class LLog {
     const LEVEL_FATAL = 5;
     
     private static function safeGetLoggerConfig($exec_mode,$logger_type,$config_name) {
-        return LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logging/',$config_name, LConfig::mustGet('defaults/logging/'.$logger_type.'/'.$config_name));
+        return LConfig::get('/defaults/execution_mode/'.$exec_mode.'/logging/'.$config_name, LConfig::mustGet('/defaults/logging/'.$logger_type.'/'.$config_name));
     }
     
     private static function adjustLogFolder($log_folder) {

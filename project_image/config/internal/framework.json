@@ -4,7 +4,8 @@
             "maintenance" : {
                 "logging" : {
                     "type" : "together-file",
-                    "min_level" : "debug"
+                    "min_level" : "debug",
+                    "log_mode" : "normal"
                 },
                 "route_manager" : "LMaintenanceRouteManager"
             },

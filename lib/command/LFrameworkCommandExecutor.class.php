@@ -19,7 +19,7 @@ class LFrameworkCommandExecutor implements LICommandExecutor {
     public function tryExecuteCommand() {
         $route = $_SERVER['ROUTE'];
         switch ($route) {
-            case 'internal/run_framework_tests' : $this->handleRunFrameworkTests();
+            case 'internal/run_framework_tests' : $this->handleRunFrameworkTests();break;
         }
     }
 

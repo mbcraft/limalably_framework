@@ -3,7 +3,7 @@
 class LOutputLogger implements LILogger {
     
     public function close() {
-        LOutput::message("Closing output logger ...");
+        //nothing to do ...
     }
 
     public function debug($message) {

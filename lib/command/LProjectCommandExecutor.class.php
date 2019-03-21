@@ -48,10 +48,10 @@ class LProjectCommandExecutor implements LICommandExecutor {
     public function tryExecuteCommand() {
         $route = $_SERVER['ROUTE'];
         switch ($route) {
-            case 'internal/set_execution_mode' : $this->handleSetExecutionMode();
-            case 'internal/get_execution_mode' : $this->handleGetExecutionMode();
-            case 'internal/run_tests' : $this->handleRunTests();
-            case 'internal/run_tests_fast' : $this->handleRunTestsFast();
+            case 'internal/set_execution_mode' : $this->handleSetExecutionMode();break;
+            case 'internal/get_execution_mode' : $this->handleGetExecutionMode();break;
+            case 'internal/run_tests' : $this->handleRunTests();break;
+            case 'internal/run_tests_fast' : $this->handleRunTestsFast();break;
         }
     }
 

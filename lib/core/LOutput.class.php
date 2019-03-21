@@ -28,7 +28,7 @@ class LOutput {
      * @param string $message
      */
     public static function debug(string $message) {
-        if (LExecutionMode::isDevelopment()) {
+        if (LExecutionMode::isDevelopment() || LExecutionMode::isFrameworkDevelopment()) {
             echo $message;
             self::newline();
         }

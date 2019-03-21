@@ -12,6 +12,7 @@ require_once ('lib/core/LInvalidParameterException.class.php');
 require_once ('lib/core/LOutput.class.php');
 require_once ('lib/core/LConfig.class.php');
 require_once ('lib/core/LExecutionMode.class.php');
+require_once ('lib/core/LClassLoader.class.php');
 
 //utils
 require_once ('lib/utils/LStringUtils.class.php');

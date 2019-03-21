@@ -1,6 +1,6 @@
 <?php
 
-class LHashMap {
+class LHashMap implements ArrayAccess {
     
     private $data=null;
     
@@ -314,5 +314,24 @@ class LHashMap {
     public function clear()
     {
         $this->data = array();
-    }  
+    }
+
+    //array access
+    
+    public function offsetExists($offset): bool {
+        return $this->is_set($offset);
+    }
+
+    public function offsetGet($offset) {
+        return $this->mustGet($offset);
+    }
+
+    public function offsetSet($offset, $value): void {
+        $this->set($offset,$value);
+    }
+
+    public function offsetUnset($offset): void {
+        $this->remove($offset);
+    }
+
 }

@@ -1,6 +1,6 @@
 <?php
 
-class LHashMapView {
+class LHashMapView implements ArrayAccess {
     
     private $view_map;
     private $view_prefix;
@@ -8,9 +8,25 @@ class LHashMapView {
     function __construct($prefix,$map)
     {
         $this->view_map = $map;
-        $this->view_prefix = $prefix;
+        $this->view_prefix = $prefix.'/';
     }
 
+    function getBoolean($path,$default_value=null) {
+        return $this->view_map->getBoolean($this->view_prefix.$path,$default_value);
+    }
+    
+    function mustGetBoolean($path) {
+        return $this->view_map->mustGetBoolean($this->view_prefix.$path);
+    }
+    
+    function mustGetOriginal($path) {
+        return $this->view_map->mustGetOriginal($this->view_prefix.$path); 
+    }
+    
+    function getOriginal($path,$default_value = null) {
+        return $this->view_map->getOriginal($this->view_prefix.$path,$default_value);
+    }
+    
     function set($path,$value)
     {
         $this->view_map->set($this->view_prefix.$path,$value);
@@ -64,6 +80,10 @@ class LHashMapView {
         $this->view_map->remove($this->view_prefix.$path);
     }
 
+    function mustGet($path) {
+        return $this->view_map->mustGet($this->view_prefix.$path);
+    }
+    
     /*
      * Ritorna il contenuto nella posizione specificata.
      *
@@ -86,5 +106,23 @@ class LHashMapView {
     function is_set($path)
     {
         return $this->view_map->is_set($this->view_prefix.$path);
+    }
+    
+    //array access
+    
+    public function offsetExists($offset): bool {
+        return $this->is_set($offset);
+    }
+
+    public function offsetGet($offset) {
+        return $this->mustGet($offset);
+    }
+
+    public function offsetSet($offset, $value): void {
+        $this->set($offset,$value);
+    }
+
+    public function offsetUnset($offset): void {
+        $this->remove($offset);
     }
 }

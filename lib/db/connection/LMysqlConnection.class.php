@@ -30,12 +30,13 @@ class LMysqlConnection implements LIDbConnection {
     public function open() {
         
         try {
-            $server = $this->params->mustGet('server');
+            $host = $this->params->mustGet('host');
+            $port = $this->params->get('port',3306);
             $username = $this->params->mustGet('username');
             $password = $this->params->mustGet('password');
-            $dbname = $this->params->mustGet('dbname');
+            $db_name = $this->params->mustGet('db_name');
        
-            $result = mysqli_connect($server,$username,$password,$dbname);
+            $result = mysqli_connect($host.':'.$port,$username,$password,$db_name);
             
             if ($result) {
                 $this->my_handle = $result;

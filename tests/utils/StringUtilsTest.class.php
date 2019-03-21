@@ -49,6 +49,20 @@ class StringUtilsTest extends LTestCase {
         $this->assertEqual(LStringUtils::camelCaseSplit("XSportBlastController",true),"xsport_blast","Lo split delle stringhe in camelcase non funziona correttamente!! : ".LStringUtils::camelCaseSplit("XSportBlastController",true));
 
     }
+    
+    function testContains()
+    {
+        $this->assertTrue(LStringUtils::contains("ProvaDiRegistrazione",["Qualcosa","Prova"]),"Il controllo di fine stringa non e' corretto!!");
+        $this->assertFalse(LStringUtils::contains("ProvaDiRegistrazione",["zionerr"]),"Il controllo di fine stringa non e' corretto!!");
+        $this->assertFalse(LStringUtils::contains("ProvaDiRegistrazione",["Regicstrazione","Dci"]),"Il controllo di fine stringa non e' corretto!!");
+    }
+    
+    function testStartsWith()
+    {
+        $this->assertTrue(LStringUtils::startsWith("ProvaDiRegistrazione",["Qualcosa","Prova"]),"Il controllo di fine stringa non e' corretto!!");
+        $this->assertFalse(LStringUtils::startsWith("ProvaDiRegistrazione",["zionerr"]),"Il controllo di fine stringa non e' corretto!!");
+        $this->assertFalse(LStringUtils::startsWith("ProvaDiRegistrazione",["Registrazione","Di"]),"Il controllo di fine stringa non e' corretto!!");
+    }
 
     function testEndsWith()
     {

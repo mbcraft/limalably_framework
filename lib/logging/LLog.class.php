@@ -153,7 +153,7 @@ class LLog {
     
     static function fatal($message) {
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
-        self::$my_logger->fatal($ex);
+        self::$my_logger->fatal($message);
     }
     
     static function close() {

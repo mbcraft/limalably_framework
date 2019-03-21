@@ -167,7 +167,11 @@ class Lym {
 
     private static function project_start() {
 
-        
+        LLog::debug("A debug message ...");
+        LLog::info("An info message ...");
+        LLog::warning("A warning message ...");
+        LLog::error("An error message ,.,");
+        LLog::fatal("A fatal message ...");
         //more to come ...
     }
     

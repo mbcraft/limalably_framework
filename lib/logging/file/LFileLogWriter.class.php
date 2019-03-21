@@ -16,8 +16,8 @@ class LFileLogWriter implements LILogWriter {
         if ($filename==null)
             throw new \Exception("Log filename can't be null");
         if (!file_exists($log_dir)) {
-            mkdir($log_dir,0666);
-            chmod($log_dir,0666);
+            mkdir($log_dir,0777);
+            chmod($log_dir,0777);
         }
         if (!is_writable($log_dir))
             throw new \Exception("Log directory is not writable : ".$log_dir);

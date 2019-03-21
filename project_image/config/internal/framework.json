@@ -46,7 +46,7 @@
         "logging" : {
             "distict-file" : {
                 "date_format" : "d/m/Y H:i:s",
-                "log_format" : "[ %date% - %user% ] : %message%",
+                "log_format" : "[ %date% - %user% ] : %message%\n",
                 "log_mode" : "normal",
                 "max_mb" : 10,
                 "log_folder" : "logs/",
@@ -54,7 +54,7 @@
             },
             "together-file" : {
                 "date_format" : "d/m/Y H:i:s",
-                "log_format" : "[ %date% - %user% - %level% ] : %message%",
+                "log_format" : "[ %date% - %user% - %level_string% ] : %message%\n",
                 "log_mode" : "rolling",
                 "max_mb" : 10,
                 "log_folder" : "logs/",

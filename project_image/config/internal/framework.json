@@ -16,7 +16,7 @@
                 },
                 "route_manager" : "LDefaultRouteManager"
             },
-            "debug" : {
+            "development" : {
                 "logging" : {
                     "type" : "distinct-file",
                     "min_level" : "debug"
@@ -44,7 +44,7 @@
             }
         },
         "logging" : {
-            "distict-file" : {
+            "distinct-file" : {
                 "date_format" : "d/m/Y H:i:s",
                 "log_format" : "[ %date% - %user% ] : %message%\n",
                 "log_mode" : "normal",

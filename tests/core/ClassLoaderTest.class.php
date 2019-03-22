@@ -45,7 +45,8 @@ EOS;
 
    namespace \Ancora\Un\Namespace\Particolare;
             
-   interface ANewInterface {
+   interface ANewInterface 
+   {
        
         function someFunction();
         function someOtherFunction();
@@ -56,7 +57,8 @@ EOS;
     
     private $data4 = <<<EOS
     
-   interface Topolino {
+   interface Topolino 
+   {
        
    }
             
@@ -72,9 +74,14 @@ EOS;
         
 EOS;
         
+    const PATTERN_NAMESPACE = "/namespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/";
+    const PATTERN_CLASS = "/class[ ]+(?<class>[a-zA-Z_0-9]+)[{ ]+/";
+    const PATTERN_TRAIT = "/trait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ ]+/";
+    const PATTERN_INTERFACE = "/interface[ ]+(?<interface>[a-zA-Z_0-9]+)[{ ]+/";
+    
     function testMatchingNamespace1() {
         
-        $namespace_pattern = "/namespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/";
+        $namespace_pattern = self::PATTERN_NAMESPACE;
         
         $matches = null;
         
@@ -88,7 +95,7 @@ EOS;
     
     function testMatchingNamespace2() {
         
-        $namespace_pattern = "/namespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/";
+        $namespace_pattern = self::PATTERN_NAMESPACE;
         
         $matches = null;
         
@@ -102,7 +109,7 @@ EOS;
     }
     
     function testMatchingClass1() {
-        $class_pattern = "/class[ ]+(?<class>[a-zA-Z_0-9]+)[{ ]+/";
+        $class_pattern = self::PATTERN_CLASS;
         
         $matches = null;
         
@@ -113,7 +120,7 @@ EOS;
     }
     
     function testMatchingTrait1() {
-        $trait_pattern = "/trait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ ]+/";
+        $trait_pattern = self::PATTERN_TRAIT;
         
         $matches = null;
         
@@ -122,9 +129,19 @@ EOS;
         $this->assertEqual(count($matches),1,"Il numero di match non corrisponde!");
         $this->assertEqual($matches[0]['trait'][0],'AgainATrait',"Il trait trovato non corrisponde!");
     }
+    function testMatchingTrait2() {
+        $trait_pattern = self::PATTERN_TRAIT;
+        
+        $matches = null;
+        
+        preg_match_all($trait_pattern,$this->data5,$matches,PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+        
+        $this->assertEqual(count($matches),1,"Il numero di match non corrisponde!");
+        $this->assertEqual($matches[0]['trait'][0],'Paperino',"Il trait trovato non corrisponde!");
+    }
     
     function testMatchingInterface1() {
-        $interface_pattern = "/interface[ ]+(?<interface>[a-zA-Z_0-9]+)[{ ]+/";
+        $interface_pattern = self::PATTERN_INTERFACE;
         
         $matches = null;
         
@@ -132,6 +149,16 @@ EOS;
         
         $this->assertEqual(count($matches),1,"Il numero di match non corrisponde!");
         $this->assertEqual($matches[0]['interface'][0],'ANewInterface',"L'interfaccia trovata non corrisponde!");
+    }
+    function testMatchingInterface2() {
+        $interface_pattern = self::PATTERN_INTERFACE;
+        
+        $matches = null;
+        
+        preg_match_all($interface_pattern,$this->data4,$matches,PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+        
+        $this->assertEqual(count($matches),1,"Il numero di match non corrisponde!");
+        $this->assertEqual($matches[0]['interface'][0],'Topolino',"L'interfaccia trovata non corrisponde!");
     }
         
 }

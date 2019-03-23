@@ -7,38 +7,53 @@
                     "min_level" : "debug",
                     "log_mode" : "normal"
                 },
-                "route_manager" : "LMaintenanceRouteManager"
+                "urlmap" : {
+                    "manager_class" : "LMaintenanceUrlMapManager",
+                    "private_routes_visible" : false
+                }
             },
             "framework_development" : {
                 "logging" : {
                     "type" : "output",
                     "min_level" : "debug"
                 },
-                "route_manager" : "LDefaultRouteManager"
+                "urlmap" : {
+                    "manager_class" : "LDefaultUrlMapManager",
+                    "private_routes_visible" : true
+                }
             },
             "development" : {
                 "logging" : {
                     "type" : "distinct-file",
                     "min_level" : "debug"
                 },
-                "route_manager" : "LDefaultRouteManager"
+                "urlmap" : {
+                    "manager_class" : "LDefaultUrlMapManager",
+                    "private_routes_visible" : true
+                }
             },
             "testing" : {
                 "logging" : {
                     "type" : "distinct-file",
                     "min_level" : "error"
                 },
-                "route_manager" : "LDefaultRouteManager"
+                "urlmap" : {
+                    "manager_class" : "LDefaultUrlMapManager",
+                    "private_routes_visible" : false
+                }
             },
             "production" : {
                 "logging" : {
                     "type" : "db",
                     "min_level" : "error"
                 },
-                "route_manager" : "LDefaultRouteManager"
+                "urlmap" : {
+                    "manager_class" : "LDefaultUrlMapManager",
+                    "private_routes_visible" : false
+                }
             }
         },
-        "routemap" : {
+        "urlmap" : {
             "hash_db" : {
                 "levels" : 5
             }

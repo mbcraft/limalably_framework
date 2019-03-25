@@ -2,25 +2,43 @@
 
 class LUrlMapResolver {
     
+    static $my_preferred_format = null;    
     
-    static function isProcUrlMap($route) {
-        $begin_with = LConfig::mustGet('/defaults/classloader/proc_folder');
-        return LStringUtils::startsWith($route, $begin_with);
+    static function isProcExec($link) {
+        return strpos($link,'#')===false;
     }
     
-    static function getProcUrlMap($route,$format) {
+    static function isBlogicExec($link) {
+        return strpos($link,'#')!==false;
+    }
+    
+    static function isValidProcUrlMap($route) {
+        $proc_folder = LConfig::mustGet('/defaults/classloader/proc_folder');
+        $proc_extension = LConfig::mustGet('defaults/classloader/proc_extension');
+        $path = $_SERVER['PROJECT_DIR'].$proc_folder.$route.$proc_extension;
+        return is_readable($path);
+    }
+    
+    static function includeProcUrlMapFile($route) {
+        $proc_folder = LConfig::mustGet('/defaults/classloader/proc_folder');
+        $proc_extension = LConfig::mustGet('defaults/classloader/proc_extension');
+        $path = $_SERVER['PROJECT_DIR'].$proc_folder.$route.$proc_extension;
+        include $path;
+    }
+    
+    static function createProcUrlMap($route,$format) {
         $urlmap_builder = new LUrlMapBuilder();
         $urlmap_builder->setFormat($format);
         $urlmap_builder->setExecDo($route);
         return $urlmap_builder->getUrlMapData();
     }
     
-    static function isPrivateUrlMap($route) {
+    static function isPrivateRoute($route) {
         $path = $_SERVER['PROJECT_DIR'].'urlmap/private/'.$route.'.json';
         return is_readable($path);
     }
     
-    static function isUrlMapHash($route) {
+    static function isHashRoute($route) {
         $path = $_SERVER['PROJECT_DIR'].'urlmap/public/hash_db/'.sha1($route).'.json';
         return is_readable($path);
     }
@@ -30,15 +48,27 @@ class LUrlMapResolver {
         else return false;
     }
     
-    static function getValidUrlMapLink($hash_map) {
+    static function getValidUrlMapRouteLink($hash_map) {
         if (!self::isUrlMapLink($hash_map)) throw new \Exception("Parameter is not a valid urlmap link!");
         $link = $hash_map->mustGet('/urlmap_link');
-        if (self::isPrivateUrlMap($link) && self::isPublicUrlMap($link)) throw new \Exception("The linked urlmap is both private and public!");
+        if (self::isPrivateRoute($link) && self::isPublicRoute($link)) throw new \Exception("The linked urlmap is both private and public!");
         return $link;
     }
     
-    static function isPublicUrlMap($route) {
+    static function isPublicRoute($route) {
         $path = $_SERVER['PROJECT_DIR'].'urlmap/public/static/'.$route.'.json';
         return is_readable($path);
+    }
+    
+    static function setPreferredFormat($preferred_format) {
+        self::$my_preferred_format = $preferred_format;
+    }
+    
+    static function resolveUrlMap($route) {
+        if ($_SERVER['ENVIRONMENT']=='script') {
+            if (self::isProcUrlMap($route)) {
+                
+            }
+        }
     }
 }

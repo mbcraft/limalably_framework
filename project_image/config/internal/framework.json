@@ -92,7 +92,8 @@
             "code_file_ends_with" : [".class.php",".interface.php",".trait.php"],
             "folder_list" : ["lib/","blogic/","urlmap/handlers/"],
             "cache_path" : "temp/classloader/classloader_cache.php",
-            "proc_folder" : "proc/"
+            "proc_folder" : "proc/",
+            "proc_extension" : ".proc.php"
         }
     }
 }

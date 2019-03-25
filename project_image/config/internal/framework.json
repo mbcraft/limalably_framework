@@ -54,10 +54,8 @@
             }
         },
         "urlmap" : {
-            "hash_db" : {
-                "levels" : 5
-            },
-            "shortcut_proc" : true
+            "shortcut_proc" : true,
+            "search_order" : "hash_db,static"
         },
         "logging" : {
             "distinct-file" : {
@@ -92,8 +90,9 @@
         },
         "classloader" : {
             "code_file_ends_with" : [".class.php",".interface.php",".trait.php"],
-            "folder_list" : ["lib/","blogic/"],
-            "cache_path" : "temp/classloader/classloader_cache.php"
+            "folder_list" : ["lib/","blogic/","urlmap/handlers/"],
+            "cache_path" : "temp/classloader/classloader_cache.php",
+            "proc_folder" : "proc/"
         }
     }
 }

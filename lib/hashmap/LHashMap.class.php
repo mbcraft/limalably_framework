@@ -96,6 +96,10 @@ class LHashMap implements ArrayAccess {
         $this->data = $value;
     }
     
+    function &getRoot() {
+        return $this->data;
+    }
+    
     /*
      * Imposta un valore. L'ultima parte del path diventa la chiave.
      * Se il valore è un Tree viene creato un link.
@@ -147,6 +151,9 @@ class LHashMap implements ArrayAccess {
         {
             if (!isset($current_node[$p]))
                 $current_node[$p] = array();
+            if (!is_array($current_node[$p])) {
+                $current_node[$p] = array($current_node[$p]);
+            }
             $current_node = &$current_node[$p];
         }
         

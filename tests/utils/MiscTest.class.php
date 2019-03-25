@@ -44,6 +44,16 @@ class MiscTest extends LTestCase {
         $this->assertEqual(count($result["size"]),2,"Il numero di valori dell'array size non è valido!");
         
     }
+    
+    function testArrayReplaceRecursive() {
+        $data1 = array("color" => "red","apple","size" => array("A4"));
+        $data2 = array("color" => "green","banana","size" => array("A3"));
+        
+        $result = array_replace_recursive($data1,$data2);
+        
+        $this->assertEqual($result["color"],"green","Il risultato non è valido!");
+        $this->assertEqual(count($result["size"]),1,"Il numero di valori dell'array size non è valido!");
+    }
 
     
 }

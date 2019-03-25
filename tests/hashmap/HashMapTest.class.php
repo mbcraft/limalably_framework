@@ -87,16 +87,30 @@ class HashMapTest extends LTestCase {
     {
         $r = new LHashMap();
         
-        $r->set("/first","my_value");
+        $r->set("/first/again","my_value");
         
-        $this->assertTrue($r->is_set("/first"),"Il nodo first non e' stato creato!!");
+        $this->assertTrue($r->is_set("/first/again"),"Il nodo first non e' stato creato!!");
         
-        $this->assertEqual($r->get("/first"),"my_value","Il valore impostato non corrisponde!!");
+        $this->assertEqual($r->get("/first/again"),"my_value","Il valore impostato non corrisponde!!");
         
         $r->clear();
         
-        $this->assertFalse($r->is_set("/first"),"Il nodo first e' stato trovato!!");
+        $this->assertFalse($r->is_set("/first/again"),"Il nodo first e' stato trovato!!");
         
+    }
+    
+    function testAddAfterSet() {
+        $r = new LHashMap();
+        
+        $r->set("/html/head/keywords","hello");
+        
+        $this->assertFalse(is_array($r->get("/html/head/keywords")),"Il dato è un array e non dovrebbe esserlo!!");
+        
+        $r->add("/html/head/keywords","spank");
+        
+        $this->assertEqual(count($r->get("/html/head/keywords")),2,"Il numero di keywords non corrisponde!!");
+        $this->assertEqual($r->get("/html/head/keywords")[0],"hello","Il numero di keywords non corrisponde!!");
+        $this->assertEqual($r->get("/html/head/keywords")[1],"spank","Il numero di keywords non corrisponde!!");
     }
     
     function testAdd()

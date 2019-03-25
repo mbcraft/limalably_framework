@@ -34,9 +34,9 @@ require_once ('lib/logging/db/LDbLogger.class.php');
 
 //... misc others
 //routing
-require_once ('lib/routing/manager/LIRouteManager.interface.php');
-require_once ('lib/routing/manager/LDefaultRouteManager.class.php');
-require_once ('lib/routing/manager/LMaintenanceRouteManager.class.php');
+require_once ('lib/urlmap/manager/LIUrlMapManager.interface.php');
+require_once ('lib/urlmap/manager/LDefaultUrlMapManager.class.php');
+require_once ('lib/urlmap/manager/LMaintenanceUrlMapManager.class.php');
 
 //database
 require_once ('lib/db/connection/LIDbConnection.interface.php');

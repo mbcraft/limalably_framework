@@ -9,9 +9,9 @@ class StaticHashMapReadTest extends LTestCase {
         $this->assertTrue(is_array($value),"Il valore ritornato non è un array!");
         $this->assertEqual(count($value),5,"Il numero di chiavi non corrisponde!");
         
-        $value2 = LConfig::mustGet('/defaults/routemap/hash_db/levels');
+        $value2 = LConfig::mustGet('/defaults/logging/distinct-file/min_level');
         
-        $this->assertEqual($value2,5,"Il valore letto dalla configurazione non corrisponde!");
+        $this->assertEqual($value2,'debug',"Il valore letto dalla configurazione non corrisponde!");
         
     }
 }

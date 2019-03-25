@@ -1,5 +1,5 @@
 <?php
 
-class LMaintenanceUrlMapManager implements LIRouteManager {
+class LMaintenanceUrlMapManager implements LIUrlMapManager {
     
 }

@@ -56,7 +56,8 @@
         "urlmap" : {
             "hash_db" : {
                 "levels" : 5
-            }
+            },
+            "shortcut_proc" : true
         },
         "logging" : {
             "distinct-file" : {

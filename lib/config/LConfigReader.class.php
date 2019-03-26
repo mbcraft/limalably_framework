@@ -23,7 +23,7 @@ class LConfigReader {
         return LConfig::get($path_no_type,
                 LConfig::get('/execution_mode/'.$exec_mode.$path_no_type,
                  LConfig::get('/defaults/execution_mode/'.$exec_mode.$path_no_type, 
-                  LConfig::mustGet('/defaults/'.$path_type))));
+                  LConfig::get('/defaults/'.$path_type,null))));
     }
     
 }

@@ -65,7 +65,7 @@ class LUrlMapResolver {
     }
     
     static function resolveUrlMap($route) {
-        if ($_SERVER['ENVIRONMENT']=='script') {
+        if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
             if (self::isProcUrlMap($route)) {
                 
             }

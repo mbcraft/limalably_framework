@@ -22,7 +22,7 @@ class Lym {
         LOutput::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
     }
     
-    private static function detectAndSaveHostnameAndRawRoute() {
+    private static function detectAndSaveHostnameAndRawRouteAndParameters() {
         // hostname to detect
 
         $hostname = 'localhost'; //default set as localhost
@@ -45,6 +45,14 @@ class Lym {
             //calcolo del valore di RAW_ROUTE prendendo l'argomento della linea di comando se il nome host non è ancora stato impostato
             if (isset($_SERVER['argv'][1])) {
                 $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
+                
+                $parameters = $_SERVER['argv'];
+                array_shift($parameters);
+                array_shift($parameters);
+                
+                $_SERVER['PARAMETERS'] = $parameters;
+                
+                LConfig::saveServerVar('PARAMETERS');
             } else {
                 LOutput::error_message("Route not found in command-line execution.");
                 exit(1);
@@ -55,6 +63,14 @@ class Lym {
             //calcolo del valore di RAW_ROUTE prendendo l'argomento della linea di comando se il nome host non è ancora stato impostato
             if (isset($_SERVER['argv'][1])) {
                 $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
+                
+                $parameters = $_SERVER['argv'];
+                array_shift($parameters);
+                array_shift($parameters);
+                
+                $_SERVER['PARAMETERS'] = $parameters;
+                
+                LConfig::saveServerVar('PARAMETERS');
             } else {
                 LOutput::error_message("Route not found in command-line execution.");
                 exit(1);

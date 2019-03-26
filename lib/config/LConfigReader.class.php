@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Questa classe è adibita alle letture delle configurazioni in modo che l'utente possa sovrascrivere i valori utilizzando le convenzioni stabilite.
+ */
 class LConfigReader {
     
     public static function simple($path) {

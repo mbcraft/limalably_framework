@@ -14,7 +14,11 @@ class LUrlMapBuilder {
         
         $this->my_map->set('/format', $format);
     }
-        
+    
+    function setUrlMapLink($route_link) {
+        $this->my_map->set("/urlmap_link",$route_link);
+    }
+    
     function setExecDo($exec_do) {
         $this->my_map->set('/exec/do',$exec_do);
     }

@@ -18,7 +18,6 @@
                     "min_level" : "debug"
                 },
                 "urlmap" : {
-                    "manager_class" : "LDefaultUrlMapManager",
                     "private_routes_visible" : true
                 }
             },
@@ -28,7 +27,6 @@
                     "min_level" : "debug"
                 },
                 "urlmap" : {
-                    "manager_class" : "LDefaultUrlMapManager",
                     "private_routes_visible" : true
                 }
             },
@@ -38,7 +36,6 @@
                     "min_level" : "error"
                 },
                 "urlmap" : {
-                    "manager_class" : "LDefaultUrlMapManager",
                     "private_routes_visible" : false
                 }
             },
@@ -48,12 +45,12 @@
                     "min_level" : "error"
                 },
                 "urlmap" : {
-                    "manager_class" : "LDefaultUrlMapManager",
                     "private_routes_visible" : false
                 }
             }
         },
         "urlmap" : {
+            "manager_class" : "LDefaultUrlMapManager",
             "shortcut_proc" : true,
             "search_order" : "hash_db,static"
         },
@@ -92,8 +89,7 @@
             "code_file_ends_with" : [".class.php",".interface.php",".trait.php"],
             "folder_list" : ["lib/","blogic/","urlmap/handlers/"],
             "cache_path" : "temp/classloader/classloader_cache.php",
-            "proc_folder" : "proc/",
-            "proc_extension" : ".proc.php"
+            "proc_folder" : "proc/"
         }
     }
 }

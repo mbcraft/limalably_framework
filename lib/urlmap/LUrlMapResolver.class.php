@@ -13,15 +13,15 @@ class LUrlMapResolver {
     }
     
     static function isValidProcUrlMap($route) {
-        $proc_folder = LConfig::mustGet('/defaults/classloader/proc_folder');
-        $proc_extension = LConfig::mustGet('defaults/classloader/proc_extension');
+        $proc_folder = LConfigReader::simple('/classloader/proc_folder');
+        $proc_extension = LConfigReader::simple('/classloader/proc_extension');
         $path = $_SERVER['PROJECT_DIR'].$proc_folder.$route.$proc_extension;
         return is_readable($path);
     }
     
     static function includeProcUrlMapFile($route) {
-        $proc_folder = LConfig::mustGet('/defaults/classloader/proc_folder');
-        $proc_extension = LConfig::mustGet('defaults/classloader/proc_extension');
+        $proc_folder = LConfigReader::simple('/classloader/proc_folder');
+        $proc_extension = LConfigReader::simple('/classloader/proc_extension');
         $path = $_SERVER['PROJECT_DIR'].$proc_folder.$route.$proc_extension;
         include $path;
     }

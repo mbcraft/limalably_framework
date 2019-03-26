@@ -11,11 +11,7 @@ class LLog {
     const LEVEL_WARNING = 3;
     const LEVEL_ERROR = 4;
     const LEVEL_FATAL = 5;
-    
-    private static function safeGetLoggerConfig($exec_mode,$logger_type,$config_name) {
-        return LConfig::get('/defaults/execution_mode/'.$exec_mode.'/logging/'.$config_name, LConfig::mustGet('/defaults/logging/'.$logger_type.'/'.$config_name));
-    }
-    
+        
     private static function adjustLogFolder($log_folder) {
         if (!LStringUtils::startsWith($log_folder, '/')) {
             return $_SERVER['PROJECT_DIR'].$log_folder;
@@ -34,9 +30,9 @@ class LLog {
         if (!isset($_SERVER['PROJECT_DIR'])) {
             $logger_type = 'output';
         } else {
-            $logger_type = LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/logging/type');
+            $logger_type = LConfigReader::executionMode('/logging/type');
         }
-        self::$my_min_level = self::safeGetLoggerConfig($exec_mode, $logger_type, 'min_level');
+        self::$my_min_level = LConfigReader::executionModeWithType($logger_type, '/logger/%type%/min_level');
         
                 
         switch ($logger_type) {
@@ -47,12 +43,11 @@ class LLog {
             }
             
             case 'distinct-file' : {
-                $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
-                $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
-                $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
-                $date_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'date_format');
-                
-                $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb');
+                $log_mode = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/log_mode');
+                $log_folder = LConfigReader::executionModeWithType($logger_type, '/logger/%type%/log_folder');
+                $log_format = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/log_format');
+                $date_format = LConfigReader::executionModeWithType($logger_type, '/logger/%type%/date_format');
+                $max_mb = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/max_mb');
         
                 $format_info = ['log' => $log_format,'date' => $date_format];
                 
@@ -63,11 +58,11 @@ class LLog {
                 break;
             }
             case 'together-file' : {
-                $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
-                $log_folder = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_folder');
-                $log_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_format');
-                $date_format = self::safeGetLoggerConfig($exec_mode, $logger_type, 'date_format');
-                $max_mb = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_mb'); 
+                $log_mode = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/log_mode');
+                $log_folder = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/log_folder');
+                $log_format = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/log_format');
+                $date_format = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/date_format');
+                $max_mb = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/max_mb'); 
                 
                 $format_info = ['log' => $log_format,'date' => $date_format];
                 
@@ -78,10 +73,10 @@ class LLog {
                 break;
             }
             case 'db' : { 
-                $log_mode = self::safeGetLoggerConfig($exec_mode, $logger_type, 'log_mode');
-                $connection_name = self::safeGetLoggerConfig($exec_mode, $logger_type, 'connection_name');
-                $max_records = self::safeGetLoggerConfig($exec_mode, $logger_type, 'max_records');
-                $table_name = self::safeGetLoggerConfig($exec_mode, $logger_type, 'table_name');
+                $log_mode = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/log_mode');
+                $connection_name = LConfigReader::executionModeWithType( $logger_type, '/logger/%type%/connection_name');
+                $max_records = LConfigReader::executionModeWithType($logger_type, '/logger/%type%/max_records');
+                $table_name = LConfigReader::executionModeWithType($logger_type, '/logger/%type%/table_name');
                 
                 self::$my_logger = new LDbLogger($connection_name,$log_mode,$max_records,$table_name);
                 self::$my_logger_initialized = false;

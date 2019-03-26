@@ -32,7 +32,7 @@ class LClassLoader {
     }
     
     public static function init() {
-        $cache_filename = LConfig::mustGet('/defaults/classloader/cache_path');
+        $cache_filename = LConfigReader::simple('/classloader/cache_path');
             
         if (LExecutionMode::isTesting() || LExecutionMode::isProduction()) {
             if (self::hasClassCacheFile($cache_filename)) {
@@ -99,7 +99,7 @@ class LClassLoader {
     }
     
     public static function parseFoldersFromConfig() {
-        self::parseFolders(LConfig::mustGet('/defaults/classloader/folder_list'));
+        self::parseFolders(LConfigReader::simple('/classloader/folder_list'));
     }
     
     public static function parseFolders(array $folder_list) {

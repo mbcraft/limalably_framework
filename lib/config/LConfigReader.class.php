@@ -1,0 +1,29 @@
+<?php
+
+class LConfigReader {
+    
+    public static function simple($path) {
+        return LConfig::get($path,
+                LConfig::mustGet('/defaults/'.$path));
+    }
+    
+    public static function executionMode($path) {
+        $exec_mode = LExecutionMode::get();
+        return LConfig::get($path,
+                LConfig::get('/execution_mode/'.$exec_mode.'/'.$path,
+                 LConfig::get('/defaults/execution_mode/'.$exec_mode.'/'.$path,
+                  LConfig::mustGet('/defaults/'.$path))));
+    }
+    
+    public static function executionModeWithType($type,$config_path) {
+        $exec_mode = LExecutionMode::get();
+        $path_no_type = str_replace('%type%','',$config_path);
+        $path_type = str_replace('%type%',$type,$config_path);
+        
+        return LConfig::get($path_no_type,
+                LConfig::get('/execution_mode/'.$exec_mode.$path_no_type,
+                 LConfig::get('/defaults/execution_mode/'.$exec_mode.$path_no_type, 
+                  LConfig::mustGet('/defaults/'.$path_type))));
+    }
+    
+}

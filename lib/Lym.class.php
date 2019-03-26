@@ -22,7 +22,7 @@ class Lym {
         LOutput::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
     }
     
-    private static function detectAndSaveHostnameAndRawRouteAndParameters() {
+    private static function detectAndSaveHostnameRawRouteAndParameters() {
         // hostname to detect
 
         $hostname = 'localhost'; //default set as localhost
@@ -120,7 +120,7 @@ class Lym {
         LConfig::saveServerVar('FRAMEWORK_DIR');
         LOutput::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']); 
         
-        self::detectAndSaveHostnameAndRawRoute();
+        self::detectAndSaveHostnameRawRouteAndParameters();
         LOutput::framework_debug("Execution mode : ".LExecutionMode::get());
         
         LConfig::init();
@@ -152,7 +152,7 @@ class Lym {
         LConfig::saveServerVar('FRAMEWORK_DIR');
         LOutput::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);  
 
-        self::detectAndSaveHostnameAndRawRoute();
+        self::detectAndSaveHostnameRawRouteAndParameters();
         LOutput::framework_debug("Execution mode : ".LExecutionMode::get());
 
         LConfig::init();

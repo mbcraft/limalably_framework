@@ -32,7 +32,7 @@ class LUrlMapCalculator {
     
     private static function isRawExecData($exec_array) {
         if (!is_array($exec_array)) return true;
-        if (!isset($exec_array['do']) && !isset($exec_array['begin']) && !isset($exec_array['end'])) return true;
+        if (!isset($exec_array['do']) && !isset($exec_array['before']) && !isset($exec_array['after'])) return true;
         else return false;
     }
     

@@ -33,6 +33,38 @@ class MiscTest extends LTestCase {
         
     }
     
+    function testDirname3() {
+        $my_path = "qualcosa/qualcosaltro";
+        
+        $dirname = dirname($my_path);
+        
+        $this->assertEqual($dirname,'qualcosa',"Il dirname non corrisponde!");
+        
+        $dirname2 = dirname($dirname);
+        
+        $this->assertEqual($dirname2,'.',"Il dirname2 non corrisponde! : ".$dirname2);
+        
+        $dirname3 = dirname($dirname2);
+        
+        $this->assertEqual($dirname3,'.',"Il dirname3 non corrisponde! : ".$dirname3);
+    }
+    
+    function testDirname4() {
+        $my_path = "/qualcosa/qualcosaltro";
+        
+        $dirname = dirname($my_path);
+        
+        $this->assertEqual($dirname,'/qualcosa',"Il dirname non corrisponde!");
+        
+        $dirname2 = dirname($dirname);
+        
+        $this->assertEqual($dirname2,'/',"Il dirname2 non corrisponde! : ".$dirname2);
+        
+        $dirname3 = dirname($dirname2);
+        
+        $this->assertEqual($dirname3,'/',"Il dirname3 non corrisponde! : ".$dirname3);
+    }
+    
     function testArrayMergeRecursive() {
         
         $data1 = array("color" => "red","apple","size" => array("A4"));
@@ -54,6 +86,7 @@ class MiscTest extends LTestCase {
         $this->assertEqual($result["color"],"green","Il risultato non è valido!");
         $this->assertEqual(count($result["size"]),1,"Il numero di valori dell'array size non è valido!");
     }
+    
 
     
 }

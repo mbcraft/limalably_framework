@@ -40,6 +40,10 @@ require_once ('lib/logging/db/LDbLogger.class.php');
 require_once ('lib/urlmap/manager/LIUrlMapManager.interface.php');
 require_once ('lib/urlmap/manager/LDefaultUrlMapManager.class.php');
 require_once ('lib/urlmap/manager/LMaintenanceUrlMapManager.class.php');
+require_once ('lib/urlmap/LUrlMapResolver.class.php');
+require_once ('lib/urlmap/LUrlMapCalculator.class.php');
+require_once ('lib/urlmap/LUrlMapBuilder.class.php');
+
 
 //database
 require_once ('lib/db/connection/LIDbConnection.interface.php');

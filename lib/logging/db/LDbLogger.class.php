@@ -5,6 +5,8 @@ class LDbLogger implements LILogger {
     const CONNECTION_TYPE_MYSQL = 'mysql';
     const CONNECTION_TYPE_SQLITE = 'sqlite';
     
+    private $initialized = false;
+    
     private $my_logger;
     
     function __construct($connection_name,$log_mode, $max_records = 1000000, $table_name = 'logs') {
@@ -45,7 +47,13 @@ class LDbLogger implements LILogger {
         $this->my_logger->write($message,self::LEVEL_INFO);
     }
 
+    public function isInitialized() {
+        return $this->initialized;
+    }
+    
     public function init() {
+        $this->initialized = true;
+        
         $this->my_logger->init();
     }
 

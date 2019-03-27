@@ -2,6 +2,8 @@
 
 class LOutputLogger implements LILogger {
     
+    private $initialized = false;
+    
     public function close() {
         //nothing to do ...
     }
@@ -25,9 +27,14 @@ class LOutputLogger implements LILogger {
     public function info($message) {
         LOutput::debug("LOG Info : ".$message);
     }
+    
+    public function isInitialized() {
+        return $this->initialized;
+    }
 
     public function init() {
         LOutput::message("Initializing output logger ...");
+        $this->initialized = true;
     }
 
     public function warning($message) {

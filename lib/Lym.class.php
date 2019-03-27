@@ -19,9 +19,7 @@ class Lym {
         LLog::init();
         
         ob_start();
-        
-        LLog::initWithConfig();
-        
+                
         try {
             self::framework_start();
         } catch (\Exception $ex) {
@@ -42,8 +40,6 @@ class Lym {
         $executor->tryExecuteCommand();
         if (!$executor->hasExecutedCommand()) {
         
-            LLog::initWithConfig();
-
             try {
                 self::project_start();
             } catch (\Exception $ex) {

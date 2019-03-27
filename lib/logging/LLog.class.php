@@ -2,8 +2,10 @@
 
 class LLog {
     
+    static $init_called = false;
+    
     static $my_logger = null;
-    static $my_logger_initialized = false;
+
     static $my_min_level = null;
     
     const LEVEL_DEBUG = 1;
@@ -21,12 +23,12 @@ class LLog {
     }
     
     static function init() {
+        if (self::$init_called) return;
+        self::$init_called = true;
+        
         self::$my_logger = new LOutputLogger();
         self::$my_min_level = self::LEVEL_DEBUG;
-    }
-    
-    static function initWithConfig() {
-        $exec_mode = LExecutionMode::get();
+
         if (!isset($_SERVER['PROJECT_DIR'])) {
             $logger_type = 'output';
         } else {
@@ -38,7 +40,6 @@ class LLog {
         switch ($logger_type) {
             case 'output' : {
                 self::$my_logger = new LOutputLogger();
-                self::$my_logger_initialized = false;
                 break;
             }
             
@@ -54,7 +55,6 @@ class LLog {
                 $log_folder_ok = self::adjustLogFolder($log_folder);
                 
                 self::$my_logger = new LDistinctFileLogger($log_folder_ok, $format_info, $log_mode,$max_mb);
-                self::$my_logger_initialized = false;
                 break;
             }
             case 'together-file' : {
@@ -69,7 +69,6 @@ class LLog {
                 $log_folder_ok = self::adjustLogFolder($log_folder);
                 
                 self::$my_logger = new LTogetherFileLogger($log_folder_ok, $format_info, $log_mode,$max_mb);
-                self::$my_logger_initialized = false;
                 break;
             }
             case 'db' : { 
@@ -79,7 +78,6 @@ class LLog {
                 $table_name = LConfigReader::mustExecutionModeWithType($logger_type, '/logger/%type%/table_name');
                 
                 self::$my_logger = new LDbLogger($connection_name,$log_mode,$max_records,$table_name);
-                self::$my_logger_initialized = false;
                 break;
             }
         }
@@ -102,93 +100,87 @@ class LLog {
         }
     }
     
-    static function isDebug() {
+    public static function isDebug() {
         return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_DEBUG;
     }
     
-    static function debug($message) {    
+    public static function debug($message) {    
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
         
-        if (!self::$my_logger_initialized) {
+        if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();
-            self::$my_logger_initialized = true;
         }
         
         self::$my_logger->debug($message);
     }
     
-    static function isInfo() {
+    public static function isInfo() {
         return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_INFO;
     }
     
-    static function info($message) {       
+    public static function info($message) {       
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
         
-        if (!self::$my_logger_initialized) {
+        if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();
-            self::$my_logger_initialized = true;
         }
         
         self::$my_logger->info($message);
     }
     
-    static function isWarning() {
+    public static function isWarning() {
         return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_WARNING;
     }
     
-    static function warning($message) {
+    public static function warning($message) {
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
         
-        if (!self::$my_logger_initialized) {
+        if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();
-            self::$my_logger_initialized = true;
         }
         
         self::$my_logger->warning($message);
     }
     
-    static function isError() {
+    public static function isError() {
         return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_ERROR;
     }
     
-    static function error($message) {
+    public static function error($message) {
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
         
-        if (!self::$my_logger_initialized) {
+        if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();
-            self::$my_logger_initialized = true;
         }
         
         self::$my_logger->error($message);
     }
     
-    static function exception(\Exception $ex) {
+    public static function exception(\Exception $ex) {
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
         
-        if (!self::$my_logger_initialized) {
+        if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();
-            self::$my_logger_initialized = true;
         }
         
         self::$my_logger->exception($ex);
     }
     
-    static function isFatal() {
+    public static function isFatal() {
         return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_FATAL;
     }
     
-    static function fatal($message) {
+    public static function fatal($message) {
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
         
-        if (!self::$my_logger_initialized) {
+        if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();
-            self::$my_logger_initialized = true;
         }
         
         self::$my_logger->fatal($message);
     }
     
-    static function close() {
+    public static function close() {
         self::$my_logger->close();
         self::$my_logger = null;
     }

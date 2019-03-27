@@ -8,6 +8,8 @@ interface LILogger {
     const LEVEL_ERROR = 4;
     const LEVEL_FATAL = 5;
     
+    function isInitialized();
+    
     function init();
     
     function debug($message);

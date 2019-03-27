@@ -8,6 +8,8 @@ class LDistinctFileLogger implements LILogger {
     const ERROR_FILENAME = 'log.error.txt';
     const FATAL_FILENAME = 'log.fatal.txt';
     
+    private $initialized = false;
+    
     private $debug_log_writer = null;
     private $info_log_writer = null;
     private $warning_log_writer = null;
@@ -24,7 +26,13 @@ class LDistinctFileLogger implements LILogger {
         
     }
     
+    public function isInitialized() {
+        return $this->initialized;
+    }
+    
     public function init() {
+        $this->initialized = true;
+        
         $this->debug_log_writer->init();
         $this->info_log_writer->init();
         $this->warning_log_writer->init();

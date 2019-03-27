@@ -4,6 +4,8 @@ class LTogetherFileLogger implements LILogger {
         
     const TOGETHER_FILENAME = 'log.all.txt';
     
+    private $initialized;
+    
     private $my_log_writer = null;
     
     function __construct($log_dir,$format_info,$log_mode,$max_mb=10) {
@@ -11,7 +13,13 @@ class LTogetherFileLogger implements LILogger {
         $this->my_log_writer = new LFileLogWriter($log_dir, self::TOGETHER_FILENAME, $format_info,$log_mode,$max_mb);
     }
     
+    public function isInitialized() {
+        return $this->initialized;
+    }
+    
     public function init() {
+        $this->initialized = true;
+        
         $this->my_log_writer->init();
     }
     

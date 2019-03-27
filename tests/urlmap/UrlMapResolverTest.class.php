@@ -2,9 +2,14 @@
 
 class UrlMapResolverTest extends LTestCase {
 
+    function newUrlMapResolver() {
+        $resolver = new LUrlMapResolver($_SERVER['FRAMEWORK_DIR'],'tests/urlmap/public/static/','tests/urlmap/public/hash_db/','tests/urlmap/private/');
+        return $resolver; 
+    }
+    
     function testUrlResolverParentRoute() {
 
-        $resolver = new LUrlMapResolver($_SERVER['FRAMEWORK_DIR']);
+        $resolver = $this->newUrlMapResolver();
         
         $this->assertEqual($resolver->getParentRoute('qualcosa'), '_default', "La route parent di 'qualcosa' non è corretta : " . $resolver->getParentRoute('qualcosa'));
         $this->assertEqual($resolver->getParentRoute('_default'), null, "La route parent di '_default' non è corretta : " . $resolver->getParentRoute('_default'));
@@ -13,4 +18,13 @@ class UrlMapResolverTest extends LTestCase {
                 
     }
 
+    function testResolveProva() {
+        
+        $resolver = $this->newUrlMapResolver();
+        
+        $urlmap = $resolver->resolveUrlMap("/prova");
+        
+        $this->assertTrue($urlmap->is_set("/exec/do"),"L'exec do non è impostato nell'urlmap!");
+        $this->assertEqual($urlmap->mustGet("/exec/do"),"/test/qualcosa","L'exec letto non corrisponde!");
+    }
 }

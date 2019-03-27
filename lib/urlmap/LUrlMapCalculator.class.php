@@ -8,12 +8,12 @@ class LUrlMapCalculator {
         
         $array_data = json_decode(file_get_contents($json_filename_path), true);
         
-        array_shift(self::$url_maps_data,$array_data);
+        array_unshift(self::$url_maps_data,$array_data);
         
     }
     
     public static function shiftUrlMapData($assoc_array) {
-        array_shift(self::$url_maps_data,$assoc_array);
+        array_unshift(self::$url_maps_data,$assoc_array);
     }
     
     public static function calculate() {
@@ -41,17 +41,19 @@ class LUrlMapCalculator {
         
         $area_list = ['exec','session','input','output'];
         foreach ($area_list as $area) {
-            $keys = $url_map_hash->keys('/'.$area);
-            foreach ($keys as $key) {
-                if (LStringUtils::startsWith($key, '-')) {
-                    $key_ok = substr($key, 1);
-                    $url_map_hash->remove('/'.$area.'/'.$key_ok);
-                    $url_map_hash->remove('/'.$area.'/'.$key);
-                }
-                if (LStringUtils::startsWith($key, '+')) {
-                    $key_ok = substr($key, 1);
-                    $url_map_hash->add('/'.$area.'/'.$key_ok, $url_map_hash->mustGetOriginal('/'.$area.'/'.$key));
-                    $url_map_hash->remove('/'.$area.'/'.$key);
+            if ($url_map_hash->is_set('/'.$area)) {
+                $keys = $url_map_hash->keys('/'.$area);
+                foreach ($keys as $key) {
+                    if (LStringUtils::startsWith($key, '-')) {
+                        $key_ok = substr($key, 1);
+                        $url_map_hash->remove('/'.$area.'/'.$key_ok);
+                        $url_map_hash->remove('/'.$area.'/'.$key);
+                    }
+                    if (LStringUtils::startsWith($key, '+')) {
+                        $key_ok = substr($key, 1);
+                        $url_map_hash->add('/'.$area.'/'.$key_ok, $url_map_hash->mustGetOriginal('/'.$area.'/'.$key));
+                        $url_map_hash->remove('/'.$area.'/'.$key);
+                    }
                 }
             }
         }

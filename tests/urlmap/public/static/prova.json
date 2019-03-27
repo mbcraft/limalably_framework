@@ -1,0 +1,5 @@
+{
+    "exec" : {
+        "do" : "/test/qualcosa"
+    }
+}

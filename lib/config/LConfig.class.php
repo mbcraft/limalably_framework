@@ -19,24 +19,118 @@ class LConfig {
 
     public static function saveServerVar($var_name) {
         self::setupIfNeeded();
-        
+
         if (!self::is_set($var_name)) {
-            self::$hash_map->set($var_name,$_SERVER[$var_name]);
+            self::$hash_map->set($var_name, $_SERVER[$var_name]);
             LOutput::framework_debug('Server var ' . $var_name . ' persisted into configuration ...');
         }
     }
 
-    public static function init() {
-
-        if (self::$init_called) {
-            throw new \Exception('Error : LConfig::init() called more than one time ...');
+    private static function detectAndSaveDirs() {
+        if (isset($_SERVER['PROJECT_DIR'])) {
+            LConfig::saveServerVar('PROJECT_DIR');
+            LOutput::framework_debug("Project dir detected : " . $_SERVER['PROJECT_DIR']);
         }
-        self::$init_called = true;
+        LConfig::saveServerVar('FRAMEWORK_DIR');
+        LOutput::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);
+    }
 
-        // loading internal config ...
+    private static function detectAndSaveEnvironment() {
+        $_SERVER['ENVIRONMENT'] = 'script';
+        if (isset($_SERVER['SERVER_NAME'])) { //is a virtual host?
+            $_SERVER['ENVIRONMENT'] = 'web';
+        }
+
+        LConfig::saveServerVar('ENVIRONMENT');
+        LOutput::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
+    }
+
+    private static function detectAndSaveHostnameRawRouteAndParameters() {
+        // hostname to detect
+
+        $hostname = 'localhost'; //default set as localhost
+        $hostname_found = false;
+
+        if (isset($_SERVER['SERVER_NAME'])) { //is a virtual host?
+            $hostname = $_SERVER['SERVER_NAME'];
+            $hostname_found = true;
+            $_SERVER['RAW_ROUTE'] = $_REQUEST['routemap'];
+        }
+
+        if (!$hostname_found && isset($_SERVER['SESSION_MANAGER'])) { //is a console window inside a window manager?
+            $parts = explode(':', $_SERVER['SESSION_MANAGER']);
+            $part0 = $parts[0];
+            $sub_parts = explode('/', $part0);
+            if (isset($sub_parts[1])) {
+                $hostname = $sub_parts[1];
+                $hostname_found = true;
+            }
+            //calcolo del valore di RAW_ROUTE prendendo l'argomento della linea di comando se il nome host non è ancora stato impostato
+            if (isset($_SERVER['argv'][1])) {
+                $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
+
+                $parameters = $_SERVER['argv'];
+                array_shift($parameters);
+                array_shift($parameters);
+
+                $_SERVER['PARAMETERS'] = $parameters;
+
+                LConfig::saveServerVar('PARAMETERS');
+            } else {
+                LOutput::error_message("Route not found in command-line execution.");
+                exit(1);
+            }
+        }
+
+        if (!$hostname_found) {
+            //calcolo del valore di RAW_ROUTE prendendo l'argomento della linea di comando se il nome host non è ancora stato impostato
+            if (isset($_SERVER['argv'][1])) {
+                $_SERVER['RAW_ROUTE'] = $_SERVER['argv'][1];
+
+                $parameters = $_SERVER['argv'];
+                array_shift($parameters);
+                array_shift($parameters);
+
+                $_SERVER['PARAMETERS'] = $parameters;
+
+                LConfig::saveServerVar('PARAMETERS');
+            } else {
+                LOutput::error_message("Route not found in command-line execution.");
+                exit(1);
+            }
+        }
 
 
 
+        $_SERVER['HOSTNAME'] = $hostname;
+        LConfig::saveServerVar('HOSTNAME');
+        LOutput::framework_debug("Hostname detected : " . $_SERVER['HOSTNAME']);
+
+        // hostname set
+        LConfig::saveServerVar('RAW_ROUTE');
+        LOutput::framework_debug("Raw route detected : " . $_SERVER['RAW_ROUTE']);
+    }
+
+    private static function initRoute() {
+
+        $folder_route = LConfig::get('folder_route', 'index.html');
+
+        $route = $_SERVER['RAW_ROUTE'];
+
+        if ($route == null) {
+            $route = '';
+        }
+        if ($route[strlen($route) - 1] == '/') {
+            $route .= $folder_route;
+        }
+
+        $_SERVER['ROUTE'] = $route;
+        LConfig::saveServerVar('ROUTE');
+        // route set
+        LOutput::framework_debug("Route detected : " . $_SERVER['ROUTE']);
+    }
+
+    private static function initFromConfigFiles() {
         if (isset($_SERVER['PROJECT_DIR'])) {
             $path_parts = [];
             $path_parts[] = 'config';
@@ -69,7 +163,7 @@ class LConfig {
         // loading config ...
 
         if (isset($_SERVER['PROJECT_DIR'])) {
-        
+
             $path_parts = [];
             $path_parts[] = 'config';
             $path_parts[] = 'hostnames';
@@ -103,21 +197,19 @@ class LConfig {
                     Loutput::exception($ex);
                     exit(1);
                 }
-
             }
-            
-            $all_config = array_replace_recursive($internal_json_config,$php_config);
+
+            $all_config = array_replace_recursive($internal_json_config, $php_config);
 
             $all_config = array_replace_recursive($all_config, $json_config);
 
             $final_data = array_replace_recursive($all_config, self::get('/'));
-
         } else {
-            $final_data = array_replace_recursive($internal_json_config,self::get('/'));
+            $final_data = array_replace_recursive($internal_json_config, self::get('/'));
         }
-        
+
         self::$hash_map->setRoot($final_data);
-        
+
         // config loaded
         $message = "Config loaded ...";
         if (self::phpConfigFound())
@@ -128,6 +220,29 @@ class LConfig {
             $message .= '/config/hostnames/' . $_SERVER['HOSTNAME'] . '/config.json';
         Loutput::framework_debug($message);
     }
+
+    public static function init() {
+
+        if (self::$init_called) {
+            throw new \Exception('Error : LConfig::init() called more than one time ...');
+        }
+        self::$init_called = true;
+
+        // setting other variables
+        self::detectAndSaveEnvironment();
+
+        self::detectAndSaveDirs();
+
+        self::detectAndSaveHostnameRawRouteAndParameters();
         
+        self::initRoute();
+        
+        LOutput::framework_debug("Execution mode : " . LExecutionMode::get());
+
+        // loading internal config ...
+
+        self::initFromConfigFiles();
+
+    }
 
 }

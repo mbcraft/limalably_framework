@@ -5,12 +5,25 @@
  */
 class LConfigReader {
     
-    public static function simple($path) {
+    public static function simple($path,$default_value) {
+        return LConfig::get($path,
+                LConfig::get('/defaults/'.$path,$default_value));
+    }
+    
+    public static function mustSimple($path) {
         return LConfig::get($path,
                 LConfig::mustGet('/defaults/'.$path));
     }
     
-    public static function executionMode($path) {
+    public static function executionMode($path,$default_value) {
+        $exec_mode = LExecutionMode::get();
+        return LConfig::get($path,
+                LConfig::get('/execution_mode/'.$exec_mode.'/'.$path,
+                 LConfig::get('/defaults/execution_mode/'.$exec_mode.'/'.$path,
+                  LConfig::get('/defaults/'.$path,$default_value))));
+    }
+    
+    public static function mustExecutionMode($path) {
         $exec_mode = LExecutionMode::get();
         return LConfig::get($path,
                 LConfig::get('/execution_mode/'.$exec_mode.'/'.$path,
@@ -24,8 +37,8 @@ class LConfigReader {
         $path_type = str_replace('%type%',$type,$config_path);
         
         return LConfig::get($path_no_type,
-                LConfig::get('/execution_mode/'.$exec_mode.$path_no_type,
-                 LConfig::get('/defaults/execution_mode/'.$exec_mode.$path_no_type, 
+                LConfig::get('/execution_mode/'.$exec_mode.'/'.$path_no_type,
+                 LConfig::get('/defaults/execution_mode/'.$exec_mode.'/'.$path_no_type, 
                   LConfig::get('/defaults/'.$path_type,null))));
     }
     

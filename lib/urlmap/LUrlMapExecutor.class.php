@@ -42,8 +42,8 @@ class LUrlMapExecutor {
      * @return boolean true se lo shortcut alla proc è valido, false altrimenti
      */
     private static function isValidProcFileRoute($route) {
-        $proc_folder = LConfigReader::simple('/classloader/proc_folder');
-        $proc_extension = LConfigReader::simple('/classloader/proc_extension');
+        $proc_folder = LConfigReader::mustSimple('/classloader/proc_folder');
+        $proc_extension = LConfigReader::mustSimple('/classloader/proc_extension');
         $path = $_SERVER['PROJECT_DIR'].$proc_folder.$route.$proc_extension;
         $path = str_replace('//', '/', $path);
         return is_readable($path);
@@ -55,8 +55,8 @@ class LUrlMapExecutor {
      * @param string $route La route al proc
      */
     private static function executeProcFile($route) {
-        $proc_folder = LConfigReader::simple('/classloader/proc_folder');
-        $proc_extension = LConfigReader::simple('/classloader/proc_extension');
+        $proc_folder = LConfigReader::mustSimple('/classloader/proc_folder');
+        $proc_extension = LConfigReader::mustSimple('/classloader/proc_extension');
         $path = $_SERVER['PROJECT_DIR'].$proc_folder.$route.$proc_extension;
         $path = str_replace('//', '/', $path);
         include $path;

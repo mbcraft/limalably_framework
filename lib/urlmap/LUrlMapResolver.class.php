@@ -2,8 +2,27 @@
 
 class LUrlMapResolver {
     
-    private static function getPrivateUrlMap($route) {
-        $path = $_SERVER['PROJECT_DIR'].'urlmap/private/'.$route.'.json';
+    private $root_folder;
+    
+    private $static_folder;
+    private $hash_db_folder;
+    private $private_folder;
+    
+    function __construct($root_folder,$static_folder='urlmap/public/static/',$hash_db_folder='urlmap/public/hash_db/',$private_folder='urlmap/private/') {
+        $this->root_folder = $root_folder;
+        $this->static_folder = $static_folder;
+        $this->hash_db_folder = $hash_db_folder;
+        $this->private_folder = $private_folder;
+        
+        if (!is_dir($this->root_folder)) throw new \Exception("La cartella root per la risoluzione degli urlmap non esiste : ".$root_folder);
+        if (!is_dir($this->root_folder.$this->static_folder)) throw new \Exception("La cartella per gli urlmap pubblici statici non esiste : ".$static_folder);
+        if (!is_dir($this->root_folder.$this->hash_db_folder)) throw new \Exception("La cartella per gli urlmap pubblici hash non esiste : ".$hash_db_folder);
+        if (!is_dir($this->root_folder.$this->private_folder)) throw new \Exception("La cartella per gli urlmap privati non esiste : ".$private_folder);
+        
+    }
+    
+    private function getPrivateUrlMap($route) {
+        $path = $this->root_folder.$this->private_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
         return self::readUrlMap($path);
     }
@@ -13,14 +32,14 @@ class LUrlMapResolver {
      * @param string $route
      * @return boolean true se la route è valida e punta a una url map privata, false altrimenti.
      */
-    private static function isPrivateRoute($route) {
-        $path = $_SERVER['PROJECT_DIR'].'urlmap/private/'.$route.'.json';
+    private function isPrivateRoute($route) {
+        $path = $this->root_folder.$this->private_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
         return is_readable($path);
     }
     
-    private static function getHashUrlMap($route) {
-        $path = $_SERVER['PROJECT_DIR'].'urlmap/public/hash_db/'.sha1($route).'.json';
+    private function getHashUrlMap($route) {
+        $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
         return self::readUrlMap($path);
     }
     
@@ -30,8 +49,8 @@ class LUrlMapResolver {
      * @param string $route La route
      * @return boolean Se la route è valida per l'hash db.
      */
-    private static function isHashRoute($route) {
-        $path = $_SERVER['PROJECT_DIR'].'urlmap/public/hash_db/'.sha1($route).'.json';
+    private function isHashRoute($route) {
+        $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
         return is_readable($path);
     }
     
@@ -42,7 +61,7 @@ class LUrlMapResolver {
      * @return \LHashMap La hashmap risultante
      * @throws \Exception Se ci sono degli errori in fase di decodifica
      */
-    public static function readUrlMap($path) {
+    public function readUrlMap($path) {
         if (!is_readable($path)) throw new \Exception("UrlMap at path ".$path." is not readable."); 
         $result_array = json_decode(file_get_contents($path),true);
         $last_error = json_last_error();
@@ -70,7 +89,7 @@ class LUrlMapResolver {
      * @param type $hash_map
      * @return boolean true se la url map contiene un link, false altrimenti
      */
-    private static function isUrlMapLink($hash_map) {
+    private function isUrlMapLink($hash_map) {
         if ($hash_map->is_set('/urlmap_link')) return true;
         else return false;
     }
@@ -82,15 +101,15 @@ class LUrlMapResolver {
      * @return string La route da usare
      * @throws \Exception Se il parametro non è una mappa hash con un valido link a urlmap
      */
-    private static function getValidUrlMapRouteLink($hash_map) {
+    private function getValidUrlMapRouteLink($hash_map) {
         if (!self::isUrlMapLink($hash_map)) throw new \Exception("Parameter is not a valid urlmap link!");
         $link = $hash_map->mustGet('/urlmap_link');
         if (self::isPrivateRoute($link) && (self::isPublicRoute($link) || self::isHashRoute($link))) throw new \Exception("The linked urlmap is both private and static or hash_db!");
         return $link;
     }
     
-    private static function getPublicUrlMap($route) {
-        $path = $_SERVER['PROJECT_DIR'].'urlmap/public/static/'.$route.'.json';
+    private function getPublicUrlMap($route) {
+        $path = $this->root_folder.$this->static_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
         return self::readUrlMap($path);
     }
@@ -101,13 +120,13 @@ class LUrlMapResolver {
      * @param string $route La route
      * @return boolean True se è una route pubblica, false altrimenti
      */
-    private static function isPublicRoute($route) {
-        $path = $_SERVER['PROJECT_DIR'].'urlmap/public/static/'.$route.'.json';
+    private function isPublicRoute($route) {
+        $path = $this->root_folder.$this->static_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
         return is_readable($path);
     }
     
-    private static function normalizeUrlMapWithLink($hashmap) {
+    private function normalizeUrlMapWithLink($hashmap) {
         $route_link = self::getValidUrlMapRouteLink($hashmap);
         $hashmap->remove('/urlmap_link');
         $linked_url_map = self::resolveUrlMap($route_link);
@@ -119,7 +138,7 @@ class LUrlMapResolver {
         return $url_map_calculator->calculate();
     }
      
-    public static function isShortcutToProc($route) {
+    public function isShortcutToProc($route) {
         if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
             if (self::isProcUrlMap($route)) {
                 if (self::isPublicRoute($route) || self::isHashRoute($route) || self::isPrivateRoute($route))
@@ -130,7 +149,7 @@ class LUrlMapResolver {
         return false;
     }
     
-    public static function resolveProcShortcut($route) {
+    public function resolveProcShortcut($route) {
         //se sono in uno script e la route punta a una proc e la config è ok allora prendo quella
         if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
             if (self::isProcUrlMap($route)) {
@@ -145,10 +164,11 @@ class LUrlMapResolver {
         throw new \Exception("Route does not resolve to a proc shortcut.");
     }
     
-    private static function resolvePublicUrlMap($route) {
+    private function resolvePublicUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
             if (self::isPublicRoute($route)) {
+                
                 $hashmap = self::getPublicUrlMap($route);
                 if (self::isUrlMapLink($hashmap)) {
                     $hashmap = self::normalizeUrlMapWithLink($hashmap);
@@ -160,7 +180,7 @@ class LUrlMapResolver {
         return $calculator->calculate();
     }
     
-    private static function resolvePrivateUrlMap($route) {
+    private function resolvePrivateUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
             if (self::isPrivateRoute($route)) {
@@ -175,7 +195,7 @@ class LUrlMapResolver {
         return $calculator->calculate();
     }
     
-    private static function resolveHashUrlMap($route) {
+    private function resolveHashUrlMap($route) {
         $hashmap = self::getHashUrlMap($route);
         if (self::isUrlMapLink($hashmap)) {
             $hashmap = self::normalizeUrlMapWithLink($hashmap);
@@ -183,14 +203,14 @@ class LUrlMapResolver {
         return $hashmap;
     }
     
-    public static function getParentRoute($route) {
+    public function getParentRoute($route) {
         if (LStringUtils::endsWith($route, '_default')) $route = substr($route,0,-8);
         if ($route == "") return null;
         if (dirname($route)=='.' || dirname($route)=='/') return '_default';
         else return dirname($route).'/_default';
     }
     
-    public static function resolveUrlMap($route) {
+    public function resolveUrlMap($route) {
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);
         
         $route_check_order = LConfigReader::executionMode('/urlmap/search_order');

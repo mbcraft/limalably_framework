@@ -58,7 +58,7 @@ class Lym {
 
     private static function project_start() {        
         
-        $urlmap_resolver = new LUrlMapResolver();
+        $urlmap_resolver = new LUrlMapResolver($_SERVER['PROJECT_DIR']);
         $urlmap = $urlmap_resolver->resolveUrlMap($_SERVER['ROUTE']);
         
         var_dump($urlmap);

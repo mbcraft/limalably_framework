@@ -71,7 +71,9 @@ class LClassLoader {
                 self::saveClassMapToCache();
             }
         } else {
-            self::emptyCache();
+            if (isset($_SERVER['PROJECT_DIR'])) {
+                self::emptyCache();
+            }
             self::parseFoldersFromConfig();
         }
         
@@ -82,8 +84,9 @@ class LClassLoader {
         spl_autoload_register('LClassLoader::autoload',true);
         
         self::attachComposerInFramework();
-        
-        self::attachComposerInProject();
+        if (isset($_SERVER['PROJECT_DIR'])) {
+            self::attachComposerInProject();
+        }
     }
     
     private static function attachComposerInFramework() {
@@ -185,7 +188,9 @@ class LClassLoader {
     
     private static function parseFoldersFromConfig() {
         self::parseFrameworkFolders(LConfigReader::simple('/classloader/framework_folder_list'));
-        self::parseProjectFolders(LConfigReader::simple('/classloader/project_folder_list'));
+        if (isset($_SERVER['PROJECT_DIR'])) {
+            self::parseProjectFolders(LConfigReader::simple('/classloader/project_folder_list'));
+        }
     }
     
     private static function parseFrameworkFolders(array $folder_list) {

@@ -5,30 +5,37 @@
  */
 class LConfigReader {
     
-    public static function simple($path,$default_value) {
-        return LConfig::get($path,
-                LConfig::get('/defaults/'.$path,$default_value));
+    public static function simple($config_path) {
+        if (LConfig::is_set($config_path)) {
+            return LConfig::mustGet($config_path);
+        }
+        if (LConfig::is_set('/defaults/'.$config_path)) {
+            return LConfig::mustGet('/defaults/'.$config_path);
+        }
+        
+        throw new \Exception("Value not found in config : ".$config_path);
     }
     
-    public static function mustSimple($path) {
-        return LConfig::get($path,
-                LConfig::mustGet('/defaults/'.$path));
-    }
-    
-    public static function executionMode($path,$default_value) {
+    public static function executionMode($config_path) {
         $exec_mode = LExecutionMode::get();
-        return LConfig::get($path,
-                LConfig::get('/execution_mode/'.$exec_mode.'/'.$path,
-                 LConfig::get('/defaults/execution_mode/'.$exec_mode.'/'.$path,
-                  LConfig::get('/defaults/'.$path,$default_value))));
-    }
-    
-    public static function mustExecutionMode($path) {
-        $exec_mode = LExecutionMode::get();
-        return LConfig::get($path,
-                LConfig::get('/execution_mode/'.$exec_mode.'/'.$path,
-                 LConfig::get('/defaults/execution_mode/'.$exec_mode.'/'.$path,
-                  LConfig::mustGet('/defaults/'.$path))));
+        
+        if (LConfig::is_set($config_path)) {
+            return LConfig::mustGet($config_path);
+        }
+        
+        if (LConfig::is_set('/execution_mode/'.$exec_mode.'/'.$config_path)) {
+            return LConfig::mustGet('/execution_mode/'.$exec_mode.'/'.$config_path);
+        }
+        
+        if (LConfig::is_set('/defaults/execution_mode/'.$exec_mode.'/'.$config_path)) {
+            return LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/'.$config_path);
+        }
+        
+        if (LConfig::is_set('/defaults/'.$config_path)) {
+            return LConfig::mustGet('/defaults/'.$config_path);
+        }
+        
+        throw new \Exception("Value not found in config : ".$config_path);
     }
     
     public static function executionModeWithType($type,$config_path) {
@@ -36,10 +43,20 @@ class LConfigReader {
         $path_no_type = str_replace('%type%','',$config_path);
         $path_type = str_replace('%type%',$type,$config_path);
         
-        return LConfig::get($path_no_type,
-                LConfig::get('/execution_mode/'.$exec_mode.'/'.$path_no_type,
-                 LConfig::get('/defaults/execution_mode/'.$exec_mode.'/'.$path_no_type, 
-                  LConfig::get('/defaults/'.$path_type,null))));
+        if (LConfig::is_set($path_no_type)) {
+            return LConfig::mustGet($path_no_type);
+        }
+        if (LConfig::is_set('/execution_mode/'.$exec_mode.'/'.$path_no_type)) {
+            return LConfig::mustGet('/execution_mode/'.$exec_mode.'/'.$path_no_type);
+        }
+        if (LConfig::is_set('/defaults/execution_mode/'.$exec_mode.'/'.$path_no_type)) {
+            return LConfig::mustGet('/defaults/execution_mode/'.$exec_mode.'/'.$path_no_type);
+        }
+        if (LConfig::is_set('/defaults/'.$path_type)) {
+            return LConfig::mustGet('/defaults/'.$path_type);
+        }
+        
+        throw new \Exception("Value not found in config : ".$config_path);
     }
     
 }

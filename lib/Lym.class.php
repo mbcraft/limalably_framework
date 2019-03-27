@@ -56,13 +56,12 @@ class Lym {
         
     }
 
-    private static function project_start() {
-       
-        $obj =  new Prova\Qualcosa();
-        echo "funzione prova : ".$obj->prova()."\n";
+    private static function project_start() {        
         
-        $env = new Twig\Loader\FilesystemLoader(['template/'],$_SERVER['PROJECT_DIR']);
+        $urlmap_resolver = new LUrlMapResolver();
+        $urlmap = $urlmap_resolver->resolveUrlMap($_SERVER['ROUTE']);
         
+        var_dump($urlmap);
         //more to come ...
     }
     

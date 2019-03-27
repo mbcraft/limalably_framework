@@ -120,7 +120,7 @@ class LUrlMapResolver {
     }
      
     public static function isShortcutToProc($route) {
-        if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::mustSimple('/urlmap/shortcut_proc')) {
+        if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
             if (self::isProcUrlMap($route)) {
                 if (self::isPublicRoute($route) || self::isHashRoute($route) || self::isPrivateRoute($route))
                     throw new \Exception("Error : route is a proc shortcut but also something else.");
@@ -132,7 +132,7 @@ class LUrlMapResolver {
     
     public static function resolveProcShortcut($route) {
         //se sono in uno script e la route punta a una proc e la config è ok allora prendo quella
-        if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::mustSimple('/urlmap/shortcut_proc')) {
+        if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
             if (self::isProcUrlMap($route)) {
                 if (self::isPublicRoute($route) || self::isHashRoute($route) || self::isPrivateRoute($route))
                     throw new \Exception("Error : route is a proc but also something else.");
@@ -193,7 +193,7 @@ class LUrlMapResolver {
     public static function resolveUrlMap($route) {
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);
         
-        $route_check_order = LConfigReader::mustExecutionMode('/urlmap/search_order');
+        $route_check_order = LConfigReader::executionMode('/urlmap/search_order');
         $route_checks = explode(',',$route_check_order);
         foreach ($route_checks as $route_check) {
             switch ($route_check) {
@@ -217,6 +217,6 @@ class LUrlMapResolver {
         if (self::isPrivateRoute($route)) {
             return self::resolvePrivateUrlMap($route);
         }
-        return false;
+        return null;
     }
 }

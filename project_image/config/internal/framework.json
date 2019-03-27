@@ -87,8 +87,10 @@
         },
         "classloader" : {
             "code_file_ends_with" : [".class.php",".interface.php",".trait.php"],
-            "folder_list" : ["lib/","blogic/","urlmap/handlers/"],
-            "cache_path" : "temp/classloader/classloader_cache.php",
+            "project_folder_list" : ["lib/","urlmap/handlers/"],
+            "framework_folder_list" : ["lib/"],
+            "map_cache_file_path" : "temp/classloader/map/classloader_map_cache.php",
+            "class_cache_folder_path" : "temp/classloader/classes/",
             "proc_folder" : "proc/"
         }
     }

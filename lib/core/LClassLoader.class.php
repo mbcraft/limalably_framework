@@ -28,22 +28,44 @@ class LClassLoader {
     private static $class_map = [];
     
     public static function autoload($clazz) {
-        if (isset(self::$class_map[$clazz])) require_once(self::$class_map[$clazz]);
+        if (LExecutionMode::isTesting() || LExecutionMode::isProduction()) {
+            if (isset(self::$class_map[$clazz]))
+            {
+                if (!self::hasCachedClassContent(self::$class_map[$clazz]))
+                {
+                    $original_path = self::$class_map[$clazz];
+                    $original_content = file_get_contents($original_path);
+                    $mangled_content = self::prepareClassContent($original_content);
+                    self::saveMangledClassToCache($original_path, $mangled_content);
+                }
+                self::requireCachedClassContent($original_path);
+            }
+        } else {
+            if (isset(self::$class_map[$clazz])) require_once(self::$class_map[$clazz]);
+        }
+    }
+    
+    private static function prepareClassContent($class_content) {
+        return $class_content;
+    }
+    
+    public static function emptyCache() {
+        self::deleteClassMapCache();
+        self::deleteClassContentCache();
     }
     
     public static function init() {
-        $cache_filename = LConfigReader::simple('/classloader/cache_path');
             
         if (LExecutionMode::isTesting() || LExecutionMode::isProduction()) {
-            if (self::hasClassCacheFile($cache_filename)) {
-                self::loadClassMapFromCacheFile($cache_filename);
+            if (self::hasClassMapCache()) {
+                self::loadClassMapFromCache();
             } else {
                 self::parseFoldersFromConfig();
-                self::saveClassMapToCacheFile($cache_filename);
+                self::saveClassMapToCache();
             }
         } else {
+            self::emptyCache();
             self::parseFoldersFromConfig();
-            self::deleteClassLoaderCacheFile($cache_filename);
         }
         
         self::registerAutoloader();
@@ -69,40 +91,92 @@ class LClassLoader {
         }
     }
     
-    private static function hasClassCacheFile($filename) {
-        return is_file($filename);
+    private static function hasClassMapCache() {
+        return is_readable($_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/map_cache_file_path'));
     }
     
-    private static function canSaveClassMapToCacheFile($filename) {
-        return is_dir(dirname($filename));
+    private static function hasCachedClassContent($original_path) {
+        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path').sha1($original_path).'.php';
+        return is_readable($path);
     }
     
-    private static function deleteClassLoaderCacheFile($filename) {
-        if (is_file($filename)) @unlink($filename);
+    private static function canSaveClassMapToCache() {
+        return is_dir(dirname($_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/map_cache_file_path')));
     }
     
-    private static function saveClassMapToCacheFile($filename) {
-        if (!self::canSaveClassMapToCacheFile($filename)) {
-            mkdir(dirname($filename),0777,true);
-            chmod(dirname($filename),0777);
+    private static function canSaveMangledClassesToCache() {
+        return is_dir($_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path'));
+    }
+    
+    private static function deleteClassMapCache() {
+        $cache_filename = LConfigReader::simple('/classloader/map_cache_path');
+        if (file_exists($_SERVER['PROJECT_DIR'].$cache_filename)) @unlink($_SERVER['PROJECT_DIR'].$cache_filename);
+    }
+    
+    private static function deleteClassContentCache() {
+        $cache_dir = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path');
+        $elements = scandir($cache_dir);
+        foreach ($elements as $el) {
+            if ($el!='.' && $el!='..') { @unlink($cache_dir.$el); }
         }
+    }
+    
+    private static function createClassMapCacheDir() {
+        $map_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/map_cache_file_path');
+        if (!self::canSaveClassMapToCache()) {
+            mkdir(dirname($map_path),0777,true);
+            chmod(dirname($map_path),0777);
+        }
+    }
+    
+    private static function createClassContentCacheDir() {
+        $content_dir = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path');
+        if (!self::canSaveMangledClassesToCache()) {
+            mkdir(dirname($content_dir),0777,true);
+            chmod(dirname($content_dir),0777);
+        }
+    }
+    
+    private static function saveClassMapToCache() {
+        $map_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/map_cache_file_path');
+        self::createClassMapCacheDir();
         
         $prefix = "<?php \n return ";
         $suffix = ";";
         $content = $prefix.var_export(self::$class_map, true).$suffix;
         
-        file_put_contents($filename, $content);
+        file_put_contents($map_path, $content);
+    }
+        
+    private static function saveMangledClassToCache($original_path,$content) {
+        self::createClassContentCacheDir();
+        
+        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path').sha1($original_path).'.php';
+        file_put_contents($path, $content);
     }
     
-    private static function loadClassMapFromCacheFile($filename) {
-        self::$class_map = include($filename);
+    private static function loadClassMapFromCache() {
+        self::$class_map = include($_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/map_cache_file_path'));
+    }
+    
+    private static function requireCachedClassContent($original_path) {
+        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path').sha1($original_path).'.php';
+        
+        require_once($path);
     }
     
     public static function parseFoldersFromConfig() {
-        self::parseFolders(LConfigReader::simple('/classloader/folder_list'));
+        self::parseFrameworkFolders(LConfigReader::simple('/classloader/framework_folder_list'));
+        self::parseProjectFolders(LConfigReader::simple('/classloader/project_folder_list'));
     }
     
-    public static function parseFolders(array $folder_list) {
+    public static function parseFrameworkFolders(array $folder_list) {
+        foreach ($folder_list as $folder) {
+            self::recursiveParseFolder($_SERVER['FRAMEWORK_DIR'].$folder);
+        }
+    }
+    
+    public static function parseProjectFolders(array $folder_list) {
         foreach ($folder_list as $folder) {
             self::recursiveParseFolder($_SERVER['PROJECT_DIR'].$folder);
         }

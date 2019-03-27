@@ -34,9 +34,9 @@ class LClassLoader {
         if (!$is_skip_cache_route && (LExecutionMode::isTesting() || LExecutionMode::isProduction())) {
             if (isset(self::$class_map[$clazz]))
             {
+                $original_path = self::$class_map[$clazz];
                 if (!self::hasCachedClassContent(self::$class_map[$clazz]))
                 {
-                    $original_path = self::$class_map[$clazz];
                     $original_content = file_get_contents($original_path);
                     $mangled_content = self::prepareClassContent($original_content);
                     self::saveMangledClassToCache($original_path, $mangled_content);
@@ -150,8 +150,8 @@ class LClassLoader {
     private static function createClassContentCacheDir() {
         $content_dir = $_SERVER['PROJECT_DIR'].LConfigReader::mustSimple('/classloader/class_cache_folder_path');
         if (!self::canSaveMangledClassesToCache()) {
-            mkdir(dirname($content_dir),0777,true);
-            chmod(dirname($content_dir),0777);
+            mkdir($content_dir,0777,true);
+            chmod($content_dir,0777);
         }
     }
     

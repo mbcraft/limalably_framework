@@ -25,6 +25,21 @@ class UrlMapResolverTest extends LTestCase {
         $urlmap = $resolver->resolveUrlMap("/prova");
         
         $this->assertTrue($urlmap->is_set("/exec/do"),"L'exec do non è impostato nell'urlmap!");
-        $this->assertEqual($urlmap->mustGet("/exec/do"),"/test/qualcosa","L'exec letto non corrisponde!");
+        $this->assertEqual($urlmap->mustGet("/exec/do"),"/test/qualcosa/prova","L'exec letto non corrisponde!");
+    }
+    
+    function testResolveFolderSubfolderAgain() {
+        
+        $resolver = $this->newUrlMapResolver();
+        
+        $urlmap = $resolver->resolveUrlMap("/folder/subfolder/again");
+        
+        var_dump($urlmap);
+        
+        $this->assertEqual($urlmap->mustGet('/exec/do'),"/test2/qualcosa2/again","L'exec do non corrisponde nella urlmap!");
+        $this->assertEqual($urlmap->mustGet('/session/my_session_key/cardinality'),"required","La cardinalità della chiave nella session non corrisponde nella urlmap!");
+        $this->assertEqual($urlmap->mustGet('/input/my_key/cardinality'),"required","La cardinalità della chiave nell'input non corrisponde nella urlmap!");
+        
+        
     }
 }

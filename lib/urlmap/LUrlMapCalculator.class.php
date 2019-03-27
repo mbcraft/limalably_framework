@@ -2,41 +2,43 @@
 
 class LUrlMapCalculator {
     
-    static $url_maps_data = [];
+    private $url_maps_data = [];
         
-    public static function shiftUrlmapFile($json_filename_path) {
+    public function shiftUrlmapFile($json_filename_path) {
         
         $array_data = json_decode(file_get_contents($json_filename_path), true);
         
-        array_unshift(self::$url_maps_data,$array_data);
+        array_unshift($this->url_maps_data,$array_data);
         
     }
     
-    public static function shiftUrlMapData($assoc_array) {
-        array_unshift(self::$url_maps_data,$assoc_array);
+    public function shiftUrlMapData($assoc_array) {
+        array_unshift($this->url_maps_data,$assoc_array);
     }
     
-    public static function calculate() {
+    public function calculate() {
                 
         $current_data = [];
-        foreach (self::$url_maps_data as $url_map_array_data) {
-            if (self::isRawExecData($url_map_array_data['exec'])) {
-                $url_map_array_data['exec'] = array('do' => $url_map_array_data['exec']);
+        foreach ($this->url_maps_data as $url_map_array_data) {
+            if (isset($url_map_array_data['exec'])) {
+                if ($this->isRawExecData($url_map_array_data['exec'])) {
+                    $url_map_array_data['exec'] = array('do' => $url_map_array_data['exec']);
+                }
             }
             $current_data = array_replace_recursive($current_data,$url_map_array_data);
-            $current_data = self::normalizeUrlMap($current_data);
+            $current_data = $this->normalizeUrlMap($current_data);
         }
         
         return new LHashMap($current_data);
     }
     
-    private static function isRawExecData($exec_array) {
+    private function isRawExecData($exec_array) {
         if (!is_array($exec_array)) return true;
         if (!isset($exec_array['do']) && !isset($exec_array['before']) && !isset($exec_array['after'])) return true;
         else return false;
     }
     
-    private static function normalizeUrlMap($url_map_data) {
+    private function normalizeUrlMap($url_map_data) {
         $url_map_hash = new LHashMap($url_map_data);
         
         $area_list = ['exec','session','input','output'];

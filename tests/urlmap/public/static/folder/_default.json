@@ -1,0 +1,8 @@
+{
+    "session" : {
+    
+        "my_session_key" : {
+            "cardinality" : "required"
+        }
+    }
+}

@@ -24,7 +24,7 @@ class LUrlMapResolver {
     private function getPrivateUrlMap($route) {
         $path = $this->root_folder.$this->private_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
-        return self::readUrlMap($path);
+        return $this->readUrlMap($path);
     }
     /**
      * Controlla se una route è valida come url map privata.
@@ -40,7 +40,8 @@ class LUrlMapResolver {
     
     private function getHashUrlMap($route) {
         $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
-        return self::readUrlMap($path);
+        $path = str_replace('//', '/', $path);
+        return $this->readUrlMap($path);
     }
     
     /**
@@ -51,6 +52,7 @@ class LUrlMapResolver {
      */
     private function isHashRoute($route) {
         $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
+        $path = str_replace('//', '/', $path);
         return is_readable($path);
     }
     
@@ -102,16 +104,17 @@ class LUrlMapResolver {
      * @throws \Exception Se il parametro non è una mappa hash con un valido link a urlmap
      */
     private function getValidUrlMapRouteLink($hash_map) {
-        if (!self::isUrlMapLink($hash_map)) throw new \Exception("Parameter is not a valid urlmap link!");
+        if (!$this->isUrlMapLink($hash_map)) throw new \Exception("Parameter is not a valid urlmap link!");
         $link = $hash_map->mustGet('/urlmap_link');
-        if (self::isPrivateRoute($link) && (self::isPublicRoute($link) || self::isHashRoute($link))) throw new \Exception("The linked urlmap is both private and static or hash_db!");
+        if ($this->isPrivateRoute($link) && ($this->isPublicRoute($link) || $this->isHashRoute($link))) throw new \Exception("The linked urlmap is both private and static or hash_db!");
         return $link;
     }
     
     private function getPublicUrlMap($route) {
         $path = $this->root_folder.$this->static_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
-        return self::readUrlMap($path);
+        LOutput::framework_debug("Ritorno l'urlmap pubblica alla route ".$route);
+        return $this->readUrlMap($path);
     }
     
     /**
@@ -127,9 +130,9 @@ class LUrlMapResolver {
     }
     
     private function normalizeUrlMapWithLink($hashmap) {
-        $route_link = self::getValidUrlMapRouteLink($hashmap);
+        $route_link = $this->getValidUrlMapRouteLink($hashmap);
         $hashmap->remove('/urlmap_link');
-        $linked_url_map = self::resolveUrlMap($route_link);
+        $linked_url_map = $this->resolveUrlMap($route_link);
         $linked_url_map_array = $linked_url_map->getRoot();
         $base_url_map_array = $hashmap->getRoot();
         $url_map_calculator = new LUrlMapCalculator();
@@ -140,8 +143,8 @@ class LUrlMapResolver {
      
     public function isShortcutToProc($route) {
         if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
-            if (self::isProcUrlMap($route)) {
-                if (self::isPublicRoute($route) || self::isHashRoute($route) || self::isPrivateRoute($route))
+            if ($this->isProcUrlMap($route)) {
+                if ($this->isPublicRoute($route) || $this->isHashRoute($route) || $this->isPrivateRoute($route))
                     throw new \Exception("Error : route is a proc shortcut but also something else.");
                 return true;
             }
@@ -152,8 +155,8 @@ class LUrlMapResolver {
     public function resolveProcShortcut($route) {
         //se sono in uno script e la route punta a una proc e la config è ok allora prendo quella
         if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
-            if (self::isProcUrlMap($route)) {
-                if (self::isPublicRoute($route) || self::isHashRoute($route) || self::isPrivateRoute($route))
+            if ($this->isProcUrlMap($route)) {
+                if ($this->isPublicRoute($route) || $this->isHashRoute($route) || $this->isPrivateRoute($route))
                     throw new \Exception("Error : route is a proc but also something else.");
                 $builder = new LUrlMapBuilder();
                 $builder->setFormat('output');
@@ -167,15 +170,16 @@ class LUrlMapResolver {
     private function resolvePublicUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
-            if (self::isPublicRoute($route)) {
+            LOutput::framework_debug("Risolvo la route pubblica : ".$route);
+            if ($this->isPublicRoute($route)) {
                 
-                $hashmap = self::getPublicUrlMap($route);
-                if (self::isUrlMapLink($hashmap)) {
-                    $hashmap = self::normalizeUrlMapWithLink($hashmap);
+                $hashmap = $this->getPublicUrlMap($route);
+                if ($this->isUrlMapLink($hashmap)) {
+                    $hashmap = $this->normalizeUrlMapWithLink($hashmap);
                 }
                 $calculator->shiftUrlMapData($hashmap->getRoot());
             }
-            $route = self::getParentRoute($route);
+            $route = $this->getParentRoute($route);
         } while ($route != null);
         return $calculator->calculate();
     }
@@ -183,22 +187,22 @@ class LUrlMapResolver {
     private function resolvePrivateUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
-            if (self::isPrivateRoute($route)) {
-                $hashmap = self::getPrivateUrlMap($route);
-                if (self::isUrlMapLink($hashmap)) {
-                    $hashmap = self::normalizeUrlMapWithLink($hashmap);
+            if ($this->isPrivateRoute($route)) {
+                $hashmap = $this->getPrivateUrlMap($route);
+                if ($this->isUrlMapLink($hashmap)) {
+                    $hashmap = $this->normalizeUrlMapWithLink($hashmap);
                 }
                 $calculator->shiftUrlMapData($hashmap->getRoot());
             }
-            $route = self::getParentRoute($route);
+            $route = $this->getParentRoute($route);
         } while ($route != null);
         return $calculator->calculate();
     }
     
     private function resolveHashUrlMap($route) {
-        $hashmap = self::getHashUrlMap($route);
-        if (self::isUrlMapLink($hashmap)) {
-            $hashmap = self::normalizeUrlMapWithLink($hashmap);
+        $hashmap = $this->getHashUrlMap($route);
+        if ($this->isUrlMapLink($hashmap)) {
+            $hashmap = $this->normalizeUrlMapWithLink($hashmap);
         }
         return $hashmap;
     }
@@ -218,24 +222,24 @@ class LUrlMapResolver {
         foreach ($route_checks as $route_check) {
             switch ($route_check) {
                 case 'static' : {
-                    if (self::isPublicRoute($route)) {
-                        if (self::isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and public");
-                        return self::resolvePublicUrlMap($route);
+                    if ($this->isPublicRoute($route)) {
+                        if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and public");
+                        return $this->resolvePublicUrlMap($route);
                     }
                     break;
                 }
                 case 'hash_db' : {
-                    if (self::isHashRoute($route)) {
-                        if (self::isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and hash");
-                        return self::resolveHashUrlMap($route);
+                    if ($this->isHashRoute($route)) {
+                        if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and hash");
+                        return $this->resolveHashUrlMap($route);
                     }
                     break;
                 }
             }
 
         }
-        if (self::isPrivateRoute($route)) {
-            return self::resolvePrivateUrlMap($route);
+        if ($this->isPrivateRoute($route)) {
+            return $this->resolvePrivateUrlMap($route);
         }
         return null;
     }

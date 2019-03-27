@@ -19,7 +19,8 @@ function project_require($filename_relative_path) {
 }
 
 class LClassLoader {
-    
+      
+    //patterns
     const PATTERN_FIND_NAMESPACES = "/namespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/i";
     const PATTERN_FIND_CLASSES = "/class[ ]+(?<class>[a-zA-Z_0-9]+)[{ ]+/i";
     const PATTERN_FIND_TRAITS = "/trait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ ]+/i";
@@ -28,7 +29,9 @@ class LClassLoader {
     private static $class_map = [];
     
     public static function autoload($clazz) {
-        if (LExecutionMode::isTesting() || LExecutionMode::isProduction()) {
+        $is_skip_cache_route = self::isSkipCacheRoute();
+        
+        if (!$is_skip_cache_route && (LExecutionMode::isTesting() || LExecutionMode::isProduction())) {
             if (isset(self::$class_map[$clazz]))
             {
                 if (!self::hasCachedClassContent(self::$class_map[$clazz]))
@@ -46,6 +49,10 @@ class LClassLoader {
     }
     
     private static function prepareClassContent($class_content) {
+        $mangled_call_list = LConfig::simple('/classloader/mangled_call_list');
+        foreach ($mangled_call_list as $call_text) {
+            $class_content = str_replace($call_text, '//'.$call_text, $class_content);
+        }
         return $class_content;
     }
     
@@ -89,6 +96,15 @@ class LClassLoader {
         if (is_file($_SERVER['PROJECT_DIR'].'vendor/autoload.php')) {
             require_once($_SERVER['PROJECT_DIR'].'vendor/autoload.php');
         }
+    }
+    
+    private static function isSkipCacheRoute() {
+        $is_skip_cache_route = in_array($_SERVER['ROUTE'],LConfigReader::simple('/classloader/skip_cache_route_list'));
+        $skip_cache_query_parameter = LConfigReader::simple('/classloader/skip_cache_query_parameter');
+        if ($skip_cache_query_parameter) {
+            $is_skip_cache_route |= strpos($_SERVER['RAW_ROUTE'],$skip_cache_query_parameter)!==false;
+        }
+        return $is_skip_cache_route;
     }
     
     private static function hasClassMapCache() {

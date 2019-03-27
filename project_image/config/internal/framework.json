@@ -91,6 +91,9 @@
             "framework_folder_list" : ["lib/"],
             "map_cache_file_path" : "temp/classloader/map/classloader_map_cache.php",
             "class_cache_folder_path" : "temp/classloader/classes/",
+            "mangled_call_list" : ["LOutput::framework_debug","LOutput::debug","LLog::debug","LLog::info"],
+            "skip_cache_route_list" : [],
+            "skip_cache_query_parameter" : null,
             "proc_folder" : "proc/"
         }
     }

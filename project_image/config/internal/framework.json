@@ -93,7 +93,7 @@
             "class_cache_folder_path" : "temp/classloader/classes/",
             "cache_commented_call_list" : ["LOutput::framework_debug","LOutput::debug","LLog::debug","LLog::info"],
             "skip_cache_route_list" : [],
-            "skip_cache_query_parameter" : "",
+            "skip_cache_query_parameter" : null,
             "proc_folder" : "proc/"
         }
     }

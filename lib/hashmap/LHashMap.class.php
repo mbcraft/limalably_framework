@@ -17,7 +17,7 @@ class LHashMap implements ArrayAccess {
         
         foreach ($path_parts as $p)
         {
-            if ($p!=null && $p!=="")
+            if ($p!=null)
                 $result[] = $p;
         }
         return $result;
@@ -288,7 +288,7 @@ class LHashMap implements ArrayAccess {
         $current_node = $this->data;
         foreach ($path_parts as $p)
         {
-            if (!isset($current_node[$p]))
+            if (!array_key_exists($p,$current_node))
                 return false;
 
             $current_node = $current_node[$p];

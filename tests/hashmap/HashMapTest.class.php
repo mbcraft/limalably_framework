@@ -2,6 +2,25 @@
 
 class HashMapTest extends LTestCase {
     
+    function testArrayNullValueIsSet() {
+        $data = ["mykey" => null];
+        
+        $this->assertFalse(isset($data["mykey"]),"Il valore non è considerato valido per isset quando è salvato come null!");
+        
+        $this->assertTrue(array_key_exists("mykey", $data),"Il valore non è considerato valido anche con l'uso di array_key_exists!");
+        
+    }
+    
+    function testSetNullValueIsSet() {
+        
+        $map = new LHashMap();
+        
+        $map->set("/some/path", null);
+        
+        $this->assertTrue($map->is_set('/some/path'),"Il valore non è considerato impostato quando è salvato come null!");
+        
+    }
+    
     function testPathTokensFunctions1()
     {
         $path = "/html/head/keywords";

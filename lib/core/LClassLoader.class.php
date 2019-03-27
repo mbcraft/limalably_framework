@@ -49,7 +49,7 @@ class LClassLoader {
     }
     
     private static function prepareClassContent($class_content) {
-        $mangled_call_list = LConfig::simple('/classloader/mangled_call_list');
+        $mangled_call_list = LConfig::simple('/classloader/cache_commented_call_list');
         foreach ($mangled_call_list as $call_text) {
             $class_content = str_replace($call_text, '//'.$call_text, $class_content);
         }

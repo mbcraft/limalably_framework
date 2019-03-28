@@ -12,8 +12,9 @@ class LRouteCapture {
         return $this->captureParameters($user_pattern, $_SERVER['ROUTE']);
     }
     
-    function captureParameters($user_pattern,$route) {
+    function captureParameters($capture_pattern,$route) {
     
+        $user_pattern = $capture_pattern;
         if (LStringUtils::startsWith($user_pattern,'/')) 
         {
             $start_from_beginning = true;
@@ -33,17 +34,20 @@ class LRouteCapture {
         } else {
             $user_pattern = '/'.$user_pattern.'$/i'; //begin and end
         }
-        
-        $result = preg_match($user_pattern,$route,$matches);
-        
-        if ($result) {
-            foreach ($matches as $k => $v)
-            {
-                if (is_numeric($k)) unset($matches[$k]);
+        try {
+            $result = preg_match($user_pattern,$route,$matches);
+
+            if ($result) {
+                foreach ($matches as $k => $v)
+                {
+                    if (is_numeric($k)) unset($matches[$k]);
+                }
+                return $matches;
             }
-            return $matches;
+            else throw new \Exception("Unable to capture [".$capture_pattern."] data from route [".$route."]");
+        } catch (\Exception $ex) {
+            throw new \Exception("Capture pattern contains invalid characters : ".$capture_pattern);
         }
-        else return null;
     }
     
     

@@ -82,7 +82,7 @@
                 "min_level" : "debug"
             }
         },
-        "hashmaps" : {
+        "treemap" : {
             "false_strings" : ["false","0","no",false]
         },
         "classloader" : {
@@ -95,6 +95,9 @@
             "skip_cache_route_list" : [],
             "skip_cache_query_parameter" : null,
             "proc_folder" : "proc/"
+        },
+        "request" : {
+            "input_source_list" : ["parameters","files","post","get"]
         }
     }
 }

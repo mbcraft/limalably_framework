@@ -82,7 +82,7 @@ class LTreeMap implements ArrayAccess {
         
         $value = $this->get($path,$default_value);
         
-        $false_values = LConfig::mustGet('/defaults/hashmaps/false_strings');
+        $false_values = LConfig::mustGet('/defaults/treemap/false_strings');
         if (in_array($value, $false_values)) return false;
         else return true;
     }

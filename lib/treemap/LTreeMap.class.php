@@ -18,7 +18,7 @@ class LTreeMap implements ArrayAccess {
         foreach ($path_parts as $p)
         {
             if ($p!=null)
-                $result[] = $p;
+                $result[] = str_replace('%','/',$p);
         }
         return $result;
     }

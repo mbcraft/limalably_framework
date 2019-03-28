@@ -38,6 +38,7 @@ class LTreeMapView implements ArrayAccess {
      */
     public function view($path)
     {
+        $path = $path.'/';
         return new LTreeMapView($this->view_prefix.$path,$this->view_map);
     }
 

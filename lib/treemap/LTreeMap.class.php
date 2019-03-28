@@ -82,7 +82,7 @@ class LTreeMap implements ArrayAccess {
         
         $value = $this->get($path,$default_value);
         
-        $false_values = LConfig::mustGet('/defaults/treemap/false_strings');
+        $false_values = LConfig::mustGet('/defaults/treemap/false_values');
         if (in_array($value, $false_values)) return false;
         else return true;
     }
@@ -191,9 +191,7 @@ class LTreeMap implements ArrayAccess {
             $current_node = &$current_node[$p];
         }
         
-
-
-        $current_node = array_merge($current_node,$real_value);
+        $current_node = array_merge_recursive($current_node,$real_value);
     }
     
     /*
@@ -277,9 +275,7 @@ class LTreeMap implements ArrayAccess {
      */
     public function view($path)
     {
-        if (!$this->is_set($path))
-                return null;
-        
+        $path = $path.'/';
         return new LTreeMapView($path,$this);
     }
     

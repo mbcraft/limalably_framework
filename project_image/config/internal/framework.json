@@ -83,7 +83,7 @@
             }
         },
         "treemap" : {
-            "false_strings" : ["false","0","no",false]
+            "false_values" : ["false","null","0","no",0,false,null]
         },
         "classloader" : {
             "code_file_ends_with" : [".class.php",".interface.php",".trait.php"],

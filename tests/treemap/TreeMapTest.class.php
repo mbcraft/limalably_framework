@@ -301,6 +301,28 @@ class TreeMapTest extends LTestCase {
 
     }
 
+    function testIterator1() {
+        $t = new LTreeMap(["a" => 1,"b" => 2,"c" => 3]);
+        
+        $total = 0;
+        foreach ($t as $k => $v) {
+            $total += $v;
+        }
+        
+        $this->assertEqual($total,6,"Il valore atteso non corrisponde!");
+    }
+    
+    function testIterator2() {
+        $t = new LTreeMap(["a" => 1,"b" => 2,"c" => ["aa" => 1,"bb" => 15]]);
+        
+        $tm = $t->view("c");
+        $total = 0;
+        foreach ($tm as $k => $v) {
+            $total += $v;
+        }
+        
+        $this->assertEqual($total,16,"Il valore atteso non corrisponde!");
+    }
 
 
 

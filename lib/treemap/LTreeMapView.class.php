@@ -1,6 +1,6 @@
 <?php
 
-class LTreeMapView implements ArrayAccess {
+class LTreeMapView implements ArrayAccess, Iterator {
     
     private $view_map;
     private $view_prefix;
@@ -129,5 +129,27 @@ class LTreeMapView implements ArrayAccess {
 
     public function offsetUnset($path): void {
         $this->view_map->remove($this->view_prefix.$path);
+    }
+    
+    public function current() {
+        return $this->get($this->current_keys[$this->current_index]);
+    }
+
+    public function key() {
+        return $this->current_keys[$this->current_index];
+    }
+
+    public function next(): void {
+        $this->current_index++;
+    }
+
+    public function rewind(): void {
+        $this->current_keys = $this->view_map->keys($this->view_prefix);
+        $this->current_keys[] = null;
+        $this->current_index = 0;
+    }
+
+    public function valid(): bool {
+        return isset($this->current_keys[$this->current_index]);
     }
 }

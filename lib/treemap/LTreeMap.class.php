@@ -1,8 +1,11 @@
 <?php
 
-class LTreeMap implements ArrayAccess {
+class LTreeMap implements ArrayAccess, Iterator {
     
     private $data=null;
+    
+    private $current_keys = null;
+    private $current_index = -1;
     
     public function __construct($initial_data = array())
     {
@@ -129,7 +132,7 @@ class LTreeMap implements ArrayAccess {
             
         }
         
-        if ($value instanceof LTreeMap) //link
+        if ($value instanceof LTreeMap || $value instanceof LTreeMapView) //link
             $current_node[self::last_path_token($path)] = $value->get("/");//&$value->data;
         else
             $current_node[self::last_path_token($path)] = $value;
@@ -163,7 +166,7 @@ class LTreeMap implements ArrayAccess {
             $current_node = &$current_node[$p];
         }
         
-        if ($value instanceof LTreeMap)
+        if ($value instanceof LTreeMap || $value instanceof LTreeMapView)
             $current_node[] = $value->get("/");//&$value;
         else
             $current_node[] = $value;
@@ -341,6 +344,28 @@ class LTreeMap implements ArrayAccess {
 
     public function offsetUnset($offset): void {
         $this->remove($offset);
+    }
+
+    public function current() {
+        return $this->get($this->current_keys[$this->current_index]);
+    }
+
+    public function key(){
+        return $this->current_keys[$this->current_index];
+    }
+
+    public function next(): void {
+        $this->current_index++;
+    }
+
+    public function rewind(): void {
+        $this->current_keys = $this->keys('/');
+        $this->current_keys[] = null;
+        $this->current_index = 0;
+    }
+
+    public function valid(): bool {
+        return isset($this->current_keys[$this->current_index]);
     }
 
 }

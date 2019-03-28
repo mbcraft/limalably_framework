@@ -25,7 +25,7 @@ class LUrlMapCalculator {
             $current_data = $this->normalizeUrlMap($current_data);
         }
         
-        return new LTreeMap($current_data);
+        return $current_data;
     }
     
     private function isRawExecData($exec_array) {

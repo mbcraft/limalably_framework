@@ -22,10 +22,10 @@ class LUrlMapResolver {
         
     }
     
-    private function getPrivateUrlMap($route) {
+    private function getPrivateUrlMapAsArray($route) {
         $path = $this->root_folder.$this->private_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
-        return $this->readUrlMap($path);
+        return $this->readUrlMapAsArray($path);
     }
     /**
      * Controlla se una route è valida come url map privata.
@@ -39,10 +39,10 @@ class LUrlMapResolver {
         return is_readable($path);
     }
     
-    private function getHashUrlMap($route) {
+    private function getHashUrlMapAsArray($route) {
         $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
         $path = str_replace('//', '/', $path);
-        return $this->readUrlMap($path);
+        return $this->readUrlMapAsArray($path);
     }
     
     /**
@@ -64,13 +64,12 @@ class LUrlMapResolver {
      * @return \LTreeMap La hashmap risultante
      * @throws \Exception Se ci sono degli errori in fase di decodifica
      */
-    public function readUrlMap($path) {
+    public function readUrlMapAsArray($path) {
         if (!is_readable($path)) throw new \Exception("UrlMap at path ".$path." is not readable."); 
         $result_array = json_decode(file_get_contents($path),true);
         $last_error = json_last_error();
         if ($last_error == JSON_ERROR_NONE) {
-            $treemap = new LTreeMap($result_array);
-            return $treemap;
+            return $result_array;
         }
         switch ($last_error) {
             case JSON_ERROR_DEPTH : throw new \Exception("Error decoding urlmap at path : ".$path.". Max depth reached.");
@@ -92,8 +91,8 @@ class LUrlMapResolver {
      * @param type $tree_map
      * @return boolean true se la url map contiene un link, false altrimenti
      */
-    private function isUrlMapWithIncludes($tree_map) {
-        if ($tree_map->is_set('/extends') || $tree_map->is_set('/imports')) return true;
+    private function isUrlMapWithIncludes($array_map) {
+        if (isset($array_map['extends']) || isset($array_map['imports'])) return true;
         else return false;
     }
     
@@ -108,11 +107,11 @@ class LUrlMapResolver {
         if ($this->isPrivateRoute($route) && ($this->isPublicRoute($route) || $this->isHashRoute($route))) throw new \Exception("The linked urlmap is both private and static or hash_db!");
     }
     
-    private function getPublicUrlMap($route) {
+    private function getPublicUrlMapAsArray($route) {
         $path = $this->root_folder.$this->static_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
         LOutput::framework_debug("Ritorno l'urlmap pubblica alla route ".$route);
-        return $this->readUrlMap($path);
+        return $this->readUrlMapAsArray($path);
     }
     
     /**
@@ -127,24 +126,33 @@ class LUrlMapResolver {
         return is_readable($path);
     }
     
-    private function normalizeUrlMapWithIncludes($treemap) {
+    private function normalizeUrlMapWithIncludes($array_map) {
         $url_map_calculator = new LUrlMapCalculator();
-        if ($treemap->is_set('/extends')) {
-            $route_list = $treemap->getArray('/extends',[]);
+        if (isset($array_map['extends'])) {
+            $route_list = $array_map['extends'];
+            if (!is_array($route_list)) $route_list = array($route_list);
             foreach ($route_list as $route) {
                 $map = $this->internalResolveUrlMap($route);
-                $url_map_calculator->addUrlMapData($map->getRoot());
+                $url_map_calculator->addUrlMapData($map);
             }
-            $treemap->remove('/extends');
+            unset($array_map['extends']);
         }
-        $url_map_calculator->addUrlMapData($treemap->getRoot());
-        if ($treemap->is_set('/imports')) {
-            $route_list = $treemap->getArray('/imports',[]);
+        $route_list = null;
+        //rimuovo prima gli import per non causare strane ricorsioni
+        if (isset($array_map['imports'])) {
+            $route_list = $array_map['imports'];
+            if (!is_array($route_list)) $route_list = array($route_list);
+            unset($array_map['imports']);
+        }
+        
+        $url_map_calculator->addUrlMapData($array_map);
+        
+        if ($route_list) {
             foreach ($route_list as $route) {
                 $map = $this->internalResolveUrlMap($route);
-                $url_map_calculator->addUrlMapData($map->getRoot());
+                $url_map_calculator->addUrlMapData($map);
             }
-            $treemap->remove('/imports');
+            
         }
         
         return $url_map_calculator->calculate();
@@ -182,11 +190,11 @@ class LUrlMapResolver {
             LOutput::framework_debug("Risolvo la route pubblica : ".$route);
             if ($this->isPublicRoute($route)) {
                 
-                $treemap = $this->getPublicUrlMap($route);
-                if ($this->isUrlMapWithIncludes($treemap)) {
-                    $treemap = $this->normalizeUrlMapWithIncludes($treemap);
+                $array_map = $this->getPublicUrlMapAsArray($route);
+                if ($this->isUrlMapWithIncludes($array_map)) {
+                    $array_map = $this->normalizeUrlMapWithIncludes($array_map);
                 }
-                $calculator->unshiftUrlMapData($treemap->getRoot());
+                $calculator->unshiftUrlMapData($array_map);
             }
             $route = $this->getParentRoute($route);
         } while ($route != null);
@@ -197,11 +205,11 @@ class LUrlMapResolver {
         $calculator = new LUrlMapCalculator();
         do {
             if ($this->isPrivateRoute($route)) {
-                $treemap = $this->getPrivateUrlMap($route);
-                if ($this->isUrlMapWithIncludes($treemap)) {
-                    $treemap = $this->normalizeUrlMapWithIncludes($treemap);
+                $array_map = $this->getPrivateUrlMapAsArray($route);
+                if ($this->isUrlMapWithIncludes($array_map)) {
+                    $array_map = $this->normalizeUrlMapWithIncludes($array_map);
                 }
-                $calculator->unshiftUrlMapData($treemap->getRoot());
+                $calculator->unshiftUrlMapData($array_map);
             }
             $route = $this->getParentRoute($route);
         } while ($route != null);
@@ -209,11 +217,11 @@ class LUrlMapResolver {
     }
     
     private function resolveHashUrlMap($route) {
-        $treemap = $this->getHashUrlMap($route);
-        if ($this->isUrlMapWithIncludes($treemap)) {
-            $treemap = $this->normalizeUrlMapWithIncludes($treemap);
+        $array_map = $this->getHashUrlMapAsArray($route);
+        if ($this->isUrlMapWithIncludes($array_map)) {
+            $array_map = $this->normalizeUrlMapWithIncludes($array_map);
         }
-        return $treemap;
+        return $array_map;
     }
     
     public function getParentRoute($route) {
@@ -225,7 +233,9 @@ class LUrlMapResolver {
     
     public function resolveUrlMap($route) {
         $this->urlmap_references = [];
-        return $this->internalResolveUrlMap($route);
+        $array_map = $this->internalResolveUrlMap($route);
+        if ($array_map) return new LTreeMap($array_map);
+        else return null;
     }
     
     private function internalResolveUrlMap($route) {

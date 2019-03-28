@@ -91,7 +91,7 @@ class LCallExecutor {
         } catch (\Exception $ex) {
             throw new \Exception("Unable to find class to call : ".$call_spec);
         }
-        if (!$static_call && $reflection_class->isInstantiable()) throw new \Exception("Can't call method on abstract class : ".$call_spec);
+        if (!$static_call && !$reflection_class->isInstantiable()) throw new \Exception("Can't call method on abstract class : ".$call_spec);
         if (!$reflection_class->hasMethod($method_name)) throw new \Exception("Unable to find method on class : ".$call_spec);
         $reflection_method = $reflection_class->getMethod($method_name);
         if ($reflection_method->isAbstract()) throw new \Exception("Method to call is abstract and can't be called : ".$call_spec);

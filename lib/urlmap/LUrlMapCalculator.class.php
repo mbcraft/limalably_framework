@@ -3,17 +3,13 @@
 class LUrlMapCalculator {
     
     private $url_maps_data = [];
-        
-    public function shiftUrlmapFile($json_filename_path) {
-        
-        $array_data = json_decode(file_get_contents($json_filename_path), true);
-        
-        array_unshift($this->url_maps_data,$array_data);
-        
+         
+    public function unshiftUrlMapData($assoc_array) {
+        array_unshift($this->url_maps_data,$assoc_array);
     }
     
-    public function shiftUrlMapData($assoc_array) {
-        array_unshift($this->url_maps_data,$assoc_array);
+    public function addUrlMapData($assoc_array) {
+        array_push($this->url_maps_data,$assoc_array);
     }
     
     public function calculate() {
@@ -29,7 +25,7 @@ class LUrlMapCalculator {
             $current_data = $this->normalizeUrlMap($current_data);
         }
         
-        return new LHashMap($current_data);
+        return new LTreeMap($current_data);
     }
     
     private function isRawExecData($exec_array) {
@@ -39,7 +35,7 @@ class LUrlMapCalculator {
     }
     
     private function normalizeUrlMap($url_map_data) {
-        $url_map_hash = new LHashMap($url_map_data);
+        $url_map_hash = new LTreeMap($url_map_data);
         
         $area_list = ['exec','session','input','output'];
         foreach ($area_list as $area) {

@@ -1,6 +1,6 @@
 <?php
 
-class HashMapTest extends LTestCase {
+class TreeMapTest extends LTestCase {
     
     function testArrayNullValueIsSet() {
         $data = ["mykey" => null];
@@ -13,7 +13,7 @@ class HashMapTest extends LTestCase {
     
     function testSetNullValueIsSet() {
         
-        $map = new LHashMap();
+        $map = new LTreeMap();
         
         $map->set("/some/path", null);
         
@@ -25,17 +25,17 @@ class HashMapTest extends LTestCase {
     {
         $path = "/html/head/keywords";
         
-        $path_tokens = LHashMap::path_tokens($path);
+        $path_tokens = LTreeMap::path_tokens($path);
 
         $this->assertEqual(count($path_tokens),3,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($path_tokens[0],"html","Il token del path non corrisponde");
         $this->assertEqual($path_tokens[1],"head","Il token del path non corrisponde");
         $this->assertEqual($path_tokens[2],"keywords","Il token del path non corrisponde");
         
-        $last_token = LHashMap::last_path_token($path);
+        $last_token = LTreeMap::last_path_token($path);
         $this->assertEqual($last_token,"keywords","Il token del path non corrisponde");
         
-        $all_but_last = LHashMap::all_but_last_path_tokens($path);
+        $all_but_last = LTreeMap::all_but_last_path_tokens($path);
 
         $this->assertEqual(count($all_but_last),2,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($all_but_last[0],"html","Il token del path non corrisponde");
@@ -48,15 +48,15 @@ class HashMapTest extends LTestCase {
         $path = "/html";
         
        
-        $path_tokens = LHashMap::path_tokens($path);
+        $path_tokens = LTreeMap::path_tokens($path);
 
         $this->assertEqual(count($path_tokens),1,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($path_tokens[0],"html","Il token del path non corrisponde");
         
-        $last_token = LHashMap::last_path_token($path);
+        $last_token = LTreeMap::last_path_token($path);
         $this->assertEqual($last_token,"html","Il token del path non corrisponde");
         
-        $all_but_last = LHashMap::all_but_last_path_tokens($path);
+        $all_but_last = LTreeMap::all_but_last_path_tokens($path);
  
         $this->assertEqual(count($all_but_last),0,"Il numero dei path token non corrisponde!!");
 
@@ -66,15 +66,15 @@ class HashMapTest extends LTestCase {
     {
         $path = "/html//";
         
-        $path_tokens = LHashMap::path_tokens($path);
+        $path_tokens = LTreeMap::path_tokens($path);
 
         $this->assertEqual(count($path_tokens),1,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($path_tokens[0],"html","Il token del path non corrisponde");
         
-        $last_token = LHashMap::last_path_token($path);
+        $last_token = LTreeMap::last_path_token($path);
         $this->assertEqual($last_token,"html","Il token del path non corrisponde");
         
-        $all_but_last = LHashMap::all_but_last_path_tokens($path);
+        $all_but_last = LTreeMap::all_but_last_path_tokens($path);
  
         $this->assertEqual(count($all_but_last),0,"Il numero dei path token non corrisponde!!");
 
@@ -84,17 +84,17 @@ class HashMapTest extends LTestCase {
     {
         $path = "//html///head/keywords/";
         
-        $path_tokens = LHashMap::path_tokens($path);
+        $path_tokens = LTreeMap::path_tokens($path);
 
         $this->assertEqual(count($path_tokens),3,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($path_tokens[0],"html","Il token del path non corrisponde");
         $this->assertEqual($path_tokens[1],"head","Il token del path non corrisponde");
         $this->assertEqual($path_tokens[2],"keywords","Il token del path non corrisponde");
         
-        $last_token = LHashMap::last_path_token($path);
+        $last_token = LTreeMap::last_path_token($path);
         $this->assertEqual($last_token,"keywords","Il token del path non corrisponde");
         
-        $all_but_last = LHashMap::all_but_last_path_tokens($path);
+        $all_but_last = LTreeMap::all_but_last_path_tokens($path);
 
         $this->assertEqual(count($all_but_last),2,"Il numero dei path token non corrisponde!!");
         $this->assertEqual($all_but_last[0],"html","Il token del path non corrisponde");
@@ -104,7 +104,7 @@ class HashMapTest extends LTestCase {
     
     function testSimpleLevel1()
     {
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->set("/first/again","my_value");
         
@@ -119,7 +119,7 @@ class HashMapTest extends LTestCase {
     }
     
     function testAddAfterSet() {
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->set("/html/head/keywords","hello");
         
@@ -134,7 +134,7 @@ class HashMapTest extends LTestCase {
     
     function testAdd()
     {
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->add("/html/head/keywords","hello");
         
@@ -147,7 +147,7 @@ class HashMapTest extends LTestCase {
     
     function testRemove()
     {
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->set("/html/head/keywords",array("hello","world"));
         
@@ -170,7 +170,7 @@ class HashMapTest extends LTestCase {
     
     function testClear()
     {        
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->set("/html/head/keywords",array("hello","spank"));
         
@@ -189,7 +189,7 @@ class HashMapTest extends LTestCase {
     
     function testTreeSetGetAdd()
     {        
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->set("/html/head/keywords",array("hello","spank"));
         
@@ -203,7 +203,7 @@ class HashMapTest extends LTestCase {
     
     function testMerge()
     {        
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->set("/html/head/keywords",array("hello","spank"));
         
@@ -214,7 +214,7 @@ class HashMapTest extends LTestCase {
     
     function testPurge()
     {       
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $r->set("/html/head/keywords",array("hello","spank","blabla"));
         
@@ -228,7 +228,7 @@ class HashMapTest extends LTestCase {
     
     function testTreeHasNode()
     {       
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $this->assertFalse($r->is_set("/html/head/keywords"),"Il nodo /html/head/keywords e' stato trovato!!");
         
@@ -244,7 +244,7 @@ class HashMapTest extends LTestCase {
     
     function testGetChangeData()
     {
-        $r = new LHashMap();
+        $r = new LTreeMap();
         
         $this->assertFalse($r->is_set("/html/head/keywords"),"Il nodo /html/head/keywords e' stato trovato!!");
         
@@ -266,7 +266,7 @@ class HashMapTest extends LTestCase {
     
     function testBidirectionalView()
     {
-        $t1 = new LHashMap();
+        $t1 = new LTreeMap();
         
         $t1->set("/prova","ciao");
         $t1->set("/altro/prove/valori",array("primo","secondo","terzo"));
@@ -288,11 +288,11 @@ class HashMapTest extends LTestCase {
     
     function testComposedTrees()
     {
-        $t1 = new LHashMap();
+        $t1 = new LTreeMap();
         $t1->set("/master/test",array("a","b","c","d"));
         $t1->set("/master/some_other_values","blahblahblah");
         
-        $t2 = new LHashMap();
+        $t2 = new LTreeMap();
         $t2->set("/intresting/new_values",array("e","f","g","h","i"));
         
         $t1->set("/master/some_other_values",$t2);
@@ -306,7 +306,7 @@ class HashMapTest extends LTestCase {
 
     function testDataEntry()
     {
-        $t1 = new LHashMap();
+        $t1 = new LTreeMap();
         $t1->set("/master/test","xyz");
 
         $this->assertEqual($t1->get("/master/test"),"xyz","Il valore di /master/test non e' xyz!!");

@@ -1,24 +1,24 @@
 <?php
 
-trait LStaticReadHashMap {
+trait LStaticReadTreeMap {
     
     
     static function mustGetOriginal($path) {
         self::setupIfNeeded();
         
-        return self::$hash_map->mustGetOriginal($path);
+        return self::$tree_map->mustGetOriginal($path);
     }
     
     static function getOriginal($path,$default_value = null) {
         self::setupIfNeeded();
         
-        return self::$hash_map->getOriginal($path,$default_value);
+        return self::$tree_map->getOriginal($path,$default_value);
     }
     
     public static function mustGetBoolean($path) {
         self::setupIfNeeded();
         
-        return self::$hash_map->mustGetBoolean($path);
+        return self::$tree_map->mustGetBoolean($path);
     }
     
     /**
@@ -30,7 +30,7 @@ trait LStaticReadHashMap {
     public static function getBoolean($path,$default_value = null) {
         self::setupIfNeeded();
         
-        return self::$hash_map->getBoolean($path,$default_value);
+        return self::$tree_map->getBoolean($path,$default_value);
     }
     
     /*
@@ -48,7 +48,7 @@ trait LStaticReadHashMap {
     {
         self::setupIfNeeded();
         
-        return self::$hash_map->get($path,$default_value);
+        return self::$tree_map->get($path,$default_value);
     }
     
     /**
@@ -61,7 +61,7 @@ trait LStaticReadHashMap {
     public static function mustGet($path) {
         self::setupIfNeeded();
         
-        return self::$hash_map->mustGet($path);
+        return self::$tree_map->mustGet($path);
     }
     
 
@@ -73,7 +73,7 @@ trait LStaticReadHashMap {
     {
         self::setupIfNeeded();
         
-        return self::$hash_map->is_set($path);
+        return self::$tree_map->is_set($path);
     }
 
     /*
@@ -85,7 +85,7 @@ trait LStaticReadHashMap {
     {
         self::setupIfNeeded();
         
-        return self::$hash_map->keys($path);
+        return self::$tree_map->keys($path);
 
     }
     
@@ -97,7 +97,7 @@ trait LStaticReadHashMap {
     {
         self::setupIfNeeded();
         
-        return self::$hash_map->view($path);
+        return self::$tree_map->view($path);
     }
     
 }

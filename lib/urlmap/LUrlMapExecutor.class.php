@@ -5,7 +5,7 @@ class LUrlMapExecutor {
     private $my_url_map = null;
     
     function __construct($url_map) {
-        if (!$url_map instanceof LHashMap) throw new \Exception("Url map is not valid");
+        if (!$url_map instanceof LTreeMap) throw new \Exception("Url map is not valid");
         $this->my_url_map = $url_map;
     }
     

@@ -33,9 +33,7 @@ class UrlMapResolverTest extends LTestCase {
         $resolver = $this->newUrlMapResolver();
         
         $urlmap = $resolver->resolveUrlMap("/folder/subfolder/again");
-        
-        var_dump($urlmap);
-        
+                
         $this->assertEqual($urlmap->mustGet('/exec/do'),"/test2/qualcosa2/again","L'exec do non corrisponde nella urlmap!");
         $this->assertEqual($urlmap->mustGet('/session/my_session_key/cardinality'),"required","La cardinalità della chiave nella session non corrisponde nella urlmap!");
         $this->assertEqual($urlmap->mustGet('/input/my_key/cardinality'),"required","La cardinalità della chiave nell'input non corrisponde nella urlmap!");

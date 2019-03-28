@@ -6,7 +6,7 @@ Some help from :
  * https://stackoverflow.com/users/5732351/rod-elias
  *  */
 
-trait LStaticWriteHashMap {
+trait LStaticWriteTreeMap {
     
     /*
      * Imposta un valore. L'ultima parte del path diventa la chiave.
@@ -20,7 +20,7 @@ trait LStaticWriteHashMap {
     {
         self::setupIfNeeded();
         
-        self::$hash_map->set($path,$value);
+        self::$tree_map->set($path,$value);
     }
     
     /*
@@ -39,7 +39,7 @@ trait LStaticWriteHashMap {
     {
         self::setupIfNeeded();
         
-        self::$hash_map->add($path,$value);
+        self::$tree_map->add($path,$value);
     }
     
     /*
@@ -51,7 +51,7 @@ trait LStaticWriteHashMap {
     {
         self::setupIfNeeded();
         
-        self::$hash_map->merge($path,$value);
+        self::$tree_map->merge($path,$value);
         
     }
     
@@ -62,14 +62,14 @@ trait LStaticWriteHashMap {
     {
         self::setupIfNeeded();
         
-        self::$hash_map->purge($path,$keys);
+        self::$tree_map->purge($path,$keys);
     }
     
     public static function remove($path)
     {
         self::setupIfNeeded();
         
-        self::$hash_map->remove($path);
+        self::$tree_map->remove($path);
     }
     
     /**
@@ -79,6 +79,6 @@ trait LStaticWriteHashMap {
     {
         self::setupIfNeeded();
         
-        self::$hash_map->clear();
+        self::$tree_map->clear();
     } 
 }

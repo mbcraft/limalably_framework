@@ -1,11 +1,11 @@
 <?php
 
 //hashmap
-require_once ('lib/hashmap/LHashMap.class.php');
-require_once ('lib/hashmap/LHashMapView.class.php');
-require_once ('lib/hashmap/LStaticHashMapBase.trait.php');
-require_once ('lib/hashmap/LStaticReadHashMap.trait.php');
-require_once ('lib/hashmap/LStaticWriteHashMap.trait.php');
+require_once ('lib/treemap/LTreeMap.class.php');
+require_once ('lib/treemap/LTreeMapView.class.php');
+require_once ('lib/treemap/LStaticTreeMapBase.trait.php');
+require_once ('lib/treemap/LStaticReadTreeMap.trait.php');
+require_once ('lib/treemap/LStaticWriteTreeMap.trait.php');
 
 //config
 require_once ('lib/config/LConfig.class.php');

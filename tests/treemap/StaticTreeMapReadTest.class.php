@@ -1,6 +1,6 @@
 <?php
 
-class StaticHashMapReadTest extends LTestCase {
+class StaticTreeMapReadTest extends LTestCase {
         
     function testBasicConfigReadData() {
         

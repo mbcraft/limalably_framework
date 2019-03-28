@@ -1,10 +1,10 @@
 <?php
 
-class StaticHashMapWriteTest extends LTestCase {
+class StaticTreeMapWriteTest extends LTestCase {
 
-    use LStaticHashMapBase;
-    use LStaticReadHashMap;
-    use LStaticWriteHashMap;
+    use LStaticTreeMapBase;
+    use LStaticReadTreeMap;
+    use LStaticWriteTreeMap;
 
     function testFalseStrings() {
         self::clear();

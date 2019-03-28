@@ -5,7 +5,7 @@ class LUrlMapBuilder {
     private $my_map;
     
     public function __construct() {
-        $this->my_map = new LHashMap();
+        $this->my_map = new LTreeMap();
     }
     
     function setFormat($format) {

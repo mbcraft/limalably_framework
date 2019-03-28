@@ -1,6 +1,6 @@
 <?php
 
-class LHashMapView implements ArrayAccess {
+class LTreeMapView implements ArrayAccess {
     
     private $view_map;
     private $view_prefix;
@@ -38,7 +38,7 @@ class LHashMapView implements ArrayAccess {
      */
     public function view($path)
     {
-        return new LHashMapView($this->view_prefix.$path,$this->view_map);
+        return new LTreeMapView($this->view_prefix.$path,$this->view_map);
     }
 
     /*

@@ -1,6 +1,6 @@
 <?php
 
-class LHashMap implements ArrayAccess {
+class LTreeMap implements ArrayAccess {
     
     private $data=null;
     
@@ -36,6 +36,11 @@ class LHashMap implements ArrayAccess {
         return array_pop($path_tokens);
     }
     
+    public function getArray($path,$default_value) {
+        $value = $this->get($path,$default_value);
+        if (!is_array($value)) $value = array($value);
+        return $value;
+    }
     
     public function mustGetOriginal($path) {
         if (!$this->is_set($path))
@@ -124,7 +129,7 @@ class LHashMap implements ArrayAccess {
             
         }
         
-        if ($value instanceof LHashMap) //link
+        if ($value instanceof LTreeMap) //link
             $current_node[self::last_path_token($path)] = $value->get("/");//&$value->data;
         else
             $current_node[self::last_path_token($path)] = $value;
@@ -158,7 +163,7 @@ class LHashMap implements ArrayAccess {
             $current_node = &$current_node[$p];
         }
         
-        if ($value instanceof LHashMap)
+        if ($value instanceof LTreeMap)
             $current_node[] = $value->get("/");//&$value;
         else
             $current_node[] = $value;
@@ -275,7 +280,7 @@ class LHashMap implements ArrayAccess {
         if (!$this->is_set($path))
                 return null;
         
-        return new LHashMapView($path,$this);
+        return new LTreeMapView($path,$this);
     }
     
     /*

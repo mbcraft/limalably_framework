@@ -2,8 +2,8 @@
 
 class LConfig {
 
-    use LStaticHashMapBase;
-    use LStaticReadHashMap;
+    use LStaticTreeMapBase;
+    use LStaticReadTreeMap;
 
     private static $init_called = false;
     private static $php_config_found = false;
@@ -21,7 +21,7 @@ class LConfig {
         self::setupIfNeeded();
 
         if (!self::is_set($var_name)) {
-            self::$hash_map->set($var_name, $_SERVER[$var_name]);
+            self::$tree_map->set($var_name, $_SERVER[$var_name]);
             LOutput::framework_debug('Server var ' . $var_name . ' persisted into configuration ...');
         }
     }
@@ -208,7 +208,7 @@ class LConfig {
             $final_data = array_replace_recursive($internal_json_config, self::get('/'));
         }
 
-        self::$hash_map->setRoot($final_data);
+        self::$tree_map->setRoot($final_data);
 
         // config loaded
         $message = "Config loaded ...";

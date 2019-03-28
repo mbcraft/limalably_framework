@@ -1,6 +1,7 @@
 <?php
 
 class LUrlMapResolver {
+    private $urlmap_references;
     
     private $root_folder;
     
@@ -60,7 +61,7 @@ class LUrlMapResolver {
      * Legge una urlmap al percorso specificato e ritorna una hashmap con i dati dell'urlmap all'interno.
      * 
      * @param string $path Il percorso all'urlmap
-     * @return \LHashMap La hashmap risultante
+     * @return \LTreeMap La hashmap risultante
      * @throws \Exception Se ci sono degli errori in fase di decodifica
      */
     public function readUrlMap($path) {
@@ -68,8 +69,8 @@ class LUrlMapResolver {
         $result_array = json_decode(file_get_contents($path),true);
         $last_error = json_last_error();
         if ($last_error == JSON_ERROR_NONE) {
-            $hashmap = new LHashMap($result_array);
-            return $hashmap;
+            $treemap = new LTreeMap($result_array);
+            return $treemap;
         }
         switch ($last_error) {
             case JSON_ERROR_DEPTH : throw new \Exception("Error decoding urlmap at path : ".$path.". Max depth reached.");
@@ -88,26 +89,23 @@ class LUrlMapResolver {
     }
     /**
      * Ritorna un valore booleano in base alla presenza di link a route nella urlmap
-     * @param type $hash_map
+     * @param type $tree_map
      * @return boolean true se la url map contiene un link, false altrimenti
      */
-    private function isUrlMapLink($hash_map) {
-        if ($hash_map->is_set('/urlmap_link')) return true;
+    private function isUrlMapWithIncludes($tree_map) {
+        if ($tree_map->is_set('/extends') || $tree_map->is_set('/imports')) return true;
         else return false;
     }
     
     /**
      * Ritorna il valore del link contenuto nell'url map.
      * 
-     * @param type $hash_map La mappa hash con i dati
+     * @param type $tree_map La mappa hash con i dati
      * @return string La route da usare
      * @throws \Exception Se il parametro non è una mappa hash con un valido link a urlmap
      */
-    private function getValidUrlMapRouteLink($hash_map) {
-        if (!$this->isUrlMapLink($hash_map)) throw new \Exception("Parameter is not a valid urlmap link!");
-        $link = $hash_map->mustGet('/urlmap_link');
-        if ($this->isPrivateRoute($link) && ($this->isPublicRoute($link) || $this->isHashRoute($link))) throw new \Exception("The linked urlmap is both private and static or hash_db!");
-        return $link;
+    private function verifyValidRoute($route) {
+        if ($this->isPrivateRoute($route) && ($this->isPublicRoute($route) || $this->isHashRoute($route))) throw new \Exception("The linked urlmap is both private and static or hash_db!");
     }
     
     private function getPublicUrlMap($route) {
@@ -129,15 +127,26 @@ class LUrlMapResolver {
         return is_readable($path);
     }
     
-    private function normalizeUrlMapWithLink($hashmap) {
-        $route_link = $this->getValidUrlMapRouteLink($hashmap);
-        $hashmap->remove('/urlmap_link');
-        $linked_url_map = $this->resolveUrlMap($route_link);
-        $linked_url_map_array = $linked_url_map->getRoot();
-        $base_url_map_array = $hashmap->getRoot();
+    private function normalizeUrlMapWithIncludes($treemap) {
         $url_map_calculator = new LUrlMapCalculator();
-        $url_map_calculator->shiftUrlMapData($base_url_map_array);
-        $url_map_calculator->shiftUrlMapData($linked_url_map_array);
+        if ($treemap->is_set('/extends')) {
+            $route_list = $treemap->getArray('/extends',[]);
+            foreach ($route_list as $route) {
+                $map = $this->internalResolveUrlMap($route);
+                $url_map_calculator->addUrlMapData($map->getRoot());
+            }
+            $treemap->remove('/extends');
+        }
+        $url_map_calculator->addUrlMapData($treemap->getRoot());
+        if ($treemap->is_set('/imports')) {
+            $route_list = $treemap->getArray('/imports',[]);
+            foreach ($route_list as $route) {
+                $map = $this->internalResolveUrlMap($route);
+                $url_map_calculator->addUrlMapData($map->getRoot());
+            }
+            $treemap->remove('/imports');
+        }
+        
         return $url_map_calculator->calculate();
     }
      
@@ -173,11 +182,11 @@ class LUrlMapResolver {
             LOutput::framework_debug("Risolvo la route pubblica : ".$route);
             if ($this->isPublicRoute($route)) {
                 
-                $hashmap = $this->getPublicUrlMap($route);
-                if ($this->isUrlMapLink($hashmap)) {
-                    $hashmap = $this->normalizeUrlMapWithLink($hashmap);
+                $treemap = $this->getPublicUrlMap($route);
+                if ($this->isUrlMapWithIncludes($treemap)) {
+                    $treemap = $this->normalizeUrlMapWithIncludes($treemap);
                 }
-                $calculator->shiftUrlMapData($hashmap->getRoot());
+                $calculator->unshiftUrlMapData($treemap->getRoot());
             }
             $route = $this->getParentRoute($route);
         } while ($route != null);
@@ -188,11 +197,11 @@ class LUrlMapResolver {
         $calculator = new LUrlMapCalculator();
         do {
             if ($this->isPrivateRoute($route)) {
-                $hashmap = $this->getPrivateUrlMap($route);
-                if ($this->isUrlMapLink($hashmap)) {
-                    $hashmap = $this->normalizeUrlMapWithLink($hashmap);
+                $treemap = $this->getPrivateUrlMap($route);
+                if ($this->isUrlMapWithIncludes($treemap)) {
+                    $treemap = $this->normalizeUrlMapWithIncludes($treemap);
                 }
-                $calculator->shiftUrlMapData($hashmap->getRoot());
+                $calculator->unshiftUrlMapData($treemap->getRoot());
             }
             $route = $this->getParentRoute($route);
         } while ($route != null);
@@ -200,11 +209,11 @@ class LUrlMapResolver {
     }
     
     private function resolveHashUrlMap($route) {
-        $hashmap = $this->getHashUrlMap($route);
-        if ($this->isUrlMapLink($hashmap)) {
-            $hashmap = $this->normalizeUrlMapWithLink($hashmap);
+        $treemap = $this->getHashUrlMap($route);
+        if ($this->isUrlMapWithIncludes($treemap)) {
+            $treemap = $this->normalizeUrlMapWithIncludes($treemap);
         }
-        return $hashmap;
+        return $treemap;
     }
     
     public function getParentRoute($route) {
@@ -215,6 +224,14 @@ class LUrlMapResolver {
     }
     
     public function resolveUrlMap($route) {
+        $this->urlmap_references = [];
+        return $this->internalResolveUrlMap($route);
+    }
+    
+    private function internalResolveUrlMap($route) {
+        if (in_array($route, $this->urlmap_references)) return new LTreeMap();
+        else $this->urlmap_references[] = $route;
+        
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);
         
         $route_check_order = LConfigReader::executionMode('/urlmap/search_order');

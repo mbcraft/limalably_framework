@@ -110,7 +110,7 @@ class LUrlMapResolver {
     private function getPublicUrlMapAsArray($route) {
         $path = $this->root_folder.$this->static_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
-        LOutput::framework_debug("Ritorno l'urlmap pubblica alla route ".$route);
+        LResult::framework_debug("Ritorno l'urlmap pubblica alla route ".$route);
         return $this->readUrlMapAsArray($path);
     }
     
@@ -187,7 +187,7 @@ class LUrlMapResolver {
     private function resolvePublicUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
-            LOutput::framework_debug("Risolvo la route pubblica : ".$route);
+            LResult::framework_debug("Risolvo la route pubblica : ".$route);
             if ($this->isPublicRoute($route)) {
                 
                 $array_map = $this->getPublicUrlMapAsArray($route);

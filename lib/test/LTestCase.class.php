@@ -47,7 +47,7 @@ class LTestCase extends \LAssert {
             $this->setUp();
         } catch (\Exception $ex) {
             self::$total_test_errors++;
-            LOutput::message('X', false);
+            LResult::message('X', false);
             self::$failures_and_exceptions[] = new LUnitTestException("Exception during setUp in test class ".static::class,0,$ex);
         }
         try {
@@ -57,10 +57,10 @@ class LTestCase extends \LAssert {
             self::$total_failures++;
             
             if (!($ex instanceof LTestFailure)) {
-                LOutput::message('E',false);
+                LResult::message('E',false);
                 
             } else {
-                LOutput::message('F',false);
+                LResult::message('F',false);
             }
             self::$failures_and_exceptions[] = $ex;
             
@@ -69,7 +69,7 @@ class LTestCase extends \LAssert {
             $this->tearDown();
         } catch (\Exception $ex) {
             self::$total_test_errors++;
-            LOutput::message('X', false);
+            LResult::message('X', false);
             self::$failures_and_exceptions[] = new LUnitTestException("Exception during tearDown in test class ".static::class,0,$ex);
         }
     }

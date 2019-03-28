@@ -6,19 +6,19 @@ trait LStaticReadTreeMap {
     static function mustGetOriginal($path) {
         self::setupIfNeeded();
         
-        return self::$tree_map->mustGetOriginal($path);
+        return self::$my_view->mustGetOriginal($path);
     }
     
     static function getOriginal($path,$default_value = null) {
         self::setupIfNeeded();
         
-        return self::$tree_map->getOriginal($path,$default_value);
+        return self::$my_view->getOriginal($path,$default_value);
     }
     
     public static function mustGetBoolean($path) {
         self::setupIfNeeded();
         
-        return self::$tree_map->mustGetBoolean($path);
+        return self::$my_view->mustGetBoolean($path);
     }
     
     /**
@@ -30,7 +30,7 @@ trait LStaticReadTreeMap {
     public static function getBoolean($path,$default_value = null) {
         self::setupIfNeeded();
         
-        return self::$tree_map->getBoolean($path,$default_value);
+        return self::$my_view->getBoolean($path,$default_value);
     }
     
     /*
@@ -48,7 +48,7 @@ trait LStaticReadTreeMap {
     {
         self::setupIfNeeded();
         
-        return self::$tree_map->get($path,$default_value);
+        return self::$my_view->get($path,$default_value);
     }
     
     /**
@@ -61,7 +61,7 @@ trait LStaticReadTreeMap {
     public static function mustGet($path) {
         self::setupIfNeeded();
         
-        return self::$tree_map->mustGet($path);
+        return self::$my_view->mustGet($path);
     }
     
 
@@ -73,7 +73,7 @@ trait LStaticReadTreeMap {
     {
         self::setupIfNeeded();
         
-        return self::$tree_map->is_set($path);
+        return self::$my_view->is_set($path);
     }
 
     /*
@@ -85,7 +85,7 @@ trait LStaticReadTreeMap {
     {
         self::setupIfNeeded();
         
-        return self::$tree_map->keys($path);
+        return self::$my_view->keys($path);
 
     }
     
@@ -93,11 +93,11 @@ trait LStaticReadTreeMap {
      * Crea una vista sul percorso specificato.
      * 
      */
-    public static function view($path)
+    public static function setCurrentView($path)
     {
         self::setupIfNeeded();
         
-        return self::$tree_map->view($path);
+        self::$my_view = self::$tree_map->view($path);
     }
     
 }

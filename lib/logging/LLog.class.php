@@ -26,7 +26,7 @@ class LLog {
         if (self::$init_called) return;
         self::$init_called = true;
         
-        self::$my_logger = new LOutputLogger();
+        self::$my_logger = new LResultLogger();
         self::$my_min_level = self::LEVEL_DEBUG;
 
         if (!isset($_SERVER['PROJECT_DIR'])) {
@@ -39,7 +39,7 @@ class LLog {
                 
         switch ($logger_type) {
             case 'output' : {
-                self::$my_logger = new LOutputLogger();
+                self::$my_logger = new LResultLogger();
                 break;
             }
             

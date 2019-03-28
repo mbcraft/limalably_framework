@@ -22,17 +22,17 @@ class LConfig {
 
         if (!self::is_set($var_name)) {
             self::$tree_map->set($var_name, $_SERVER[$var_name]);
-            LOutput::framework_debug('Server var ' . $var_name . ' persisted into configuration ...');
+            LResult::framework_debug('Server var ' . $var_name . ' persisted into configuration ...');
         }
     }
 
     private static function detectAndSaveDirs() {
         if (isset($_SERVER['PROJECT_DIR'])) {
             LConfig::saveServerVar('PROJECT_DIR');
-            LOutput::framework_debug("Project dir detected : " . $_SERVER['PROJECT_DIR']);
+            LResult::framework_debug("Project dir detected : " . $_SERVER['PROJECT_DIR']);
         }
         LConfig::saveServerVar('FRAMEWORK_DIR');
-        LOutput::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);
+        LResult::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);
     }
 
     private static function detectAndSaveEnvironment() {
@@ -42,7 +42,7 @@ class LConfig {
         }
 
         LConfig::saveServerVar('ENVIRONMENT');
-        LOutput::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
+        LResult::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
     }
 
     private static function detectAndSaveHostnameRawRouteAndParameters() {
@@ -77,7 +77,7 @@ class LConfig {
 
                 LConfig::saveServerVar('PARAMETERS');
             } else {
-                LOutput::error_message("Route not found in command-line execution.");
+                LResult::error_message("Route not found in command-line execution.");
                 exit(1);
             }
         }
@@ -95,7 +95,7 @@ class LConfig {
 
                 LConfig::saveServerVar('PARAMETERS');
             } else {
-                LOutput::error_message("Route not found in command-line execution.");
+                LResult::error_message("Route not found in command-line execution.");
                 exit(1);
             }
         }
@@ -104,11 +104,11 @@ class LConfig {
 
         $_SERVER['HOSTNAME'] = $hostname;
         LConfig::saveServerVar('HOSTNAME');
-        LOutput::framework_debug("Hostname detected : " . $_SERVER['HOSTNAME']);
+        LResult::framework_debug("Hostname detected : " . $_SERVER['HOSTNAME']);
 
         // hostname set
         LConfig::saveServerVar('RAW_ROUTE');
-        LOutput::framework_debug("Raw route detected : " . $_SERVER['RAW_ROUTE']);
+        LResult::framework_debug("Raw route detected : " . $_SERVER['RAW_ROUTE']);
     }
 
     private static function initRoute() {
@@ -127,7 +127,7 @@ class LConfig {
         $_SERVER['ROUTE'] = $route;
         LConfig::saveServerVar('ROUTE');
         // route set
-        LOutput::framework_debug("Route detected : " . $_SERVER['ROUTE']);
+        LResult::framework_debug("Route detected : " . $_SERVER['ROUTE']);
     }
 
     private static function initFromConfigFiles() {
@@ -146,7 +146,7 @@ class LConfig {
             $internal_config_file_path = $_SERVER['FRAMEWORK_DIR'] . implode('/', $path_parts);
         }
         if (!is_file($internal_config_file_path)) {
-            LOutput::error_message("Internal config not found : " . $internal_config_file_path);
+            LResult::error_message("Internal config not found : " . $internal_config_file_path);
             exit(1);
         }
 
@@ -155,8 +155,8 @@ class LConfig {
             if (empty($internal_json_config))
                 throw new \Exception("Empty internal config found or error in json decoding ...");
         } catch (\Exception $ex) {
-            LOutput::error_message("Errore nella lettura del file di configurazione interna " . $internal_config_file_path . " ...");
-            Loutput::exception($ex);
+            LResult::error_message("Errore nella lettura del file di configurazione interna " . $internal_config_file_path . " ...");
+            LResult::exception($ex);
             exit(1);
         }
 
@@ -172,11 +172,11 @@ class LConfig {
             $config_dir_path = $_SERVER['PROJECT_DIR'] . implode('/', $path_parts) . '/';
 
             if (!is_dir($config_dir_path)) {
-                LOutput::error_message("Config dir not found : " . $config_dir_path);
+                LResult::error_message("Config dir not found : " . $config_dir_path);
                 exit(1);
             } else {
                 // config dir found
-                LOutput::framework_debug("Config dir found : " . $config_dir_path);
+                LResult::framework_debug("Config dir found : " . $config_dir_path);
             }
 
             if (is_file($config_dir_path . 'config.php')) {
@@ -193,8 +193,8 @@ class LConfig {
                     if (empty($json_config))
                         throw new \Exception("Empty config found or error in json decoding ...");
                 } catch (\Exception $ex) {
-                    LOutput::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config.json ...");
-                    Loutput::exception($ex);
+                    LResult::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config.json ...");
+                    LResult::exception($ex);
                     exit(1);
                 }
             }
@@ -218,7 +218,7 @@ class LConfig {
             $message .= ' + ';
         if (self::jsonConfigFound())
             $message .= '/config/hostnames/' . $_SERVER['HOSTNAME'] . '/config.json';
-        Loutput::framework_debug($message);
+        LResult::framework_debug($message);
     }
 
     public static function init() {
@@ -237,7 +237,7 @@ class LConfig {
         
         self::initRoute();
         
-        LOutput::framework_debug("Execution mode : " . LExecutionMode::get());
+        LResult::framework_debug("Execution mode : " . LExecutionMode::get());
 
         // loading internal config ...
 

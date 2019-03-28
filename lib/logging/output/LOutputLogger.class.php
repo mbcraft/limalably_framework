@@ -1,6 +1,6 @@
 <?php
 
-class LOutputLogger implements LILogger {
+class LResultLogger implements LILogger {
     
     private $initialized = false;
     
@@ -9,23 +9,23 @@ class LOutputLogger implements LILogger {
     }
 
     public function debug($message) {
-        LOutput::framework_debug("LOG Debug : ".$message);
+        LResult::framework_debug("LOG Debug : ".$message);
     }
 
     public function error($message) {
-        LOutput::message("LOG Error : ".$message);
+        LResult::message("LOG Error : ".$message);
     }
 
     public function exception(\Exception $ex) {
-        LOutput::message("LOG Exception : ". LStringUtils::getExceptionMessage($ex));
+        LResult::message("LOG Exception : ". LStringUtils::getExceptionMessage($ex));
     }
 
     public function fatal($message) {
-        LOutput::message("LOG Fatal : ".$message);
+        LResult::message("LOG Fatal : ".$message);
     }
 
     public function info($message) {
-        LOutput::debug("LOG Info : ".$message);
+        LResult::debug("LOG Info : ".$message);
     }
     
     public function isInitialized() {
@@ -33,12 +33,12 @@ class LOutputLogger implements LILogger {
     }
 
     public function init() {
-        LOutput::message("Initializing output logger ...");
+        LResult::message("Initializing output logger ...");
         $this->initialized = true;
     }
 
     public function warning($message) {
-        LOutput::message("LOG Warning : ".$message);
+        LResult::message("LOG Warning : ".$message);
     }
 
 }

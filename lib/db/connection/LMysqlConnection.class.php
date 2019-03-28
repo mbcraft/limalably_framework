@@ -46,7 +46,7 @@ class LMysqlConnection implements LIDbConnection {
                 return false;
             }
         } catch (\Exception $ex) {
-            LOutput::exception($ex);
+            LResult::exception($ex);
             return false;
         }
     }

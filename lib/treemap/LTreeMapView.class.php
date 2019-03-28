@@ -5,9 +5,9 @@ class LTreeMapView implements ArrayAccess {
     private $view_map;
     private $view_prefix;
 
-    function __construct($prefix,$map)
+    function __construct($prefix,$treemap)
     {
-        $this->view_map = $map;
+        $this->view_map = $treemap;
         $this->view_prefix = $prefix.'/';
     }
 
@@ -107,22 +107,26 @@ class LTreeMapView implements ArrayAccess {
     {
         return $this->view_map->is_set($this->view_prefix.$path);
     }
+
+    function keys($path) {
+        return $this->view_map->keys($this->view_prefix.$path);
+    }
     
     //array access
     
-    public function offsetExists($offset): bool {
-        return $this->is_set($offset);
+    public function offsetExists($path): bool {
+        return $this->view_map->is_set($this->view_prefix.$path);
     }
 
-    public function offsetGet($offset) {
-        return $this->mustGet($offset);
+    public function offsetGet($path) {
+        return $this->view_map->mustGet($this->view_prefix.$path);
     }
 
-    public function offsetSet($offset, $value): void {
-        $this->set($offset,$value);
+    public function offsetSet($path, $value): void {
+        $this->view_map->set($this->view_prefix.$path,$value);
     }
 
-    public function offsetUnset($offset): void {
-        $this->remove($offset);
+    public function offsetUnset($path): void {
+        $this->view_map->remove($this->view_prefix.$path);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class LOutput {
+class LResult {
     
     private static $has_error = false;
     

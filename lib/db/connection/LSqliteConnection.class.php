@@ -43,7 +43,7 @@ class LSqliteConnection implements LIDbConnection {
                 throw new \Exception($error_message);
             }
         } catch (\Exception $ex) {
-            LOutput::exception($ex);
+            LResult::exception($ex);
             return false;
         }
     }

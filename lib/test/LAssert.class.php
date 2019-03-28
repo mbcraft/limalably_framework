@@ -4,14 +4,14 @@ class LTestFailure extends \Exception {
     public function printFailure() {
         $stack_trace = $this->getTrace();
         
-        LOutput::message($this->getMessage());
+        LResult::message($this->getMessage());
         
         $line = $stack_trace[1]['line'];
         $file = $stack_trace[1]['file'];
         $function = $stack_trace[2]['function'];
         
-        LOutput::message('File : '.$file);
-        LOutput::message("Function : ".$function." - Line : ".$line);
+        LResult::message('File : '.$file);
+        LResult::message("Function : ".$function." - Line : ".$line);
         
     }
 }
@@ -27,7 +27,7 @@ class LAssert {
         
     private static function success() {
         self::$total_assertions++;
-        LOutput::message(".",false);
+        LResult::message(".",false);
     }
     
     private static function failure($message) {

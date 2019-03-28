@@ -15,7 +15,7 @@ require_once ('lib/config/LEnvironmentUtils.class.php');
 
 //core
 require_once ('lib/core/LInvalidParameterException.class.php');
-require_once ('lib/core/LOutput.class.php');
+require_once ('lib/core/LResult.class.php');
 require_once ('lib/core/LClassLoader.class.php');
 
 //utils

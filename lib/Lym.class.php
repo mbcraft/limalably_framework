@@ -23,7 +23,7 @@ class Lym {
         try {
             self::framework_start();
         } catch (\Exception $ex) {
-            LOutput::exception($ex);
+            LResult::exception($ex);
         }
         self::finish();
     }
@@ -43,7 +43,7 @@ class Lym {
             try {
                 self::project_start();
             } catch (\Exception $ex) {
-                LOutput::exception($ex);
+                LResult::exception($ex);
             }
         }
         self::finish();

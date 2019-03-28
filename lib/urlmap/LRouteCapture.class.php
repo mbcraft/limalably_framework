@@ -14,7 +14,13 @@ class LRouteCapture {
     
     function captureParameters($user_pattern,$route) {
     
-        if (LStringUtils::startsWith($user_pattern,'/')) $user_pattern = substr($user_pattern,1);
+        if (LStringUtils::startsWith($user_pattern,'/')) 
+        {
+            $start_from_beginning = true;
+            $user_pattern = substr($user_pattern,1);
+        } else {
+            $start_from_beginning = false;
+        }
         if (LStringUtils::startsWith($route, '/')) $route = substr($route,1);
         
         $user_pattern = str_replace('.', self::DOT_REPLACE, $user_pattern);
@@ -22,7 +28,11 @@ class LRouteCapture {
         $user_pattern = str_replace('*', self::STAR_REPLACE, $user_pattern);
         $user_pattern = str_replace('<', self::LESS_THAN_REPLACE, $user_pattern);
         $user_pattern = str_replace('>', self::GREATER_THAN_REPLACE, $user_pattern);
-        $user_pattern = '/^'.$user_pattern.'/i'; //begin and end
+        if ($start_from_beginning) {
+            $user_pattern = '/^'.$user_pattern.'/i'; //begin and end
+        } else {
+            $user_pattern = '/'.$user_pattern.'$/i'; //begin and end
+        }
         
         $result = preg_match($user_pattern,$route,$matches);
         

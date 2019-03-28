@@ -132,7 +132,7 @@ class LUrlMapResolver {
             $route_list = $array_map['extends'];
             if (!is_array($route_list)) $route_list = array($route_list);
             foreach ($route_list as $route) {
-                $map = $this->internalResolveUrlMap($route,true);
+                $map = $this->internalResolveUrlMap($route);
                 $url_map_calculator->addUrlMapData($map);
             }
             unset($array_map['extends']);
@@ -149,7 +149,7 @@ class LUrlMapResolver {
         
         if ($route_list) {
             foreach ($route_list as $route) {
-                $map = $this->internalResolveUrlMap($route,true);
+                $map = $this->internalResolveUrlMap($route);
                 $url_map_calculator->addUrlMapData($map);
             }
             
@@ -233,12 +233,12 @@ class LUrlMapResolver {
     
     public function resolveUrlMap(string $route) {
         $this->urlmap_references = [];
-        $array_map = $this->internalResolveUrlMap($route,false);
+        $array_map = $this->internalResolveUrlMap($route);
         if ($array_map) return new LTreeMap($array_map);
         else return null;
     }
     
-    private function internalResolveUrlMap(string $route,bool $only_private_routes) {
+    private function internalResolveUrlMap(string $route) {
         if (LStringUtils::endsWith($route, '/')) $route = $route.'_folder';
         
         if (in_array($route, $this->urlmap_references)) return [];
@@ -246,29 +246,28 @@ class LUrlMapResolver {
         
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);
         
-        if (!$only_private_routes) {
-            $route_check_order = LConfigReader::executionMode('/urlmap/search_order');
-            $route_checks = explode(',',$route_check_order);
-            foreach ($route_checks as $route_check) {
-                switch ($route_check) {
-                    case 'static' : {
-                        if ($this->isPublicRoute($route)) {
-                            if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and public");
-                            return $this->resolvePublicUrlMap($route);
-                        }
-                        break;
+        $route_check_order = LConfigReader::executionMode('/urlmap/search_order');
+        $route_checks = explode(',',$route_check_order);
+        foreach ($route_checks as $route_check) {
+            switch ($route_check) {
+                case 'static' : {
+                    if ($this->isPublicRoute($route)) {
+                        if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and public");
+                        return $this->resolvePublicUrlMap($route);
                     }
-                    case 'hash_db' : {
-                        if ($this->isHashRoute($route)) {
-                            if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and hash");
-                            return $this->resolveHashUrlMap($route);
-                        }
-                        break;
-                    }
+                    break;
                 }
-
+                case 'hash_db' : {
+                    if ($this->isHashRoute($route)) {
+                        if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and hash");
+                        return $this->resolveHashUrlMap($route);
+                    }
+                    break;
+                }
             }
+
         }
+            
         if ($this->isPrivateRoute($route)) {
             return $this->resolvePrivateUrlMap($route);
         }

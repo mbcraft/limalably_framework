@@ -99,6 +99,24 @@ class MiscTest extends LTestCase {
         $this->assertEqual(count($result["size"]),1,"Il numero di valori dell'array size non è valido!");
     }
     
+    function testListBehaviour() {
+        
+        $array = ["prova" => "ciao","ancora" => "mondo"];
+        
+        list('prova' => $prova,'ancora' => $ancora) = $array;
+        
+        $this->assertEqual($prova,'ciao',"La variabile 'prova' non corrisponde! : ".$prova);
+        $this->assertEqual($ancora,'mondo',"La variabile 'ancora' non corrisponde!".$ancora);
+        
+        $array = ["ancora" => "mondo","prova" => "ciao"];
+        
+        list('prova' => $prova,'ancora' => $ancora) = $array;
+        
+        $this->assertEqual($prova,'ciao',"La variabile 'prova' non corrisponde!".$prova);
+        $this->assertEqual($ancora,'mondo',"La variabile 'ancora' non corrisponde!".$ancora);
+        
+    }
+    
 
     
 }

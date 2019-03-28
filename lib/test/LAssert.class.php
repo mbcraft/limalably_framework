@@ -121,4 +121,22 @@ class LAssert {
         }
     }
     
+    public function assertNull($actual,$message) {
+        if ($actual!=null) {
+            self::failure($message);
+        } else
+        {
+            self::success();
+        }
+    }
+    
+    public function assertNotNull($actual,$message) {
+        if ($actual==null) {
+            self::failure($message);
+        } else
+        {
+            self::success();
+        }
+    }
+    
 }

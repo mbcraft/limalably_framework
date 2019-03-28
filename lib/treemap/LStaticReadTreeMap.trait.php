@@ -89,6 +89,12 @@ trait LStaticReadTreeMap {
 
     }
     
+    public static function getCurrentView() {
+        self::setupIfNeeded();
+        
+        return self::$my_view;
+    }
+    
     /*
      * Crea una vista sul percorso specificato.
      * 

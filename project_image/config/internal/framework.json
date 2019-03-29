@@ -55,7 +55,9 @@
             "search_order" : "hash_db,static",
             "folder_route" : "_folder",
             "inherited_route" : "_default",
-            "truncate_route" : "_stop"
+            "truncate_route" : "_stop",
+            "ignore_missing_extends" : false,
+            "ignore_missing_imports" : false
         },
         "logging" : {
             "distinct-file" : {

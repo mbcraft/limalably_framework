@@ -13,6 +13,9 @@ class LUrlMapResolver {
     private $inherited_route;
     private $truncate_route;
     
+    private $ignore_missing_extends;
+    private $ignore_missing_imports;
+    
     function __construct($root_folder,$static_folder='urlmap/public/static/',$hash_db_folder='urlmap/public/hash_db/',$private_folder='urlmap/private/') {
         $this->root_folder = $root_folder;
         $this->static_folder = $static_folder;
@@ -27,6 +30,9 @@ class LUrlMapResolver {
         $this->folder_route = LConfigReader::simple('/urlmap/folder_route');
         $this->inherited_route = LConfigReader::simple('/urlmap/inherited_route');
         $this->truncate_route = LConfigReader::simple('/urlmap/truncate_route');
+        
+        $this->ignore_missing_extends = LConfigReader::simple('/urlmap/ignore_missing_extends');
+        $this->ignore_missing_imports = LConfigReader::simple('/urlmap/ignore_missing_imports');
         
     }
     
@@ -133,7 +139,11 @@ class LUrlMapResolver {
             if (!is_array($route_list)) $route_list = array($route_list);
             foreach ($route_list as $route) {
                 $map = $this->internalResolveUrlMap($route);
-                $url_map_calculator->addUrlMapData($map);
+                if ($map) {
+                    $url_map_calculator->addUrlMapData($map);
+                } else {
+                    if (!$this->ignore_missing_extends) throw new \Exception("Route not found in extends : ".$route);
+                }
             }
             unset($array_map['extends']);
         }
@@ -150,7 +160,11 @@ class LUrlMapResolver {
         if ($route_list) {
             foreach ($route_list as $route) {
                 $map = $this->internalResolveUrlMap($route);
-                $url_map_calculator->addUrlMapData($map);
+                if ($map) {
+                    $url_map_calculator->addUrlMapData($map);
+                } else {
+                    if (!$this->ignore_missing_imports) throw new \Exception("Route not found in imports : ".$route);
+                }
             }
             
         }

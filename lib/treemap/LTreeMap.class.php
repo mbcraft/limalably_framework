@@ -49,7 +49,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         if (!$this->is_set($path))
             throw new \Exception('Value not found in path : '.$path);
         
-        return self::getOriginal($path);
+        return $this->getOriginal($path);
     }
     
     public function getOriginal($path,$default_value = null) {
@@ -58,7 +58,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         
         $path_parts = self::path_tokens($path);
         
-        $current_node = self::$data;
+        $current_node = $this->data;
         foreach ($path_parts as $p)
         {
             $current_node = $current_node[$p];
@@ -92,7 +92,7 @@ class LTreeMap implements ArrayAccess, Iterator {
     
     private static function recursiveFilterVar(array $var_array) {
         foreach ($var_array as $k => $val) {
-            if ($val === null || $val === false || $val === true) continue;
+            if ($val === null || $val === false || $val === true || is_numeric($val)) continue;
             if (is_array($val)) {
                 $var_array[$k] = self::recursiveFilterVar($val);
             } else {
@@ -266,7 +266,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         }
         
         $return_value = $current_node;
-        if ($return_value===null || $return_value===false || $return_value===true) return $return_value;
+        if ($return_value===null || $return_value===false || $return_value===true || is_numeric($return_value)) return $return_value;
         if (is_array($return_value)) {
             $return_value = self::recursiveFilterVar($return_value);
             return $return_value;

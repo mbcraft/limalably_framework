@@ -8,18 +8,30 @@ class TreeMapTest extends LTestCase {
         $t->set('/uno/due/nullo',null);
         $t->set('/uno/due/false',false);
         $t->set('/uno/due/true',true);
+        $t->set('/uno/due/zero',0);
+        $t->set('/uno/due/uno',1);
+        $t->set('/uno/due/meno_uno',-1);
         
         $this->assertTrue($t->is_set('/uno/due/nullo'),'Il nodo sembra non esistere!');
         $this->assertTrue($t->is_set('/uno/due/false'),'Il nodo sembra non esistere!');
         $this->assertTrue($t->is_set('/uno/due/true'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/zero'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/uno'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/meno_uno'),'Il nodo sembra non esistere!');
         
         $this->assertEqual($t->mustGet('/uno/due/nullo'),null,'Il nodo sembra non esistere!');
         $this->assertEqual($t->mustGet('/uno/due/false'),false,'Il nodo sembra non esistere!');
         $this->assertEqual($t->mustGet('/uno/due/true'),true,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due/zero'),0,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due/uno'),1,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due/meno_uno'),-1,'Il nodo sembra non esistere!');
         
         $this->assertSame($t->mustGet('/uno/due/nullo'),null,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGet('/uno/due/nullo'),true));
         $this->assertSame($t->mustGet('/uno/due/false'),false,'Il nodo ha un valore che non coincide!');
         $this->assertSame($t->mustGet('/uno/due/true'),true,'Il nodo ha un valore che non coincide!');
+        $this->assertSame($t->mustGet('/uno/due/zero'),0,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGet('/uno/due/zero'),true));
+        $this->assertSame($t->mustGet('/uno/due/uno'),1,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGet('/uno/due/uno'),true));
+        $this->assertSame($t->mustGet('/uno/due/meno_uno'),-1,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGet('/uno/due/meno_uno'),true));
         
     }
     
@@ -29,18 +41,63 @@ class TreeMapTest extends LTestCase {
         $t->set('/uno/due/nullo',null);
         $t->set('/uno/due/false',false);
         $t->set('/uno/due/true',true);
+        $t->set('/uno/due/zero',0);
+        $t->set('/uno/due/uno',1);
+        $t->set('/uno/due/meno_uno',-1);
         
         $this->assertTrue($t->is_set('/uno/due/nullo'),'Il nodo sembra non esistere!');
         $this->assertTrue($t->is_set('/uno/due/false'),'Il nodo sembra non esistere!');
         $this->assertTrue($t->is_set('/uno/due/true'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/zero'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/uno'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/meno_uno'),'Il nodo sembra non esistere!');
         
         $this->assertEqual($t->mustGet('/uno/due')['nullo'],null,'Il nodo sembra non esistere!');
         $this->assertEqual($t->mustGet('/uno/due')['false'],false,'Il nodo sembra non esistere!');
         $this->assertEqual($t->mustGet('/uno/due')['true'],true,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due')['zero'],0,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due')['uno'],1,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due')['meno_uno'],-1,'Il nodo sembra non esistere!');
         
         $this->assertSame($t->mustGet('/uno/due')['nullo'],null,'Il nodo nullo ha un valore che non coincide! : '.var_export($t->mustGet('/uno/due'),true));
         $this->assertSame($t->mustGet('/uno/due')['false'],false,'Il nodo falso ha un valore che non coincide!');
         $this->assertSame($t->mustGet('/uno/due')['true'],true,'Il nodo vero ha un valore che non coincide!');
+        $this->assertSame($t->mustGet('/uno/due')['zero'],0,'Il nodo vero ha un valore che non coincide!');
+        $this->assertSame($t->mustGet('/uno/due')['uno'],1,'Il nodo vero ha un valore che non coincide!');
+        $this->assertSame($t->mustGet('/uno/due')['meno_uno'],-1,'Il nodo vero ha un valore che non coincide!');
+        
+    }
+    
+    function testReadingStrangeValuesFromTreeMap3() {
+        
+        $t = new LTreeMap();
+        $t->set('/uno/due/nullo',null);
+        $t->set('/uno/due/false',false);
+        $t->set('/uno/due/true',true);
+        $t->set('/uno/due/zero',0);
+        $t->set('/uno/due/uno',1);
+        $t->set('/uno/due/meno_uno',-1);
+        
+        $this->assertTrue($t->is_set('/uno/due/nullo'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/false'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/true'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/zero'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/uno'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/meno_uno'),'Il nodo sembra non esistere!');
+        
+        $this->assertEqual($t->mustGetOriginal('/uno/due/nullo'),null,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGetOriginal('/uno/due/false'),false,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGetOriginal('/uno/due/true'),true,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGetOriginal('/uno/due/zero'),0,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGetOriginal('/uno/due/uno'),1,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGetOriginal('/uno/due/meno_uno'),-1,'Il nodo sembra non esistere!');
+        
+        $this->assertSame($t->mustGetOriginal('/uno/due/nullo'),null,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGetOriginal('/uno/due/nullo'),true));
+        $this->assertSame($t->mustGetOriginal('/uno/due/false'),false,'Il nodo ha un valore che non coincide!');
+        $this->assertSame($t->mustGetOriginal('/uno/due/true'),true,'Il nodo ha un valore che non coincide!');
+        $this->assertSame($t->mustGetOriginal('/uno/due/zero'),0,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGetOriginal('/uno/due/zero'),true));
+        $this->assertSame($t->mustGetOriginal('/uno/due/uno'),1,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGetOriginal('/uno/due/uno'),true));
+        $this->assertSame($t->mustGetOriginal('/uno/due/meno_uno'),-1,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGetOriginal('/uno/due/meno_uno'),true));
         
     }
     

@@ -6,9 +6,9 @@ class LConditionTest extends LTestCase {
         
         $cond = array("a" => "a");
         
-        $c = new LCondition($cond);
+        $c = new LCondition();
         
-        $this->assertTrue($c->evaluate(),"La condizione non funziona!");
+        $this->assertTrue($c->evaluate($cond),"La condizione non funziona!");
         
     }
     
@@ -16,9 +16,9 @@ class LConditionTest extends LTestCase {
         
         $cond = array("a" => [2,"a"]);
         
-        $c = new LCondition($cond);
+        $c = new LCondition();
         
-        $this->assertTrue($c->evaluate(),"La condizione non funziona!");
+        $this->assertTrue($c->evaluate($cond),"La condizione non funziona!");
         
     }
     
@@ -26,9 +26,9 @@ class LConditionTest extends LTestCase {
         
         $cond = array("a" => [2,"a"],"b" => ["a","c"]);
         
-        $c = new LCondition($cond);
+        $c = new LCondition();
         
-        $this->assertFalse($c->evaluate(),"La condizione non funziona!");
+        $this->assertFalse($c->evaluate($cond),"La condizione non funziona!");
         
     }
     
@@ -36,9 +36,9 @@ class LConditionTest extends LTestCase {
         
         $cond = true;
         
-        $c = new LCondition($cond);
-        
-        $this->assertTrue($c->evaluate(),"La condizione non funziona!");
+        $c = new LCondition();
+                
+        $this->assertTrue($c->evaluate($cond),"La condizione non funziona!");
         
     }
     
@@ -46,9 +46,9 @@ class LConditionTest extends LTestCase {
         
         $cond = false;
         
-        $c = new LCondition($cond);
-        
-        $this->assertFalse($c->evaluate(),"La condizione non funziona!");
+        $c = new LCondition();
+                
+        $this->assertFalse($c->evaluate($cond),"La condizione non funziona!");
         
     }
     

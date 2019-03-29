@@ -78,6 +78,19 @@ class LEnvironmentUtils {
     }
     
     public static function getRequestMethod() {
-        return $_SERVER['REQUEST_METHOD'];
+        if (isset($_SERVER['REQUEST_METHOD'])) return $_SERVER['REQUEST_METHOD'];
+        else return 'CLI';
+    }
+    
+    public static function getReplacementsArray() {
+      
+        return array('request_method' => strtolower(LEnvironmentUtils::getRequestMethod()),
+                    'execution_mode' => LExecutionMode::get(),
+                    'exec_mode' => LExecutionMode::getShort(),
+                    'environment' => LEnvironmentUtils::getEnvironment(),
+                    'hostname' => LEnvironmentUtils::getHostname(),
+                    'preferred_language' => LEnvironmentUtils::getPreferredLanguageArray()[0]
+            );
+    
     }
 }

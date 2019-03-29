@@ -7,18 +7,23 @@
 class LExecutionMode {
     
     const MODE_MAINTENANCE = 'maintenance';
+    const MODE_MAINTENANCE_SHORT = 'm';
     const FILENAME_MAINTENANCE = 'maintenance.txt';
     
     const MODE_FRAMEWORK_DEVELOPMENT = 'framework_development';
+    const MODE_FRAMEWORK_DEVELOPMENT_SHORT = 'fd';
     const FILENAME_FRAMEWORK_DEVELOPMENT = 'framework_development.txt';
     
     const MODE_DEVELOPMENT = 'development';
+    const MODE_DEVELOPMENT_SHORT = 'd';
     const FILENAME_DEVELOPMENT = 'development.txt';
     
     const MODE_TESTING = 'testing';
+    const MODE_TESTING_SHORT = 't';
     const FILENAME_TESTING = 'testing.txt';
     
     const MODE_PRODUCTION = 'production';
+    const MODE_PRODUCTION_SHORT = 'p';
     const FILENAME_PRODUCTION = 'production.txt';
     
     private static $my_mode = null;
@@ -126,6 +131,21 @@ class LExecutionMode {
         if (self::isDevelopment()) return self::MODE_DEVELOPMENT;
         if (self::isTesting()) return self::MODE_TESTING;
         if (self::isProduction()) return self::MODE_PRODUCTION;
+        
+        throw new \Exception("Invalid state : unable to determine the current execution mode.");
+    }
+    
+    public static function getShort() {
+        $mode_long = self::get();
+        
+        switch ($mode_long) {
+            case self::MODE_FRAMEWORK_DEVELOPMENT : return self::MODE_DEVELOPMENT_SHORT;
+            case self::MODE_DEVELOPMENT : return self::MODE_DEVELOPMENT_SHORT;
+            case self::MODE_TESTING : return self::MODE_TESTING_SHORT;
+            case self::MODE_PRODUCTION : return self::MODE_PRODUCTION_SHORT;
+            case self::MODE_MAINTENANCE : return self::MODE_MAINTENANCE_SHORT;
+            default : throw new \Exception("Invalid state : unable to determine the current short execution mode.");
+        }
     }
     
     private static function invalidExecutionModeException() {

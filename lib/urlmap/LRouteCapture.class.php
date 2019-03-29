@@ -8,9 +8,6 @@ class LRouteCapture {
     const LESS_THAN_REPLACE = '(?<';
     const GREATER_THAN_REPLACE = '>[a-zA-Z_0-9\\-\\+\\$!\\(\\)]+)';
     
-    function captureParametersFromRoute($user_pattern) {
-        return $this->captureParameters($user_pattern, $_SERVER['ROUTE']);
-    }
     
     function captureParameters($capture_pattern,$route) {
     

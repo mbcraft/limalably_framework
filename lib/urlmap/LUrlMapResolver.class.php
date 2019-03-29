@@ -1,7 +1,9 @@
 <?php
 
 class LUrlMapResolver {
+    
     private $urlmap_references;
+    private $original_route;
     
     private $root_folder;
     
@@ -15,6 +17,11 @@ class LUrlMapResolver {
     
     private $ignore_missing_extends;
     private $ignore_missing_imports;
+    
+    private $variable_prefix;
+    private $variable_suffix;
+    
+    
     
     function __construct($root_folder,$static_folder='urlmap/public/static/',$hash_db_folder='urlmap/public/hash_db/',$private_folder='urlmap/private/') {
         $this->root_folder = $root_folder;
@@ -33,8 +40,12 @@ class LUrlMapResolver {
         
         $this->ignore_missing_extends = LConfigReader::simple('/urlmap/ignore_missing_extends');
         $this->ignore_missing_imports = LConfigReader::simple('/urlmap/ignore_missing_imports');
-        
+
+        $this->variable_prefix = LConfigReader::simple('/urlmap/variable_prefix');
+        $this->variable_suffix = LConfigReader::simple('/urlmap/variable_suffix');
     }
+    
+
     
     private function getPrivateUrlMapAsArray($route) {
         $path = $this->root_folder.$this->private_folder.$route.'.json';
@@ -73,16 +84,8 @@ class LUrlMapResolver {
         return is_readable($path);
     }
     
-    /**
-     * Legge una urlmap al percorso specificato e ritorna una hashmap con i dati dell'urlmap all'interno.
-     * 
-     * @param string $path Il percorso all'urlmap
-     * @return \LTreeMap La hashmap risultante
-     * @throws \Exception Se ci sono degli errori in fase di decodifica
-     */
-    public function readUrlMapAsArray($path) {
-        if (!is_readable($path)) throw new \Exception("UrlMap at path ".$path." is not readable."); 
-        $result_array = json_decode(file_get_contents($path),true);
+    public function readUrlMapContent($urlmap_content) {
+        $result_array = json_decode($urlmap_content,true);
         $last_error = json_last_error();
         if ($last_error == JSON_ERROR_NONE) {
             return $result_array;
@@ -100,7 +103,37 @@ class LUrlMapResolver {
             case JSON_ERROR_UTF16 : throw new \Exception("Error decoding urlmap at path : ".$path.". UTF-16 encoding error.");
             default : throw new \Exception("Error decoding urlmap at path : ".$path.".");
         }
+    }
+    
+    private function replaceUrlMapVariables($urlmap_content,$variables) {
+        foreach ($variables as $k => $v) {
+            $urlmap_content = str_replace($this->variable_prefix.$k.$this->variable_suffix, $v, $urlmap_content);
+        }
+        return $urlmap_content;
+    }
+    
+    /**
+     * Legge una urlmap al percorso specificato e ritorna una hashmap con i dati dell'urlmap all'interno.
+     * 
+     * @param string $path Il percorso all'urlmap
+     * @return \LTreeMap La hashmap risultante
+     * @throws \Exception Se ci sono degli errori in fase di decodifica
+     */
+    public function readUrlMapAsArray($path) {
+        if (!is_readable($path)) throw new \Exception("UrlMap at path ".$path." is not readable.");
+        $urlmap_content = file_get_contents($path);
+        $current_map_array = $this->readUrlMapContent($urlmap_content);
         
+        $capture_array = [];
+        if (isset($current_map_array['capture'])) {
+            $capture_pattern = $current_map_array['capture'];
+            $route_capture = new LRouteCapture();
+            $capture_array = $route_capture->captureParameters($capture_pattern, $this->original_route);
+        }
+        
+        $all_replacement_params = array_replace(LEnvironmentUtils::getReplacementsArray(), $capture_array);
+        $new_urlmap_content = $this->replaceUrlMapVariables($urlmap_content, $all_replacement_params);
+        return $this->readUrlMapContent($new_urlmap_content);
     }
     /**
      * Ritorna un valore booleano in base alla presenza di link a route nella urlmap
@@ -257,6 +290,7 @@ class LUrlMapResolver {
     }
     
     public function resolveUrlMap(string $route) {
+        $this->original_route = $route;
         $this->urlmap_references = [];
         do {
             $array_map = $this->internalResolveUrlMap($route);

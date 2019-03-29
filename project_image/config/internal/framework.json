@@ -57,7 +57,10 @@
             "inherited_route" : "_default",
             "truncate_route" : "_stop",
             "ignore_missing_extends" : false,
-            "ignore_missing_imports" : false
+            "ignore_missing_imports" : false,
+            "variable_prefix" : "{",
+            "variable_suffix" : "}"
+
         },
         "logging" : {
             "distinct-file" : {

@@ -92,6 +92,7 @@ class LTreeMap implements ArrayAccess, Iterator {
     
     private static function recursiveFilterVar(array $var_array) {
         foreach ($var_array as $k => $val) {
+            if ($val === null || $val === false || $val === true) continue;
             if (is_array($val)) {
                 $var_array[$k] = self::recursiveFilterVar($val);
             } else {
@@ -125,7 +126,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         
         foreach ($path_used as $p)
         {            
-            if (!isset($current_node[$p]))
+            if (!array_key_exists($p,$current_node))
                 $current_node[$p] = array();
 
             $current_node = &$current_node[$p];
@@ -158,7 +159,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         
         foreach ($path_parts as $p)
         {
-            if (!isset($current_node[$p]))
+            if (!array_key_exists($p,$current_node))
                 $current_node[$p] = array();
             if (!is_array($current_node[$p])) {
                 $current_node[$p] = array($current_node[$p]);
@@ -189,7 +190,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         
         foreach ($path_parts as $p)
         {
-            if (!isset($current_node[$p]))
+            if (!array_key_exists($p,$current_node))
                 $current_node[$p] = array();
             $current_node = &$current_node[$p];
         }
@@ -208,7 +209,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         
         foreach ($path_parts as $p)
         {
-            if (!isset($current_node[$p]))
+            if (!array_key_exists($p,$current_node))
                 $current_node[$p] = array();
             $current_node = &$current_node[$p];
         }
@@ -265,6 +266,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         }
         
         $return_value = $current_node;
+        if ($return_value===null || $return_value===false || $return_value===true) return $return_value;
         if (is_array($return_value)) {
             $return_value = self::recursiveFilterVar($return_value);
             return $return_value;

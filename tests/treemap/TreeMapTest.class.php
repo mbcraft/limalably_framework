@@ -2,6 +2,48 @@
 
 class TreeMapTest extends LTestCase {
     
+    function testReadingStrangeValuesFromTreeMap() {
+        
+        $t = new LTreeMap();
+        $t->set('/uno/due/nullo',null);
+        $t->set('/uno/due/false',false);
+        $t->set('/uno/due/true',true);
+        
+        $this->assertTrue($t->is_set('/uno/due/nullo'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/false'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/true'),'Il nodo sembra non esistere!');
+        
+        $this->assertEqual($t->mustGet('/uno/due/nullo'),null,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due/false'),false,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due/true'),true,'Il nodo sembra non esistere!');
+        
+        $this->assertSame($t->mustGet('/uno/due/nullo'),null,'Il nodo ha un valore che non coincide! : '.var_export($t->mustGet('/uno/due/nullo'),true));
+        $this->assertSame($t->mustGet('/uno/due/false'),false,'Il nodo ha un valore che non coincide!');
+        $this->assertSame($t->mustGet('/uno/due/true'),true,'Il nodo ha un valore che non coincide!');
+        
+    }
+    
+    function testReadingStrangeValuesFromTreeMap2() {
+        
+        $t = new LTreeMap();
+        $t->set('/uno/due/nullo',null);
+        $t->set('/uno/due/false',false);
+        $t->set('/uno/due/true',true);
+        
+        $this->assertTrue($t->is_set('/uno/due/nullo'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/false'),'Il nodo sembra non esistere!');
+        $this->assertTrue($t->is_set('/uno/due/true'),'Il nodo sembra non esistere!');
+        
+        $this->assertEqual($t->mustGet('/uno/due')['nullo'],null,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due')['false'],false,'Il nodo sembra non esistere!');
+        $this->assertEqual($t->mustGet('/uno/due')['true'],true,'Il nodo sembra non esistere!');
+        
+        $this->assertSame($t->mustGet('/uno/due')['nullo'],null,'Il nodo nullo ha un valore che non coincide! : '.var_export($t->mustGet('/uno/due'),true));
+        $this->assertSame($t->mustGet('/uno/due')['false'],false,'Il nodo falso ha un valore che non coincide!');
+        $this->assertSame($t->mustGet('/uno/due')['true'],true,'Il nodo vero ha un valore che non coincide!');
+        
+    }
+    
     function testArrayNullValueIsSet() {
         $data = ["mykey" => null];
         

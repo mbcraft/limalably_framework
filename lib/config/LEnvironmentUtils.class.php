@@ -77,4 +77,7 @@ class LEnvironmentUtils {
         return $_SERVER['PROJECT_DIR'];
     }
     
+    public static function getRequestMethod() {
+        return $_SERVER['REQUEST_METHOD'];
+    }
 }

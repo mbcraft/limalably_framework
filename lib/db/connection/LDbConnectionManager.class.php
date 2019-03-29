@@ -25,7 +25,7 @@ class LDbConnectionManager {
     
     private static function createAndOpen($connection_name) {
         
-        $params = LConfig::view('/database/'.$connection_name);
+        $params = LConfigReader::executionMode('/database/'.$connection_name);
         
         $type = $params['type'];
         switch ($type) {

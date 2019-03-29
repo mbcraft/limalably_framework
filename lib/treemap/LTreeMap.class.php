@@ -278,7 +278,6 @@ class LTreeMap implements ArrayAccess, Iterator {
      */
     public function view($path)
     {
-        $path = $path.'/';
         return new LTreeMapView($path,$this);
     }
     

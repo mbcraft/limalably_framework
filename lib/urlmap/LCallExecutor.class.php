@@ -149,11 +149,7 @@ class LCallExecutor {
         
         $result = $this->internalExecute($call_spec);
         
-        if (is_string($result)) throw new \Exception($result);
-        if (is_numeric($result)) throw new \Exception("Call has returned an invalid numeric value : ".$result.". Call spec : ".$call_spec);
-        if ($result===null) return [];
-        if (is_array($result)) return $result;
-        
-        throw new \Exception("Unrecognized result from call : ".$call_spec.". Result : ". var_export($result,true));
+        if ($result==null) return [];
+        return $result;
     }
 }

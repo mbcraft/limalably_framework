@@ -38,7 +38,6 @@ class LTreeMapView implements ArrayAccess, Iterator {
      */
     public function view($path)
     {
-        $path = $path.'/';
         return new LTreeMapView($this->view_prefix.$path,$this->view_map);
     }
 

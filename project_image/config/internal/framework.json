@@ -52,7 +52,10 @@
         "urlmap" : {
             "manager_class" : "LDefaultUrlMapManager",
             "shortcut_proc" : true,
-            "search_order" : "hash_db,static"
+            "search_order" : "hash_db,static",
+            "folder_route" : "_folder",
+            "inherited_route" : "_default",
+            "truncate_route" : "_stop"
         },
         "logging" : {
             "distinct-file" : {

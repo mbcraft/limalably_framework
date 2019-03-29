@@ -9,6 +9,10 @@ class LUrlMapResolver {
     private $hash_db_folder;
     private $private_folder;
     
+    private $folder_route;
+    private $inherited_route;
+    private $truncate_route;
+    
     function __construct($root_folder,$static_folder='urlmap/public/static/',$hash_db_folder='urlmap/public/hash_db/',$private_folder='urlmap/private/') {
         $this->root_folder = $root_folder;
         $this->static_folder = $static_folder;
@@ -19,6 +23,10 @@ class LUrlMapResolver {
         if (!is_dir($this->root_folder.$this->static_folder)) throw new \Exception("La cartella per gli urlmap pubblici statici non esiste : ".$static_folder);
         if (!is_dir($this->root_folder.$this->hash_db_folder)) throw new \Exception("La cartella per gli urlmap pubblici hash non esiste : ".$hash_db_folder);
         if (!is_dir($this->root_folder.$this->private_folder)) throw new \Exception("La cartella per gli urlmap privati non esiste : ".$private_folder);
+        
+        $this->folder_route = LConfigReader::simple('/urlmap/folder_route');
+        $this->inherited_route = LConfigReader::simple('/urlmap/inherited_route');
+        $this->truncate_route = LConfigReader::simple('/urlmap/truncate_route');
         
     }
     
@@ -36,6 +44,7 @@ class LUrlMapResolver {
     private function isPrivateRoute($route) {
         $path = $this->root_folder.$this->private_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
+        LResult::framework_debug('Cerco private route : '.$route);
         return is_readable($path);
     }
     
@@ -54,6 +63,7 @@ class LUrlMapResolver {
     private function isHashRoute($route) {
         $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
         $path = str_replace('//', '/', $path);
+        LResult::framework_debug('Cerco hash route : '.$route);
         return is_readable($path);
     }
     
@@ -95,18 +105,7 @@ class LUrlMapResolver {
         if (isset($array_map['extends']) || isset($array_map['imports'])) return true;
         else return false;
     }
-    
-    /**
-     * Ritorna il valore del link contenuto nell'url map.
-     * 
-     * @param type $tree_map La mappa hash con i dati
-     * @return string La route da usare
-     * @throws \Exception Se il parametro non è una mappa hash con un valido link a urlmap
-     */
-    private function verifyValidRoute($route) {
-        if ($this->isPrivateRoute($route) && ($this->isPublicRoute($route) || $this->isHashRoute($route))) throw new \Exception("The linked urlmap is both private and static or hash_db!");
-    }
-    
+      
     private function getPublicUrlMapAsArray($route) {
         $path = $this->root_folder.$this->static_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
@@ -123,6 +122,7 @@ class LUrlMapResolver {
     private function isPublicRoute($route) {
         $path = $this->root_folder.$this->static_folder.$route.'.json';
         $path = str_replace('//', '/', $path);
+        LResult::framework_debug('Cerco static route : '.$route);
         return is_readable($path);
     }
     
@@ -225,21 +225,42 @@ class LUrlMapResolver {
     }
     
     public function getParentRoute($route) {
-        if (LStringUtils::endsWith($route, '_default')) $route = substr($route,0,-8);
+        if (!$this->inherited_route) return null;
+        
+        if (LStringUtils::endsWith($route, $this->inherited_route)) $route = substr($route,0,-strlen($this->inherited_route));
         if ($route == "") return null;
-        if (dirname($route)=='.' || dirname($route)=='/') return '_default';
-        else return dirname($route).'/_default';
+        if (dirname($route)=='.' || dirname($route)=='/') return $this->inherited_route;
+        else return dirname($route).'/'.$this->inherited_route;
+    }
+    
+    public function getNextSearchedRoute($route) {
+        if (!$this->truncate_route) return null;
+        
+        if (LStringUtils::endsWith($route, $this->truncate_route)) $route = substr($route,0,-strlen($this->truncate_route));
+        if ($route == "") return null;
+        if (dirname($route)=='.' || dirname($route)=='/') return $this->truncate_route;
+        else return dirname($route).'/'.$this->truncate_route;
     }
     
     public function resolveUrlMap(string $route) {
         $this->urlmap_references = [];
-        $array_map = $this->internalResolveUrlMap($route);
-        if ($array_map) return new LTreeMap($array_map);
-        else return null;
+        do {
+            $array_map = $this->internalResolveUrlMap($route);
+            if ($array_map) return new LTreeMap($array_map);
+            $route = $this->getNextSearchedRoute($route);
+        } while ($route!=null);
+        
+        return null;
     }
     
     private function internalResolveUrlMap(string $route) {
-        if (LStringUtils::endsWith($route, '/')) $route = $route.'_folder';
+        if (LStringUtils::endsWith($route, '/')) {
+            if ($this->folder_route) {
+                $route = $route.$this->folder_route;
+            } else {
+                return null;
+            }
+        }
         
         if (in_array($route, $this->urlmap_references)) return [];
         else $this->urlmap_references[] = $route;

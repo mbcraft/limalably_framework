@@ -145,14 +145,14 @@ class LUrlMapResolver {
                     if (!$this->ignore_missing_extends) throw new \Exception("Route not found in extends : ".$route);
                 }
             }
-            unset($array_map['extends']);
+            //unset($array_map['extends']);
         }
         $route_list = null;
         //rimuovo prima gli import per non causare strane ricorsioni
         if (isset($array_map['imports'])) {
             $route_list = $array_map['imports'];
             if (!is_array($route_list)) $route_list = array($route_list);
-            unset($array_map['imports']);
+            //unset($array_map['imports']);
         }
         
         $url_map_calculator->addUrlMapData($array_map);

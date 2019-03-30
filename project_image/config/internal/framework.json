@@ -59,7 +59,8 @@
             "ignore_missing_extends" : false,
             "ignore_missing_imports" : false,
             "variable_prefix" : "{",
-            "variable_suffix" : "}"
+            "variable_suffix" : "}",
+            "validation_driver" : "LRespectValidationDriver"
 
         },
         "logging" : {

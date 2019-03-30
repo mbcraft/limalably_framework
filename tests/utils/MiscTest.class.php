@@ -117,6 +117,16 @@ class MiscTest extends LTestCase {
         
     }
     
+    function testSimpleIncludedFile() {
+        
+        $prova = 13;
+        
+        $result = include($_SERVER['FRAMEWORK_DIR'].'tests/utils/simple_included_file.php');
+        
+        $this->assertEqual($result,$prova,"Le variabili non si vedono all'interno dell'include!");
+        
+    }
+    
 
     
 }

@@ -173,16 +173,9 @@ class LTreeMap implements ArrayAccess, Iterator {
             $current_node[] = $value;
     }
     
-    /*
-     * Effettua il merge di un'array di valori all'interno di un'altro array.
-     * La differenza rispetto ad add sta nel fondere i due array.
-     * Da usare se non si vogliono aggiungere i valori ad un array.
-     */
-    function merge($path,$value)
-    {
-        $real_value = $value;
-
-        if (!is_array($real_value)) throw new \LInvalidParameterException("Il parametro passato non e' un array!!");
+    private function storeValue($path,$value,$storing_function) {
+        if (!is_array($value)) $real_value = [$value];
+        else $real_value = $value;
 
         $path_parts = self::path_tokens($path);
         
@@ -195,7 +188,21 @@ class LTreeMap implements ArrayAccess, Iterator {
             $current_node = &$current_node[$p];
         }
         
-        $current_node = array_merge_recursive($current_node,$real_value);
+        $current_node = $storing_function($current_node,$real_value);
+    }
+    
+    /*
+     * Effettua il merge di un'array di valori all'interno di un'altro array.
+     * La differenza rispetto ad add sta nel fondere i due array.
+     * Da usare se non si vogliono aggiungere i valori ad un array.
+     */
+    function merge($path,$value)
+    {        
+        $this->storeValue($path, $value, 'array_merge_recursive');
+    }
+    
+    function replace($path,$value) {
+        $this->storeValue($path, $value, 'array_replace_recursive');
     }
     
     /*

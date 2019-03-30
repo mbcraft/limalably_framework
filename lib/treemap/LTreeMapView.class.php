@@ -67,6 +67,10 @@ class LTreeMapView implements ArrayAccess, Iterator {
         $this->view_map->merge($this->view_prefix.$path,$value);
     }
 
+    function replace($path,$value)
+    {
+        $this->view_map->replace($this->view_prefix.$path,$value);
+    }
     /*
      * Rimuove le chiavi trovate nel path specificato.
      */

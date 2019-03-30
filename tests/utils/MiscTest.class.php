@@ -127,6 +127,14 @@ class MiscTest extends LTestCase {
         
     }
     
+    function testArrayWithRepeatedKeys() {
+        
+        $data = array("ciao" => "marco","ciao" => "franco");
+        
+        $this->assertEqual(count($data),1,"La chiave non è stata sovrascritta!");
+        
+    }
+    
 
     
 }

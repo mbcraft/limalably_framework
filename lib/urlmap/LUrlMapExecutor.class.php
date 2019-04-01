@@ -9,12 +9,11 @@ class LUrlMapExecutor {
         $this->my_url_map = $url_map;
     }
     
-    function execute($input) {
-        //import parametri
+    function execute($treemap_input,$treemap_session) {
+        //capture resolution
         //input parameters check
         //session parameters check
-        //output composition
-        //exec before do after
+        //exec tree
         //template rendering
     }
     

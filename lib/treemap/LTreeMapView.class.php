@@ -11,25 +11,49 @@ class LTreeMapView implements ArrayAccess, Iterator {
         $this->view_prefix = $prefix.'/';
     }
 
+    private static function pathIsAbsolute($path) {
+        return strpos($path,'/')===0;
+    }
+    
     function getBoolean($path,$default_value=null) {
-        return $this->view_map->getBoolean($this->view_prefix.$path,$default_value);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->getBoolean($path,$default_value);
+        } else {
+            return $this->view_map->getBoolean($this->view_prefix.$path,$default_value);
+        }
     }
     
     function mustGetBoolean($path) {
-        return $this->view_map->mustGetBoolean($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->mustGetBoolean($path);
+        } else {
+            return $this->view_map->mustGetBoolean($this->view_prefix.$path);
+        }
     }
     
     function mustGetOriginal($path) {
-        return $this->view_map->mustGetOriginal($this->view_prefix.$path); 
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->mustGetOriginal($path);
+        } else {
+            return $this->view_map->mustGetOriginal($this->view_prefix.$path); 
+        }
     }
     
     function getOriginal($path,$default_value = null) {
-        return $this->view_map->getOriginal($this->view_prefix.$path,$default_value);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->getOriginal($path,$default_value);
+        } else {
+            return $this->view_map->getOriginal($this->view_prefix.$path,$default_value);
+        }
     }
     
     function set($path,$value)
     {
-        $this->view_map->set($this->view_prefix.$path,$value);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->set($path,$value);
+        } else {
+            $this->view_map->set($this->view_prefix.$path,$value);
+        }
     }
 
     /*
@@ -38,7 +62,11 @@ class LTreeMapView implements ArrayAccess, Iterator {
      */
     public function view($path)
     {
-        return new LTreeMapView($this->view_prefix.$path,$this->view_map);
+        if (self::pathIsAbsolute($path)) {
+            return new LTreeMapView($path,$this->view_map);
+        } else {
+            return new LTreeMapView($this->view_prefix.$path,$this->view_map);
+        }
     }
 
     /*
@@ -55,7 +83,11 @@ class LTreeMapView implements ArrayAccess, Iterator {
      */
     function add($path,$value)
     {
-        $this->view_map->add($this->view_prefix.$path,$value);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->add($path,$value);
+        } else {
+            $this->view_map->add($this->view_prefix.$path,$value);
+        }
     }
 
     /*
@@ -64,28 +96,48 @@ class LTreeMapView implements ArrayAccess, Iterator {
      */
     function merge($path,$value)
     {
-        $this->view_map->merge($this->view_prefix.$path,$value);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->merge($path,$value);
+        } else {
+            $this->view_map->merge($this->view_prefix.$path,$value);
+        }
     }
 
     function replace($path,$value)
     {
-        $this->view_map->replace($this->view_prefix.$path,$value);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->replace($path,$value);
+        } else {
+            $this->view_map->replace($this->view_prefix.$path,$value);
+        }
     }
     /*
      * Rimuove le chiavi trovate nel path specificato.
      */
     function purge($path,$keys)
     {
-        $this->view_map->purge($this->view_prefix.$path,$keys);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->purge($path,$keys);
+        } else {
+            $this->view_map->purge($this->view_prefix.$path,$keys);
+        }
     }
 
     function remove($path)
     {
-        $this->view_map->remove($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->remove($path);
+        } else {
+            $this->view_map->remove($this->view_prefix.$path);
+        }
     }
 
     function mustGet($path) {
-        return $this->view_map->mustGet($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->mustGet($path);
+        } else {
+            return $this->view_map->mustGet($this->view_prefix.$path);
+        }
     }
     
     /*
@@ -101,7 +153,11 @@ class LTreeMapView implements ArrayAccess, Iterator {
 
     function get($path,$default_value=null)
     {
-        return $this->view_map->get($this->view_prefix.$path,$default_value);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->get($path,$default_value);
+        } else {
+            return $this->view_map->get($this->view_prefix.$path,$default_value);
+        }
     }
 
     /*
@@ -109,29 +165,53 @@ class LTreeMapView implements ArrayAccess, Iterator {
      */
     function is_set($path)
     {
-        return $this->view_map->is_set($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->is_set($path);
+        } else {
+            return $this->view_map->is_set($this->view_prefix.$path);
+        }
     }
 
     function keys($path) {
-        return $this->view_map->keys($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->keys($path);
+        } else {
+            return $this->view_map->keys($this->view_prefix.$path);
+        }
     }
     
     //array access
     
     public function offsetExists($path): bool {
-        return $this->view_map->is_set($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->is_set($path);
+        } else {
+            return $this->view_map->is_set($this->view_prefix.$path);
+        }
     }
 
     public function offsetGet($path) {
-        return $this->view_map->mustGet($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            return $this->view_map->mustGet($path);
+        } else {
+            return $this->view_map->mustGet($this->view_prefix.$path);
+        }
     }
 
     public function offsetSet($path, $value): void {
-        $this->view_map->set($this->view_prefix.$path,$value);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->set($path,$value);
+        } else {
+            $this->view_map->set($this->view_prefix.$path,$value);
+        }
     }
 
     public function offsetUnset($path): void {
-        $this->view_map->remove($this->view_prefix.$path);
+        if (self::pathIsAbsolute($path)) {
+            $this->view_map->remove($path);
+        } else {
+            $this->view_map->remove($this->view_prefix.$path);
+        }
     }
     
     public function current() {

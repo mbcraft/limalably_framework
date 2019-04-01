@@ -9,6 +9,12 @@ class LUrlMapExecutor {
         $this->my_url_map = $url_map;
     }
     
+
+    function executeRootRequest() {
+        
+        $parameters = isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];
+    }
+    
     function execute($treemap_input,$treemap_session) {
         //capture resolution
         //input parameters check

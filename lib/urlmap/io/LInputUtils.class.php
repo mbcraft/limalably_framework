@@ -1,18 +1,15 @@
 <?php
 
-class LInput {
-    use LStaticTreeMapBase,LStaticReadTreeMap,LStaticWriteTreeMap;
+class LInputUtils {
     
-    static function init($parameters = []) {
+    
+    static function create() {
         $source_list = LConfigReader::simple('/request/input_source_list');
-        
-        self::clear();
-        
+                
         $import_list = [];
         
         foreach ($source_list as $source) {
             switch ($source) {
-                case 'parameters' : $import_list[] = $parameters; break;
                 case 'files' : $import_list[] = $_FILES; break;
                 case 'post' : $import_list[] = $_POST; break;
                 case 'get' : $import_list[] = $_GET; break;
@@ -26,7 +23,7 @@ class LInput {
             $result = array_replace_recursive($result,$import);
         }
         
-        self::$tree_map = new LTreeMap($result);
-        self::setCurrentView('/');
+        $tree_map = new LTreeMap($result);
+        return $tree_map->view('/');
     }
 }

@@ -126,7 +126,7 @@
             "proc_folder" : "proc/"
         },
         "request" : {
-            "input_source_list" : ["parameters","files","post","get"]
+            "input_source_list" : ["files","post","get"]
         }
     }
 }

@@ -8,7 +8,11 @@ class LTreeMapView implements ArrayAccess, Iterator {
     function __construct($prefix,$treemap)
     {
         $this->view_map = $treemap;
-        $this->view_prefix = $prefix.'/';
+        if (LStringUtils::endsWith($prefix, '/')) {
+            $this->view_prefix = $prefix;
+        } else {
+            $this->view_prefix = $prefix.'/';
+        }
     }
 
     private static function pathIsAbsolute($path) {

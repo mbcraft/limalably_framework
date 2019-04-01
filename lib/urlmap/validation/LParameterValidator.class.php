@@ -33,7 +33,7 @@ class LParameterValidator {
 
         if ($evaluate_rules) {
 
-            $driver_class_name = LConfigReader::simple('/urlmap/validation_driver');
+            $driver_class_name = LConfigReader::simple('/urlmap/validation_driver_class');
             $driver_instance = new $driver_class_name();
 
             $validated_value = $this->is_set ? $this->value : $this->default_value;

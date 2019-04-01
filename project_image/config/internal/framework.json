@@ -9,7 +9,10 @@
                 },
                 "urlmap" : {
                     "manager_class" : "LMaintenanceUrlMapManager",
-                    "private_routes_visible" : false
+                    "private_routes_visible" : false,
+                    "templates" : {
+                        "auto_reload" : false
+                    }
                 }
             },
             "framework_development" : {
@@ -18,7 +21,10 @@
                     "min_level" : "debug"
                 },
                 "urlmap" : {
-                    "private_routes_visible" : true
+                    "private_routes_visible" : true,
+                    "templates" : {
+                        "auto_reload" : true
+                    }
                 }
             },
             "development" : {
@@ -27,7 +33,10 @@
                     "min_level" : "debug"
                 },
                 "urlmap" : {
-                    "private_routes_visible" : true
+                    "private_routes_visible" : true,
+                    "templates" : {
+                        "auto_reload" : true
+                    }
                 }
             },
             "testing" : {
@@ -36,7 +45,10 @@
                     "min_level" : "error"
                 },
                 "urlmap" : {
-                    "private_routes_visible" : false
+                    "private_routes_visible" : false,
+                    "templates" : {
+                        "auto_reload" : false
+                    }
                 }
             },
             "production" : {
@@ -45,7 +57,10 @@
                     "min_level" : "error"
                 },
                 "urlmap" : {
-                    "private_routes_visible" : false
+                    "private_routes_visible" : false,
+                    "templates" : {
+                        "auto_reload" : false
+                    }
                 }
             }
         },
@@ -60,7 +75,12 @@
             "ignore_missing_imports" : false,
             "variable_prefix" : "{",
             "variable_suffix" : "}",
-            "validation_driver" : "LRespectValidationDriver"
+            "validation_driver_class" : "LRespectValidationDriver",
+            "template_source_factory_class" : "LTwigTemplateSourceFactory",
+            "templates" : {
+                "strict_variables" : true,
+                "autoescape" : "name"
+            }
 
         },
         "logging" : {

@@ -2,21 +2,28 @@
 
 class LCallExecutor {
         
+    const DATA_IMPORT_PREFIX = '$';
+    const ROUTE_CALL_PREFIX = '->';
+    const OBJECT_METHOD_CALL_SEPARATOR = '#';
+    const STATIC_METHOD_CALL_SEPARATOR = '::';
+    
     private $initialized = false;
     private $base_dir = null;
     private $proc_folder = null;
     private $proc_extension = null;
+    private $data_folder = null;
     
     private function isInitialized() {
         return $this->initialized;
     }
     
-    public function init($base_dir,$proc_folder,$proc_extension) {
+    public function init($base_dir,$proc_folder,$proc_extension,$data_folder) {
         $this->initialized = true;
         
         $this->base_dir = $base_dir;
         $this->proc_folder = $proc_folder;
         $this->proc_extension = $proc_extension;
+        $this->data_folder = $data_folder;
     }
     
     private function initWithDefaults() {
@@ -24,15 +31,25 @@ class LCallExecutor {
         
         $this->proc_folder = LConfigReader::simple('/classloader/proc_folder');
         $this->proc_extension = LConfigReader::simple('/classloader/proc_extension');
+        $this->data_folder = LConfigReader::simple('/classloader/data_folder');
         $this->base_dir = $_SERVER['PROJECT_DIR']; 
     }
+    
+    public static function isDataImport($call_spec) {
+        return strpos($call_spec,self::DATA_IMPORT_PREFIX)!==false;
+    }
+    
+    public static function isRoute($call_spec) {
+        return strpos($call_spec,self::ROUTE_CALL_PREFIX)!==false;
+    }
+    
     /**
      * 
      * @param type $exec
      * @return type
      */
     public static function isProcExec($call_spec) {
-        return !self::isClassMethodExec($call_spec);
+        return !(self::isClassMethodExec($call_spec) || self::isRoute($call_spec) || self::isDataImport($call_spec));
     }
     
     /**
@@ -41,7 +58,7 @@ class LCallExecutor {
      * @return type
      */
     public static function isClassMethodExec($call_spec) {
-        return strpos($call_spec,'#')!==false || strpos($call_spec,'::')!==false;
+        return strpos($call_spec,self::OBJECT_METHOD_CALL_SEPARATOR)!==false || strpos($call_spec,self::STATIC_METHOD_CALL_SEPARATOR)!==false;
     }
     
     /**
@@ -55,6 +72,25 @@ class LCallExecutor {
         $path = $this->base_dir.$this->proc_folder.$call_spec.$this->proc_extension;
         $path = str_replace('//', '/', $path);
         return is_readable($path);
+    }
+    
+    private function executeDataImport($call_spec) {
+        throw new \Exception("To be implemented");
+    }
+    
+    private function executeRoute($call_spec,$all_param_data) {
+        
+        $route = substr($call_spec, strlen(self::ROUTE_CALL_PREFIX));
+        
+        $route_resolver = new LUrlMapResolver();
+        $url_map = $route_resolver->resolveUrlMap($route);
+        $url_map_executor = new LUrlMapExecutor($url_map);
+        
+        $parameters = $all_param_data['parameters'];
+        $input_view = $all_param_data['input'];
+        $session_view = $all_param_data['session'];
+        
+        return $url_map_executor->execute($route, $parameters, $input_view, $session_view);
     }
     
     /**
@@ -116,23 +152,23 @@ class LCallExecutor {
                 $prepared_parameters[] = $all_param_data['capture'][$param_name];
                 continue;
             }
-            if ($all_param_data['in']->is_set($param_name)) {
-                $prepared_parameters[] = $all_param_data['in']->mustGet($param_name);
+            if ($all_param_data['input']->is_set($param_name)) {
+                $prepared_parameters[] = $all_param_data['input']->mustGet($param_name);
                 continue;
             }
             
-            if ($all_param_data['in']->is_set('/'.$param_name)) {
-                $prepared_parameters[] = $all_param_data['in']->mustGet('/'.$param_name);
+            if ($all_param_data['input']->is_set('/'.$param_name)) {
+                $prepared_parameters[] = $all_param_data['input']->mustGet('/'.$param_name);
                 continue;
             }
             
-            if ($all_param_data['out']->is_set($param_name)) {
-                $prepared_parameters[] = $all_param_data['out']->mustGet($param_name);
+            if ($all_param_data['output']->is_set($param_name)) {
+                $prepared_parameters[] = $all_param_data['output']->mustGet($param_name);
                 continue;
             }
             
-            if ($all_param_data['out']->is_set('/'.$param_name)) {
-                $prepared_parameters[] = $all_param_data['out']->mustGet('/'.$param_name);
+            if ($all_param_data['output']->is_set('/'.$param_name)) {
+                $prepared_parameters[] = $all_param_data['output']->mustGet('/'.$param_name);
                 continue;
             }
 
@@ -159,12 +195,19 @@ class LCallExecutor {
     }
     
     private function internalExecute($call_spec,$all_param_data) {
-        if (self::isProcExec($call_spec)) {
-            return $this->executeProcFile($call_spec,$all_param_data);
+        if (self::isDataImport($call_spec)) {
+            return $this->executeDataImport($call_spec);
+        }
+        if (self::isRoute($call_spec)) {
+            return $this->executeRoute($call_spec, $all_param_data);
         }
         if (self::isClassMethodExec($call_spec)) {
             return $this->executeClassMethod($call_spec,$all_param_data);
         }
+        if (self::isProcExec($call_spec)) {
+            return $this->executeProcFile($call_spec,$all_param_data);
+        }
+
         throw new \Exception("Unable to process call to execute : ".$call_spec);
     }
     

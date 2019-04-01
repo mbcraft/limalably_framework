@@ -83,28 +83,7 @@ class LUrlMapResolver {
         LResult::framework_debug('Cerco hash route : '.$route);
         return is_readable($path);
     }
-    
-    public function readUrlMapContent($urlmap_content) {
-        $result_array = json_decode($urlmap_content,true);
-        $last_error = json_last_error();
-        if ($last_error == JSON_ERROR_NONE) {
-            return $result_array;
-        }
-        switch ($last_error) {
-            case JSON_ERROR_DEPTH : throw new \Exception("Error decoding urlmap at path : ".$path.". Max depth reached.");
-            case JSON_ERROR_STATE_MISMATCH : throw new \Exception("Error decoding urlmap at path : ".$path.". Invalid or malformed JSON.");
-            case JSON_ERROR_CTRL_CHAR : throw new \Exception("Error decoding urlmap at path : ".$path.". Control character error.");
-            case JSON_ERROR_SYNTAX : throw new \Exception("Error decoding urlmap at path : ".$path.". Syntax error.");
-            case JSON_ERROR_UTF8 : throw new \Exception("Error decoding urlmap at path : ".$path.". UTF-8 encoding error.");
-            case JSON_ERROR_RECURSION : throw new \Exception("Error decoding urlmap at path : ".$path.". Error in recursive references.");
-            case JSON_ERROR_INF_OR_NAN : throw new \Exception("Error decoding urlmap at path : ".$path.". INF or NaN values found.");
-            case JSON_ERROR_UNSUPPORTED_TYPE : throw new \Exception("Error decoding urlmap at path : ".$path.". A value of type that cannot be encoded is found.");
-            case JSON_ERROR_INVALID_PROPERTY_NAME : throw new \Exception("Error decoding urlmap at path : ".$path.". Invalid property name.");
-            case JSON_ERROR_UTF16 : throw new \Exception("Error decoding urlmap at path : ".$path.". UTF-16 encoding error.");
-            default : throw new \Exception("Error decoding urlmap at path : ".$path.".");
-        }
-    }
-    
+        
     private function replaceUrlMapVariables($urlmap_content,$variables) {
         foreach ($variables as $k => $v) {
             $urlmap_content = str_replace($this->variable_prefix.$k.$this->variable_suffix, $v, $urlmap_content);
@@ -122,7 +101,7 @@ class LUrlMapResolver {
     public function readUrlMapAsArray($path) {
         if (!is_readable($path)) throw new \Exception("UrlMap at path ".$path." is not readable.");
         $urlmap_content = file_get_contents($path);
-        $current_map_array = $this->readUrlMapContent($urlmap_content);
+        $current_map_array = LJsonUtils::parseContent("urlmap",$path,$urlmap_content);
         
         $capture_array = [];
         if (isset($current_map_array['capture'])) {
@@ -133,7 +112,7 @@ class LUrlMapResolver {
         
         $all_replacement_params = array_replace(LEnvironmentUtils::getReplacementsArray(), $capture_array);
         $new_urlmap_content = $this->replaceUrlMapVariables($urlmap_content, $all_replacement_params);
-        return $this->readUrlMapContent($new_urlmap_content);
+        return LJsonUtils::parseContent("urlmap",$path,$new_urlmap_content);
     }
     /**
      * Ritorna un valore booleano in base alla presenza di link a route nella urlmap

@@ -79,7 +79,8 @@
             "template_source_factory_class" : "LTwigTemplateSourceFactory",
             "templates" : {
                 "strict_variables" : true,
-                "autoescape" : "name"
+                "autoescape" : "name",
+                "cache_path" : "temp/templates/"
             }
 
         },
@@ -123,7 +124,8 @@
             "cache_commented_call_list" : ["LResult::framework_debug","LResult::debug","LLog::debug","LLog::info"],
             "skip_cache_route_list" : [],
             "skip_cache_query_parameter" : null,
-            "proc_folder" : "proc/"
+            "proc_folder" : "proc/",
+            "data_folder" : "data/"
         },
         "request" : {
             "input_source_list" : ["files","post","get"]

@@ -14,6 +14,8 @@ class LTreeMap implements ArrayAccess, Iterator {
     
     public static function path_tokens($path)
     {
+        $path = str_replace('+','',$path);
+        
         $path_parts = explode("/",$path);
         
         $result = array();

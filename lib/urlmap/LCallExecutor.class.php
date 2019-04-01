@@ -1,10 +1,7 @@
 <?php
 
 class LCallExecutor {
-    
-    const IN_PARAMETER_NAME = 'in';
-    const OUT_PARAMETER_NAME = 'out';
-    
+        
     private $initialized = false;
     private $base_dir = null;
     private $proc_folder = null;
@@ -65,15 +62,22 @@ class LCallExecutor {
      * 
      * @param string $route La route al proc
      */
-    private function executeProcFile($call_spec) {
+    private function executeProcFile($call_spec,$all_param_data) {
         if (!$this->isValidProcFileRoute($call_spec)) throw new \Exception("Unable to find valid proc : ".$call_spec);
         
         $path = $this->base_dir.$this->proc_folder.$call_spec.$this->proc_extension;
         $path = str_replace('//', '/', $path);
+        
+        $parameters = $all_param_data['parameters'];
+        $capture = $all_param_data['capture'];
+        $in = $all_param_data['in'];
+        $session = $all_param_data['session'];
+        $context_path = $all_param_data['context_path'];
+        
         return include $path;
     }
     
-    private function executeClassMethod($call_spec) {
+    private function executeClassMethod($call_spec,$all_param_data) {
         $call_spec = str_replace('%','\\',$call_spec);
         $call_spec = str_replace('/','\\',$call_spec);
         if (LStringUtils::startsWith($call_spec, '\\')) $call_spec = substr($call_spec,1);
@@ -101,22 +105,42 @@ class LCallExecutor {
         $method_parameters = $reflection_method->getParameters();
         $prepared_parameters = [];
         foreach ($method_parameters as $mp) {
-            if ($mp->getName()==self::IN_PARAMETER_NAME) {
-                $prepared_parameters[] = LInput::getCurrentView();
-                continue;
-            }
-            if ($mp->getName()==self::OUT_PARAMETER_NAME) {
-                $prepared_parameters[] = LOutput::getCurrentView();
-                continue;
-            }
-            if (LInput::is_set($mp->getName())) {
-                $prepared_parameters[] = LInput::get($mp->getName());
-                continue;
-            } elseif ($mp->isDefaultValueAvailable()) {
-                $prepared_parameters[] = $mp->getDefaultValue();
+            
+            $param_name = $mp->getName();
+            if (in_array($param_name,$all_param_data)) {
+                $prepared_parameters[] = $all_param_data[$param_name];
                 continue;
             }
             
+            if (in_array($param_name,$all_param_data['capture'])) {
+                $prepared_parameters[] = $all_param_data['capture'][$param_name];
+                continue;
+            }
+            if ($all_param_data['in']->is_set($param_name)) {
+                $prepared_parameters[] = $all_param_data['in']->mustGet($param_name);
+                continue;
+            }
+            
+            if ($all_param_data['in']->is_set('/'.$param_name)) {
+                $prepared_parameters[] = $all_param_data['in']->mustGet('/'.$param_name);
+                continue;
+            }
+            
+            if ($all_param_data['out']->is_set($param_name)) {
+                $prepared_parameters[] = $all_param_data['out']->mustGet($param_name);
+                continue;
+            }
+            
+            if ($all_param_data['out']->is_set('/'.$param_name)) {
+                $prepared_parameters[] = $all_param_data['out']->mustGet('/'.$param_name);
+                continue;
+            }
+
+            if ($mp->isDefaultValueAvailable()) {
+                $prepared_parameters[] = $mp->getDefaultValue();
+                continue;
+            }
+                        
             throw new \Exception("Missing parameter ".$mp->getName()." from input, call : ".$call_spec);
         }
         //parameters are ready, now execute the call
@@ -134,22 +158,23 @@ class LCallExecutor {
         
     }
     
-    private function internalExecute($call_spec) {
+    private function internalExecute($call_spec,$all_param_data) {
         if (self::isProcExec($call_spec)) {
-            return $this->executeProcFile($call_spec);
+            return $this->executeProcFile($call_spec,$all_param_data);
         }
         if (self::isClassMethodExec($call_spec)) {
-            return $this->executeClassMethod($call_spec);
+            return $this->executeClassMethod($call_spec,$all_param_data);
         }
         throw new \Exception("Unable to process call to execute : ".$call_spec);
     }
     
-    public function execute($call_spec) {
+    public function execute(string $call_spec,array $all_param_data) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        $result = $this->internalExecute($call_spec);
+        $result = $this->internalExecute($call_spec,$all_param_data);
         
         if ($result==null) return [];
         return $result;
     }
+    
 }

@@ -139,4 +139,8 @@ class LAssert {
         }
     }
     
+    public function fail($message) {
+        self::failure($message);
+    }
+    
 }

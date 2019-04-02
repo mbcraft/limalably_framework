@@ -89,7 +89,7 @@ class LCallExecutor {
         $route = substr($call_spec, strlen(self::ROUTE_CALL_PREFIX));
         
         $route_resolver = new LUrlMapResolver();
-        $url_map = $route_resolver->resolveUrlMap($route);
+        $url_map = $route_resolver->resolveUrlMap($route, LUrlMapResolver::FLAGS_SEARCH_PRIVATE);
         $url_map_executor = new LUrlMapExecutor($url_map);
         
         $parameters = $all_param_data['parameters'];

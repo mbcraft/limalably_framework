@@ -2,6 +2,24 @@
 
 class TreeMapTest extends LTestCase {
     
+    function testReadingIndexedValuesFromTreeMap() {
+        
+        $indexed_values = ["ciao","mondo","caffè"];
+        
+        $t = new LTreeMap($indexed_values);
+        
+        $this->assertEqual($t->get(0),"ciao","Il valore letto non corrisponde!");
+        $this->assertEqual($t->get("0"),"ciao","Il valore letto non corrisponde!");
+        
+        $this->assertEqual($t->get(1),"mondo","Il valore letto non corrisponde!");
+        $this->assertEqual($t->get("1"),"mondo","Il valore letto non corrisponde!");
+        
+        $this->assertEqual($t->get(2),"caffè","Il valore letto non corrisponde!");
+        $this->assertEqual($t->get("2"),"caffè","Il valore letto non corrisponde!");
+        
+        
+    }
+    
     function testReadingStrangeValuesFromTreeMap() {
         
         $t = new LTreeMap();

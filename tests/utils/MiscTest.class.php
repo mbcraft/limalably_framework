@@ -2,6 +2,18 @@
 
 class MiscTest extends LTestCase {
     
+    function testVarExport() {
+        
+        $var1 = "ciccio";
+        
+        $this->assertEqual(var_export($var1,true),"'ciccio'","Il var export della stringa non è stato effettuato in modo corretto : ".var_export($var1,true));
+        
+        $var2 = 42;
+        
+        $this->assertEqual(var_export($var2,true),'42',"Il var export del numero non è stato effettuato in modo corretto");
+        
+    }
+    
     function testDirname0() {
         
         $my_file = $_SERVER['FRAMEWORK_DIR'].'logs/miofile.txt';

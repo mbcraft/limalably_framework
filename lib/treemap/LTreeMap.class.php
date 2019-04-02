@@ -21,7 +21,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         foreach ($path_parts as $p)
         {
             if ($p!=null) {
-                $path_token = str_replace('%','/',$p);
+                $path_token = str_replace('!','/',$p);
                 $path_token = str_replace('.','',$p);
                 $result[] = $path_token;
             }

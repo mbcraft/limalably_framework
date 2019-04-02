@@ -77,11 +77,11 @@ class LCallExecutor {
     private function executeDataImport($call_spec) {
         $data_path = substr($call_spec,strlen(self::DATA_IMPORT_PREFIX));
         
-        $data_storage = new LDataStorage();
+        $data_storage = new LJsonDataStorage();
         
-        if (!$data_storage->is_set($data_path)) throw new \Exception("Unable to find data file at path : ".$data_path);
+        if (!$data_storage->is_saved($data_path)) throw new \Exception("Unable to find data file at path : ".$data_path);
         
-        return $data_storage->get($data_path);
+        return $data_storage->load($data_path);
     }
     
     private function executeRoute($call_spec,$all_param_data) {

@@ -1,12 +1,12 @@
 <?php
 
-class DataStorageTest extends LTestCase {
+class JsonDataStorageTest extends LTestCase {
     
     function testGet() {
-        $storage = new LDataStorage();
+        $storage = new LJsonDataStorage();
         $storage->init($_SERVER['FRAMEWORK_DIR']);
         
-        $data = $storage->get('tests/data/my_data');
+        $data = $storage->load('tests/data/my_data');
         
         $this->assertEqual($data['ciao'],"mondo","Il dato letto non corrisponde!");
         $this->assertEqual($data['prova'],14,"Il dato letto non corrisponde!");
@@ -18,12 +18,12 @@ class DataStorageTest extends LTestCase {
         
         $my_data = ["qualcosa" => "qualcuno","ancora" => 18];
         
-        $storage = new LDataStorage();
+        $storage = new LJsonDataStorage();
         $storage->init($_SERVER['FRAMEWORK_DIR']);
         
-        $storage->set('tests/data/my_saved_data',$my_data);
+        $storage->save('tests/data/my_saved_data',$my_data);
         
-        $my_data_again = $storage->get('tests/data/my_saved_data');
+        $my_data_again = $storage->load('tests/data/my_saved_data');
         
         $this->assertEqual($my_data_again['qualcosa'],"qualcuno","I dati salvati non corrispondono!");
         $this->assertEqual($my_data_again['ancora'],18,"I dati salvati non corrispondono!");

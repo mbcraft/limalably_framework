@@ -96,6 +96,11 @@ class LCallExecutor {
         } else {
             $parameters = [];
         }
+        if ($all_param_data && isset($all_param_data['capture'])) {
+            $capture = $all_param_data['capture'];
+        } else {
+            $capture = [];
+        }
         if ($all_param_data && isset($all_param_data['input'])) {
             $input_view = $all_param_data['input'];
         } else {
@@ -107,7 +112,7 @@ class LCallExecutor {
             $session_view = new LTreeMap();
         }
         
-        return $url_map_executor->execute($route, $parameters, $input_view, $session_view);
+        return $url_map_executor->execute($route, $parameters, $capture, $input_view, $session_view);
     }
     
     /**
@@ -144,13 +149,13 @@ class LCallExecutor {
         $call_spec = str_replace('/','\\',$call_spec);
         if (LStringUtils::startsWith($call_spec, '\\')) $call_spec = substr($call_spec,1);
         
-        if (strpos($call_spec,'#')!==false) {
+        if (strpos($call_spec,self::OBJECT_METHOD_CALL_SEPARATOR)!==false) {
             $static_call = false;
-            list($class_name,$method_name) = explode('#',$call_spec);
+            list($class_name,$method_name) = explode(self::OBJECT_METHOD_CALL_SEPARATOR,$call_spec);
         }
-        if (strpos($call_spec,'::')!==false) {
+        if (strpos($call_spec,self::STATIC_METHOD_CALL_SEPARATOR)!==false) {
             $static_call = true;
-            list($class_name,$method_name) = explode('::',$call_spec);
+            list($class_name,$method_name) = explode(self::STATIC_METHOD_CALL_SEPARATOR,$call_spec);
         }
         try {
             $reflection_class = new ReflectionClass($class_name);

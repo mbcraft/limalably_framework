@@ -3,7 +3,7 @@
 class LConfig {
 
     use LStaticTreeMapBase;
-    use LStaticReadTreeMap;
+    use LStaticTreeMapRead;
 
     private static $init_called = false;
     private static $php_config_found = false;

@@ -3,8 +3,8 @@
 class StaticTreeMapWriteTest extends LTestCase {
 
     use LStaticTreeMapBase;
-    use LStaticReadTreeMap;
-    use LStaticWriteTreeMap;
+    use LStaticTreeMapRead;
+    use LStaticTreeMapWrite;
 
     function testFalseStrings() {
         self::clear();

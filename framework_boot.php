@@ -4,8 +4,8 @@
 require_once ('lib/treemap/LTreeMap.class.php');
 require_once ('lib/treemap/LTreeMapView.class.php');
 require_once ('lib/treemap/LStaticTreeMapBase.trait.php');
-require_once ('lib/treemap/LStaticReadTreeMap.trait.php');
-require_once ('lib/treemap/LStaticWriteTreeMap.trait.php');
+require_once ('lib/treemap/LStaticTreeMapRead.trait.php');
+require_once ('lib/treemap/LStaticTreeMapWrite.trait.php');
 
 //config
 require_once ('lib/config/LConfig.class.php');

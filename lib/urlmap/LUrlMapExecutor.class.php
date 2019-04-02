@@ -18,7 +18,7 @@ class LUrlMapExecutor {
         
     }
     
-    function execute($route,$parameters,$treeview_input,$treeview_session) {
+    function execute($route,$parameters,$capture,$treeview_input,$treeview_session) {
         
         $output = new LTreeMap();
         $treeview_output = $output->view('/');
@@ -42,9 +42,7 @@ class LUrlMapExecutor {
                 $capture_resolver = new LRouteCapture();
                 $capture_pattern = $this->my_url_map->get('/capture');
                 $capture = $capture_resolver->captureParameters($capture_pattern, $route);
-            } else {
-                $capture = [];
-            }
+            } 
 
             //exec tree
             //

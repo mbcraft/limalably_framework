@@ -1,6 +1,6 @@
 <?php
 
-trait LStaticReadTreeMap {
+trait LStaticTreeMapRead {
     
     
     static function mustGetOriginal($path) {

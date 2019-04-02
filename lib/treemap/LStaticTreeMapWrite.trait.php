@@ -6,7 +6,7 @@ Some help from :
  * https://stackoverflow.com/users/5732351/rod-elias
  *  */
 
-trait LStaticWriteTreeMap {
+trait LStaticTreeMapWrite {
     
     /*
      * Imposta un valore. L'ultima parte del path diventa la chiave.

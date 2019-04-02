@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+    <entry path="/qualcosa/uno">42</entry>
+    <entry path="/qualcosa/ancora/due">Ciao</entry>
+    <entry path="/qualcosa/ancora/tre">
+        <div>
+            Questo è un testo di prova<br />
+            <hr />
+        </div>
+    </entry>
+</data>

@@ -2,7 +2,7 @@
 
 class LCallExecutor {
         
-    const DATA_IMPORT_PREFIX = '$';
+    const DATA_IMPORT_PREFIX = '=';
     const ROUTE_CALL_PREFIX = '->';
     const OBJECT_METHOD_CALL_SEPARATOR = '#';
     const STATIC_METHOD_CALL_SEPARATOR = '::';
@@ -77,7 +77,7 @@ class LCallExecutor {
     private function executeDataImport($call_spec) {
         $data_path = substr($call_spec,strlen(self::DATA_IMPORT_PREFIX));
         
-        $data_storage = new LJsonDataStorage();
+        $data_storage = new LDataStorage();
         
         if (!$data_storage->is_saved($data_path)) throw new \Exception("Unable to find data file at path : ".$data_path);
         
@@ -145,7 +145,7 @@ class LCallExecutor {
     }
     
     private function executeClassMethod($call_spec,$all_param_data) {
-        $call_spec = str_replace('%','\\',$call_spec);
+        $call_spec = str_replace('!','\\',$call_spec);
         $call_spec = str_replace('/','\\',$call_spec);
         if (LStringUtils::startsWith($call_spec, '\\')) $call_spec = substr($call_spec,1);
         

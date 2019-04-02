@@ -2,6 +2,9 @@
 
 class LTreeMap implements ArrayAccess, Iterator {
     
+    const SLASH_ESCAPE = '!';
+    const IGNORE_ESCAPE = '.';
+    
     private $data=null;
     
     private $current_keys = null;
@@ -21,8 +24,11 @@ class LTreeMap implements ArrayAccess, Iterator {
         foreach ($path_parts as $p)
         {
             if ($p!=null) {
-                $path_token = str_replace('!','/',$p);
-                $path_token = str_replace('.','',$path_token);
+                
+                $path_token = str_replace(self::SLASH_ESCAPE,'/',$p);
+                
+                
+                $path_token = str_replace(self::IGNORE_ESCAPE,'',$path_token);
                 
                 $result[] = $path_token;
             }

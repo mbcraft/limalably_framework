@@ -16,28 +16,27 @@ class LUrlMapCalculator {
                 
         $current_data = [];
         foreach ($this->url_maps_data as $url_map_array_data) {
-            if (isset($url_map_array_data['exec'])) {
-                if ($this->isRawExecData($url_map_array_data['exec'])) {
-                    $url_map_array_data['exec'] = array('do' => $url_map_array_data['exec']);
-                }
-            }
+            
+            $this->beforeNormalizeUrlMap($url_map_array_data);
             $current_data = array_replace_recursive($current_data,$url_map_array_data);
-            $current_data = $this->normalizeUrlMap($current_data);
+            $current_data = $this->afterNormalizeUrlMap($current_data);
         }
         
         return $current_data;
     }
-    
-    private function isRawExecData($exec_array) {
-        if (!is_array($exec_array)) return true;
-        if (!isset($exec_array['do']) && !isset($exec_array['before']) && !isset($exec_array['after'])) return true;
-        else return false;
+       
+    private function beforeNormalizeUrlMap(&$url_map_array_data) {
+        if (isset($url_map_array_data['exec'])) {
+            if (is_string(($url_map_array_data['exec']))) {
+                $url_map_array_data['exec'] = array('' => $url_map_array_data['exec']);
+            }
+        }
     }
     
-    private function normalizeUrlMap($url_map_data) {
+    private function afterNormalizeUrlMap($url_map_data) {
         $url_map_hash = new LTreeMap($url_map_data);
         
-        $area_list = ['exec','session','input','output'];
+        $area_list = ['exec','session','input'];
         foreach ($area_list as $area) {
             if ($url_map_hash->is_set('/'.$area)) {
                 $keys = $url_map_hash->keys('/'.$area);

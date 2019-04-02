@@ -1,5 +1,4 @@
 {
-    "exec" : {
-        "do" : "stop_qualcosa"
-    }
+    "exec" : "stop_qualcosa"
+    
 }

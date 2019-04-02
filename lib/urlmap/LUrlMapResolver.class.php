@@ -298,7 +298,8 @@ class LUrlMapResolver {
         
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);
         
-        if ($search_flags & self::FLAGS_SEARCH_PUBLIC == self::FLAGS_SEARCH_PUBLIC) {
+        if (($search_flags & self::FLAGS_SEARCH_PUBLIC) == self::FLAGS_SEARCH_PUBLIC) {
+            LResult::framework_debug("Cerco la route in static e hash : ".$route);
             $route_check_order = LConfigReader::executionMode('/urlmap/search_order');
             $route_checks = explode(',',$route_check_order);
             foreach ($route_checks as $route_check) {
@@ -321,7 +322,8 @@ class LUrlMapResolver {
 
             }
         }
-        if ($search_flags & self::FLAGS_SEARCH_PRIVATE == self::FLAGS_SEARCH_PRIVATE) {
+        if (($search_flags & self::FLAGS_SEARCH_PRIVATE) == self::FLAGS_SEARCH_PRIVATE) {
+            LResult::framework_debug("Cerco la route in private : ".$route);
             if ($this->isPrivateRoute($route)) {
                 return $this->resolvePrivateUrlMap($route);
             }

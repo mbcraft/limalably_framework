@@ -13,17 +13,18 @@ class LTreeMap implements ArrayAccess, Iterator {
     }    
     
     public static function path_tokens($path)
-    {
-        $path = str_replace('+','',$path);
-        
+    {        
         $path_parts = explode("/",$path);
         
         $result = array();
         
         foreach ($path_parts as $p)
         {
-            if ($p!=null)
-                $result[] = str_replace('%','/',$p);
+            if ($p!=null) {
+                $path_token = str_replace('%','/',$p);
+                $path_token = str_replace('.','',$p);
+                $result[] = $path_token;
+            }
         }
         return $result;
     }

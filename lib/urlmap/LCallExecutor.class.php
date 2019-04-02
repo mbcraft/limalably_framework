@@ -91,10 +91,21 @@ class LCallExecutor {
         $route_resolver = new LUrlMapResolver();
         $url_map = $route_resolver->resolveUrlMap($route, LUrlMapResolver::FLAGS_SEARCH_PRIVATE);
         $url_map_executor = new LUrlMapExecutor($url_map);
-        
-        $parameters = $all_param_data['parameters'];
-        $input_view = $all_param_data['input'];
-        $session_view = $all_param_data['session'];
+        if ($all_param_data && isset($all_param_data['parameters'])) {
+            $parameters = $all_param_data['parameters'];
+        } else {
+            $parameters = [];
+        }
+        if ($all_param_data && isset($all_param_data['input'])) {
+            $input_view = $all_param_data['input'];
+        } else {
+            $input_view = new LTreeMap();
+        }
+        if ($all_param_data && isset($all_param_data['session'])) {
+            $session_view = $all_param_data['session'];
+        } else {
+            $session_view = new LTreeMap();
+        }
         
         return $url_map_executor->execute($route, $parameters, $input_view, $session_view);
     }
@@ -109,12 +120,21 @@ class LCallExecutor {
         
         $path = $this->base_dir.$this->proc_folder.$call_spec.$this->proc_extension;
         $path = str_replace('//', '/', $path);
-        
-        $parameters = $all_param_data['parameters'];
-        $capture = $all_param_data['capture'];
-        $in = $all_param_data['in'];
-        $session = $all_param_data['session'];
-        $context_path = $all_param_data['context_path'];
+        if ($all_param_data && isset($all_param_data['parameters'])) {
+            $parameters = $all_param_data['parameters'];
+        }
+        if ($all_param_data && isset($all_param_data['capture'])) {
+            $capture = $all_param_data['capture'];
+        }
+        if ($all_param_data && isset($all_param_data['input'])) {
+            $input = $all_param_data['input'];
+        }
+        if ($all_param_data && isset($all_param_data['session'])) {
+            $session = $all_param_data['session'];
+        }
+        if ($all_param_data && isset($all_param_data['context_path'])) {
+            $context_path = $all_param_data['context_path'];
+        }
         
         return include $path;
     }
@@ -154,7 +174,7 @@ class LCallExecutor {
                 continue;
             }
             
-            if (in_array($param_name,$all_param_data['capture'])) {
+            if (isset($all_param_data['capture']) && in_array($param_name,$all_param_data['capture'])) {
                 $prepared_parameters[] = $all_param_data['capture'][$param_name];
                 continue;
             }
@@ -220,10 +240,22 @@ class LCallExecutor {
     public function execute(string $call_spec,array $all_param_data) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
+        if (LStringUtils::endsWith($call_spec,"!")) {
+            $use_replace = true;
+            $my_call_spec = substr($call_spec,0,-1);
+        } else {
+            $use_replace = false;
+            $my_call_spec = $call_spec;
+        }
+        
         $result = $this->internalExecute($call_spec,$all_param_data);
         
-        if ($result==null) return [];
-        return $result;
+        if ($use_replace) {
+            $all_param_data['output']->replace("",$result);
+        } else {
+            $all_param_data['output']->merge("",$result);
+        }
+        
     }
     
 }

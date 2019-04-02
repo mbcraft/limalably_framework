@@ -6,48 +6,62 @@ class CallExecutorTest extends LTestCase {
         
         $e = new LCallExecutor();
         
-        $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php");
+        $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php",'tests/data/');
         
-        $result = $e->execute("/urlmap/sample_file_42");
+        $output = new LTreeMap();
         
-        $this->assertTrue(is_array($result),"Il risultato ottenuto non è un array!");
-        $this->assertEqual($result[0],42,"Il risultato atteso non corrisponde!");
+        $params = ["input" => new LTreeMap(),"session" => new LTreeMap(),"output" => $output];
+        
+        $e->execute("/urlmap/sample_file_42",$params);
+        
+        $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
+        $this->assertEqual($output->get("/")[0],42,"Il risultato atteso non corrisponde!");
         
     }
     
     function testCallObjectMethod() {
         $e = new LCallExecutor();
         
-        $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php");
+        $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php",'tests/data/');
         
-        LInput::set("prova", 10);
+        $input = new LTreeMap();
+        $input->set("prova", 10);
         
-        $result = $e->execute("CallExecutorTest#myMethodOk");
+        $output = new LTreeMap();
         
-        $this->assertTrue(is_array($result),"Il risultato ottenuto non è un array!");
-        $this->assertEqual($result[0],10,"Il risultato atteso non corrisponde!");
+        $params = ["input" => $input,"session" => new LTreeMap(),"output" => $output];
         
-        LInput::clear();
+        $e->execute("CallExecutorTest#myMethodOk",$params);
+        
+        $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
+        $this->assertEqual($output->get("/")[0],10,"Il risultato atteso non corrisponde!");
+        
     }
     
     function testCallStaticMethod() {
         $e = new LCallExecutor();
         
-        $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php");
+        $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php",'tests/data/');
         
-        LInput::set("ancora", 1);
-        LInput::set("qualcosa",2);
-        LInput::set("val",3);
+        $input = new LTreeMap();
         
-        $result = $e->execute("CallExecutorTest::myStaticMethodOk");
+        $input->set("ancora", 1);
+        $input->set("qualcosa",2);
+        $input->set("val",3);
         
-        $this->assertTrue(is_array($result),"Il risultato ottenuto non è un array!");
-        $this->assertEqual($result[0],1,"Il risultato atteso non corrisponde!");
-        $this->assertEqual($result[1],2,"Il risultato atteso non corrisponde!");
-        $this->assertEqual($result[2],3,"Il risultato atteso non corrisponde!");
-        $this->assertEqual(count($result),3,"Il numero di elementi nel risultato non corrisponde!");
+        $output = new LTreeMap();
         
-        LInput::clear();
+        $params = ["input" => $input,"session" => new LTreeMap(),"output" => $output];
+        
+        $e->execute("CallExecutorTest::myStaticMethodOk",$params);
+        
+        $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
+        $this->assertEqual($output->get("/")[0],1,"Il risultato atteso non corrisponde!");
+        $this->assertEqual($output->get("/")[1],2,"Il risultato atteso non corrisponde!");
+        $this->assertEqual($output->get("/")[2],3,"Il risultato atteso non corrisponde!");
+        $this->assertEqual(count($output->get("/")),3,"Il numero di elementi nel risultato non corrisponde!");
+        
+        
     }
     
     function myMethodOk($prova,$qualcosa=10) {

@@ -2,7 +2,7 @@
     "input" : {
     
         "my_key" : {
-            "cardinality" : "required"
+            "rules" : "NotBlank"
         }
     }
 }

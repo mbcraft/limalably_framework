@@ -135,6 +135,20 @@ class MiscTest extends LTestCase {
         
     }
     
+    function testBitmap01() {
+        
+        $bit = 1;
+        $mask = 1;
+        
+        $this->assertEqual($bit & $mask,1,"La maschera non funziona correttamente!");
+        
+        $bit = 3;
+        $mask = 1;
+        
+        $this->assertEqual($bit & $mask,1,"La maschera non funziona correttamente!");
+        
+    }
+    
 
     
 }

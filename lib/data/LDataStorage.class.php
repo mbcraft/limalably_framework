@@ -17,6 +17,8 @@ class LDataStorage {
     }
     
     function get(string $path) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         $my_path1 = $this->root_path.$path.'.json';
         $my_path1 = str_replace('//', '/', $my_path1);
         
@@ -26,6 +28,8 @@ class LDataStorage {
     }
     
     function is_set(string $path) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         $my_path1 = $this->root_path.$path.'.json';
         $my_path1 = str_replace('//', '/', $my_path1);
         
@@ -35,6 +39,7 @@ class LDataStorage {
     }
     
     function set(string $path,array $data) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $my_path1 = $this->root_path.$path.'.json';
         $my_path1 = str_replace('//', '/', $my_path1);

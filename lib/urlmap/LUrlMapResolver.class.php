@@ -22,8 +22,8 @@ class LUrlMapResolver {
     private $ignore_missing_extends;
     private $ignore_missing_imports;
     
-    private $variable_prefix;
-    private $variable_suffix;
+    const VARIABLE_PREFIX = '{';
+    const VARIABLE_SUFFIX = '}';
     
     
     
@@ -45,8 +45,6 @@ class LUrlMapResolver {
         $this->ignore_missing_extends = LConfigReader::simple('/urlmap/ignore_missing_extends');
         $this->ignore_missing_imports = LConfigReader::simple('/urlmap/ignore_missing_imports');
 
-        $this->variable_prefix = LConfigReader::simple('/urlmap/variable_prefix');
-        $this->variable_suffix = LConfigReader::simple('/urlmap/variable_suffix');
     }
     
 
@@ -90,7 +88,7 @@ class LUrlMapResolver {
         
     private function replaceUrlMapVariables($urlmap_content,$variables) {
         foreach ($variables as $k => $v) {
-            $urlmap_content = str_replace($this->variable_prefix.$k.$this->variable_suffix, $v, $urlmap_content);
+            $urlmap_content = str_replace(self::VARIABLE_PREFIX.$k.self::VARIABLE_SUFFIX, $v, $urlmap_content);
         }
         return $urlmap_content;
     }

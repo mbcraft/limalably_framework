@@ -171,43 +171,80 @@ class LCallExecutor {
         
         $method_parameters = $reflection_method->getParameters();
         $prepared_parameters = [];
+        $method_parameter_search_list = LConfigReader::simple('/exec/method_parameter_search_list');
+            
         foreach ($method_parameters as $mp) {
             
             $param_name = $mp->getName();
-            if (in_array($param_name,$all_param_data)) {
-                $prepared_parameters[] = $all_param_data[$param_name];
-                continue;
-            }
             
-            if (isset($all_param_data['capture']) && in_array($param_name,$all_param_data['capture'])) {
-                $prepared_parameters[] = $all_param_data['capture'][$param_name];
-                continue;
-            }
-            if ($all_param_data['input']->is_set($param_name)) {
-                $prepared_parameters[] = $all_param_data['input']->mustGet($param_name);
-                continue;
-            }
+            foreach ($method_parameter_search_list as $method_search_spec) {
             
-            if ($all_param_data['input']->is_set('/'.$param_name)) {
-                $prepared_parameters[] = $all_param_data['input']->mustGet('/'.$param_name);
-                continue;
-            }
-            
-            if ($all_param_data['output']->is_set($param_name)) {
-                $prepared_parameters[] = $all_param_data['output']->mustGet($param_name);
-                continue;
-            }
-            
-            if ($all_param_data['output']->is_set('/'.$param_name)) {
-                $prepared_parameters[] = $all_param_data['output']->mustGet('/'.$param_name);
-                continue;
-            }
-
-            if ($mp->isDefaultValueAvailable()) {
-                $prepared_parameters[] = $mp->getDefaultValue();
-                continue;
-            }
-                        
+                switch ($method_search_spec) {
+                    case 'meta':{
+                        if (in_array($param_name,$all_param_data)) {
+                            $prepared_parameters[] = $all_param_data[$param_name];
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'capture':{
+                        if (isset($all_param_data['capture']) && in_array($param_name,$all_param_data['capture'])) {
+                            $prepared_parameters[] = $all_param_data['capture'][$param_name];
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'relative_input':{
+                        if ($all_param_data['input']->is_set($param_name)) {
+                            $prepared_parameters[] = $all_param_data['input']->mustGet($param_name);
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'absolute_input':{
+                        if ($all_param_data['input']->is_set('/'.$param_name)) {
+                            $prepared_parameters[] = $all_param_data['input']->mustGet('/'.$param_name);
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'relative_session':{
+                        if ($all_param_data['session']->is_set($param_name)) {
+                            $prepared_parameters[] = $all_param_data['session']->mustGet($param_name);
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'absolute_session':{
+                        if ($all_param_data['session']->is_set('/'.$param_name)) {
+                            $prepared_parameters[] = $all_param_data['session']->mustGet('/'.$param_name);
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'relative_output':{
+                        if ($all_param_data['output']->is_set($param_name)) {
+                            $prepared_parameters[] = $all_param_data['output']->mustGet($param_name);
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'absolute_output':{
+                        if ($all_param_data['output']->is_set('/'.$param_name)) {
+                            $prepared_parameters[] = $all_param_data['output']->mustGet('/'.$param_name);
+                            continue 3;
+                        }
+                        break;
+                    }
+                    case 'default_value':{
+                        if ($mp->isDefaultValueAvailable()) {
+                            $prepared_parameters[] = $mp->getDefaultValue();
+                            continue 3;
+                        }
+                        break;
+                    }
+                }
+            }       
             throw new \Exception("Missing parameter ".$mp->getName()." from input, call : ".$call_spec);
         }
         //parameters are ready, now execute the call

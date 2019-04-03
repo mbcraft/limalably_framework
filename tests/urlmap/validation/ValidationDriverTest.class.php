@@ -6,7 +6,7 @@ class ValidationDriverTest extends LTestCase {
         
         $v = new LRespectValidationDriver();
         
-        $result = $v->validate("ciccio", "prova", "Length(0,10)");
+        $result = $v->validate("ciccio", "prova", "Length(0,10)",null,null);
         
         $this->assertTrue(count($result)==0,"Sono stati ritornati dei messaggi d'errore!");
         
@@ -16,7 +16,7 @@ class ValidationDriverTest extends LTestCase {
         
         $v = new LRespectValidationDriver();
         
-        $result = $v->validate("ciccio", "prova", ["Length(2,4)"]);
+        $result = $v->validate("ciccio", "prova", ["Length(2,4)"],null,null);
             
         $this->assertTrue(count($result)>0,"Non ci sono messaggi d'errore risultanti!");       
         
@@ -26,9 +26,10 @@ class ValidationDriverTest extends LTestCase {
         
         $v = new LRespectValidationDriver();
         
-        $result = $v->validate("ciccio", "prova", ["Length(2,4)","IntVal"]);
+        $result = $v->validate("ciccio", "prova", ["Length(2,4)","IntVal"],null,null);
             
         $this->assertTrue(count($result)>0,"Non ci sono messaggi d'errore risultanti!");    
     }
+    
     
 }

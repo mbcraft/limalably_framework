@@ -126,6 +126,7 @@
             "skip_cache_route_list" : [],
             "skip_cache_query_parameter" : null,
             "proc_folder" : "proc/",
+            "proc_extension" : ".proc.php",
             "data_folder" : "data/"
         },
         "request" : {

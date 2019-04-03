@@ -38,14 +38,14 @@ class LUrlMapExecutor {
         if (empty($errors)) {
             if ($this->my_url_map->is_set('/input')) {
                 $input_validator = new LParameterGroupValidator($treeview_input,$this->my_url_map->get('/input'));
-                $errors['input'] = $input_validator->validate();
+                $errors['input'] = $input_validator->validate($treeview_input,$treeview_session);
             }
         }
         //session parameters check
         if (empty($errors)) {
             if ($this->my_url_map->is_set('/session')) {
                 $session_validator = new LParameterGroupValidator($treeview_session,$this->my_url_map->get('/session'));
-                $errors['session'] = $session_validator->validate();    
+                $errors['session'] = $session_validator->validate($treeview_input,$treeview_session);    
             }
         }
         

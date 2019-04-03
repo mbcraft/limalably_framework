@@ -1,10 +1,10 @@
 <?php
 
-class CallExecutorTest extends LTestCase {
+class ExecCallTest extends LTestCase {
     
     function testCallProc() {
         
-        $e = new LCallExecutor();
+        $e = new LExecCall();
         
         $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php",'tests/data/');
         
@@ -20,7 +20,7 @@ class CallExecutorTest extends LTestCase {
     }
     
     function testCallObjectMethod() {
-        $e = new LCallExecutor();
+        $e = new LExecCall();
         
         $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php",'tests/data/');
         
@@ -31,7 +31,7 @@ class CallExecutorTest extends LTestCase {
         
         $params = ["input" => $input,"session" => new LTreeMap(),"output" => $output];
         
-        $e->execute("CallExecutorTest#myMethodOk",$params);
+        $e->execute("ExecCallTest#myMethodOk",$params);
         
         $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
         $this->assertEqual($output->get("/")[0],10,"Il risultato atteso non corrisponde!");
@@ -39,7 +39,7 @@ class CallExecutorTest extends LTestCase {
     }
     
     function testCallStaticMethod() {
-        $e = new LCallExecutor();
+        $e = new LExecCall();
         
         $e->init($_SERVER['FRAMEWORK_DIR'],"tests/",".php",'tests/data/');
         
@@ -53,7 +53,7 @@ class CallExecutorTest extends LTestCase {
         
         $params = ["input" => $input,"session" => new LTreeMap(),"output" => $output];
         
-        $e->execute("CallExecutorTest::myStaticMethodOk",$params);
+        $e->execute("ExecCallTest::myStaticMethodOk",$params);
         
         $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
         $this->assertEqual($output->get("/")[0],1,"Il risultato atteso non corrisponde!");

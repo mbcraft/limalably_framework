@@ -6,7 +6,7 @@ class LCall {
     const ROUTE_CALL_PREFIX = '->';
     const OBJECT_METHOD_CALL_SEPARATOR = '#';
     const STATIC_METHOD_CALL_SEPARATOR = '::';
-    const REPLACE_DATA_CALL_OPTION_SUFFIX = '!';
+    
     
     private $initialized = false;
     private $base_dir = null;
@@ -30,10 +30,11 @@ class LCall {
     public function initWithDefaults() {
         $this->initialized = true;
         
+        $this->base_dir = $_SERVER['PROJECT_DIR'];
         $this->proc_folder = LConfigReader::simple('/classloader/proc_folder');
         $this->proc_extension = LConfigReader::simple('/classloader/proc_extension');
         $this->data_folder = LConfigReader::simple('/classloader/data_folder');
-        $this->base_dir = $_SERVER['PROJECT_DIR']; 
+         
     }
     
     public static function isDataImport($call_spec) {
@@ -72,6 +73,7 @@ class LCall {
 
         $path = $this->base_dir.$this->proc_folder.$call_spec.$this->proc_extension;
         $path = str_replace('//', '/', $path);
+        
         return is_readable($path);
     }
     

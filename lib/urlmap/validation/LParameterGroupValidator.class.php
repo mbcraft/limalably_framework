@@ -12,7 +12,7 @@ class LParameterGroupValidator {
         
     }
     
-    function validate() {
+    function validate($treeview_input,$treeview_session) {
         
         $final_result = [];
         
@@ -24,7 +24,7 @@ class LParameterGroupValidator {
             
             $validator = new LParameterValidator($name,$is_set,$value,$params);
             
-            $final_result = array_merge($final_result,$validator->validate());
+            $final_result = array_merge($final_result,$validator->validate($treeview_input,$treeview_session));
             
             $this->treeview_params->set($name,$validator->getNormalizedValue());
         }

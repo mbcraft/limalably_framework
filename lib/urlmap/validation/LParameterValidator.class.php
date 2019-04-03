@@ -26,7 +26,7 @@ class LParameterValidator {
         $this->default_value = array_key_exists('default_value',$parameters) ? $parameters['default_value'] : null;
     }
     
-    function validate() {
+    function validate($treeview_input,$treeview_session) {
         
         $condition = new LCondition();
         $evaluate_rules = $condition->evaluate($this->condition);
@@ -38,7 +38,7 @@ class LParameterValidator {
 
             $validated_value = $this->is_set ? $this->value : $this->default_value;
             
-            return $driver_instance->validate($this->name,$validated_value,$this->rules);
+            return $driver_instance->validate($this->name,$validated_value,$this->rules,$treeview_input,$treeview_session);
         } else {
             if (!$this->is_set && !$this->has_default_value) return ['Default value not found for missing parameter '.$this->name];
             else return [];

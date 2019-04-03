@@ -10,7 +10,7 @@ interface LIValidatorDriver {
      * 
      * @param type $value
      */
-    function validate(string $name,$value,$rules);
+    function validate(string $name,$value,$rules,$input_map,$session_map);
     
     
 }

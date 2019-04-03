@@ -2,6 +2,8 @@
 
 class LDynamicCall {
     
+    const REPLACE_DATA_CALL_OPTION_SUFFIX = '!';
+    
     private $my_call = null;
     
     function isInitialized() {
@@ -32,10 +34,8 @@ class LDynamicCall {
             $use_replace = false;
             $my_call_spec = $call_spec;
         }
-        
-        $call = new LCall();
-        
-        $result = $call->execute($my_call_spec,$all_param_data,true);
+                
+        $result = $this->my_call->execute($my_call_spec,$all_param_data,true);
         
         if (!is_string($result)) throw new \Exception("Dynamic template result is not a valid string.");
         

@@ -34,13 +34,20 @@ class LExecCall {
         }
                 
         $result = $this->my_call->execute($my_call_spec,$all_param_data,false);
-                
-        if ($use_replace) {
-            $all_param_data['output']->replace("",$result);
-        } else {
-            $all_param_data['output']->merge("",$result);
+        
+        if ($result instanceof \LErrorList) return $result;
+        
+        if ($result instanceof LTreeMap || $result instanceof LTreeMapView) {
+            $result = $result->get('.');
         }
         
+        if ($use_replace) {
+            $all_param_data['output']->replace(".",$result);
+        } else {
+            $all_param_data['output']->merge(".",$result);
+        }
+        
+        return null;
     }
     
     

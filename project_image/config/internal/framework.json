@@ -134,6 +134,11 @@
         },
         "exec" : {
             "method_parameter_search_list" : ["meta","capture","relative_input","absolute_input","relative_session","absolute_session","relative_output","absolute_output","default_value"]
+        },
+        "format" : {
+            "json" : {
+                "encode_options" : ["THROW_ON_ERROR"]
+            }
         }
     }
 }

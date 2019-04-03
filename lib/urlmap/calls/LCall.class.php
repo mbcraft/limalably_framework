@@ -1,6 +1,6 @@
 <?php
 
-class LCallExecutor {
+class LCall {
         
     const DATA_IMPORT_PREFIX = '=';
     const ROUTE_CALL_PREFIX = '->';
@@ -14,7 +14,7 @@ class LCallExecutor {
     private $proc_extension = null;
     private $data_folder = null;
     
-    private function isInitialized() {
+    public function isInitialized() {
         return $this->initialized;
     }
     
@@ -27,7 +27,7 @@ class LCallExecutor {
         $this->data_folder = $data_folder;
     }
     
-    private function initWithDefaults() {
+    public function initWithDefaults() {
         $this->initialized = true;
         
         $this->proc_folder = LConfigReader::simple('/classloader/proc_folder');
@@ -91,7 +91,7 @@ class LCallExecutor {
         
         $route_resolver = new LUrlMapResolver();
         $url_map = $route_resolver->resolveUrlMap($route, LUrlMapResolver::FLAGS_SEARCH_PRIVATE);
-        $url_map_executor = new LUrlMapExecutor($url_map);
+        
         if ($all_param_data && isset($all_param_data['parameters'])) {
             $parameters = $all_param_data['parameters'];
         } else {
@@ -112,6 +112,8 @@ class LCallExecutor {
         } else {
             $session_view = new LTreeMap();
         }
+        
+        $url_map_executor = new LUrlMapExecutor($url_map);
         
         return $url_map_executor->execute($route, $parameters, $capture, $input_view, $session_view);
     }
@@ -263,12 +265,22 @@ class LCallExecutor {
         
     }
     
-    private function internalExecute($call_spec,$all_param_data) {
+    public function execute($call_spec,$all_param_data,$dynamic_call) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         if (self::isDataImport($call_spec)) {
-            return $this->executeDataImport($call_spec);
+            if ($dynamic_call) {
+                throw new \Exception("It is not possible to use a data import in dynamic calls : ".$call_spec);
+            } else {
+                return $this->executeDataImport($call_spec);
+            }
         }
         if (self::isRoute($call_spec)) {
-            return $this->executeRoute($call_spec, $all_param_data);
+            if ($dynamic_call) {
+                throw new \Exception("It is not possible to use a route in dynamic calls : ".$call_spec);
+            } else {
+                return $this->executeRoute($call_spec, $all_param_data);
+            }
         }
         if (self::isClassMethodExec($call_spec)) {
             return $this->executeClassMethod($call_spec,$all_param_data);
@@ -279,26 +291,5 @@ class LCallExecutor {
 
         throw new \Exception("Unable to process call to execute : ".$call_spec);
     }
-    
-    public function execute(string $call_spec,array $all_param_data) {
-        if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        if (LStringUtils::endsWith($call_spec,self::REPLACE_DATA_CALL_OPTION_SUFFIX)) {
-            $use_replace = true;
-            $my_call_spec = substr($call_spec,0,-1);
-        } else {
-            $use_replace = false;
-            $my_call_spec = $call_spec;
-        }
-        
-        $result = $this->internalExecute($call_spec,$all_param_data);
-        
-        if ($use_replace) {
-            $all_param_data['output']->replace("",$result);
-        } else {
-            $all_param_data['output']->merge("",$result);
-        }
-        
-    }
-    
 }

@@ -74,8 +74,11 @@
             "ignore_missing_extends" : false,
             "ignore_missing_imports" : false,
             "validation_driver_class" : "LRespectValidationDriver",
-            "template_source_factory_class" : "LTwigTemplateSourceFactory",
+            
             "templates" : {
+                "source_factory_class" : "LTwigTemplateSourceFactory",
+                "root_folder" : "templates/",
+                "cache_folder" : "temp/cache/templates/",
                 "strict_variables" : true,
                 "autoescape" : "name",
                 "cache_path" : "temp/templates/"

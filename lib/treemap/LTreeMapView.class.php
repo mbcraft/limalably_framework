@@ -163,7 +163,7 @@ class LTreeMapView implements ArrayAccess, Iterator {
             return $this->view_map->get($this->view_prefix.$path,$default_value);
         }
     }
-
+    
     /*
      * Ritorna true se un nodo dell'albero è stato definito, false altrimenti.
      */

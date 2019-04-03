@@ -144,19 +144,35 @@ class LUrlMapExecutor {
                 $template_source = $template_factory->createFileTemplateSource();
 
                 if (!$template_source->hasTemplate($template_path)) {
-                    $errors['template'] = ['Unable to file template at path : ' . $template_path];
+                    $error_list->saveFromData('template', 'Unable to file template at path : ' . $template_path);
                 } else {
                     $template = $template_source->getTemplate($template_path);
 
                     //inserire fra le variabili : urlmap, input, session, capture, i18n, parameters - con eventuale prefisso di path tipo 'meta'
-                    $output->set('urlmap', $this->my_url_map->get('.'));
-                    $output->set('input', $treeview_input->get('.'));
-                    $output->set('session', $treeview_session->get('.'));
-                    $output->set('parameters', $parameters);
-                    $output->set('capture', $capture);
+                    $import_into_variables = LConfigReader::simple('/template/import_into_variables');
 
-                    //TODO : manca i18n
                     try {
+                        foreach ($import_into_variables as $import_name) {
+                            switch ($import_name) {
+                                case 'urlmap' : $output->set('urlmap', $this->my_url_map->get('.'));
+                                    break;
+                                case 'input' : $output->set('input', $treeview_input->get('.'));
+                                    break;
+                                case 'session' : $output->set('session', $treeview_session->get('.'));
+                                    break;
+                                case 'parameters' : $output->set('parameters', $parameters);
+                                    break;
+                                case 'capture' : $output->set('capture', $capture);
+                                    break;
+                                case 'env' : $output->set('env', LEnvironmentUtils::getReplacementsArray());
+                                    break;
+                                case 'i18n' : throw new \Exception("i18n not implemented yet");
+                                    break;
+
+                                default : throw new \Exception("Unable to import into variables : " . $import_name);
+                            }
+                        }
+
                         return $template->render($output->getRoot());
                     } catch (\Exception $ex) {
                         $error_list->saveFromException('template', $ex);
@@ -176,13 +192,13 @@ class LUrlMapExecutor {
                     try {
                         $encode_options |= eval('return JSON_' . $enc_opt . ';');
                     } catch (\Exception $ex) {
-                        $error_list->saveFromData('format', 'Invalid json encode format : JSON_'.$enc_opt.' does not evaluate to an integer value.');
+                        $error_list->saveFromData('format', 'Invalid json encode format : JSON_' . $enc_opt . ' does not evaluate to an integer value.');
                     }
                 }
-                
+
                 $error_list->mergeIntoTreeMap($output);
                 $output_data = $output->getRoot();
-                
+
                 return json_encode($output_data, $encode_options);
             }
         }

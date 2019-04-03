@@ -10,8 +10,8 @@ class LTwigFileTemplateSource implements LITemplateSource {
         
         $params = [];
         if ($cache_path) $params['cache'] = $cache_path;
-        $params['strict_variables'] = LConfigReader::executionMode('/urlmap/templates/strict_variables');
-        $params['auto_reload'] = LConfigReader::executionMode('/urlmap/templates/auto_reload');
+        $params['strict_variables'] = LConfigReader::executionMode('/template/strict_variables');
+        $params['auto_reload'] = LConfigReader::executionMode('/template/auto_reload');
         
         $this->env = new \Twig\Environment($this->loader, $params);
     }

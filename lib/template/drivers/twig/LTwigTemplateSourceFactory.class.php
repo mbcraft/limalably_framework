@@ -14,7 +14,7 @@ class LTwigTemplateSourceFactory implements LITemplateSourceFactory {
         $loader = new \Twig\Loader\ArrayLoader(['template_source' => $template_source]);
         
         $params = [];
-        $params['strict_variables'] = LConfigReader::executionMode('/urlmap/templates/strict_variables');
+        $params['strict_variables'] = LConfigReader::executionMode('/template/strict_variables');
         
         $env = new \Twig\Environment($loader,$params);
         

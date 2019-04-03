@@ -73,17 +73,16 @@
             "truncate_route" : "_stop",
             "ignore_missing_extends" : false,
             "ignore_missing_imports" : false,
-            "validation_driver_class" : "LRespectValidationDriver",
-            
-            "templates" : {
+            "validation_driver_class" : "LRespectValidationDriver"
+
+        },
+        "template" : {
                 "source_factory_class" : "LTwigTemplateSourceFactory",
                 "root_folder" : "templates/",
-                "cache_folder" : "temp/cache/templates/",
+                "cache_folder" : "temp/cache/template/",
                 "strict_variables" : true,
                 "autoescape" : "name",
-                "cache_path" : "temp/templates/"
-            }
-
+                "import_into_variables" : ["env","output","input","session","capture","parameters","urlmap","i18n"]
         },
         "logging" : {
             "distinct-file" : {

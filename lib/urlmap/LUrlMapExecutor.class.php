@@ -23,6 +23,12 @@ class LUrlMapExecutor {
         $output = new LTreeMap();
         $treeview_output = $output->view('/');
         
+        //loading prepared input
+        if ($this->my_url_map->is_set('/load')) {
+            $input_loader = new LInputLoader();
+            $input_loader->loadDataInTreeMap($this->my_url_map->get('/load'), $treeview_input);
+        }
+        
         //input parameters check
         $errors = [];
         if ($this->my_url_map->is_set('/input')) {

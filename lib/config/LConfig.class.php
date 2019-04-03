@@ -2,6 +2,8 @@
 
 class LConfig {
 
+    const CONFIG_EXTENSION = ".json";
+    
     use LStaticTreeMapBase;
     use LStaticTreeMapRead;
 
@@ -135,7 +137,7 @@ class LConfig {
             $path_parts = [];
             $path_parts[] = 'config';
             $path_parts[] = 'internal';
-            $path_parts[] = 'framework.json';
+            $path_parts[] = 'framework'.self::CONFIG_EXTENSION;
             $internal_config_file_path = $_SERVER['PROJECT_DIR'] . implode('/', $path_parts);
         } else {
             $path_parts = [];
@@ -186,14 +188,14 @@ class LConfig {
                 $php_config = [];
             }
 
-            if (is_file($config_dir_path . 'config.json')) {
+            if (is_file($config_dir_path . 'config'.self::CONFIG_EXTENSION)) {
                 self::$json_config_found = true;
                 try {
-                    $json_config = json_decode(file_get_contents($config_dir_path . 'config.json'), true);
+                    $json_config = json_decode(file_get_contents($config_dir_path . 'config'.self::CONFIG_EXTENSION), true);
                     if (empty($json_config))
                         throw new \Exception("Empty config found or error in json decoding ...");
                 } catch (\Exception $ex) {
-                    LResult::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config.json ...");
+                    LResult::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config".self::CONFIG_EXTENSION." ...");
                     LResult::exception($ex);
                     exit(1);
                 }
@@ -217,7 +219,7 @@ class LConfig {
         if (self::phpConfigFound() && self::jsonConfigFound())
             $message .= ' + ';
         if (self::jsonConfigFound())
-            $message .= '/config/hostnames/' . $_SERVER['HOSTNAME'] . '/config.json';
+            $message .= '/config/hostnames/' . $_SERVER['HOSTNAME'] . '/config'.self::CONFIG_EXTENSION;
         LResult::framework_debug($message);
     }
 

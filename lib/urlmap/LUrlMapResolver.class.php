@@ -2,6 +2,8 @@
 
 class LUrlMapResolver {
     
+    const URLMAP_EXTENSION = ".json";
+    
     const FLAGS_SEARCH_PUBLIC = 1;
     const FLAGS_SEARCH_PRIVATE = 2;
     const FLAGS_SEARCH_ALL = 3;
@@ -50,7 +52,7 @@ class LUrlMapResolver {
 
     
     private function getPrivateUrlMapAsArray($route) {
-        $path = $this->root_folder.$this->private_folder.$route.'.json';
+        $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         return $this->readUrlMapAsArray($path);
     }
@@ -61,14 +63,14 @@ class LUrlMapResolver {
      * @return boolean true se la route è valida e punta a una url map privata, false altrimenti.
      */
     private function isPrivateRoute($route) {
-        $path = $this->root_folder.$this->private_folder.$route.'.json';
+        $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::framework_debug('Cerco private route : '.$route);
         return is_readable($path);
     }
     
     private function getHashUrlMapAsArray($route) {
-        $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
+        $path = $this->root_folder.$this->hash_db_folder.sha1($route).self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         return $this->readUrlMapAsArray($path);
     }
@@ -80,7 +82,7 @@ class LUrlMapResolver {
      * @return boolean Se la route è valida per l'hash db.
      */
     private function isHashRoute($route) {
-        $path = $this->root_folder.$this->hash_db_folder.sha1($route).'.json';
+        $path = $this->root_folder.$this->hash_db_folder.sha1($route).self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::framework_debug('Cerco hash route : '.$route);
         return is_readable($path);
@@ -127,7 +129,7 @@ class LUrlMapResolver {
     }
       
     private function getPublicUrlMapAsArray($route) {
-        $path = $this->root_folder.$this->static_folder.$route.'.json';
+        $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::framework_debug("Ritorno l'urlmap pubblica alla route ".$route);
         return $this->readUrlMapAsArray($path);
@@ -140,7 +142,7 @@ class LUrlMapResolver {
      * @return boolean True se è una route pubblica, false altrimenti
      */
     private function isPublicRoute($route) {
-        $path = $this->root_folder.$this->static_folder.$route.'.json';
+        $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::framework_debug('Cerco static route : '.$route);
         return is_readable($path);

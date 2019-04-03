@@ -6,6 +6,7 @@ class LCallExecutor {
     const ROUTE_CALL_PREFIX = '->';
     const OBJECT_METHOD_CALL_SEPARATOR = '#';
     const STATIC_METHOD_CALL_SEPARATOR = '::';
+    const REPLACE_DATA_CALL_OPTION_SUFFIX = '!';
     
     private $initialized = false;
     private $base_dir = null;
@@ -145,7 +146,7 @@ class LCallExecutor {
     }
     
     private function executeClassMethod($call_spec,$all_param_data) {
-        $call_spec = str_replace('!','\\',$call_spec);
+        
         $call_spec = str_replace('/','\\',$call_spec);
         if (LStringUtils::startsWith($call_spec, '\\')) $call_spec = substr($call_spec,1);
         
@@ -166,8 +167,8 @@ class LCallExecutor {
         if (!$reflection_class->hasMethod($method_name)) throw new \Exception("Unable to find method on class : ".$call_spec);
         $reflection_method = $reflection_class->getMethod($method_name);
         if ($reflection_method->isAbstract()) throw new \Exception("Method to call is abstract and can't be called : ".$call_spec);
-        if ($static_call && !$reflection_method->isStatic()) throw new \Exception("Method to call is not static, use '#' : ".$call_spec);
-        if (!$static_call && $reflection_method->isStatic()) throw new \Exception("Method to call is static, use '::' : ".$call_spec);
+        if ($static_call && !$reflection_method->isStatic()) throw new \Exception("Method to call is not static, use '".self::OBJECT_METHOD_CALL_SEPARATOR."' : ".$call_spec);
+        if (!$static_call && $reflection_method->isStatic()) throw new \Exception("Method to call is static, use '".self::STATIC_METHOD_CALL_SEPARATOR."' : ".$call_spec);
         
         $method_parameters = $reflection_method->getParameters();
         $prepared_parameters = [];
@@ -282,7 +283,7 @@ class LCallExecutor {
     public function execute(string $call_spec,array $all_param_data) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        if (LStringUtils::endsWith($call_spec,"!")) {
+        if (LStringUtils::endsWith($call_spec,self::REPLACE_DATA_CALL_OPTION_SUFFIX)) {
             $use_replace = true;
             $my_call_spec = substr($call_spec,0,-1);
         } else {

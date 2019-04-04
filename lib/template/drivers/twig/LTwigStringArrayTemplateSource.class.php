@@ -20,8 +20,9 @@ class LTwigStringArrayTemplateSource implements LITemplateSource {
         return new LTwigTemplate($this->env->load($path));
     }
 
-    public function hasTemplate($path) {
-        return $this->loader->exists($path);
+    public function searchTemplate($path) {
+        if ($this->loader->exists($path)) return $path;
+        else return false;
     }
 
 }

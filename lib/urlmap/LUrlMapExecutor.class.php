@@ -143,10 +143,12 @@ class LUrlMapExecutor {
 
                 $template_source = $template_factory->createFileTemplateSource();
 
-                if (!$template_source->hasTemplate($template_path)) {
-                    $error_list->saveFromData('template', 'Unable to file template at path : ' . $template_path);
+                $final_template_path = $template_source->searchTemplate($template_path);
+                
+                if (!$final_template_path) {
+                    $error_list->saveFromData('template', 'Unable to find file template at path : ' . $template_path);
                 } else {
-                    $template = $template_source->getTemplate($template_path);
+                    $template = $template_source->getTemplate($final_template_path);
 
                     //inserire fra le variabili : urlmap, input, session, capture, i18n, parameters - con eventuale prefisso di path tipo 'meta'
                     $import_into_variables = LConfigReader::simple('/template/import_into_variables');

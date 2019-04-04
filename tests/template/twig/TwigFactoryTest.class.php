@@ -11,7 +11,7 @@ class TwigFactoryTest extends LTestCase {
         
         $template_source = $f->createStringArrayTemplateSource($data_map, 'tests/template/cache/');
         
-        $this->assertTrue($template_source->hasTemplate('hello'),"Il template hello non è stato trovato!");
+        $this->assertEqual($template_source->searchTemplate('hello'),'hello',"Il template hello non è stato trovato!");
         
         $hello_template = $template_source->getTemplate('hello');
         

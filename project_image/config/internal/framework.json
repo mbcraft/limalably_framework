@@ -80,8 +80,9 @@
             "root_folder": "templates/",
             "cache_folder": "temp/cache/template/",
             "strict_variables": true,
-            "autoescape": "name",
-            "import_into_variables": ["env", "output", "input", "session", "capture", "parameters", "urlmap", "i18n"]
+            "autoescape" : "name",
+            "import_into_variables": ["env", "output", "input", "session", "capture", "parameters", "urlmap", "i18n"],
+            "extension_search_list" : [".html",".xhtml",".json",".twig"]
         },
         "logging": {
             "distinct-file": {

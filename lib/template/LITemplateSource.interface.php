@@ -2,7 +2,7 @@
 
 interface LITemplateSource {
     
-    function hasTemplate($path);
+    function searchTemplate($path);
     
     function getTemplate($path);
     

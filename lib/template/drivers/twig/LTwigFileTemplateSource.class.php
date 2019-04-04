@@ -12,12 +12,21 @@ class LTwigFileTemplateSource implements LITemplateSource {
         if ($cache_path) $params['cache'] = $cache_path;
         $params['strict_variables'] = LConfigReader::executionMode('/template/strict_variables');
         $params['auto_reload'] = LConfigReader::executionMode('/template/auto_reload');
+        $params['autoescape'] = LConfigReader::simple('/template/autoescape');
         
         $this->env = new \Twig\Environment($this->loader, $params);
     }
     
-    function hasTemplate($path) {
-        return $this->loader->exists($path);
+    function searchTemplate($path) {
+        $extension_search_list = LConfigReader::simple('/template/extension_search_list');
+        
+        if ($this->loader->exists($path)) return $path;
+        
+        foreach ($extension_search_list as $extension) {
+            if ($this->loader->exists($path.$extension)) return $path.$extension;
+        }
+        
+        return false;
     }
     
     function getTemplate($path) {

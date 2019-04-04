@@ -3,6 +3,7 @@
 class LTreeMap implements ArrayAccess, Iterator {
     
     const SLASH_ESCAPE = '!';
+    const FORBIDDEN_CHARACTER = '.';
     
     private $data=null;
     
@@ -15,7 +16,9 @@ class LTreeMap implements ArrayAccess, Iterator {
     }    
     
     public static function path_tokens($path)
-    {              
+    {            
+        if (strpos($path,self::FORBIDDEN_CHARACTER)!==false) throw new \Exception("The '".self::FORBIDDEN_CHARACTER."' is forbidden as path in TreeMap! Use TreeMapView!");
+        
         $path_parts = explode("/",$path);
         
         $result = array();

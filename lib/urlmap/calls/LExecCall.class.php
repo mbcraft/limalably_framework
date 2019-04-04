@@ -37,14 +37,25 @@ class LExecCall {
         
         if ($result instanceof \LErrorList) return $result;
         
-        if ($result instanceof LTreeMap || $result instanceof LTreeMapView) {
+        if ($result instanceof LTreeMap) {
+            $result = $result->get('/');
+        }
+        
+        if ($result instanceof LTreeMapView) {
             $result = $result->get('.');
         }
         
+        $my_output = $all_param_data['output'];
+        
+        if ((!$my_output instanceof LTreeMap) && (!$my_output instanceof LTreeMapView)) throw new \Exception("A TreeMap or TreeMapView is needed for output!");
+        
+        if ($my_output instanceof LTreeMap) $my_output_path = '/';
+        if ($my_output instanceof LTreeMapView) $my_output_path = '.';
+        
         if ($use_replace) {
-            $all_param_data['output']->replace(".",$result);
+            $all_param_data['output']->replace($my_output_path,$result);
         } else {
-            $all_param_data['output']->merge(".",$result);
+            $all_param_data['output']->merge($my_output_path,$result);
         }
         
         return null;

@@ -15,6 +15,7 @@ class ExecCallTest extends LTestCase {
         $e->execute("/urlmap/sample_file_42",$params);
         
         $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
+        
         $this->assertEqual($output->get("/")[0],42,"Il risultato atteso non corrisponde!");
         
     }

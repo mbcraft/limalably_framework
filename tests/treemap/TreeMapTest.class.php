@@ -2,6 +2,40 @@
 
 class TreeMapTest extends LTestCase {
     
+    function testMergeWithArray() {
+        
+        $data = [42,18];
+        
+        $t = new LTreeMap();
+        
+        $t->set('/something/ancora',10);
+        
+        $t->merge('/', $data);
+        
+        $this->assertTrue($t->is_set(0),"Il valore atteso non è impostato!");
+        $this->assertEqual($t->get(0),42,"Il valore atteso non corrisponde!");
+        $this->assertTrue($t->is_set(1),"Il valore atteso non è impostato!");
+        $this->assertEqual($t->get(1),18,"Il valore atteso non corrisponde!");
+        
+    }
+    
+    function testReplaceWithArray() {
+        
+        $data = [42,90];
+        
+        $t = new LTreeMap();
+        
+        $t->set('/something/ancora',10);
+        
+        $t->replace('/', $data);
+        
+        $this->assertTrue($t->is_set(0),"Il valore atteso non è impostato!");
+        $this->assertEqual($t->get(0),42,"Il valore atteso non corrisponde!");
+        $this->assertTrue($t->is_set(1),"Il valore atteso non è impostato!");
+        $this->assertEqual($t->get(1),90,"Il valore atteso non corrisponde!");
+        
+    }
+    
     function testReadingIndexedValuesFromTreeMap() {
         
         $indexed_values = ["ciao","mondo","caffè"];

@@ -28,7 +28,7 @@ class LUrlMapCalculator {
     private function beforeNormalizeUrlMap(&$url_map_array_data) {
         if (isset($url_map_array_data['exec'])) {
             if (is_string(($url_map_array_data['exec']))) {
-                $url_map_array_data['exec'] = array('' => $url_map_array_data['exec']);
+                $url_map_array_data['exec'] = array('.' => $url_map_array_data['exec']);
             }
         }
     }

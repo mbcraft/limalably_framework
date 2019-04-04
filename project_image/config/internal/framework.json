@@ -86,7 +86,7 @@
         "logging": {
             "distinct-file": {
                 "date_format": "d/m/Y H:i:s",
-                "log_format": "[ %date% - %user% ] : %message%\n",
+                "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
                 "log_mode": "normal",
                 "max_mb": 10,
                 "log_folder": "logs/",
@@ -94,7 +94,7 @@
             },
             "together-file": {
                 "date_format": "d/m/Y H:i:s",
-                "log_format": "[ %date% - %user% - %level_string% ] : %message%\n",
+                "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
                 "log_mode": "rolling",
                 "max_mb": 10,
                 "log_folder": "logs/",

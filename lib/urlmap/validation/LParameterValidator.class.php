@@ -22,8 +22,8 @@ class LParameterValidator {
         $this->is_set = $is_set;
         $this->value = $value;
         
-        $this->condition = array_key_exists('condition',$parameters) ? $parameters['condition'] : [];
-        $this->neg_condition = array_key_exists('!condition',$parameters) ? $parameters['!condition'] : [];
+        $this->condition = array_key_exists('conditions',$parameters) ? $parameters['conditions'] : [];
+        $this->neg_condition = array_key_exists('!conditions',$parameters) ? $parameters['!conditions'] : [];
         
         $this->rules = array_key_exists('rules',$parameters) ? $parameters['rules'] : [];
         

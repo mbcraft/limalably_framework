@@ -2,6 +2,8 @@
 
 class LUrlMapExecutor {
 
+    const AVAILABLE_NODES = ['conditions','!conditions','load','input','session','dynamic_exec','exec','dynamic_template','template','format'];
+    
     private $my_url_map = null;
 
     function __construct($url_map) {
@@ -21,27 +23,35 @@ class LUrlMapExecutor {
         $output = new LTreeMap();
         $output->set('/success', true);
         $treeview_output = $output->view('/');
-
+        
+        //checking for invalid nodes
+        $current_keys = $this->my_url_map->keys('/');
+        foreach ($current_keys as $urlmap_key) {
+            if (!in_array($urlmap_key,self::AVAILABLE_NODES)) {
+                LErrorList::saveFromErrors('urlmap', 'Urlmap contains one one or more invalid nodes : '.$urlmap_key);
+            }
+        }
+        
         //evaluating condition
-        if ($this->my_url_map->is_set('/condition')) {
+        if ($this->my_url_map->is_set('/conditions')) {
             $cond = new LCondition();
             
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
             
             if (!$result) {
                 //da valutare se usare un throw forbidden
-                LErrorList::saveFromErrors('condition', "Urlmap conditions are not verified, can't process route ".$route);
+                LErrorList::saveFromErrors('conditions', "Urlmap conditions are not verified, can't process route ".$route);
             }
         }
         //negated condition
-        if ($this->my_url_map->is_set('/!condition')) {
+        if ($this->my_url_map->is_set('/!conditions')) {
             $cond = new LCondition();
             
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
             
             if ($result) {
                 //da valutare se usare un throw forbidden
-                LErrorList::saveFromErrors('condition', "Urlmap conditions are not verified, can't process route ".$route);
+                LErrorList::saveFromErrors('conditions', "Urlmap conditions are not verified, can't process route ".$route);
             }
         }
         

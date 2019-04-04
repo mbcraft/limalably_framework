@@ -6,6 +6,7 @@ Aggiungere lettura automatica dei vari parametri dall'array, no parametri multip
  */
 class LParameterValidator {
 
+    private $type;
     private $name;
     private $is_set;
     private $value;
@@ -14,7 +15,8 @@ class LParameterValidator {
     private $has_default_value;
     private $default_value;
     
-    function __construct($name,$is_set,$value,$parameters) {
+    function __construct($type,$name,$is_set,$value,$parameters) {
+        $this->type = $type;
         $this->name = $name;
         $this->is_set = $is_set;
         $this->value = $value;
@@ -29,7 +31,7 @@ class LParameterValidator {
     function validate($treeview_input,$treeview_session) {
         
         $condition = new LCondition();
-        $evaluate_rules = $condition->evaluate($this->condition);
+        $evaluate_rules = $condition->evaluate($this->type,$this->condition);
 
         if ($evaluate_rules) {
 
@@ -40,7 +42,7 @@ class LParameterValidator {
             
             return $driver_instance->validate($this->name,$validated_value,$this->rules,$treeview_input,$treeview_session);
         } else {
-            if (!$this->is_set && !$this->has_default_value) return ['Default value not found for missing parameter '.$this->name];
+            if (!$this->is_set && !$this->has_default_value) return ['Default value not found for missing '.$this->type.' parameter : '.$this->name];
             else return [];
         }
  

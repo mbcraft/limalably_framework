@@ -4,31 +4,31 @@ class LConditionTest extends LTestCase {
     
     function testCondition1() {
         
-        $cond = array("a" => "a");
+        $cond = array("exec_mode" => ["m","fd","d","t"]);
         
         $c = new LCondition();
         
-        $this->assertTrue($c->evaluate($cond),"La condizione non funziona!");
+        $this->assertTrue($c->evaluate('test',$cond),"La condizione non funziona!");
         
     }
     
     function testCondition2() {
         
-        $cond = array("a" => [2,"a"]);
+        $cond = array("preferred_language" => [2,"a"]);
         
         $c = new LCondition();
         
-        $this->assertTrue($c->evaluate($cond),"La condizione non funziona!");
+        $this->assertFalse($c->evaluate('test',$cond),"La condizione non funziona!");
         
     }
     
     function testCondition3() {
         
-        $cond = array("a" => [2,"a"],"b" => ["a","c"]);
+        $cond = array("request_method" => [2,"cli"],"environment" => ["a","script"]);
         
         $c = new LCondition();
         
-        $this->assertFalse($c->evaluate($cond),"La condizione non funziona!");
+        $this->assertTrue($c->evaluate('test',$cond),"La condizione non funziona!");
         
     }
     
@@ -38,7 +38,7 @@ class LConditionTest extends LTestCase {
         
         $c = new LCondition();
                 
-        $this->assertTrue($c->evaluate($cond),"La condizione non funziona!");
+        $this->assertTrue($c->evaluate('test',$cond),"La condizione non funziona!");
         
     }
     
@@ -48,7 +48,7 @@ class LConditionTest extends LTestCase {
         
         $c = new LCondition();
                 
-        $this->assertFalse($c->evaluate($cond),"La condizione non funziona!");
+        $this->assertFalse($c->evaluate('test',$cond),"La condizione non funziona!");
         
     }
     

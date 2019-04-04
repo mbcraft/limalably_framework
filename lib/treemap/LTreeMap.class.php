@@ -2,7 +2,7 @@
 
 class LTreeMap implements ArrayAccess, Iterator {
     
-    const SLASH_ESCAPE = '!';
+    const SLASH_ESCAPE = '%';
     const FORBIDDEN_CHARACTER = '.';
     
     private $data=null;

@@ -22,6 +22,18 @@ class LUrlMapExecutor {
         $output->set('/success', true);
         $treeview_output = $output->view('/');
 
+        //evaluating conditions
+        if ($this->my_url_map->is_set('/condition')) {
+            $cond = new LCondition();
+            
+            $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
+            
+            if (!$result) {
+                //da valutare se usare un throw forbidden
+                LErrorList::saveFromErrors('condition', "Urlmap conditions are not verified, can't process route ".$route);
+            }
+        }
+        
         //loading prepared input
         if ($this->my_url_map->is_set('/load')) {
             try {
@@ -35,14 +47,14 @@ class LUrlMapExecutor {
         //input parameters check
 
         if ($this->my_url_map->is_set('/input')) {
-            $input_validator = new LParameterGroupValidator($treeview_input, $this->my_url_map->get('/input'));
+            $input_validator = new LParameterGroupValidator('input',$treeview_input, $this->my_url_map->get('/input'));
             LErrorList::saveFromErrors('input', $input_validator->validate($treeview_input, $treeview_session));
         }
 
         //session parameters check
 
         if ($this->my_url_map->is_set('/session')) {
-            $session_validator = new LParameterGroupValidator($treeview_session, $this->my_url_map->get('/session'));
+            $session_validator = new LParameterGroupValidator('session',$treeview_session, $this->my_url_map->get('/session'));
             LErrorList::saveFromErrors('session', $session_validator->validate($treeview_input, $treeview_session));
         }
 

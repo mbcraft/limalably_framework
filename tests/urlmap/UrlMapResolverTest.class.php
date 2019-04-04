@@ -25,7 +25,7 @@ class UrlMapResolverTest extends LTestCase {
         
         $this->assertNotNull($urlmap,"La urlmap non è stata trovata!");
         $this->assertTrue($urlmap->is_set("/exec"),"L'exec non è impostato nell'urlmap!");
-        $this->assertTrue($urlmap->mustGet("/exec/!"),"stop_qualcosa","L'exec do non è impostato nell'urlmap!");
+        $this->assertTrue($urlmap->mustGet("/exec/%"),"stop_qualcosa","L'exec do non è impostato nell'urlmap!");
         
     }
 
@@ -37,7 +37,7 @@ class UrlMapResolverTest extends LTestCase {
         
         $this->assertNotNull($urlmap,"La urlmap non è stata trovata!");
         $this->assertTrue($urlmap->is_set("/exec"),"L'exec non è impostato nell'urlmap!");
-        $this->assertEqual($urlmap->mustGet("/exec/!"),"/test/qualcosa/prova","L'exec letto non corrisponde a /test/qualcosa/prova ! : ".var_export($urlmap->mustGet("/exec/!"),true));
+        $this->assertEqual($urlmap->mustGet("/exec/%"),"/test/qualcosa/prova","L'exec letto non corrisponde a /test/qualcosa/prova ! : ".var_export($urlmap->mustGet("/exec/%"),true));
     }
     
     function testResolveFolderSubfolderAgain() {
@@ -47,7 +47,7 @@ class UrlMapResolverTest extends LTestCase {
         $urlmap = $resolver->resolveUrlMap("/folder/subfolder/again");
         
         $this->assertNotNull($urlmap,"La urlmap non è stata trovata!");
-        $this->assertEqual($urlmap->mustGet('/exec/!'),"/test2/qualcosa2/again","L'exec non corrisponde a /test2/qualcosa2/again nella urlmap! : ".var_export($urlmap->mustGet('/exec/!'),true));
+        $this->assertEqual($urlmap->mustGet('/exec/%'),"/test2/qualcosa2/again","L'exec non corrisponde a /test2/qualcosa2/again nella urlmap! : ".var_export($urlmap->mustGet('/exec/%'),true));
         $this->assertEqual($urlmap->mustGet('/session/my_session_key/rules'),"NotBlank","La regola della chiave nella session non corrisponde nella urlmap!");
         $this->assertEqual($urlmap->mustGet('/input/my_key/rules'),"NotBlank","La regola della chiave nell'input non corrisponde nella urlmap!");
         

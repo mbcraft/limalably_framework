@@ -64,10 +64,10 @@ class LCall {
     }
     
     /**
-     * Ritorna un valore booleano che indica se la route è valida come shortcut per un file di proc.
+     * Ritorna un valore booleano che indica se la route è valida per un file di proc.
      * 
      * @param string $route La route
-     * @return boolean true se lo shortcut alla proc è valido, false altrimenti
+     * @return boolean true se la route alla proc è valida, false altrimenti
      */
     private function isValidProcFileRoute($call_spec) {
 

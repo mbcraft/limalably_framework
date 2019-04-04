@@ -187,33 +187,7 @@ class LUrlMapResolver {
         
         return $url_map_calculator->calculate();
     }
-     
-    public function isShortcutToProc($route) {
-        if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
-            if ($this->isProcUrlMap($route)) {
-                if ($this->isPublicRoute($route) || $this->isHashRoute($route) || $this->isPrivateRoute($route))
-                    throw new \Exception("Error : route is a proc shortcut but also something else.");
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public function resolveProcShortcut($route) {
-        //se sono in uno script e la route punta a una proc e la config è ok allora prendo quella
-        if ($_SERVER['ENVIRONMENT']=='script' && LConfigReader::simple('/urlmap/shortcut_proc')) {
-            if ($this->isProcUrlMap($route)) {
-                if ($this->isPublicRoute($route) || $this->isHashRoute($route) || $this->isPrivateRoute($route))
-                    throw new \Exception("Error : route is a proc but also something else.");
-                $builder = new LUrlMapBuilder();
-                $builder->setFormat('output');
-                $builder->setExecDo($route);
-                return $builder->getUrlMapData();
-            }
-        }
-        throw new \Exception("Route does not resolve to a proc shortcut.");
-    }
-    
+         
     private function resolvePublicUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {

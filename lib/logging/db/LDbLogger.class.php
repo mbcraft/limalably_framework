@@ -31,12 +31,12 @@ class LDbLogger implements LILogger {
         $this->my_logger->write($message,self::LEVEL_DEBUG);
     }
 
-    public function error($message) {
-        $this->my_logger->write($message,self::LEVEL_ERROR);
+    public function error($message,$code = '') {
+        $this->my_logger->write($message,self::LEVEL_ERROR,$code);
     }
 
     public function exception(\Exception $ex) {
-        $this->my_logger->write(LStringUtils::getExceptionMessage($ex),self::LEVEL_ERROR);
+        $this->my_logger->write(LStringUtils::getExceptionMessage($ex),self::LEVEL_ERROR,$ex->getCode());
     }
 
     public function fatal($message) {

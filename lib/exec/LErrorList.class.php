@@ -33,7 +33,7 @@ class LErrorList {
         if ($log_errors) {
             
             foreach ($result_errors as $err) {
-                LLog::error($err->getMessage());
+                LLog::error($err->getMessage(),$err->getCode());
             }
         }
         

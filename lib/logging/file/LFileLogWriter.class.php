@@ -45,7 +45,7 @@ class LFileLogWriter implements LILogWriter {
         }
     }
     
-    private function formatLog($message,$level) {
+    private function formatLog($message,$level,$code = '') {
         $my_date = date($this->my_format_info['date']);
         
         switch ($level) {
@@ -58,12 +58,13 @@ class LFileLogWriter implements LILogWriter {
         }
         
         $format = $this->my_format_info['log'];
-        $format = str_replace('%date%', $my_date, $format);
-        $format = str_replace('%level_string%', $level_string, $format);
-        $format = str_replace('%level%', $level, $format);
-        $format = str_replace('%user%', LEnvironmentUtils::getServerUser(), $format);
-        $format = str_replace('%route%', LEnvironmentUtils::getRoute(), $format);
-        $format = str_replace('%message%', $message, $format);
+        $format = str_replace('{date}', $my_date, $format);
+        $format = str_replace('{level_string}', $level_string, $format);
+        $format = str_replace('{level}', $level, $format);
+        $format = str_replace('{code}', $code, $format);
+        $format = str_replace('{user}', LEnvironmentUtils::getServerUser(), $format);
+        $format = str_replace('{route}', LEnvironmentUtils::getRoute(), $format);
+        $format = str_replace('{message}', $message, $format);
         
         return $format;
     }
@@ -77,8 +78,8 @@ class LFileLogWriter implements LILogWriter {
         }
     }
     
-    public function write($message,$level) {
-        file_put_contents($this->my_log_file, $this->formatLog($message, $level), FILE_APPEND | LOCK_EX);
+    public function write($message,$level,$code = '') {
+        file_put_contents($this->my_log_file, $this->formatLog($message, $level, $code), FILE_APPEND | LOCK_EX);
     }
     
     public function close() {

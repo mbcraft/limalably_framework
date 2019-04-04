@@ -18,7 +18,7 @@ interface LILogger {
     
     function warning($message);
     
-    function error($message);
+    function error($message,$code = '');
     
     function exception(\Exception $ex);
     

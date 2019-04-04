@@ -27,12 +27,12 @@ class LTogetherFileLogger implements LILogger {
         $this->my_log_writer->write($message, self::LEVEL_DEBUG);
     }
 
-    public function error($message) {
-        $this->my_log_writer->write($message, self::LEVEL_ERROR);
+    public function error($message,$code = '') {
+        $this->my_log_writer->write($message, self::LEVEL_ERROR,$code);
     }
 
     public function exception(\Exception $ex) {
-        $this->my_log_writer->write(LStringUtils::getExceptionMessage($ex), self::LEVEL_ERROR);
+        $this->my_log_writer->write(LStringUtils::getExceptionMessage($ex), self::LEVEL_ERROR,$ex->getCode());
     }
 
     public function fatal($message) {

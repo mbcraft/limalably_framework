@@ -44,12 +44,12 @@ class LDistinctFileLogger implements LILogger {
         $this->debug_log_writer->write($message, self::LEVEL_DEBUG);
     }
 
-    public function error($message) {
-        $this->error_log_writer->write($message, self::LEVEL_ERROR);
+    public function error($message,$code = '') {
+        $this->error_log_writer->write($message, self::LEVEL_ERROR,$code);
     }
 
     public function exception(\Exception $ex) {
-        $this->error_log_writer->write(LStringUtils::getExceptionMessage($ex), self::LEVEL_ERROR);
+        $this->error_log_writer->write(LStringUtils::getExceptionMessage($ex), self::LEVEL_ERROR,$ex->getCode());
     }
 
     public function fatal($message) {

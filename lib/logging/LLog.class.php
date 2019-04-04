@@ -146,14 +146,14 @@ class LLog {
         return self::$my_min_level!=null && self::$my_min_level<=self::LEVEL_ERROR;
     }
     
-    public static function error($message) {
+    public static function error($message,$code = '') {
         if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
         
         if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();
         }
         
-        self::$my_logger->error($message);
+        self::$my_logger->error($message,$code);
     }
     
     public static function exception(\Exception $ex) {

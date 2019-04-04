@@ -12,7 +12,7 @@ class LResultLogger implements LILogger {
         LResult::framework_debug("LOG Debug : ".$message);
     }
 
-    public function error($message) {
+    public function error($message,$code = '') {
         LResult::message("LOG Error : ".$message);
     }
 

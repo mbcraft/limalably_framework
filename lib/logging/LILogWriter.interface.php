@@ -16,7 +16,7 @@ interface LILogWriter {
     
     function init();
     
-    function write($message, $level);
+    function write($message, $level, $code = '');
     
     function close();
     

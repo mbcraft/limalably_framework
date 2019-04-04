@@ -2,15 +2,23 @@
 
 class LTwigTemplateSourceFactory implements LITemplateSourceFactory {
     
-    public function createFileTemplateSource(string $root_path,string $cache_path) {
-        return new LTwigFileTemplateSource($root_path, $cache_path);
+    private $root_path = null;
+    
+    public function createFileTemplateSource(string $relative_folder_path,string $relative_cache_path) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
+        return new LTwigFileTemplateSource($this->root_path.$relative_folder_path, $this->root_path.$relative_cache_path);
     }
 
-    public function createStringArrayTemplateSource(array $data_map,string $cache_path) {
-        return new LTwigStringArrayTemplateSource($data_map,$cache_path);
+    public function createStringArrayTemplateSource(array $data_map,string $relative_cache_path) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
+        return new LTwigStringArrayTemplateSource($data_map,$this->root_path.$relative_cache_path);
     }
 
     public function createTemplateFromString(string $template_source) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         $loader = new \Twig\Loader\ArrayLoader(['template_source' => $template_source]);
         
         $params = [];
@@ -19,6 +27,18 @@ class LTwigTemplateSourceFactory implements LITemplateSourceFactory {
         $env = new \Twig\Environment($loader,$params);
         
         return new LTwigTemplate($env->load('template_source'));
+    }
+
+    public function init(string $root_path) {
+        $this->root_path = $root_path;
+    }
+
+    public function initWithDefaults() {
+        $this->root_path = $_SERVER['PROJECT_DIR'];
+    }
+
+    public function isInitialized() {
+        return $this->root_path!=null;
     }
 
 }

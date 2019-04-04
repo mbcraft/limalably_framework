@@ -2,6 +2,6 @@
 
 interface LITemplate {
     
-    function render($params);    
+    function render(array $params);    
     
 }

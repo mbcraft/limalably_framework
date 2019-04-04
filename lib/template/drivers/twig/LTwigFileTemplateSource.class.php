@@ -5,7 +5,7 @@ class LTwigFileTemplateSource implements LITemplateSource {
     private $loader;
     private $env;
     
-    function __construct($templates_path,$cache_path) {
+    function __construct($templates_path,$cache_path=null) {
         $this->loader = new \Twig\Loader\FilesystemLoader($templates_path);
         
         $params = [];

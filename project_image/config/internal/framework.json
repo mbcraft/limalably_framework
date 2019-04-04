@@ -1,142 +1,141 @@
 {
-    "defaults" : {
-        "execution_mode" : {
-            "maintenance" : {
-                "logging" : {
-                    "type" : "together-file",
-                    "min_level" : "debug",
-                    "log_mode" : "normal"
+    "defaults": {
+        "execution_mode": {
+            "maintenance": {
+                "logging": {
+                    "type": "together-file",
+                    "min_level": "debug",
+                    "log_mode": "normal"
                 },
-                "urlmap" : {
-                    "manager_class" : "LMaintenanceUrlMapManager",
-                    "private_routes_visible" : false,
-                    "templates" : {
-                        "auto_reload" : false
-                    }
+                "urlmap": {
+                    "manager_class": "LMaintenanceUrlMapManager",
+                    "private_routes_visible": false
+                },
+                "template": {
+                    "auto_reload": false
                 }
             },
-            "framework_development" : {
-                "logging" : {
-                    "type" : "output",
-                    "min_level" : "debug"
+            "framework_development": {
+                "logging": {
+                    "type": "output",
+                    "min_level": "debug"
                 },
-                "urlmap" : {
-                    "private_routes_visible" : true,
-                    "templates" : {
-                        "auto_reload" : true
-                    }
+                "urlmap": {
+                    "private_routes_visible": true
+                },
+                "template": {
+                    "auto_reload": true
                 }
             },
-            "development" : {
-                "logging" : {
-                    "type" : "distinct-file",
-                    "min_level" : "debug"
+            "development": {
+                "logging": {
+                    "type": "distinct-file",
+                    "min_level": "debug"
                 },
-                "urlmap" : {
-                    "private_routes_visible" : true,
-                    "templates" : {
-                        "auto_reload" : true
-                    }
+                "urlmap": {
+                    "private_routes_visible": true
+                },
+                "template": {
+                    "auto_reload": true
                 }
             },
-            "testing" : {
-                "logging" : {
-                    "type" : "distinct-file",
-                    "min_level" : "error"
+            "testing": {
+                "logging": {
+                    "type": "distinct-file",
+                    "min_level": "error"
                 },
-                "urlmap" : {
-                    "private_routes_visible" : false,
-                    "templates" : {
-                        "auto_reload" : false
-                    }
+                "urlmap": {
+                    "private_routes_visible": false
+                },
+                "template": {
+                    "auto_reload": false
                 }
             },
-            "production" : {
-                "logging" : {
-                    "type" : "db",
-                    "min_level" : "error"
+            "production": {
+                "logging": {
+                    "type": "db",
+                    "min_level": "error"
                 },
-                "urlmap" : {
-                    "private_routes_visible" : false,
-                    "templates" : {
-                        "auto_reload" : false
-                    }
+                "urlmap": {
+                    "private_routes_visible": false
+                },
+                "template": {
+                    "auto_reload": false
                 }
             }
         },
-        "urlmap" : {
-            "manager_class" : "LDefaultUrlMapManager",
-            "shortcut_proc" : true,
-            "search_order" : "hash_db,static",
-            "folder_route" : "_folder",
-            "inherited_route" : "_default",
-            "truncate_route" : "_stop",
-            "ignore_missing_extends" : false,
-            "ignore_missing_imports" : false,
-            "validation_driver_class" : "LRespectValidationDriver"
-
+        "urlmap": {
+            "manager_class": "LDefaultUrlMapManager",
+            "shortcut_proc": true,
+            "search_order": "hash_db,static",
+            "folder_route": "_folder",
+            "inherited_route": "_default",
+            "truncate_route": "_stop",
+            "ignore_missing_extends": false,
+            "ignore_missing_imports": false,
+            "validation_driver_class": "LRespectValidationDriver"
         },
-        "template" : {
-                "source_factory_class" : "LTwigTemplateSourceFactory",
-                "root_folder" : "templates/",
-                "cache_folder" : "temp/cache/template/",
-                "strict_variables" : true,
-                "autoescape" : "name",
-                "import_into_variables" : ["env","output","input","session","capture","parameters","urlmap","i18n"]
+        "template": {
+            "source_factory_class": "LTwigTemplateSourceFactory",
+            "root_folder": "templates/",
+            "cache_folder": "temp/cache/template/",
+            "strict_variables": true,
+            "autoescape": "name",
+            "import_into_variables": ["env", "output", "input", "session", "capture", "parameters", "urlmap", "i18n"]
         },
-        "logging" : {
-            "distinct-file" : {
-                "date_format" : "d/m/Y H:i:s",
-                "log_format" : "[ %date% - %user% ] : %message%\n",
-                "log_mode" : "normal",
-                "max_mb" : 10,
-                "log_folder" : "logs/",
-                "min_level" : "debug"
+        "logging": {
+            "distinct-file": {
+                "date_format": "d/m/Y H:i:s",
+                "log_format": "[ %date% - %user% ] : %message%\n",
+                "log_mode": "normal",
+                "max_mb": 10,
+                "log_folder": "logs/",
+                "min_level": "debug"
             },
-            "together-file" : {
-                "date_format" : "d/m/Y H:i:s",
-                "log_format" : "[ %date% - %user% - %level_string% ] : %message%\n",
-                "log_mode" : "rolling",
-                "max_mb" : 10,
-                "log_folder" : "logs/",
-                "min_level" : "debug"
+            "together-file": {
+                "date_format": "d/m/Y H:i:s",
+                "log_format": "[ %date% - %user% - %level_string% ] : %message%\n",
+                "log_mode": "rolling",
+                "max_mb": 10,
+                "log_folder": "logs/",
+                "min_level": "debug"
             },
-            "db" : {
-                "log_mode" : "normal",
-                "connection_name" : "default",
-                "max_records" : 1000000,
-                "table_name" : "logs",
-                "min_level" : "debug"
+            "db": {
+                "log_mode": "normal",
+                "connection_name": "default",
+                "max_records": 1000000,
+                "table_name": "logs",
+                "min_level": "debug"
             },
-            "output" : {
-                "min_level" : "debug"
+            "output": {
+                "min_level": "debug"
             }
         },
-        "treemap" : {
-            "false_values" : ["false","null","0","no",0,false,null]
+        "treemap": {
+            "false_values": ["false", "null", "0", "no", 0, false, null]
         },
-        "classloader" : {
-            "code_file_ends_with" : [".class.php",".interface.php",".trait.php"],
-            "project_folder_list" : ["lib/","urlmap/handlers/"],
-            "framework_folder_list" : ["lib/"],
-            "map_cache_file_path" : "temp/classloader/map/classloader_map_cache.php",
-            "class_cache_folder_path" : "temp/classloader/classes/",
-            "cache_commented_call_list" : ["LResult::framework_debug","LResult::debug","LLog::debug","LLog::info"],
-            "skip_cache_route_list" : [],
-            "skip_cache_query_parameter" : null,
-            "proc_folder" : "proc/",
-            "proc_extension" : ".proc.php",
-            "data_folder" : "data/"
+        "classloader": {
+            "code_file_ends_with": [".class.php", ".interface.php", ".trait.php"],
+            "project_folder_list": ["lib/", "urlmap/handlers/"],
+            "framework_folder_list": ["lib/"],
+            "map_cache_file_path": "temp/classloader/map/classloader_map_cache.php",
+            "class_cache_folder_path": "temp/classloader/classes/",
+            "cache_commented_call_list": ["LResult::framework_debug", "LResult::debug", "LLog::debug", "LLog::info"],
+            "skip_cache_route_list": [],
+            "skip_cache_query_parameter": null,
+            "proc_folder": "proc/",
+            "proc_extension": ".proc.php",
+            "data_folder": "data/"
         },
-        "request" : {
-            "input_source_list" : ["files","post","get"]
+        "request": {
+            "input_source_list": ["files", "post", "get"]
         },
-        "exec" : {
-            "method_parameter_search_list" : ["meta","capture","relative_input","absolute_input","relative_session","absolute_session","relative_output","absolute_output","default_value"]
+        "exec": {
+            "method_parameter_search_list": ["meta", "capture", "relative_input", "absolute_input", "relative_session", "absolute_session", "relative_output", "absolute_output", "default_value"]
         },
-        "format" : {
-            "json" : {
-                "encode_options" : ["THROW_ON_ERROR"]
+        "format": {
+            "json": {
+                "encode_options": ["THROW_ON_ERROR"]
             }
         }
     }

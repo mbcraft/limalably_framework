@@ -181,6 +181,10 @@ class LUrlMapExecutor {
             }
         }
 
+        if ($error_list->hasErrors()) {
+            return $error_list;
+        }
+        
         if ($this->my_url_map->is_set('/format')) {
             $format = $this->my_url_map->get('/format');
 
@@ -199,7 +203,11 @@ class LUrlMapExecutor {
                 $error_list->mergeIntoTreeMap($output);
                 $output_data = $output->getRoot();
 
-                return json_encode($output_data, $encode_options);
+                try {
+                    return json_encode($output_data, $encode_options);
+                } catch (\Exception $ex) {
+                    $error_list->saveFromException('format', $ex);
+                }
             }
         }
 

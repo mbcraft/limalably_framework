@@ -3,9 +3,15 @@
 
 interface LITemplateSourceFactory {
     
-    function createFileTemplateSource(string $root_path,$cache_path);
+    function isInitialized();
     
-    function createStringArrayTemplateSource(array $data_map,$cache_path);
+    function init(string $root_path);
+    
+    function initWithDefaults();
+    
+    function createFileTemplateSource(string $relative_folder_path,string $relative_cache_path);
+    
+    function createStringArrayTemplateSource(array $data_map,string $relative_cache_path);
     
     function createTemplateFromString(string $template_source);
     

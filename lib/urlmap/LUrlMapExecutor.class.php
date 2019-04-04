@@ -2,8 +2,8 @@
 
 class LUrlMapExecutor {
 
-    const AVAILABLE_NODES = ['conditions','!conditions','load','input','session','dynamic_exec','exec','dynamic_template','template','format'];
-    
+    const AVAILABLE_NODES = ['conditions', '!conditions', 'load', 'input', 'session', 'dynamic_exec', 'exec', 'dynamic_template', 'template', 'format'];
+
     private $my_url_map = null;
 
     function __construct($url_map) {
@@ -12,10 +12,46 @@ class LUrlMapExecutor {
         $this->my_url_map = $url_map;
     }
 
-    function executeRootRequest() {
+    function executeRootRequest($route) {
 
         $parameters = isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];
-        $in = LInputUtils::create();
+        $capture = [];
+        $input_tree = LInputUtils::create();
+        $session_tree = LSessionUtils::create();
+
+        $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
+        
+        if ($result instanceof LTreeMap || $result instanceof LTreeMapView) {
+            echo $this->jsonEncodeResult($result);
+        } else {
+            echo $result;
+        }
+    }
+
+    function jsonEncodeResult($output) {
+        $encode_options_list = LConfigReader::simple('/format/json/encode_options');
+        $encode_options = 0;
+        foreach ($encode_options_list as $enc_opt) {
+            try {
+                $encode_options |= eval('return JSON_' . $enc_opt . ';');
+            } catch (\Exception $ex) {
+                LErrorList::saveFromErrors('format', 'Invalid json encode format : JSON_' . $enc_opt . ' does not evaluate to an integer value.');
+            }
+        }
+
+        LWarningList::mergeIntoTreeMap($output);
+        LErrorList::mergeIntoTreeMap($output);
+        
+        $output_data = $output->getRoot();
+
+        try {
+            $content = json_encode($output_data, $encode_options);
+            LWarningList::clear();
+            LErrorList::clear();
+            return $content;
+        } catch (\Exception $ex) {
+            LErrorList::saveFromException('format', $ex);
+        }
     }
 
     function execute($route, $parameters, $capture, $treeview_input, $treeview_session) {
@@ -23,38 +59,38 @@ class LUrlMapExecutor {
         $output = new LTreeMap();
         $output->set('/success', true);
         $treeview_output = $output->view('/');
-        
+
         //checking for invalid nodes
         $current_keys = $this->my_url_map->keys('/');
         foreach ($current_keys as $urlmap_key) {
-            if (!in_array($urlmap_key,self::AVAILABLE_NODES)) {
-                LErrorList::saveFromErrors('urlmap', 'Urlmap contains one one or more invalid nodes : '.$urlmap_key);
+            if (!in_array($urlmap_key, self::AVAILABLE_NODES)) {
+                LErrorList::saveFromErrors('urlmap', 'Urlmap contains one one or more invalid nodes : ' . $urlmap_key);
             }
         }
-        
+
         //evaluating condition
         if ($this->my_url_map->is_set('/conditions')) {
             $cond = new LCondition();
-            
+
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
-            
+
             if (!$result) {
                 //da valutare se usare un throw forbidden
-                LErrorList::saveFromErrors('conditions', "Urlmap conditions are not verified, can't process route ".$route);
+                LErrorList::saveFromErrors('conditions', "Urlmap conditions are not verified, can't process route " . $route);
             }
         }
         //negated condition
         if ($this->my_url_map->is_set('/!conditions')) {
             $cond = new LCondition();
-            
+
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
-            
+
             if ($result) {
                 //da valutare se usare un throw forbidden
-                LErrorList::saveFromErrors('conditions', "Urlmap conditions are not verified, can't process route ".$route);
+                LErrorList::saveFromErrors('conditions', "Urlmap conditions are not verified, can't process route " . $route);
             }
         }
-        
+
         //loading prepared input
         if ($this->my_url_map->is_set('/load')) {
             try {
@@ -68,14 +104,14 @@ class LUrlMapExecutor {
         //input parameters check
 
         if ($this->my_url_map->is_set('/input')) {
-            $input_validator = new LParameterGroupValidator('input',$treeview_input, $this->my_url_map->get('/input'));
+            $input_validator = new LParameterGroupValidator('input', $treeview_input, $this->my_url_map->get('/input'));
             LErrorList::saveFromErrors('input', $input_validator->validate($treeview_input, $treeview_session));
         }
 
         //session parameters check
 
         if ($this->my_url_map->is_set('/session')) {
-            $session_validator = new LParameterGroupValidator('session',$treeview_session, $this->my_url_map->get('/session'));
+            $session_validator = new LParameterGroupValidator('session', $treeview_session, $this->my_url_map->get('/session'));
             LErrorList::saveFromErrors('session', $session_validator->validate($treeview_input, $treeview_session));
         }
 
@@ -167,13 +203,12 @@ class LUrlMapExecutor {
         if ($this->my_url_map->is_set('/template')) {
             $template_path = $this->my_url_map->get('/template');
 
-            $renderer = new LTemplateRendering($this->my_url_map,$treeview_input,$treeview_session,$capture,$parameters,$output);
-            
+            $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $capture, $parameters, $output);
+
             $result = $renderer->render($template_path);
-            
-            if ($result) return $result;
-            
-            
+
+            if ($result)
+                return $result;
         }
 
 
@@ -182,24 +217,7 @@ class LUrlMapExecutor {
 
             if ($format == LFormat::JSON) {
 
-                $encode_options_list = LConfigReader::simple('/format/json/encode_options');
-                $encode_options = 0;
-                foreach ($encode_options_list as $enc_opt) {
-                    try {
-                        $encode_options |= eval('return JSON_' . $enc_opt . ';');
-                    } catch (\Exception $ex) {
-                        LErrorList::saveFromErrors('format', 'Invalid json encode format : JSON_' . $enc_opt . ' does not evaluate to an integer value.');
-                    }
-                }
-
-                LErrorList::mergeIntoTreeMap($output);
-                $output_data = $output->getRoot();
-
-                try {
-                    return json_encode($output_data, $encode_options);
-                } catch (\Exception $ex) {
-                    LErrorList::saveFromException('format', $ex);
-                }
+                return $this->jsonEncodeResult($output);
             }
         }
 

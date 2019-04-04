@@ -4,6 +4,10 @@ class LErrorList {
     
     private static $data = [];
     
+    public static function clear() {
+        self::$data = [];
+    }
+    
     public static function saveFromException(string $type,\Exception $ex) {
         self::$data[$type][] = $ex;
         self::$data['all'][] = $ex;

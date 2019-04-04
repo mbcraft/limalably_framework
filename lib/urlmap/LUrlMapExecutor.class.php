@@ -167,47 +167,13 @@ class LUrlMapExecutor {
         if ($this->my_url_map->is_set('/template')) {
             $template_path = $this->my_url_map->get('/template');
 
-            $template_factory = new LUrlMapTemplateSourceFactory();
-
-            $template_source = $template_factory->createFileTemplateSource();
-
-            $final_template_path = $template_source->searchTemplate($template_path);
-
-            if (!$final_template_path) {
-                LErrorList::saveFromErrors('template', 'Unable to find file template at path : ' . $template_path);
-            } else {
-                $template = $template_source->getTemplate($final_template_path);
-
-                //inserire fra le variabili : urlmap, input, session, capture, i18n, parameters - con eventuale prefisso di path tipo 'meta'
-                $import_into_variables = LConfigReader::simple('/template/import_into_variables');
-
-                try {
-                    foreach ($import_into_variables as $import_name) {
-                        switch ($import_name) {
-                            case 'urlmap' : $output->set('urlmap', $this->my_url_map->get('.'));
-                                break;
-                            case 'input' : $output->set('input', $treeview_input->get('.'));
-                                break;
-                            case 'session' : $output->set('session', $treeview_session->get('.'));
-                                break;
-                            case 'parameters' : $output->set('parameters', $parameters);
-                                break;
-                            case 'capture' : $output->set('capture', $capture);
-                                break;
-                            case 'env' : $output->set('env', LEnvironmentUtils::getReplacementsArray());
-                                break;
-                            case 'i18n' : throw new \Exception("i18n not implemented yet");
-                                break;
-
-                            default : throw new \Exception("Unable to import into variables : " . $import_name);
-                        }
-                    }
-
-                    return $template->render($output->getRoot());
-                } catch (\Exception $ex) {
-                    LErrorList::saveFromException('template', $ex);
-                }
-            }
+            $renderer = new LTemplateRendering($this->my_url_map,$treeview_input,$treeview_session,$capture,$parameters,$output);
+            
+            $result = $renderer->render($template_path);
+            
+            if ($result) return $result;
+            
+            
         }
 
 

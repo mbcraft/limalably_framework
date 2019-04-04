@@ -41,7 +41,7 @@ class LTemplateRendering {
             $template = $template_source->getTemplate($final_template_path);
 
             //inserire fra le variabili : urlmap, input, session, capture, i18n, parameters - con eventuale prefisso di path tipo 'meta'
-            $import_into_variables = LConfigReader::simple('/template/import_into_variables');
+            $import_into_variables = LConfigReader::executionMode('/template/import_into_variables');
 
 
             //

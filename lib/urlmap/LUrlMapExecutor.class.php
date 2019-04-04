@@ -22,13 +22,24 @@ class LUrlMapExecutor {
         $output->set('/success', true);
         $treeview_output = $output->view('/');
 
-        //evaluating conditions
+        //evaluating condition
         if ($this->my_url_map->is_set('/condition')) {
             $cond = new LCondition();
             
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
             
             if (!$result) {
+                //da valutare se usare un throw forbidden
+                LErrorList::saveFromErrors('condition', "Urlmap conditions are not verified, can't process route ".$route);
+            }
+        }
+        //negated condition
+        if ($this->my_url_map->is_set('/!condition')) {
+            $cond = new LCondition();
+            
+            $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
+            
+            if ($result) {
                 //da valutare se usare un throw forbidden
                 LErrorList::saveFromErrors('condition', "Urlmap conditions are not verified, can't process route ".$route);
             }

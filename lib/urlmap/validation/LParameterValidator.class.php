@@ -11,6 +11,7 @@ class LParameterValidator {
     private $is_set;
     private $value;
     private $condition;
+    private $neg_condition;
     private $rules;
     private $has_default_value;
     private $default_value;
@@ -22,6 +23,8 @@ class LParameterValidator {
         $this->value = $value;
         
         $this->condition = array_key_exists('condition',$parameters) ? $parameters['condition'] : [];
+        $this->neg_condition = array_key_exists('!condition',$parameters) ? $parameters['!condition'] : [];
+        
         $this->rules = array_key_exists('rules',$parameters) ? $parameters['rules'] : [];
         
         $this->has_default_value = array_key_exists('default_value',$parameters);
@@ -32,8 +35,9 @@ class LParameterValidator {
         
         $condition = new LCondition();
         $evaluate_rules = $condition->evaluate($this->type,$this->condition);
-
-        if ($evaluate_rules) {
+        $skip_rules = $condition->evaluate($this->type, $this->neg_condition);
+        
+        if ($evaluate_rules && !$skip_rules) {
 
             $driver_class_name = LConfigReader::simple('/urlmap/validation_driver_class');
             $driver_instance = new $driver_class_name();

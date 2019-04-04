@@ -34,9 +34,7 @@ class LExecCall {
         }
                 
         $result = $this->my_call->execute($my_call_spec,$all_param_data,false);
-        
-        if ($result instanceof \LErrorList) return $result;
-        
+                
         if ($result instanceof LTreeMap) {
             $result = $result->get('/');
         }
@@ -58,7 +56,6 @@ class LExecCall {
             $all_param_data['output']->merge($my_output_path,$result);
         }
         
-        return null;
     }
     
     

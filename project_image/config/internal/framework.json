@@ -138,6 +138,11 @@
             "json": {
                 "encode_options": ["THROW_ON_ERROR"]
             }
+        },
+        "error" : {
+            "template_by_http_code" : {
+                "500" : "error_codes/500.html"
+            }
         }
     }
 }

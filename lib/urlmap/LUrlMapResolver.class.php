@@ -26,29 +26,44 @@ class LUrlMapResolver {
     
     const VARIABLE_PREFIX = '{';
     const VARIABLE_SUFFIX = '}';
+        
+    function isInitialized() {
+        return $this->root_folder != null;
+    }
     
+    private function finalizeInit() {
+        if (!is_dir($this->root_folder)) throw new \Exception("La cartella root per la risoluzione degli urlmap non esiste : ".$this->root_folder);
+        if (!is_dir($this->root_folder.$this->static_folder)) throw new \Exception("La cartella per gli urlmap pubblici statici non esiste : ".$this->static_folder);
+        if (!is_dir($this->root_folder.$this->hash_db_folder)) throw new \Exception("La cartella per gli urlmap pubblici hash non esiste : ".$this->hash_db_folder);
+        if (!is_dir($this->root_folder.$this->private_folder)) throw new \Exception("La cartella per gli urlmap privati non esiste : ".$this->private_folder);
+        
+        $this->folder_route = LConfigReader::simple('/urlmap/special_folder_route');
+        $this->inherited_route = LConfigReader::simple('/urlmap/special_inherited_route');
+        $this->truncate_route = LConfigReader::simple('/urlmap/special_truncate_route');
+        
+        $this->ignore_missing_extends = LConfigReader::simple('/urlmap/ignore_missing_extends');
+        $this->ignore_missing_imports = LConfigReader::simple('/urlmap/ignore_missing_imports');
+    }
     
-    
-    function __construct($root_folder,$static_folder='urlmap/public/static/',$hash_db_folder='urlmap/public/hash_db/',$private_folder='urlmap/private/') {
+    function init(string $root_folder,string $static_folder,string $hash_db_folder,string $private_folder) {
+        
         $this->root_folder = $root_folder;
         $this->static_folder = $static_folder;
         $this->hash_db_folder = $hash_db_folder;
         $this->private_folder = $private_folder;
         
-        if (!is_dir($this->root_folder)) throw new \Exception("La cartella root per la risoluzione degli urlmap non esiste : ".$root_folder);
-        if (!is_dir($this->root_folder.$this->static_folder)) throw new \Exception("La cartella per gli urlmap pubblici statici non esiste : ".$static_folder);
-        if (!is_dir($this->root_folder.$this->hash_db_folder)) throw new \Exception("La cartella per gli urlmap pubblici hash non esiste : ".$hash_db_folder);
-        if (!is_dir($this->root_folder.$this->private_folder)) throw new \Exception("La cartella per gli urlmap privati non esiste : ".$private_folder);
-        
-        $this->folder_route = LConfigReader::simple('/urlmap/folder_route');
-        $this->inherited_route = LConfigReader::simple('/urlmap/inherited_route');
-        $this->truncate_route = LConfigReader::simple('/urlmap/truncate_route');
-        
-        $this->ignore_missing_extends = LConfigReader::simple('/urlmap/ignore_missing_extends');
-        $this->ignore_missing_imports = LConfigReader::simple('/urlmap/ignore_missing_imports');
-
+        $this->finalizeInit();
     }
     
+    function initWithDefaults() {
+        
+        $this->root_folder = $_SERVER['PROJECT_DIR'];
+        $this->static_folder = LConfigReader::simple('/urlmap/static_routes_folder');
+        $this->hash_db_folder = LConfigReader::simple('/urlmap/hash_db_routes_folder');
+        $this->private_folder = LConfigReader::simple('/urlmap/private_routes_folder');
+        
+        $this->finalizeInit();
+    }
 
     
     private function getPrivateUrlMapAsArray($route) {
@@ -103,6 +118,8 @@ class LUrlMapResolver {
      * @throws \Exception Se ci sono degli errori in fase di decodifica
      */
     public function readUrlMapAsArray($path) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         if (!is_readable($path)) throw new \Exception("UrlMap at path ".$path." is not readable.");
         $urlmap_content = file_get_contents($path);
         $current_map_array = LJsonUtils::parseContent("urlmap",$path,$urlmap_content);
@@ -229,6 +246,8 @@ class LUrlMapResolver {
     }
     
     public function getParentRoute($route) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         if (!$this->inherited_route) return null;
         
         if (LStringUtils::endsWith($route, $this->inherited_route)) $route = substr($route,0,-strlen($this->inherited_route));
@@ -238,6 +257,8 @@ class LUrlMapResolver {
     }
     
     public function getNextSearchedRoute($route) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         if (!$this->truncate_route) return null;
         
         if (LStringUtils::endsWith($route, $this->truncate_route)) $route = substr($route,0,-strlen($this->truncate_route));
@@ -247,6 +268,8 @@ class LUrlMapResolver {
     }
     
     public function resolveUrlMap(string $route, int $search_flags = self::FLAGS_SEARCH_ALL) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         $this->original_route = $route;
         $this->urlmap_references = [];
         do {

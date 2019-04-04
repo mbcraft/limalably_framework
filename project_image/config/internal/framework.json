@@ -65,11 +65,14 @@
             }
         },
         "urlmap": {
+            "static_routes_folder" : "urlmap/public/static/",
+            "hash_db_routes_folder" : "urlmap/public/hash_db/",
+            "private_routes_folder" : "urlmap/private/",
             "manager_class": "LDefaultUrlMapManager",
             "search_order": "hash_db,static",
-            "folder_route": "_folder",
-            "inherited_route": "_default",
-            "truncate_route": "_stop",
+            "special_folder_route": "_folder",
+            "special_inherited_route": "_default",
+            "special_truncate_route": "_stop",
             "ignore_missing_extends": false,
             "ignore_missing_imports": false,
             "validation_driver_class": "LRespectValidationDriver"

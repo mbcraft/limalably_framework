@@ -11,6 +11,14 @@ class LUrlMapExecutor {
             throw new \Exception("Url map is not valid");
         $this->my_url_map = $url_map;
     }
+    
+     private function loadDataInTreeMap($load_node,$treemap) {
+        foreach ($load_node as $key => $value) {
+            
+            $treemap->set($key,$value);
+            
+        }
+    }
 
     function executeRootRequest($route) {
 
@@ -97,8 +105,7 @@ class LUrlMapExecutor {
         //loading prepared input
         if ($this->my_url_map->is_set('/load')) {
             try {
-                $input_loader = new LInputLoader();
-                $input_loader->loadDataInTreeMap($this->my_url_map->get('/load'), $treeview_input);
+                $this->loadDataInTreeMap($this->my_url_map->get('/load'), $treeview_input);
             } catch (\Exception $ex) {
                 LErrorList::saveFromException('load', $ex);
             }

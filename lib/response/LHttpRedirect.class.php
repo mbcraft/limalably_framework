@@ -6,13 +6,12 @@ class LHttpRedirect extends LHttpResponse {
     
     function __construct($location) {
         $this->location = $location;
-        parent::__construct();
     }
     
     function execute($format=null) {
         
         header("Location: ".$this->location); 
-        exit();
+        Lym::finish();
         
     }
 

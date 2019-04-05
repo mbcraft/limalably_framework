@@ -40,7 +40,7 @@ class LHttpError extends LHttpResponse {
         } else {
             echo "HTTP error ".$this->error_code.".";
         }
-        exit;
+        Lym::finish();
     }
     
 }

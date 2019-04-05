@@ -17,9 +17,7 @@ class Lym {
         self::setBootAsCalled();
         
         LLog::init();
-        
-        ob_start();
-                
+                        
         try {
             self::framework_start();
         } catch (\Exception $ex) {
@@ -33,9 +31,7 @@ class Lym {
         self::setBootAsCalled();
         
         LLog::init();
-        
-        ob_start();
-        
+                
         $executor = new LProjectCommandExecutor();
         $executor->tryExecuteCommand();
         if (!$executor->hasExecutedCommand()) {
@@ -58,19 +54,20 @@ class Lym {
 
     private static function project_start() {        
         
-        $urlmap_resolver = new LUrlMapResolver($_SERVER['PROJECT_DIR']);
-        $urlmap = $urlmap_resolver->resolveUrlMap($_SERVER['ROUTE']);
-        
-        var_dump($urlmap);
+        $request_handler_class_name = LConfigReader::executionMode('/request/route_handler_class');
         //more to come ...
+        $request_handler = new $request_handler_class_name();
+        
+        $request_handler->tryExecuteCommand();
     }
     
-    private static function finish() {
-        ob_end_flush();
+    public static function finish() {
         
         LDbConnectionManager::dispose();
         
         LLog::close();
+        
+        exit();
     }
 
 }

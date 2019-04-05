@@ -8,11 +8,13 @@
                     "log_mode": "normal"
                 },
                 "urlmap": {
-                    "manager_class": "LMaintenanceUrlMapManager",
                     "private_routes_visible": false
                 },
                 "template": {
                     "auto_reload": false
+                },
+                "request" : {
+                    "route_handler_class" : "LMaintenanceRouteExecutor"
                 }
             },
             "framework_development": {
@@ -68,7 +70,6 @@
             "static_routes_folder" : "urlmap/public/static/",
             "hash_db_routes_folder" : "urlmap/public/hash_db/",
             "private_routes_folder" : "urlmap/private/",
-            "manager_class": "LDefaultUrlMapManager",
             "search_order": "hash_db,static",
             "special_folder_route": "_folder",
             "special_inherited_route": "_default",
@@ -131,7 +132,8 @@
             "data_folder": "data/"
         },
         "request": {
-            "input_source_list": ["files", "post", "get"]
+            "input_source_list": ["files", "post", "get"],
+            "route_handler_class" : "LDefaultRouteExecutor"
         },
         "exec": {
             "method_parameter_search_list": ["meta", "capture", "rel_input", "input", "rel_session", "session", "rel_output", "output", "default_value"]
@@ -145,11 +147,6 @@
                 "error_templates_folder": "template/errors/json/"
             },
             "default_error_format" : "html"
-        },
-        "error" : {
-            "template_by_http_code" : {
-                "500" : "error_codes/500.html"
-            }
         }
     }
 }

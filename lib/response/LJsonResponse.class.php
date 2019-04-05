@@ -16,7 +16,7 @@ class LJsonResponse extends LHttpResponse {
         
         echo $this->my_result;
 
-        exit;
+        Lym::finish();
     }
 
 }

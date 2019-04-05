@@ -23,6 +23,7 @@ class LDefaultRouteExecutor implements LICommandExecutor {
         }
         
         $route = $_SERVER['ROUTE'];
+        
         $route_resolver = new LUrlMapResolver();
         $urlmap = $route_resolver->resolveUrlMap($route, $search_flags);
         
@@ -30,6 +31,15 @@ class LDefaultRouteExecutor implements LICommandExecutor {
             $executor = new LUrlMapExecutor($urlmap);
             
             $executor->executeRootRequest($route);
+        } else {
+            if (LEnvironmentUtils::getEnvironment()=='script') {
+                echo "Unable to find route : ".$route.".";
+                exit(1);
+            } else {
+                $error_format = LConfigReader::simple("/format/default_error_format");
+                $page_not_found = new LHttpError(404);
+                $page_not_found->execute($error_format);
+            }
         }
         
     }

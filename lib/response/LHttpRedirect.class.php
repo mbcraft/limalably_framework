@@ -9,7 +9,7 @@ class LHttpRedirect extends LHttpResponse {
         parent::__construct();
     }
     
-    function execute() {
+    function execute($format=null) {
         
         header("Location: ".$this->location); 
         exit();

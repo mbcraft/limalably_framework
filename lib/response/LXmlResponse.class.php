@@ -1,6 +1,6 @@
 <?php
 
-class LXmlResult extends LHttpResponse {
+class LXmlResponse extends LHttpResponse {
     
     private $my_result;
     

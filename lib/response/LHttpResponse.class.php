@@ -2,6 +2,6 @@
 
 abstract class LHttpResponse extends \Exception {
     
-    abstract function execute();
+    abstract function execute($format=null);
     
 }

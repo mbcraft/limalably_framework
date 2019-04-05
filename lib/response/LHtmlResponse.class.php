@@ -1,6 +1,6 @@
 <?php
 
-class LHtmlResult extends LHttpResponse {
+class LHtmlResponse extends LHttpResponse {
     
     private $my_data = null;
     
@@ -8,7 +8,10 @@ class LHtmlResult extends LHttpResponse {
         $this->my_data = $data;
     }
 
-    public function execute() {
+    public function execute($format=null) {
+        
+        if ($format!=LFormat::HTML) throw new \Exception("Format inside response is not html.");
+        
         header("Content-Type: text/html; charset=utf-8");
         header("Content-Length: ".strlen($this->my_data));
         header("Connection: close");

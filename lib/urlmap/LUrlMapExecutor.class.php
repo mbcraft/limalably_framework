@@ -32,9 +32,17 @@ class LUrlMapExecutor {
 
         try {
             $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
-            throw new \Exception("Response do not returned correctly : " . var_export($result, true));
+            
+            if (!$result) { 
+                //a script executed correctly
+                exit; 
+            }
+            else {
+                throw new \Exception("Unexpected state, result returned to root : ".var_export($result,true));
+            }
+            
         } catch (\LHttpResponse $response) {
-            $response->execute();
+            $response->execute($this->my_format);
         } catch (\Exception $ex) {
             LResult::exception($ex);
         }
@@ -213,11 +221,11 @@ class LUrlMapExecutor {
             if ($result) {
                 if ($this->is_root) {
                     if ($this->my_format == LFormat::HTML)
-                        throw new LHtmlResult($result);
+                        throw new LHtmlResponse($result);
                     if ($this->my_format == LFormat::JSON)
-                        throw new LJsonResult($result);
+                        throw new LJsonResponse($result);
                     if ($this->my_format == LFormat::XML)
-                        throw new LXmlResult($result);
+                        throw new LXmlResponse($result);
                 } else
                     return $result;
             }
@@ -237,7 +245,7 @@ class LUrlMapExecutor {
         if ($this->my_format == LFormat::JSON) {
             $content = LJsonUtils::encodeResult($output);
             if ($this->is_root) {
-                throw new LJsonResult($content);
+                throw new LJsonResponse($content);
             } else {
                 return $content;
             }
@@ -249,7 +257,7 @@ class LUrlMapExecutor {
 
         if ($this->my_format == LFormat::DATA) {
             if ($this->is_root) {
-                throw new \Exception("Can't be DATA format in a root urlmap.");
+                return null;
             } else {
                 return $output;
             }

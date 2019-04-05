@@ -137,9 +137,14 @@
             "method_parameter_search_list": ["meta", "capture", "rel_input", "input", "rel_session", "session", "rel_output", "output", "default_value"]
         },
         "format": {
+            "html": {
+                "error_templates_folder": "template/errors/html/"
+            },
             "json": {
-                "encode_options": ["THROW_ON_ERROR"]
-            }
+                "encode_options": ["THROW_ON_ERROR"],
+                "error_templates_folder": "template/errors/json/"
+            },
+            "default_error_format" : "html"
         },
         "error" : {
             "template_by_http_code" : {

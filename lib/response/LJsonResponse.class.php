@@ -1,6 +1,6 @@
 <?php
 
-class LJsonResult extends LHttpResponse {
+class LJsonResponse extends LHttpResponse {
 
     private $my_result;
 

@@ -22,7 +22,7 @@ class LHttpFileResponse extends LHttpResponse {
         parent::__construct();
     }
     
-    function execute() {
+    function execute($format=null) {
         
         header('Content-Description: File Transfer');
         header('Content-Type: '.$this->mime_type);

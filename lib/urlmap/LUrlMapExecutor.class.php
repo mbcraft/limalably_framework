@@ -30,27 +30,13 @@ class LUrlMapExecutor {
         $input_tree = LInputUtils::create();
         $session_tree = LSessionUtils::create();
 
-        $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
-
-        if ($result == null) {
-            //si è verificato un errore - ritorna la pagina di errore
-        } else {
-            //formato dati ritornati : se è una treemap diventa json, altrimenti viene visualizzato
-            header("Connection: close");
-
-            if ($result instanceof LTreeMap || $result instanceof LTreeMapView) {
-                //formato json
-                header("Content-Type: application/json; charset=utf-8");
-                $result = LJsonUtils::encodeResult($result);
-                header("Content-Length: " . strlen($result));
-                echo $result;
-                exit;
-            } else {
-                header("Content-Type: text/html; charset=utf-8");
-                header("Content-Length: " . strlen($result));
-                echo $result;
-                exit;
-            }
+        try {
+            $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
+            throw new \Exception("Response do not returned correctly : " . var_export($result, true));
+        } catch (\LHttpResponse $response) {
+            $response->execute();
+        } catch (\Exception $ex) {
+            LResult::exception($ex);
         }
     }
 
@@ -225,26 +211,48 @@ class LUrlMapExecutor {
             $result = $renderer->render($my_template_path);
 
             if ($result) {
-                return $result;
+                if ($this->is_root) {
+                    if ($this->my_format == LFormat::HTML)
+                        throw new LHtmlResult($result);
+                    if ($this->my_format == LFormat::JSON)
+                        throw new LJsonResult($result);
+                    if ($this->my_format == LFormat::XML)
+                        throw new LXmlResult($result);
+                } else
+                    return $result;
             }
         }
 
-        $this->my_format = LFormat::DATA;
-
+        //autodetect format
         if ($this->my_url_map->is_set('/format')) {
             $this->my_format = $this->my_url_map->get('/format');
+        } else {
+            if ($this->is_root) {
+                $this->my_format = LFormat::JSON;
+            } else {
+                $this->my_format = LFormat::DATA;
+            }
         }
 
         if ($this->my_format == LFormat::JSON) {
-            return LJsonUtils::encodeResult($output);
+            $content = LJsonUtils::encodeResult($output);
+            if ($this->is_root) {
+                throw new LJsonResult($content);
+            } else {
+                return $content;
+            }
         }
-        
+
         if ($this->my_format == LFormat::XML) {
             throw new \Exception("Xml is not yet supported.");
         }
-        
+
         if ($this->my_format == LFormat::DATA) {
-            return $output;
+            if ($this->is_root) {
+                throw new \Exception("Can't be DATA format in a root urlmap.");
+            } else {
+                return $output;
+            }
         }
     }
 

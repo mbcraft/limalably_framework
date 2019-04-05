@@ -1,4 +1,5 @@
-composet.phar
+composer.phar
+installer
 nbproject/
 vendor/
 tests/template/cache/

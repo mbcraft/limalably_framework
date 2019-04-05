@@ -28,7 +28,7 @@ class LUrlMapExecutor {
         }
     }
 
-    function jsonEncodeResult($output) {
+    public function jsonEncodeResult($output) {
         $encode_options_list = LConfigReader::simple('/format/json/encode_options');
         $encode_options = 0;
         foreach ($encode_options_list as $enc_opt) {
@@ -54,7 +54,7 @@ class LUrlMapExecutor {
         }
     }
 
-    function execute($route, $parameters, $capture, $treeview_input, $treeview_session) {
+    public function execute($route, $parameters, $capture, $treeview_input, $treeview_session) {
 
         $abs_input = $treeview_input->view('/');
         $abs_session = $treeview_session->view('/');

@@ -139,8 +139,14 @@ class LCall {
         if ($all_param_data && isset($all_param_data['input'])) {
             $input = $all_param_data['input'];
         }
+        if ($all_param_data && isset($all_param_data['rel_input'])) {
+            $rel_input = $all_param_data['rel_input'];
+        }
         if ($all_param_data && isset($all_param_data['session'])) {
             $session = $all_param_data['session'];
+        }
+        if ($all_param_data && isset($all_param_data['rel_session'])) {
+            $rel_session = $all_param_data['rel_session'];
         }
         if ($all_param_data && isset($all_param_data['context_path'])) {
             $context_path = $all_param_data['context_path'];
@@ -199,44 +205,44 @@ class LCall {
                         }
                         break;
                     }
-                    case 'relative_input':{
-                        if ($all_param_data['input']->is_set($param_name)) {
-                            $prepared_parameters[] = $all_param_data['input']->mustGet($param_name);
+                    case 'rel_input':{
+                        if ($all_param_data['rel_input']->is_set($param_name)) {
+                            $prepared_parameters[] = $all_param_data['rel_input']->mustGet($param_name);
                             continue 3;
                         }
                         break;
                     }
-                    case 'absolute_input':{
-                        if ($all_param_data['input']->is_set('/'.$param_name)) {
-                            $prepared_parameters[] = $all_param_data['input']->mustGet('/'.$param_name);
+                    case 'input':{
+                        if ($all_param_data['rel_input']->is_set('/'.$param_name)) {
+                            $prepared_parameters[] = $all_param_data['rel_input']->mustGet('/'.$param_name);
                             continue 3;
                         }
                         break;
                     }
-                    case 'relative_session':{
-                        if ($all_param_data['session']->is_set($param_name)) {
-                            $prepared_parameters[] = $all_param_data['session']->mustGet($param_name);
+                    case 'rel_session':{
+                        if ($all_param_data['rel_session']->is_set($param_name)) {
+                            $prepared_parameters[] = $all_param_data['rel_session']->mustGet($param_name);
                             continue 3;
                         }
                         break;
                     }
-                    case 'absolute_session':{
-                        if ($all_param_data['session']->is_set('/'.$param_name)) {
-                            $prepared_parameters[] = $all_param_data['session']->mustGet('/'.$param_name);
+                    case 'session':{
+                        if ($all_param_data['rel_session']->is_set('/'.$param_name)) {
+                            $prepared_parameters[] = $all_param_data['rel_session']->mustGet('/'.$param_name);
                             continue 3;
                         }
                         break;
                     }
-                    case 'relative_output':{
-                        if ($all_param_data['output']->is_set($param_name)) {
-                            $prepared_parameters[] = $all_param_data['output']->mustGet($param_name);
+                    case 'rel_output':{
+                        if ($all_param_data['rel_output']->is_set($param_name)) {
+                            $prepared_parameters[] = $all_param_data['rel_output']->mustGet($param_name);
                             continue 3;
                         }
                         break;
                     }
-                    case 'absolute_output':{
-                        if ($all_param_data['output']->is_set('/'.$param_name)) {
-                            $prepared_parameters[] = $all_param_data['output']->mustGet('/'.$param_name);
+                    case 'output':{
+                        if ($all_param_data['rel_output']->is_set('/'.$param_name)) {
+                            $prepared_parameters[] = $all_param_data['rel_output']->mustGet('/'.$param_name);
                             continue 3;
                         }
                         break;

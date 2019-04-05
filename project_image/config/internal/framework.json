@@ -83,7 +83,7 @@
             "cache_folder": "temp/cache/template/",
             "strict_variables": true,
             "autoescape" : "name",
-            "import_into_variables": ["env", "output", "input", "session", "capture", "parameters", "urlmap", "urlmap_string"],
+            "import_into_variables": ["env", "env_string" ,"output", "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string"],
             "extension_search_list" : [".html",".xhtml",".json",".twig"]
         },
         "logging": {
@@ -134,7 +134,7 @@
             "input_source_list": ["files", "post", "get"]
         },
         "exec": {
-            "method_parameter_search_list": ["meta", "capture", "relative_input", "absolute_input", "relative_session", "absolute_session", "relative_output", "absolute_output", "default_value"]
+            "method_parameter_search_list": ["meta", "capture", "rel_input", "input", "rel_session", "session", "rel_output", "output", "default_value"]
         },
         "format": {
             "json": {

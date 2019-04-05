@@ -20,7 +20,7 @@ class LUrlMapExecutor {
         $session_tree = LSessionUtils::create();
 
         $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
-        
+
         if ($result instanceof LTreeMap || $result instanceof LTreeMapView) {
             echo $this->jsonEncodeResult($result);
         } else {
@@ -41,7 +41,7 @@ class LUrlMapExecutor {
 
         LWarningList::mergeIntoTreeMap($output);
         LErrorList::mergeIntoTreeMap($output);
-        
+
         $output_data = $output->getRoot();
 
         try {
@@ -55,6 +55,9 @@ class LUrlMapExecutor {
     }
 
     function execute($route, $parameters, $capture, $treeview_input, $treeview_session) {
+
+        $abs_input = $treeview_input->view('/');
+        $abs_session = $treeview_session->view('/');
 
         $output = new LTreeMap();
         $output->set('/success', true);
@@ -139,7 +142,7 @@ class LUrlMapExecutor {
             if (!is_array($exec_list))
                 $exec_list = array($exec_list);
 
-            $call_params = ['output' => $output, 'rel_input' => $treeview_input, 'rel_session' => $treeview_session, 'capture' => $capture, 'parameters' => $parameters];
+            $call_params = ['output' => $output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $capture, 'parameters' => $parameters];
 
             $dynamic = new LDynamicCall();
 
@@ -165,7 +168,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'input' => $abs_input, 'rel_input' => $input_view, 'session' => $abs_session, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -188,7 +191,7 @@ class LUrlMapExecutor {
             } else {
                 $dynamic = new LDynamicCall();
 
-                $call_params = ['output' => $output, 'input' => $treeview_input, 'session' => $treeview_session, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['output' => $output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $capture, 'parameters' => $parameters];
                 try {
                     $dynamic->saveIntoTemplate($dynamic_template_spec, $call_params, $this->my_url_map);
                 } catch (\Exception $ex) {

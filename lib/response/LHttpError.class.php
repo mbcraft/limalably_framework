@@ -10,7 +10,7 @@ class LHttpError extends LHttpResponse {
     
     function execute($format = null) {
         
-        if ($format == null) throw new \Exception("A format for response is needed to render HTTP error code.");
+        if ($format == null || $format == LFormat::DATA) $format = LConfigReader::simple('/format/default_error_format');
         
         http_response_code($this->error_code);
         

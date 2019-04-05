@@ -2,6 +2,15 @@
 
 class LHttpError extends LHttpResponse {
     
+    const ERROR_UNAUTHORIZED_401 = '401';
+    const ERROR_FORBIDDEN_403 = '403';
+    const ERROR_NOT_FOUND_404 = '404';
+    const ERROR_METHOD_NOT_ALLOWED_405 = '405';
+    const ERROR_I_M_A_TEAPOT_418 = '418';
+    const ERROR_INTERNAL_SERVER_ERROR_500 = '500';
+    const ERROR_SERVICE_UNAVAILABLE_503 = '503';
+    
+    
     private $error_code;
     
     function __construct($error_code) {

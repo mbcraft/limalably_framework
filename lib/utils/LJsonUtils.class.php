@@ -2,7 +2,7 @@
 
 class LJsonUtils {
     
-    static function parseContent($object_name,$path,$content) {
+    public static function parseContent($object_name,$path,$content) {
         $result_array = json_decode($content,true);
         $last_error = json_last_error();
         if ($last_error == JSON_ERROR_NONE) {
@@ -23,7 +23,7 @@ class LJsonUtils {
         }
     }
     
-    static function encodeData($object_name,$path,$data) {
+    public static function encodeData($object_name,$path,$data) {
         $result_content = json_encode($data);
         $last_error = json_last_error();
         if ($last_error == JSON_ERROR_NONE) {
@@ -41,6 +41,40 @@ class LJsonUtils {
             case JSON_ERROR_INVALID_PROPERTY_NAME : throw new \Exception("Error encoding ".$object_name." at path : ".$path.". Invalid property name.");
             case JSON_ERROR_UTF16 : throw new \Exception("Error encoding ".$object_name." at path : ".$path.". UTF-16 encoding error.");
             default : throw new \Exception("Unrecognized error encoding ".$object_name." at path : ".$path.".");
+        }
+    }
+    
+    public static function encodeResult($output) {
+        $encode_options_list = LConfigReader::simple('/format/json/encode_options');
+        $encode_options = 0;
+        foreach ($encode_options_list as $enc_opt) {
+            try {
+                $encode_options |= eval('return JSON_' . $enc_opt . ';');
+            } catch (\Exception $ex) {
+                LErrorList::saveFromErrors('format', 'Invalid json encode format : JSON_' . $enc_opt . ' does not evaluate to an integer value.');
+            }
+        }
+
+        $my_output = new LTreeMap();
+                
+        LWarningList::mergeIntoTreeMap($my_output);
+        $has_errors = LErrorList::hasErrors();
+        LErrorList::mergeIntoTreeMap($my_output);
+
+        if (!$has_errors) {
+            $output_data = $output->getRoot();
+
+            if (!empty($output_data)) {
+                $my_output->set('/data',$output_data);
+            }
+        }
+        try {
+            $content = json_encode($my_output, $encode_options);
+            LWarningList::clear();
+            LErrorList::clear();
+            return $content;
+        } catch (\Exception $ex) {
+            LErrorList::saveFromException('format', $ex);
         }
     }
     

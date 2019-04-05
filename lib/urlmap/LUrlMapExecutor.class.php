@@ -5,22 +5,25 @@ class LUrlMapExecutor {
     const AVAILABLE_NODES = ['conditions', '!conditions', 'load', 'input', 'session', 'dynamic_exec', 'exec', 'dynamic_template', 'template', 'format'];
 
     private $my_url_map = null;
+    private $is_root = false;
+    private $my_format = null;
 
     function __construct($url_map) {
         if (!$url_map instanceof LTreeMap)
             throw new \Exception("Url map is not valid");
         $this->my_url_map = $url_map;
     }
-    
-     private function loadDataInTreeMap($load_node,$treemap) {
+
+    private function loadDataInTreeMap($load_node, $treemap) {
         foreach ($load_node as $key => $value) {
-            
-            $treemap->set($key,$value);
-            
+
+            $treemap->set($key, $value);
         }
     }
 
     function executeRootRequest($route) {
+
+        $this->is_root = true;
 
         $parameters = isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];
         $capture = [];
@@ -29,36 +32,25 @@ class LUrlMapExecutor {
 
         $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
 
-        if ($result instanceof LTreeMap || $result instanceof LTreeMapView) {
-            echo $this->jsonEncodeResult($result);
+        if ($result == null) {
+            //si è verificato un errore - ritorna la pagina di errore
         } else {
-            echo $result;
-        }
-    }
+            //formato dati ritornati : se è una treemap diventa json, altrimenti viene visualizzato
+            header("Connection: close");
 
-    public function jsonEncodeResult($output) {
-        $encode_options_list = LConfigReader::simple('/format/json/encode_options');
-        $encode_options = 0;
-        foreach ($encode_options_list as $enc_opt) {
-            try {
-                $encode_options |= eval('return JSON_' . $enc_opt . ';');
-            } catch (\Exception $ex) {
-                LErrorList::saveFromErrors('format', 'Invalid json encode format : JSON_' . $enc_opt . ' does not evaluate to an integer value.');
+            if ($result instanceof LTreeMap || $result instanceof LTreeMapView) {
+                //formato json
+                header("Content-Type: application/json; charset=utf-8");
+                $result = LJsonUtils::encodeResult($result);
+                header("Content-Length: " . strlen($result));
+                echo $result;
+                exit;
+            } else {
+                header("Content-Type: text/html; charset=utf-8");
+                header("Content-Length: " . strlen($result));
+                echo $result;
+                exit;
             }
-        }
-
-        LWarningList::mergeIntoTreeMap($output);
-        LErrorList::mergeIntoTreeMap($output);
-
-        $output_data = $output->getRoot();
-
-        try {
-            $content = json_encode($output_data, $encode_options);
-            LWarningList::clear();
-            LErrorList::clear();
-            return $content;
-        } catch (\Exception $ex) {
-            LErrorList::saveFromException('format', $ex);
         }
     }
 
@@ -207,7 +199,6 @@ class LUrlMapExecutor {
             }
         }
 
-
         //template rendering
 
         if ($this->my_url_map->is_set('/template')) {
@@ -215,23 +206,46 @@ class LUrlMapExecutor {
 
             $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $capture, $parameters, $output);
 
-            $result = $renderer->render($template_path);
+            $my_template_path = $renderer->searchTemplate($template_path);
 
-            if ($result)
+            if (!$this->my_url_map->is_set('/format')) {
+
+                if (LStringUtils::endsWith($my_template_path, LFormat::HTML)) {
+                    $this->my_format = LFormat::HTML;
+                }
+
+                if (LStringUtils::endsWith($my_template_path, LFormat::JSON)) {
+                    $this->my_format = LFormat::JSON;
+                }
+
+                if (LStringUtils::endsWith($my_template_path, LFormat::XML)) {
+                    $this->my_format = LFormat::XML;
+                }
+            }
+            $result = $renderer->render($my_template_path);
+
+            if ($result) {
                 return $result;
-        }
-
-
-        if ($this->my_url_map->is_set('/format')) {
-            $format = $this->my_url_map->get('/format');
-
-            if ($format == LFormat::JSON) {
-
-                return $this->jsonEncodeResult($output);
             }
         }
 
-        return $output;
+        $this->my_format = LFormat::DATA;
+
+        if ($this->my_url_map->is_set('/format')) {
+            $this->my_format = $this->my_url_map->get('/format');
+        }
+
+        if ($this->my_format == LFormat::JSON) {
+            return LJsonUtils::encodeResult($output);
+        }
+        
+        if ($this->my_format == LFormat::XML) {
+            throw new \Exception("Xml is not yet supported.");
+        }
+        
+        if ($this->my_format == LFormat::DATA) {
+            return $output;
+        }
     }
 
 }

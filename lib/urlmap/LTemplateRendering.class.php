@@ -11,6 +11,9 @@ class LTemplateRendering {
     private $my_parameters = null;
     private $my_output = null;
 
+    private $template_factory = null;
+    private $template_source = null;
+    
     function __construct($urlmap, $input, $session, $capture, $parameters, $output) {
         $this->my_urlmap = $urlmap;
         $this->my_input = $input;
@@ -18,6 +21,10 @@ class LTemplateRendering {
         $this->my_capture = $capture;
         $this->my_parameters = $parameters;
         $this->my_output = $output;
+        
+        $this->template_factory = new LUrlMapTemplateSourceFactory();
+
+        $this->template_source = $template_factory->createFileTemplateSource();
     }
 
     private function my_json_encode($name, $value) {
@@ -28,17 +35,16 @@ class LTemplateRendering {
         }
     }
 
+    function searchTemplate($path) {
+        return $this->template_source->searchTemplate($path);
+    }
+    
     function render($template_path) {
-        $template_factory = new LUrlMapTemplateSourceFactory();
 
-        $template_source = $template_factory->createFileTemplateSource();
-
-        $final_template_path = $template_source->searchTemplate($template_path);
-
-        if (!$final_template_path) {
+        if (!$template_path) {
             LErrorList::saveFromErrors('template', 'Unable to find file template at path : ' . $template_path);
         } else {
-            $template = $template_source->getTemplate($final_template_path);
+            $template = $this->template_source->getTemplate($template_path);
 
             //inserire fra le variabili : urlmap, input, session, capture, i18n, parameters - con eventuale prefisso di path tipo 'meta'
             $import_into_variables = LConfigReader::executionMode('/template/import_into_variables');

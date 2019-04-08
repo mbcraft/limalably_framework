@@ -115,7 +115,7 @@ class LClassLoader {
     }
     
     private static function hasCachedClassContent($original_path) {
-        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path').sha1($original_path).'.php';
+        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder').sha1($original_path).'.php';
         return is_readable($path);
     }
     
@@ -124,7 +124,7 @@ class LClassLoader {
     }
     
     private static function canSaveMangledClassesToCache() {
-        return is_dir($_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path'));
+        return is_dir($_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder'));
     }
     
     private static function deleteClassMapCache() {
@@ -133,7 +133,7 @@ class LClassLoader {
     }
     
     private static function deleteClassContentCache() {
-        $cache_dir = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path');
+        $cache_dir = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder');
         if (is_dir($cache_dir)) {
             $elements = scandir($cache_dir);
             foreach ($elements as $el) {
@@ -151,7 +151,7 @@ class LClassLoader {
     }
     
     private static function createClassContentCacheDir() {
-        $content_dir = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path');
+        $content_dir = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder');
         if (!self::canSaveMangledClassesToCache()) {
             mkdir($content_dir,0777,true);
             chmod($content_dir,0777);
@@ -172,7 +172,7 @@ class LClassLoader {
     private static function saveMangledClassToCache($original_path,$content) {
         self::createClassContentCacheDir();
         
-        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path').sha1($original_path).'.php';
+        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder').sha1($original_path).'.php';
         file_put_contents($path, $content);
     }
     
@@ -181,7 +181,7 @@ class LClassLoader {
     }
     
     private static function requireCachedClassContent($original_path) {
-        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder_path').sha1($original_path).'.php';
+        $path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/class_cache_folder').sha1($original_path).'.php';
         
         require_once($path);
     }

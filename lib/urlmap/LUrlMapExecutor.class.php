@@ -50,6 +50,8 @@ class LUrlMapExecutor {
 
     public function execute($route, $parameters, $capture, $treeview_input, $treeview_session) {
 
+        LResult::framework_debug("Start evaluating routemap for route : ".$route);
+        
         $abs_input = $treeview_input->view('/');
         $abs_session = $treeview_session->view('/');
 
@@ -67,6 +69,7 @@ class LUrlMapExecutor {
 
         //evaluating condition
         if ($this->my_url_map->is_set('/conditions')) {
+            LResult::framework_debug("Evaluating urlmap conditions ...");
             $cond = new LCondition();
 
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
@@ -78,6 +81,7 @@ class LUrlMapExecutor {
         }
         //negated condition
         if ($this->my_url_map->is_set('/!conditions')) {
+            LResult::framework_debug("Evaluating urlmap negative conditions ...");
             $cond = new LCondition();
 
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
@@ -88,8 +92,10 @@ class LUrlMapExecutor {
             }
         }
 
+       
         //loading prepared input
         if ($this->my_url_map->is_set('/load')) {
+             LResult::framework_debug("Loading data into input ...");
             try {
                 $this->loadDataInTreeMap($this->my_url_map->get('/load'), $treeview_input);
             } catch (\Exception $ex) {
@@ -97,8 +103,10 @@ class LUrlMapExecutor {
             }
         }
         
+        
         //capture resolution
         if ($this->my_url_map->is_set('/capture')) {
+            LResult::framework_debug("Evaluating capture ...");
             try {
                 $capture_resolver = new LRouteCapture();
                 $capture_pattern = $this->my_url_map->get('/capture');
@@ -113,6 +121,7 @@ class LUrlMapExecutor {
         //init tree
 
         if ($this->my_url_map->is_set('/init')) {
+            LResult::framework_debug("Evaluating init section ...");
             $exec_list = $this->my_url_map->get('/init');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -138,6 +147,7 @@ class LUrlMapExecutor {
         //session parameters check
 
         if ($this->my_url_map->is_set('/session')) {
+            LResult::framework_debug("Evaluating session parameters constraints ...");
             $session_validator = new LParameterGroupValidator('session', $treeview_session, $this->my_url_map->get('/session'));
             LErrorList::saveFromErrors('session', $session_validator->validate($treeview_input, $treeview_session));
         }
@@ -145,6 +155,7 @@ class LUrlMapExecutor {
         //input parameters check
 
         if ($this->my_url_map->is_set('/input')) {
+            LResult::framework_debug("Evaluating input parameters contraints ...");
             $input_validator = new LParameterGroupValidator('input', $treeview_input, $this->my_url_map->get('/input'));
             LErrorList::saveFromErrors('input', $input_validator->validate($treeview_input, $treeview_session));
         }
@@ -152,6 +163,7 @@ class LUrlMapExecutor {
         //before exec tree
 
         if ($this->my_url_map->is_set('/before_exec')) {
+            LResult::framework_debug("Evaluating before_exec section ...");
             $exec_list = $this->my_url_map->get('/before_exec');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -177,6 +189,7 @@ class LUrlMapExecutor {
         //dynamic exec
 
         if ($this->my_url_map->is_set('/dynamic_exec')) {
+            LResult::framework_debug("Evaluating dynamic_exec section ...");
             $exec_list = $this->my_url_map->get('/dynamic_exec');
             if (!is_array($exec_list))
                 $exec_list = array($exec_list);
@@ -198,6 +211,7 @@ class LUrlMapExecutor {
         //exec tree
 
         if ($this->my_url_map->is_set('/exec')) {
+            LResult::framework_debug("Evaluating exec section ...");
             $exec_list = $this->my_url_map->get('/exec');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -223,6 +237,7 @@ class LUrlMapExecutor {
         //after exec tree
 
         if ($this->my_url_map->is_set('/after_exec')) {
+            LResult::framework_debug("Evaluating after_exec section ...");
             $exec_list = $this->my_url_map->get('/after_exec');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -248,6 +263,7 @@ class LUrlMapExecutor {
         //dynamic template
 
         if ($this->my_url_map->is_set('/dynamic_template')) {
+            LResult::framework_debug("Evaluating dynamic_template ...");
             $dynamic_template_spec = $this->my_url_map->get('/dynamic_template');
             if (!is_string($dynamic_template_spec)) {
                 $errors['dynamic_template'][] = "Unable to execute dynamic template call : value is not a string.";
@@ -266,6 +282,7 @@ class LUrlMapExecutor {
         //template rendering
 
         if ($this->my_url_map->is_set('/template')) {
+            LResult::framework_debug("Evaluating template ...");
             $template_path = $this->my_url_map->get('/template');
 
             $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $capture, $parameters, $output);
@@ -301,7 +318,8 @@ class LUrlMapExecutor {
             }
         }
 
-        //autodetect format
+        //format resolution
+        LResult::framework_debug("Evaluating response format ...");
         if ($this->my_url_map->is_set('/format')) {
             $this->my_format = $this->my_url_map->get('/format');
         } else {

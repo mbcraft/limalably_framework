@@ -62,8 +62,24 @@ class LErrorList {
 
         $continue_execution_on_errors = LConfigReader::executionMode('/error/continue_on_errors');
 
-        if (!$continue_execution_on_errors)
-            throw new LHttpError(500);
+        if (!$continue_execution_on_errors) {
+            switch ($type) {
+                case 'session' : {
+                        if (empty($_SESSION))
+                            throw new LHttpError(LHttpError::ERROR_UNAUTHORIZED);
+                        else
+                            throw new LHttpError(LHttpError::ERROR_FORBIDDEN);
+                    }
+                case 'input' : {
+                        throw new LHttpError(LHttpError::ERROR_BAD_REQUEST);
+                    }
+                case 'conditions': {
+                        throw new LHttpError(LHttpError::ERROR_METHOD_NOT_ALLOWED);
+                    }
+
+                default: throw new LHttpError(LHttpError::ERROR_INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 
     public static function hasErrors() {
@@ -71,7 +87,7 @@ class LErrorList {
     }
 
     public static function mergeIntoTreeMap($treemap) {
-        if ($this->hasErrors()) {
+        if (self::hasErrors()) {
             $treemap->set('/success', false);
             $treemap->set('/errors', self::$data);
         } else {

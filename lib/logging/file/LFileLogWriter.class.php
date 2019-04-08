@@ -75,11 +75,13 @@ class LFileLogWriter implements LILogWriter {
             $full_content = file_get_contents($this->my_log_file);
             $full_content = substr($full_content, ($filesize/10)*9);
             file_put_contents($this->my_log_file, $full_content, LOCK_EX);
+            chmod($this->my_log_file, 0777);
         }
     }
     
     public function write($message,$level,$code = '') {
         file_put_contents($this->my_log_file, $this->formatLog($message, $level, $code), FILE_APPEND | LOCK_EX);
+        chmod($this->my_log_file, 0777);
     }
     
     public function close() {

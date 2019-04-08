@@ -33,7 +33,7 @@ class LDefaultRouteExecutor implements LICommandExecutor {
             $executor->executeRootRequest($route);
         } else {
             if (LEnvironmentUtils::getEnvironment()=='script') {
-                echo "Unable to find route : ".$route.".";
+                echo "Unable to find route : ".$route.".\n";
                 exit(1);
             } else {
                 $error_format = LConfigReader::simple("/format/default_error_format");

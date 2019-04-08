@@ -18,15 +18,16 @@ class LHttpError extends LHttpResponse {
     
     function __construct($error_code) {
         $this->error_code = $error_code;
+        parent::__construct("Http error ".$error_code);
     }
     
     function execute($format = null) {
         
         if ($format == null || $format == LFormat::DATA) $format = LConfigReader::simple('/format/default_error_format');
         
-        http_response_code($this->error_code);
+        //http_response_code($this->error_code);
         
-        $error_templates_folder = LConfigReader::executionMode('/format/'.$format.'/error_templates_folder'.$this->error_code);
+        $error_templates_folder = LConfigReader::executionMode('/format/'.$format.'/error_templates_folder');
         
         $template_source_factory_class_name = LConfigReader::simple('/template/source_factory_class');
         
@@ -37,12 +38,13 @@ class LHttpError extends LHttpResponse {
         $file_source = $factory_instance->createFileTemplateSource($error_templates_folder,$cache_folder);
         
         $template_path = $file_source->searchTemplate($this->error_code);
-        
+                
         if ($template_path) {
+            
             $template = $file_source->getTemplate($template_path);
             
             $output = new LTreeMap();
-           
+            
             LWarningList::mergeIntoTreeMap($output);
             LErrorList::mergeIntoTreeMap($output);
             
@@ -50,8 +52,9 @@ class LHttpError extends LHttpResponse {
             
             echo $template->render($output_root_array);
         } else {
-            echo "HTTP error ".$this->error_code.".";
+            echo "HTTP error ".$this->error_code.".\n";
         }
+         
         Lym::finish();
     }
     

@@ -24,7 +24,7 @@ class LWarningList {
     }
             
     public static function mergeIntoTreeMap($treemap) {
-        if ($this->hasWarnings()) {
+        if (self::hasWarnings()) {
             $treemap->set('/warnings',self::$data);
         } 
     }

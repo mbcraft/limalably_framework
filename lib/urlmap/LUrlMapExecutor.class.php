@@ -96,24 +96,7 @@ class LUrlMapExecutor {
                 LErrorList::saveFromException('load', $ex);
             }
         }
-
-        //input parameters check
-
-        if ($this->my_url_map->is_set('/input')) {
-            $input_validator = new LParameterGroupValidator('input', $treeview_input, $this->my_url_map->get('/input'));
-            LErrorList::saveFromErrors('input', $input_validator->validate($treeview_input, $treeview_session));
-        }
-
-        //session parameters check
-
-        if ($this->my_url_map->is_set('/session')) {
-            $session_validator = new LParameterGroupValidator('session', $treeview_session, $this->my_url_map->get('/session'));
-            LErrorList::saveFromErrors('session', $session_validator->validate($treeview_input, $treeview_session));
-        }
-
-
-
-
+        
         //capture resolution
         if ($this->my_url_map->is_set('/capture')) {
             try {
@@ -126,7 +109,70 @@ class LUrlMapExecutor {
         } else {
             $capture = [];
         }
+        
+        //init tree
 
+        if ($this->my_url_map->is_set('/init')) {
+            $exec_list = $this->my_url_map->get('/init');
+            foreach ($exec_list as $path => $exec_spec_list) {
+                if (!is_array($exec_spec_list))
+                    $exec_spec_list = array($exec_spec_list);
+
+                $output_view = $treeview_output->view($path);
+                $input_view = $treeview_input->view($path);
+                $session_view = $treeview_session->view($path);
+
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+
+                foreach ($exec_spec_list as $call_spec) {
+                    $executor = new LExecCall();
+                    try {
+                        $executor->execute($call_spec, $call_params);
+                    } catch (\Exception $ex) {
+                        LErrorList::saveFromException('init', $ex);
+                    }
+                }
+            }
+        }
+
+        //session parameters check
+
+        if ($this->my_url_map->is_set('/session')) {
+            $session_validator = new LParameterGroupValidator('session', $treeview_session, $this->my_url_map->get('/session'));
+            LErrorList::saveFromErrors('session', $session_validator->validate($treeview_input, $treeview_session));
+        }
+        
+        //input parameters check
+
+        if ($this->my_url_map->is_set('/input')) {
+            $input_validator = new LParameterGroupValidator('input', $treeview_input, $this->my_url_map->get('/input'));
+            LErrorList::saveFromErrors('input', $input_validator->validate($treeview_input, $treeview_session));
+        }
+        
+        //before exec tree
+
+        if ($this->my_url_map->is_set('/before_exec')) {
+            $exec_list = $this->my_url_map->get('/before_exec');
+            foreach ($exec_list as $path => $exec_spec_list) {
+                if (!is_array($exec_spec_list))
+                    $exec_spec_list = array($exec_spec_list);
+
+                $output_view = $treeview_output->view($path);
+                $input_view = $treeview_input->view($path);
+                $session_view = $treeview_session->view($path);
+
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+
+                foreach ($exec_spec_list as $call_spec) {
+                    $executor = new LExecCall();
+                    try {
+                        $executor->execute($call_spec, $call_params);
+                    } catch (\Exception $ex) {
+                        LErrorList::saveFromException('before_exec', $ex);
+                    }
+                }
+            }
+        }
 
         //dynamic exec
 
@@ -174,6 +220,30 @@ class LUrlMapExecutor {
             }
         }
 
+        //after exec tree
+
+        if ($this->my_url_map->is_set('/after_exec')) {
+            $exec_list = $this->my_url_map->get('/after_exec');
+            foreach ($exec_list as $path => $exec_spec_list) {
+                if (!is_array($exec_spec_list))
+                    $exec_spec_list = array($exec_spec_list);
+
+                $output_view = $treeview_output->view($path);
+                $input_view = $treeview_input->view($path);
+                $session_view = $treeview_session->view($path);
+
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+
+                foreach ($exec_spec_list as $call_spec) {
+                    $executor = new LExecCall();
+                    try {
+                        $executor->execute($call_spec, $call_params);
+                    } catch (\Exception $ex) {
+                        LErrorList::saveFromException('after_exec', $ex);
+                    }
+                }
+            }
+        }
 
         //dynamic template
 

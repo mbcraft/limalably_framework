@@ -16,6 +16,16 @@ class Lym {
         if (self::isBootCalled())
             throw new \Exception("Boot function already called.");
         self::setBootAsCalled();
+        
+        $folder_checker = new LFolderPermissionChecker();
+        $folder_checker->checkFrameworkFolders();
+        
+        if ($folder_checker->hasErrors()) {
+            foreach ($folder_checker->getErrors() as $error) {
+                echo $error."\n";
+            }
+            exit(1);
+        }
 
         LLog::init();
 
@@ -32,6 +42,17 @@ class Lym {
             throw new \Exception("Boot function already called.");
         self::setBootAsCalled();
 
+        $folder_checker = new LFolderPermissionChecker();
+        $folder_checker->checkFrameworkFolders();
+        $folder_checker->checkProjectFolders();
+        
+        if ($folder_checker->hasErrors()) {
+            foreach ($folder_checker->getErrors() as $error) {
+                echo $error."\n<br />";
+            }
+            exit(1);
+        }
+        
         LLog::init();
 
         $executor = new LProjectCommandExecutor();

@@ -80,7 +80,7 @@
         },
         "template": {
             "source_factory_class": "LTwigTemplateSourceFactory",
-            "root_folder": "templates/",
+            "root_folder": "template/",
             "cache_folder": "temp/cache/template/",
             "strict_variables": true,
             "autoescape" : "name",

@@ -10,13 +10,13 @@ class LFolderPermissionChecker {
         $this->errors = [];
         $this->framework_folders_spec_list = $this->getFrameworkFoldersSpecList();
         $this->project_folders_spec_list = $this->getProjectFoldersSpecList();
-
+        
         clearstatcache();
     }
 
     private function getFrameworkFoldersSpecList() {
         return [
-            LConfigReader::simple('/classloader/framework_folder_list') => "?,r",
+            LConfigReader::simple('/classloader/framework_folder_list') => "?,r"
         ];
     }
 
@@ -29,12 +29,12 @@ class LFolderPermissionChecker {
             LConfigReader::simple('/template/cache_folder') => "?,r,w,x",
             LConfigReader::simple('/classloader/project_folder_list') => "?,r",
             LConfigReader::simple('/classloader/map_cache_file_path') => "f",
-            LConfigReader::simple('/classloader/class_cache_folder_') => "",
+            LConfigReader::simple('/classloader/class_cache_folder') => "f",
             LConfigReader::simple('/format/html/error_templates_folder') => "?,r",
             LConfigReader::simple('/format/json/error_templates_folder') => "?,r",
             LConfigReader::simple('/classloader/proc_folder') => "?,r",
             LConfigReader::simple('/classloader/data_folder') => "?,r",
-            LConfigReader::executionMode('/logging/log_folder') => "?,w"
+            LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'),'/logging/%type%/log_folder') => "?,w"
         ];
     }
 
@@ -42,22 +42,23 @@ class LFolderPermissionChecker {
         foreach ($this->framework_folders_spec_list as $folder_or_list => $spec_list) {
             $spec_array = explode(',', $spec_list);
             foreach ($spec_array as $spec) {
-                $this->checkFolderBySpec($_SERVER['FRAMEWORK_DIR'], $folder_or_list, $folder, true, $spec);
+                $this->checkFolderBySpec($_SERVER['FRAMEWORK_DIR'], $folder_or_list, true, $spec);
             }
         }
     }
 
     public function checkProjectFolders() {
         foreach ($this->project_folders_spec_list as $folder_or_list => $spec_list) {
+            
             $spec_array = explode(',', $spec_list);
             foreach ($spec_array as $spec) {
-                $this->checkFolderBySpec($_SERVER['PROJECT_DIR'], $folder_or_list, $folder_or_list, true, $spec);
+                $this->checkFolderBySpec($_SERVER['PROJECT_DIR'], $folder_or_list, false, $spec);
             }
         }
     }
 
     private function checkFolderBySpec(string $parent_folder, $relative_folder_path_or_list, bool $is_framework_folder, string $spec) {
-
+        
         if (!is_array($relative_folder_path_or_list))
             $relative_folder_path_or_list = [$relative_folder_path_or_list];
 
@@ -91,7 +92,7 @@ class LFolderPermissionChecker {
                     $current_dir = $full_folder_path;
                     do {
                         $current_dir = dirname($current_dir);
-                        if (is_dir($current_dir)) break;
+                        if (is_dir($current_dir)) break 2;
                     } while ($current_dir != '.');
                     $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not permits directory and file creation!';
                     break;

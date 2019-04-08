@@ -33,7 +33,7 @@ class LMaintenanceRouteExecutor implements LICommandExecutor {
             
             $error_format = LConfigReader::simple("/format/default_error_format");
             
-            $maintenance = new LHttpError(LHttpError::ERROR_SERVICE_UNAVAILABLE_503);
+            $maintenance = new LHttpError(LHttpError::ERROR_SERVICE_UNAVAILABLE);
             $maintenance->execute($error_format);
         }
     }

@@ -37,7 +37,7 @@ class LDefaultRouteExecutor implements LICommandExecutor {
                 exit(1);
             } else {
                 $error_format = LConfigReader::simple("/format/default_error_format");
-                $page_not_found = new LHttpError(404);
+                $page_not_found = new LHttpError(LHttpError::ERROR_PAGE_NOT_FOUND);
                 $page_not_found->execute($error_format);
             }
         }

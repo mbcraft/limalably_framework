@@ -10,7 +10,7 @@ class ExecCallTest extends LTestCase {
         
         $output = new LTreeMap();
         
-        $params = ["input" => new LTreeMap(),"session" => new LTreeMap(),"output" => $output];
+        $params = ["rel_input" => new LTreeMap(),"rel_session" => new LTreeMap(),"rel_output" => $output];
         
         $e->execute("/urlmap/sample_file_42",$params);
         
@@ -30,7 +30,7 @@ class ExecCallTest extends LTestCase {
         
         $output = new LTreeMap();
         
-        $params = ["input" => $input,"session" => new LTreeMap(),"output" => $output];
+        $params = ["rel_input" => $input,"rel_session" => new LTreeMap(),"rel_output" => $output];
         
         $e->execute("ExecCallTest#myMethodOk",$params);
         
@@ -52,7 +52,7 @@ class ExecCallTest extends LTestCase {
         
         $output = new LTreeMap();
         
-        $params = ["input" => $input,"session" => new LTreeMap(),"output" => $output];
+        $params = ["rel_input" => $input,"rel_session" => new LTreeMap(),"rel_output" => $output];
         
         $e->execute("ExecCallTest::myStaticMethodOk",$params);
         

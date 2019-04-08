@@ -43,7 +43,7 @@ class LExecCall {
             $result = $result->get('.');
         }
         
-        $my_output = $all_param_data['output'];
+        $my_output = $all_param_data['rel_output'];
         
         if ((!$my_output instanceof LTreeMap) && (!$my_output instanceof LTreeMapView)) throw new \Exception("A TreeMap or TreeMapView is needed for output!");
         
@@ -51,9 +51,9 @@ class LExecCall {
         if ($my_output instanceof LTreeMapView) $my_output_path = '.';
         
         if ($use_replace) {
-            $all_param_data['output']->replace($my_output_path,$result);
+            $all_param_data['rel_output']->replace($my_output_path,$result);
         } else {
-            $all_param_data['output']->merge($my_output_path,$result);
+            $all_param_data['rel_output']->merge($my_output_path,$result);
         }
         
     }

@@ -147,6 +147,9 @@
                 "error_templates_folder": "template/errors/json/"
             },
             "default_error_format" : "html"
+        },
+        "session" : {
+            "use_strict_mode" : true
         }
     }
 }

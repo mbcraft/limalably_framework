@@ -13,7 +13,14 @@ class LSessionUtils {
         $a = session_id();
         if(empty($a)) 
         {
-            session_start(['session.use_strict_mode' => true]);
+            $session_params = LConfigReader::executionMode('/session');
+            
+            $params = [];
+            foreach ($session_params as $session_param => $value) {
+                $params['session.'.$session_param] = $value;
+            }
+            
+            session_start($params);
             session_regenerate_id(true);
         }
         

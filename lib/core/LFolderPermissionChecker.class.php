@@ -13,36 +13,39 @@ class LFolderPermissionChecker {
     }
 
     private function getFrameworkFoldersSpecList() {
+        
+        
+        
         return [
-            LConfigReader::simple('/classloader/framework_folder_list') => "?,r"
+            new LFolderCheck(LConfigReader::simple('/classloader/framework_folder_list'),"?,r")
         ];
     }
 
     private function getProjectFoldersSpecList() {
         return [
-            LConfigReader::simple('/urlmap/static_routes_folder') => "?,r",
-            LConfigReader::simple('/urlmap/hash_db_routes_folder') => "?,r",
-            LConfigReader::simple('/urlmap/private_routes_folder') => "?,r",
-            LConfigReader::simple('/template/root_folder') => "?,r",
-            LConfigReader::simple('/template/cache_folder') => "?,r,w,x",
-            LConfigReader::simple('/classloader/project_folder_list') => "?,r",
-            LConfigReader::simple('/classloader/map_cache_file_path') => "f",
-            LConfigReader::simple('/classloader/class_cache_folder') => "f",
-            LConfigReader::simple('/format/html/error_templates_folder') => "?,r",
-            LConfigReader::simple('/format/json/error_templates_folder') => "?,r",
-            LConfigReader::simple('/classloader/proc_folder') => "?,r",
-            LConfigReader::simple('/classloader/data_folder') => "?,r",
-            LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'), '/logging/%type%/log_folder') => "?,w"
+            new LFolderCheck(LConfigReader::simple('/urlmap/static_routes_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/urlmap/hash_db_routes_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/urlmap/private_routes_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/template/root_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/template/cache_folder'),"?,r,w,x"),
+            new LFolderCheck(LConfigReader::simple('/classloader/project_folder_list'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/classloader/map_cache_file_path'),"f"),
+            new LFolderCheck(LConfigReader::simple('/classloader/class_cache_folder'),"f"),
+            new LFolderCheck(LConfigReader::simple('/format/html/error_templates_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/format/json/error_templates_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/classloader/proc_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/classloader/data_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'), '/logging/%type%/log_folder'),"?,w")
         ];
     }
 
     public function checkFrameworkFolders() {
         $this->framework_folders_spec_list = $this->getFrameworkFoldersSpecList();
 
-        foreach ($this->framework_folders_spec_list as $folder_or_list => $spec_list) {
-            $spec_array = explode(',', $spec_list);
+        foreach ($this->framework_folders_spec_list as $check) {
+            $spec_array = $check->getSpecList();
             foreach ($spec_array as $spec) {
-                $this->checkFolderBySpec($_SERVER['FRAMEWORK_DIR'], $folder_or_list, true, $spec);
+                $this->checkFolderBySpec($_SERVER['FRAMEWORK_DIR'], $check->getFolderList(), true, $spec);
             }
         }
     }
@@ -50,11 +53,11 @@ class LFolderPermissionChecker {
     public function checkProjectFolders() {
         $this->project_folders_spec_list = $this->getProjectFoldersSpecList();
 
-        foreach ($this->project_folders_spec_list as $folder_or_list => $spec_list) {
+        foreach ($this->project_folders_spec_list as $check) {
 
-            $spec_array = explode(',', $spec_list);
+            $spec_array = $check->getSpecList();
             foreach ($spec_array as $spec) {
-                $this->checkFolderBySpec($_SERVER['PROJECT_DIR'], $folder_or_list, false, $spec);
+                $this->checkFolderBySpec($_SERVER['PROJECT_DIR'], $check->getFolderList(), false, $spec);
             }
         }
     }

@@ -8,9 +8,7 @@ class LFolderPermissionChecker {
 
     function __construct() {
         $this->errors = [];
-        $this->framework_folders_spec_list = $this->getFrameworkFoldersSpecList();
-        $this->project_folders_spec_list = $this->getProjectFoldersSpecList();
-        
+
         clearstatcache();
     }
 
@@ -34,11 +32,13 @@ class LFolderPermissionChecker {
             LConfigReader::simple('/format/json/error_templates_folder') => "?,r",
             LConfigReader::simple('/classloader/proc_folder') => "?,r",
             LConfigReader::simple('/classloader/data_folder') => "?,r",
-            LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'),'/logging/%type%/log_folder') => "?,w"
+            LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'), '/logging/%type%/log_folder') => "?,w"
         ];
     }
 
     public function checkFrameworkFolders() {
+        $this->framework_folders_spec_list = $this->getFrameworkFoldersSpecList();
+
         foreach ($this->framework_folders_spec_list as $folder_or_list => $spec_list) {
             $spec_array = explode(',', $spec_list);
             foreach ($spec_array as $spec) {
@@ -48,8 +48,10 @@ class LFolderPermissionChecker {
     }
 
     public function checkProjectFolders() {
+        $this->project_folders_spec_list = $this->getProjectFoldersSpecList();
+
         foreach ($this->project_folders_spec_list as $folder_or_list => $spec_list) {
-            
+
             $spec_array = explode(',', $spec_list);
             foreach ($spec_array as $spec) {
                 $this->checkFolderBySpec($_SERVER['PROJECT_DIR'], $folder_or_list, false, $spec);
@@ -58,12 +60,12 @@ class LFolderPermissionChecker {
     }
 
     private function checkFolderBySpec(string $parent_folder, $relative_folder_path_or_list, bool $is_framework_folder, string $spec) {
-        
+
         if (!is_array($relative_folder_path_or_list))
             $relative_folder_path_or_list = [$relative_folder_path_or_list];
 
         foreach ($relative_folder_path_or_list as $relative_folder) {
-            $full_folder_path = $parent_folder.$relative_folder;
+            $full_folder_path = $parent_folder . $relative_folder;
             switch ($spec) {
                 case '?': {
                         if (!file_exists($full_folder_path))
@@ -88,16 +90,18 @@ class LFolderPermissionChecker {
                         break;
                     }
                 case 'f': {
-                    if (file_exists($full_folder_path)) break;
-                    $current_dir = $full_folder_path;
-                    do {
-                        $current_dir = dirname($current_dir);
-                        if (is_dir($current_dir)) break 2;
-                    } while ($current_dir != '.');
-                    $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not permits directory and file creation!';
-                    break;
-                }
-                default : throw new \Exception("Unable to correctly check folders : unable to handle spec '".$spec."'.");
+                        if (file_exists($full_folder_path))
+                            break;
+                        $current_dir = $full_folder_path;
+                        do {
+                            $current_dir = dirname($current_dir);
+                            if (is_dir($current_dir))
+                                break 2;
+                        } while ($current_dir != '.');
+                        $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not permits directory and file creation!';
+                        break;
+                    }
+                default : throw new \Exception("Unable to correctly check folders : unable to handle spec '" . $spec . "'.");
             }
         }
     }

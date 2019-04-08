@@ -34,7 +34,9 @@ class LExecCall {
         }
                 
         $result = $this->my_call->execute($my_call_spec,$all_param_data,false);
-                
+        
+        if (is_null($result)) return;
+        
         if ($result instanceof LTreeMap) {
             $result = $result->get('/');
         }

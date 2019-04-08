@@ -11,7 +11,7 @@
                     "private_routes_visible": false
                 },
                 "template": {
-                    "auto_reload": false
+                    "auto_reload": true
                 },
                 "request" : {
                     "route_handler_class" : "LMaintenanceRouteExecutor"

@@ -15,6 +15,9 @@ class LTwigFileTemplateSource implements LITemplateSource {
         $params['auto_reload'] = LConfigReader::executionMode('/template/auto_reload');
         $params['autoescape'] = LConfigReader::simple('/template/autoescape');
 
+        var_dump($params);
+        var_dump(LConfig::get('/defaults/execution_mode/maintenance/template/auto_reload'));
+        
         $this->env = new \Twig\Environment($this->loader, $params);
     }
 

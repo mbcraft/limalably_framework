@@ -1,0 +1,6 @@
+{
+    "success" : false,
+    "errors" : {
+        "all" : ["400 - Bad request"]
+    }
+}

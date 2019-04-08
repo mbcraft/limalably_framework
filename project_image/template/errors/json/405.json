@@ -1,0 +1,6 @@
+{
+    "success" : false,
+    "errors" : {
+        "all" : ["405 - Method not allowed"]
+    }
+}

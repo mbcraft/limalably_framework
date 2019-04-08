@@ -1,0 +1,6 @@
+{
+    "success" : false,
+    "errors" : {
+        "all" : ["429 - Too many requests"]
+    }
+}

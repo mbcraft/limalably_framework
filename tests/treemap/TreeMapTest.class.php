@@ -2,6 +2,16 @@
 
 class TreeMapTest extends LTestCase {
     
+    function testWithTrueValues() {
+        
+        $t = new LTreeMap();
+        
+        $t->set('/my/true/data',true);
+        
+        $this->assertEqual($t->mustGet('/my/true/data'),true,"I dati letti non corrispondono!");
+        
+    }
+    
     function testMergeWithArray() {
         
         $data = [42,18];

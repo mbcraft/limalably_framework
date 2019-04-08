@@ -1,0 +1,6 @@
+{
+    "success" : false,
+    "errors" : {
+        "all" : ["418 - I'm a teapot"]
+    }
+}

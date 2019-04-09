@@ -17,16 +17,16 @@ EOS;
     private $data2 = <<<EOS
 <?php
             
-namespace \Pippo\Pluto\Paperino{
+namespace   \Pippo\Pluto\Paperino{
             
-class Something extends SomethingElse {
+  class Something extends SomethingElse {
    
         function method() {
             echo "Hello!";
         }
    }
             
-trait AgainATrait {
+    trait   AgainATrait {
        
         private \$variable;
    }
@@ -37,7 +37,7 @@ EOS;
     private $data3 = <<<EOS
 <?php
             
-namespace \Pippo\Pluto\Topolino ;
+    namespace   \Pippo\Pluto\Topolino ;
             
 class Something extends SomethingElse {
    
@@ -46,9 +46,9 @@ class Something extends SomethingElse {
         }
    }
 
-namespace \Ancora\Un\Namespace\Particolare;
+   namespace \Ancora\Un\Namespace\Particolare;
             
-interface ANewInterface 
+interface   ANewInterface 
    {
        
         function someFunction();
@@ -61,7 +61,7 @@ EOS;
     private $data4 = <<<EOS
 <?php
     
-interface Topolino 
+    interface   Topolino 
    {
        
    }
@@ -71,7 +71,7 @@ EOS;
     private $data5 = <<<EOS
 <?php
     
-namespace ProvaDiNamespace ;
+    namespace ProvaDiNamespace ;
             
 trait Paperino {
         
@@ -82,7 +82,7 @@ EOS;
     private $data6 = <<<EOS
 <?php
 
-class SomeClass
+    class SomeClass
 {
     function someMethod() {
         echo "Hello";
@@ -92,10 +92,10 @@ class SomeClass
 
 EOS;
         
-    const PATTERN_FIND_NAMESPACES = "/\nnamespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ \n]+/i";
-    const PATTERN_FIND_CLASSES = "/\n(abstract )?(final )?class[ ]+(?<class>[a-zA-Z_0-9]+)[{ \n]+/i";
-    const PATTERN_FIND_TRAITS = "/\ntrait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ \n]+/i";
-    const PATTERN_FIND_INTERFACES = "/\ninterface[ ]+(?<interface>[a-zA-Z_0-9]+)[{ \n]+/i";
+    const PATTERN_FIND_NAMESPACES = "/(\s)*namespace(\s)+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ \n]+/i";
+    const PATTERN_FIND_CLASSES = "/(\s)*(abstract)?(final)?(\s)*class[ ]+(?<class>[a-zA-Z_0-9]+)[{ \n]+/i";
+    const PATTERN_FIND_TRAITS = "/(\s)*trait(\s)+(?<trait>[a-zA-Z_0-9]+)[{ \n]+/i";
+    const PATTERN_FIND_INTERFACES = "/(\s)*interface(\s)+(?<interface>[a-zA-Z_0-9]+)[{ \n]+/i";
     
     function testMatchingData6Class() {
         $classes_pattern = self::PATTERN_FIND_CLASSES;

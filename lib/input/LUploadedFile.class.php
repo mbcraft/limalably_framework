@@ -79,6 +79,11 @@ class LUploadedFile implements ArrayAccess {
         
         if (!LStringUtils::endsWith($final_folder_path, '/')) $final_folder_path = $final_folder_path . '/';
         
+        if (!is_dir($final_folder_path)) {
+            mkdir($final_folder_path,0777,true);
+            chmod($final_folder_path,0777);
+        }
+        
         if (!is_writable($final_folder_path)) throw new \Exception("Can't save file into folder : ".$final_path);
         
         if ($name) {

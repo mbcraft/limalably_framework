@@ -53,6 +53,14 @@ class LParameterValidator {
         
     }
         
+    function hasNormalizedValue() {
+        if ($this->is_set) return true;
+        if (!$this->is_set) {
+            if ($this->has_default_value) return true;
+            else return false;
+        }
+    }
+    
     function getNormalizedValue() {
         if (!$this->is_set && $this->has_default_value) return $this->default_value;
         if (in_array("BoolVal", $this->rules)) return filter_var($this->value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE); //ok cerca nei valori

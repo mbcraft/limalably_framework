@@ -150,6 +150,10 @@
         },
         "session" : {
             "use_strict_mode" : true
+        },
+        "error" : {
+            "log" : true,
+            "continue_on_errors" : false
         }
     }
 }

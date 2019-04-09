@@ -9,7 +9,7 @@ class LDefaultRouteExecutor implements LICommandExecutor {
     }
 
     public function tryExecuteCommand() {
-        
+         
         $this->executed = true;
         
         if (LEnvironmentUtils::getEnvironment()=='script') {

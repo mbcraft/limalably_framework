@@ -9,6 +9,9 @@ class LErrorList {
     }
 
     public static function saveFromException(string $type, \Exception $ex) {
+        
+        if ($ex instanceof LHttpResponse) throw $ex;
+        
         self::$data[$type][] = $ex;
         self::$data['all'][] = $ex;
 

@@ -3,10 +3,11 @@
 class ClassLoaderTest extends LTestCase {
     
     private $data1 = <<<EOS
+<?php
     
-   namespace \Pippo\Pluto\Paperino;
+namespace \Pippo\Pluto\Paperino;
             
-   class Something extends SomethingElse {
+class Something extends SomethingElse {
             
    ...
    }
@@ -14,17 +15,18 @@ class ClassLoaderTest extends LTestCase {
 EOS;
     
     private $data2 = <<<EOS
-
-    namespace \Pippo\Pluto\Paperino{
+<?php
             
-   class Something extends SomethingElse {
+namespace \Pippo\Pluto\Paperino{
+            
+class Something extends SomethingElse {
    
         function method() {
             echo "Hello!";
         }
    }
             
-   trait AgainATrait {
+trait AgainATrait {
        
         private \$variable;
    }
@@ -33,19 +35,20 @@ EOS;
 EOS;
     
     private $data3 = <<<EOS
-
-     namespace \Pippo\Pluto\Topolino ;
+<?php
             
-   class Something extends SomethingElse {
+namespace \Pippo\Pluto\Topolino ;
+            
+class Something extends SomethingElse {
    
         function method() {
             echo "Hello!";
         }
    }
 
-   namespace \Ancora\Un\Namespace\Particolare;
+namespace \Ancora\Un\Namespace\Particolare;
             
-   interface ANewInterface 
+interface ANewInterface 
    {
        
         function someFunction();
@@ -56,8 +59,9 @@ EOS;
 EOS;
     
     private $data4 = <<<EOS
+<?php
     
-   interface Topolino 
+interface Topolino 
    {
        
    }
@@ -65,23 +69,48 @@ EOS;
 EOS;
     
     private $data5 = <<<EOS
-   
-   namespace ProvaDiNamespace ;
+<?php
+    
+namespace ProvaDiNamespace ;
             
-    trait Paperino {
+trait Paperino {
         
    }
         
 EOS;
+    
+    private $data6 = <<<EOS
+<?php
+
+class SomeClass
+{
+    function someMethod() {
+        echo "Hello";
+    }
+    
+}
+
+EOS;
         
-    const PATTERN_NAMESPACE = "/namespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/";
-    const PATTERN_CLASS = "/class[ ]+(?<class>[a-zA-Z_0-9]+)[{ ]+/";
-    const PATTERN_TRAIT = "/trait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ ]+/";
-    const PATTERN_INTERFACE = "/interface[ ]+(?<interface>[a-zA-Z_0-9]+)[{ ]+/";
+    const PATTERN_FIND_NAMESPACES = "/\nnamespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ \n]+/i";
+    const PATTERN_FIND_CLASSES = "/\n(abstract )?(final )?class[ ]+(?<class>[a-zA-Z_0-9]+)[{ \n]+/i";
+    const PATTERN_FIND_TRAITS = "/\ntrait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ \n]+/i";
+    const PATTERN_FIND_INTERFACES = "/\ninterface[ ]+(?<interface>[a-zA-Z_0-9]+)[{ \n]+/i";
+    
+    function testMatchingData6Class() {
+        $classes_pattern = self::PATTERN_FIND_CLASSES;
+        
+        $matches = null;
+        
+        preg_match_all($classes_pattern,$this->data6,$matches,PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+        
+        $this->assertEqual(count($matches),1,"Il numero di match non corrisponde!");
+        $this->assertEqual($matches[0]['class'][0],'SomeClass',"Il namespace trovato non corrisponde!");
+    }
     
     function testMatchingNamespace1() {
         
-        $namespace_pattern = self::PATTERN_NAMESPACE;
+        $namespace_pattern = self::PATTERN_FIND_NAMESPACES;
         
         $matches = null;
         
@@ -95,7 +124,7 @@ EOS;
     
     function testMatchingNamespace2() {
         
-        $namespace_pattern = self::PATTERN_NAMESPACE;
+        $namespace_pattern = self::PATTERN_FIND_NAMESPACES;
         
         $matches = null;
         
@@ -109,7 +138,7 @@ EOS;
     }
     
     function testMatchingClass1() {
-        $class_pattern = self::PATTERN_CLASS;
+        $class_pattern = self::PATTERN_FIND_CLASSES;
         
         $matches = null;
         
@@ -120,7 +149,7 @@ EOS;
     }
     
     function testMatchingTrait1() {
-        $trait_pattern = self::PATTERN_TRAIT;
+        $trait_pattern = self::PATTERN_FIND_TRAITS;
         
         $matches = null;
         
@@ -130,7 +159,7 @@ EOS;
         $this->assertEqual($matches[0]['trait'][0],'AgainATrait',"Il trait trovato non corrisponde!");
     }
     function testMatchingTrait2() {
-        $trait_pattern = self::PATTERN_TRAIT;
+        $trait_pattern = self::PATTERN_FIND_TRAITS;
         
         $matches = null;
         
@@ -141,7 +170,7 @@ EOS;
     }
     
     function testMatchingInterface1() {
-        $interface_pattern = self::PATTERN_INTERFACE;
+        $interface_pattern = self::PATTERN_FIND_INTERFACES;
         
         $matches = null;
         
@@ -151,7 +180,7 @@ EOS;
         $this->assertEqual($matches[0]['interface'][0],'ANewInterface',"L'interfaccia trovata non corrisponde!");
     }
     function testMatchingInterface2() {
-        $interface_pattern = self::PATTERN_INTERFACE;
+        $interface_pattern = self::PATTERN_FIND_INTERFACES;
         
         $matches = null;
         

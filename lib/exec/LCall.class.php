@@ -176,7 +176,8 @@ class LCall {
         try {
             $reflection_class = new ReflectionClass($class_name);
         } catch (\Exception $ex) {
-            throw new \Exception("Unable to find class to call : " . $call_spec);
+            LClassLoader::dump();
+            throw new \Exception("Unable to find class to call : " .$class_name .". Call spec : ".$call_spec);
         }
         if (!$static_call && !$reflection_class->isInstantiable())
             throw new \Exception("Can't call method on abstract class : " . $call_spec);

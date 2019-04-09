@@ -21,10 +21,10 @@ function project_require($filename_relative_path) {
 class LClassLoader {
       
     //patterns
-    const PATTERN_FIND_NAMESPACES = "/\nnamespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ ]+/i";
-    const PATTERN_FIND_CLASSES = "/\n(abstract )?(final )?class[ ]+(?<class>[a-zA-Z_0-9]+)[{ ]+/i";
-    const PATTERN_FIND_TRAITS = "/\ntrait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ ]+/i";
-    const PATTERN_FIND_INTERFACES = "/\ninterface[ ]+(?<interface>[a-zA-Z_0-9]+)[{ ]+/i";
+    const PATTERN_FIND_NAMESPACES = "/\nnamespace[ ]+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ \n]+/i";
+    const PATTERN_FIND_CLASSES = "/\n(abstract )?(final )?class[ ]+(?<class>[a-zA-Z_0-9]+)[{ \n]+/i";
+    const PATTERN_FIND_TRAITS = "/\ntrait[ ]+(?<trait>[a-zA-Z_0-9]+)[{ \n]+/i";
+    const PATTERN_FIND_INTERFACES = "/\ninterface[ ]+(?<interface>[a-zA-Z_0-9]+)[{ \n]+/i";
     
     private static $class_map = [];
     
@@ -206,7 +206,7 @@ class LClassLoader {
     }
     
     private static function isValidCodeFile($full_filename) {
-        return is_file($full_filename) && LStringUtils::endsWith($full_filename, LConfigReader::simple('/classloader/code_file_ends_with'));
+        return is_readable($full_filename) && LStringUtils::endsWith($full_filename, LConfigReader::simple('/classloader/code_file_ends_with'));
     }
     
     private static function findPatternInCode($pattern,$code) {
@@ -221,6 +221,7 @@ class LClassLoader {
         foreach ($dir_elements as $element) {
             if ($element == '.' || $element == '..') continue;
             $full_path = $full_folder_path.$element;
+                        
             if (self::isValidCodeFile($full_path)) {
                 $elements = [];
                 $code = file_get_contents($full_path);
@@ -255,7 +256,7 @@ class LClassLoader {
                     }
                 }
                 
-            }
+            } 
             if (is_dir($full_path.'/')) {
                 self::recursiveParseFolder($full_path.'/');
             }

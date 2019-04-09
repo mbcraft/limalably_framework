@@ -31,8 +31,8 @@ class LFolderPermissionChecker {
             new LFolderCheck(LConfigReader::simple('/classloader/project_folder_list'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/classloader/map_cache_file_path'),"f"),
             new LFolderCheck(LConfigReader::simple('/classloader/class_cache_folder'),"f"),
-            new LFolderCheck(LConfigReader::simple('/format/html/error_templates_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::simple('/format/json/error_templates_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/html/error_templates_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/json/error_templates_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/classloader/proc_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/classloader/data_folder'),"?,r"),
             new LFolderCheck(LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'), '/logging/%type%/log_folder'),"?,w")

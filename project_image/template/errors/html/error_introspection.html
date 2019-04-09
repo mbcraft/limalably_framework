@@ -1,0 +1,69 @@
+<button class="collapsible">Introspection</button>
+<div class="content">
+    {% if urlmap_string %}
+    <button class="collapsible">Urlmap</button>
+    <div class="content">
+        {{ urlmap_string }}
+    </div>
+    {% endif %}
+    {% if env_string %}
+    <button class="collapsible">Environment</button>
+    <div class="content">
+        {{ env_string }}
+    </div>
+    {% endif %}
+    {% if input_string %}
+    <button class="collapsible">Input</button>
+    <div class="content">
+        {{ input_string }}
+    </div>
+    {% endif %}
+    {% if session_string %}
+    <button class="collapsible">Session</button>
+    <div class="content">
+        {{ session_string }}
+    </div>
+    {% endif %}
+    {% if parameters_string %}
+    <button class="collapsible">Parameters</button>
+    <div class="content">
+        {{ parameters_string }}
+    </div>
+    {% endif %}
+    {% if capture_string %}
+    <button class="collapsible">Capture</button>
+    <div class="content">
+        {{ capture_string }}
+    </div>
+    {% endif %}
+    {% if output_string %}
+    <button class="collapsible">Output</button>
+    <div class="content">
+        {{ output_string }}
+    </div>
+    {% endif %}
+</div>
+{% if errors %}
+<button class="collapsible">Errors</button>
+<div class="content">
+    {% for err in errors.all %}
+    <p>{{ err }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+}
+</script>

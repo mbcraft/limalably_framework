@@ -141,11 +141,11 @@
         },
         "format": {
             "html": {
-                "error_templates_folder": "template/errors/html/"
+                "error_templates_folder": "errors/html/"
             },
             "json": {
                 "encode_options": ["THROW_ON_ERROR"],
-                "error_templates_folder": "template/errors/json/"
+                "error_templates_folder": "errors/json/"
             },
             "default_error_format" : "html"
         },

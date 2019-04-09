@@ -70,7 +70,7 @@ class LUrlMapExecutor {
             LResult::framework_debug("Evaluating urlmap conditions ...");
             $cond = new LCondition();
 
-            $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
+            $result = $cond->evaluate('urlmap', $this->my_url_map->get('/conditions'));
 
             if (!$result) {
                 //da valutare se usare un throw forbidden
@@ -82,7 +82,7 @@ class LUrlMapExecutor {
             LResult::framework_debug("Evaluating urlmap negative conditions ...");
             $cond = new LCondition();
 
-            $result = $cond->evaluate('urlmap', $this->my_url_map->get('/condition'));
+            $result = $cond->evaluate('urlmap', $this->my_url_map->get('/!conditions'));
 
             if ($result) {
                 //da valutare se usare un throw forbidden

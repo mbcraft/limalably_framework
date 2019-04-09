@@ -31,6 +31,7 @@ class LDefaultRouteExecutor implements LICommandExecutor {
             $executor = new LUrlMapExecutor($urlmap);
             
             $executor->executeRootRequest($route);
+            
         } else {
             if (LEnvironmentUtils::getEnvironment()=='script') {
                 echo "Unable to find route : ".$route.".\n";

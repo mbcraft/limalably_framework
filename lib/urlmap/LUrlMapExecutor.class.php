@@ -146,16 +146,16 @@ class LUrlMapExecutor {
 
         if ($this->my_url_map->is_set('/session')) {
             LResult::framework_debug("Evaluating session parameters constraints ...");
-            $session_validator = new LParameterGroupValidator('session', $treeview_session, $this->my_url_map->get('/session'));
-            LErrorList::saveFromErrors('session', $session_validator->validate($treeview_input, $treeview_session));
+            $session_validator = new LParameterGroupValidator($treeview_session, $this->my_url_map->get('/session'));
+            LErrorList::saveFromErrors('session', $session_validator->validate('session', $treeview_input, $treeview_session));
         }
 
         //input parameters check
 
         if ($this->my_url_map->is_set('/input')) {
             LResult::framework_debug("Evaluating input parameters contraints ...");
-            $input_validator = new LParameterGroupValidator('input', $treeview_input, $this->my_url_map->get('/input'));
-            LErrorList::saveFromErrors('input', $input_validator->validate($treeview_input, $treeview_session));
+            $input_validator = new LParameterGroupValidator( $treeview_input, $this->my_url_map->get('/input'));
+            LErrorList::saveFromErrors('input', $input_validator->validate('input',$treeview_input, $treeview_session));
         }
 
         //before exec tree

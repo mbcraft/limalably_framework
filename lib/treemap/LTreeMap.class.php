@@ -10,7 +10,7 @@ class LTreeMap implements ArrayAccess, Iterator {
     private $current_keys = null;
     private $current_index = -1;
     
-    public function __construct($initial_data = array())
+    public function __construct(&$initial_data = array())
     {
         $this->data = &$initial_data;
     }    

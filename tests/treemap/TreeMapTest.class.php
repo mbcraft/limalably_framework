@@ -463,7 +463,9 @@ class TreeMapTest extends LTestCase {
     }
 
     function testIterator1() {
-        $t = new LTreeMap(["a" => 1,"b" => 2,"c" => 3]);
+        $data = ["a" => 1,"b" => 2,"c" => 3];
+        
+        $t = new LTreeMap($data);
         
         $total = 0;
         foreach ($t as $k => $v) {
@@ -474,7 +476,9 @@ class TreeMapTest extends LTestCase {
     }
     
     function testIterator2() {
-        $t = new LTreeMap(["a" => 1,"b" => 2,"c" => ["aa" => 1,"bb" => 15]]);
+        $data = ["a" => 1,"b" => 2,"c" => ["aa" => 1,"bb" => 15]];
+        
+        $t = new LTreeMap($data);
         
         $tm = $t->view("c");
         $total = 0;

@@ -47,6 +47,7 @@ class LErrorList {
         if (is_string($errors))
             $result_errors = [new LSimpleError($errors, $code)];
         else {
+            if (empty($errors)) return;
             $result_errors = [];
             foreach ($errors as $err)
                 $result_errors[] = new LSimpleError($err, $code);

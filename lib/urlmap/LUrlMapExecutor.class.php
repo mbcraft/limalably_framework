@@ -147,7 +147,6 @@ class LUrlMapExecutor {
         if ($this->my_url_map->is_set('/session')) {
             LResult::framework_debug("Evaluating session parameters constraints ...");
             $session_validator = new LParameterGroupValidator($treeview_session, $this->my_url_map->get('/session'));
-            var_dump($_SESSION);
             LErrorList::saveFromErrors('session', $session_validator->validate('session', $treeview_input, $treeview_session));
         }
 

@@ -131,7 +131,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session ,'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -173,7 +173,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -221,7 +221,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session ,'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -247,7 +247,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session , 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();

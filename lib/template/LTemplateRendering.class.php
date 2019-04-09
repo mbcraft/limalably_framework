@@ -48,43 +48,44 @@ class LTemplateRendering {
 
             //inserire fra le variabili : urlmap, input, session, capture, i18n, parameters - con eventuale prefisso di path tipo 'meta'
             $import_into_variables = LConfigReader::executionMode('/template/import_into_variables');
-
+            
+            if (!$this->my_output) $this->my_output = new LTreeMap();
             //
             try {
                 //output_string goes before all the others
                 if (in_array('output_string', $import_into_variables)) { //ok cerca nei valori
-                    $this->my_output->set('output_string', $this->my_json_encode('output', $this->my_output->getRoot()));
+                    if ($this->my_output) $this->my_output->set('output_string', $this->my_json_encode('output', $this->my_output->getRoot()));
                 }
                 //import all the other variables
                 foreach ($import_into_variables as $import_name) {
                     switch ($import_name) {
-                        case 'urlmap' : $this->my_output->set('urlmap', $this->my_urlmap->get('/'));
+                        case 'urlmap' : if ($this->my_urlmap) $this->my_output->set('urlmap', $this->my_urlmap->get('/'));
                             break;
-                        case 'urlmap_string' : $this->my_output->set('urlmap_string', $this->my_json_encode('urlmap', $this->my_urlmap->get('/')));
+                        case 'urlmap_string' : if ($this->my_urlmap) $this->my_output->set('urlmap_string', $this->my_json_encode('urlmap', $this->my_urlmap->get('/')));
                             break;
-                        case 'rel_input' : $this->my_output->set('rel_input', $this->my_input->get('.'));
+                        case 'rel_input' : if ($this->my_input) $this->my_output->set('rel_input', $this->my_input->get('.'));
                             break;
-                        case 'rel_input_string' : $this->my_output->set('rel_input_string', $this->my_json_encode('input', $this->my_input->get('.')));
+                        case 'rel_input_string' : if ($this->my_input) $this->my_output->set('rel_input_string', $this->my_json_encode('input', $this->my_input->get('.')));
                             break;
-                        case 'input' : $this->my_output->set('input', $this->my_input->get('/'));
+                        case 'input' : if ($this->my_input) $this->my_output->set('input', $this->my_input->get('/'));
                             break;
-                        case 'input_string' : $this->my_output->set('input_string', $this->my_json_encode('input', $this->my_input->get('/')));
+                        case 'input_string' : if ($this->my_input) $this->my_output->set('input_string', $this->my_json_encode('input', $this->my_input->get('/')));
                             break;
-                        case 'rel_session' : $this->my_output->set('rel_session', $this->my_session->get('.'));
+                        case 'rel_session' : if ($this->my_session) $this->my_output->set('rel_session', $this->my_session->get('.'));
                             break;
-                        case 'rel_session_string' : $this->my_output->set('rel_session_string', $this->my_json_encode('session', $this->my_session->get('.')));
+                        case 'rel_session_string' : if ($this->my_session) $this->my_output->set('rel_session_string', $this->my_json_encode('session', $this->my_session->get('.')));
                             break;
-                        case 'session' : $this->my_output->set('session', $this->my_session->get('/'));
+                        case 'session' : if ($this->my_session) $this->my_output->set('session', $this->my_session->get('/'));
                             break;
-                        case 'session_string' : $this->my_output->set('session_string', $this->my_json_encode('session', $this->my_session->get('/')));
+                        case 'session_string' : if ($this->my_session) $this->my_output->set('session_string', $this->my_json_encode('session', $this->my_session->get('/')));
                             break;
-                        case 'parameters' : $this->my_output->set('parameters', $this->my_parameters);
+                        case 'parameters' : if ($this->my_parameters) $this->my_output->set('parameters', $this->my_parameters);
                             break;
-                        case 'parameters_string' : $this->my_output->set('parameters_string', $this->my_json_encode('parameters', $this->my_parameters));
+                        case 'parameters_string' : if ($this->my_parameters) $this->my_output->set('parameters_string', $this->my_json_encode('parameters', $this->my_parameters));
                             break;
-                        case 'capture' : $this->my_output->set('capture', $this->my_capture);
+                        case 'capture' : if ($this->my_capture) $this->my_output->set('capture', $this->my_capture);
                             break;
-                        case 'capture_string' : $this->my_output->set('capture_string', $this->my_json_encode('capture', $this->my_capture));
+                        case 'capture_string' : if ($this->my_capture) $this->my_output->set('capture_string', $this->my_json_encode('capture', $this->my_capture));
                             break;
                         case 'env' : $this->my_output->set('env', LEnvironmentUtils::getReplacementsArray());
                             break;

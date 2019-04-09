@@ -7,6 +7,8 @@ class LUrlMapExecutor {
     private $my_url_map = null;
     private $is_root = false;
     private $my_format = null;
+    private $capture = null;
+    private $output = null;
 
     function __construct($url_map) {
         if (!$url_map instanceof LTreeMap)
@@ -24,14 +26,14 @@ class LUrlMapExecutor {
     function executeRootRequest($route) {
         LResult::framework_debug("Executing root request : " . $route);
         $this->is_root = true;
-
-        $parameters = isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];
-        $capture = [];
+        
+        $parameters = LParameters::all();
+        $this->capture = [];
         $input_tree = LInputUtils::create();
         $session_tree = LSessionUtils::create();
 
         try {
-            $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
+            $result = $this->execute($route, $parameters, $this->capture, $input_tree, $session_tree);
 
             if (!$result) {
                 //a script executed correctly
@@ -40,6 +42,7 @@ class LUrlMapExecutor {
                 throw new \Exception("Unexpected state, result returned to root : " . var_export($result, true));
             }
         } catch (\LHttpResponse $response) {
+            $response->setup($this->my_url_map,$input_tree,$session_tree,$this->capture,$parameters,$this->output);
             $response->execute($this->my_format);
         } catch (\Exception $ex) {
             LResult::exception($ex);
@@ -48,14 +51,16 @@ class LUrlMapExecutor {
 
     public function execute($route, $parameters, $capture, $treeview_input, $treeview_session) {
 
+        $this->capture = $capture;
+        
         LResult::framework_debug("Start evaluating routemap for route : " . $route);
 
         $abs_input = $treeview_input->view('/');
         $abs_session = $treeview_session->view('/');
 
-        $output = new LTreeMap();
-        $output->set('/success', true);
-        $treeview_output = $output->view('/');
+        $this->output = new LTreeMap();
+        $this->output->set('/success', true);
+        $treeview_output = $this->output->view('/');
 
         //checking for invalid nodes
         $current_keys = $this->my_url_map->keys('/');
@@ -108,12 +113,12 @@ class LUrlMapExecutor {
             try {
                 $capture_resolver = new LRouteCapture();
                 $capture_pattern = $this->my_url_map->get('/capture');
-                $capture = $capture_resolver->captureParameters($capture_pattern, $route);
+                $this->capture = $capture_resolver->captureParameters($capture_pattern, $route);
             } catch (\Exception $ex) {
                 LErrorList::saveFromException('capture', $ex);
             }
         } else {
-            $capture = [];
+            $this->capture = [];
         }
 
         //init tree
@@ -129,7 +134,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -171,7 +176,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -192,7 +197,7 @@ class LUrlMapExecutor {
             if (!is_array($exec_list))
                 $exec_list = array($exec_list);
 
-            $call_params = ['output' => $output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $capture, 'parameters' => $parameters];
+            $call_params = ['output' => $this->output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $this->capture, 'parameters' => $parameters];
 
             $dynamic = new LDynamicCall();
 
@@ -219,7 +224,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -245,7 +250,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -264,11 +269,11 @@ class LUrlMapExecutor {
             LResult::framework_debug("Evaluating dynamic_template ...");
             $dynamic_template_spec = $this->my_url_map->get('/dynamic_template');
             if (!is_string($dynamic_template_spec)) {
-                $errors['dynamic_template'][] = "Unable to execute dynamic template call : value is not a string.";
+                LErrorList::saveFromErrors('dynamic_template',"Unable to execute dynamic template call : value is not a string.");
             } else {
                 $dynamic = new LDynamicCall();
 
-                $call_params = ['output' => $output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['output' => $this->output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $this->capture, 'parameters' => $parameters];
                 try {
                     $dynamic->saveIntoTemplate($dynamic_template_spec, $call_params, $this->my_url_map);
                 } catch (\Exception $ex) {
@@ -283,7 +288,7 @@ class LUrlMapExecutor {
             LResult::framework_debug("Evaluating template ...");
             $template_path = $this->my_url_map->get('/template');
 
-            $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $capture, $parameters, $output);
+            $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $this->capture, $parameters, $this->output);
 
             LResult::framework_debug("Searching for template : " . $template_path);
 
@@ -343,7 +348,7 @@ class LUrlMapExecutor {
         }
 
         if ($this->my_format == LFormat::JSON) {
-            $content = LJsonUtils::encodeResult($output);
+            $content = LJsonUtils::encodeResult($this->output);
             if ($this->is_root) {
                 throw new LJsonResponse($content);
             } else {
@@ -359,7 +364,7 @@ class LUrlMapExecutor {
             if ($this->is_root) {
                 return null;
             } else {
-                return $output;
+                return $this->output;
             }
         }
     }

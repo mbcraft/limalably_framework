@@ -28,4 +28,8 @@ class LParameters {
         
     }
     
+    static function all() {
+        return isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];
+    }
+    
 }

@@ -13,11 +13,11 @@ class LHttpError extends LHttpResponse {
     const ERROR_NOT_IMPLEMENTED = '501';
     const ERROR_SERVICE_UNAVAILABLE = '503';
     
-    
     private $error_code;
-    
+        
     function __construct($error_code) {
         $this->error_code = $error_code;
+        $this->output = new LTreeMap();
         parent::__construct("Http error ".$error_code);
     }
     
@@ -29,28 +29,17 @@ class LHttpError extends LHttpResponse {
         
         $error_templates_folder = LConfigReader::executionMode('/format/'.$format.'/error_templates_folder');
         
-        $template_source_factory_class_name = LConfigReader::simple('/template/source_factory_class');
+        $template_renderer = new LTemplateRendering($this->urlmap,$this->input,$this->session,$this->capture,$this->parameters,$this->output);
         
-        $factory_instance = new $template_source_factory_class_name();
-        
-        $cache_folder = LConfigReader::simple('/template/cache_folder');
-        
-        $file_source = $factory_instance->createFileTemplateSource($error_templates_folder,$cache_folder);
-        
-        $template_path = $file_source->searchTemplate($this->error_code);
+        $template_path = $template_renderer->searchTemplate($error_templates_folder.$this->error_code.'.'.$format);
                 
         if ($template_path) {
             
-            $template = $file_source->getTemplate($template_path);
+            LWarningList::mergeIntoTreeMap($this->output);
+            LErrorList::mergeIntoTreeMap($this->output);
             
-            $output = new LTreeMap();
-            
-            LWarningList::mergeIntoTreeMap($output);
-            LErrorList::mergeIntoTreeMap($output);
-            
-            $output_root_array = $output->getRoot();
-            
-            echo $template->render($output_root_array);
+            echo $template_renderer->render($template_path);
+
         } else {
             echo "HTTP error ".$this->error_code.".\n";
         }

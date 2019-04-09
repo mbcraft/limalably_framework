@@ -82,7 +82,7 @@
             "source_factory_class": "LTwigTemplateSourceFactory",
             "root_folder": "template/",
             "cache_folder": "temp/cache/template/",
-            "strict_variables": true,
+            "strict_variables": false,
             "autoescape" : "name",
             "import_into_variables": ["env", "env_string" , "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string"],
             "extension_search_list" : [".html",".xhtml",".json",".twig"]

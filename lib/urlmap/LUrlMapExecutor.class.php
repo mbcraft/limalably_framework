@@ -22,7 +22,7 @@ class LUrlMapExecutor {
     }
 
     function executeRootRequest($route) {
-
+        LResult::framework_debug("Executing root request : ".$route);
         $this->is_root = true;
 
         $parameters = isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];

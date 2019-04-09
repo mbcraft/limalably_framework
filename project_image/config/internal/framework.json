@@ -112,7 +112,8 @@
                 "min_level": "debug"
             },
             "output": {
-                "min_level": "debug"
+                "min_level": "debug",
+                "log_folder" : "logs/"
             }
         },
         "treemap": {

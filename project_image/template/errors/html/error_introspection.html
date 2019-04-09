@@ -43,27 +43,27 @@
     </div>
     {% endif %}
 </div>
-{% if errors %}
-<button class="collapsible">Errors</button>
-<div class="content">
-    {% for err in errors.all %}
-    <p>{{ err }}</p>
-    {% endfor %}
-</div>
-{% endif %}
+    {% if errors.all %}
+    <button class="collapsible">Errors</button>
+    <div class="content">
+        {% for error in errors.all %}
+        <p>{{ error.getMessage }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
 <script>
-var coll = document.getElementsByClassName("collapsible");
-var i;
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
 
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.maxHeight){
-      content.style.maxHeight = null;
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px";
-    } 
-  });
-}
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = "2000px";
+            }
+        });
+    }
 </script>

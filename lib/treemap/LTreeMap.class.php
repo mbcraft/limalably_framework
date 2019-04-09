@@ -96,7 +96,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         $value = $this->get($path,$default_value);
         
         $false_values = LConfig::mustGet('/defaults/treemap/false_values');
-        if (in_array($value, $false_values)) return false;
+        if (in_array($value, $false_values)) return false;  //cerca nei valori, ok
         else return true;
     }
     

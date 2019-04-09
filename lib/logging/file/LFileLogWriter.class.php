@@ -33,7 +33,7 @@ class LFileLogWriter implements LILogWriter {
             $max_mb = 0;
             $log_mode = 'normal';
         }
-        if (!in_array($log_mode, self::LOG_MODES_ARRAY))
+        if (!in_array($log_mode, self::LOG_MODES_ARRAY))  //cerca nei valori, ok
                 throw new \Exception('Invalid log mode. Allowed values : '.implode(',',self::LOG_MODES_ARRAY));
         $this->my_log_mode = $log_mode;
         $this->max_size_bytes = 1000 * 1000 * $max_mb;

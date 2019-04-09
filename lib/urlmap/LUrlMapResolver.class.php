@@ -290,7 +290,7 @@ class LUrlMapResolver {
             }
         }
         
-        if (in_array($route, $this->urlmap_references)) return [];
+        if (in_array($route, $this->urlmap_references)) return [];  //ok cerca nei valori
         else $this->urlmap_references[] = $route;
         
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);

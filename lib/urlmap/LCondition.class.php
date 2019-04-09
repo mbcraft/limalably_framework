@@ -25,9 +25,9 @@ class LCondition {
                 $env_value = $env_variables[$my_k];
                 if (is_array($v)) {
                     if ($negate) {
-                        if (in_array($env_value, $v)) return false;
+                        if (in_array($env_value, $v)) return false;  //ok cerca nei valori
                     } else {
-                        if (!in_array($env_value, $v)) return false;
+                        if (!in_array($env_value, $v)) return false;  //ok cerca nei valori
                     }
                 } else {
                     if ($negate) {

@@ -52,7 +52,7 @@ class LTemplateRendering {
             //
             try {
                 //output_string goes before all the others
-                if (in_array('output_string', $import_into_variables)) {
+                if (in_array('output_string', $import_into_variables)) { //ok cerca nei valori
                     $this->my_output->set('output_string', $this->my_json_encode('output', $this->my_output->getRoot()));
                 }
                 //import all the other variables

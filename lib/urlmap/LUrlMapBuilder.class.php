@@ -9,7 +9,7 @@ class LUrlMapBuilder {
     }
     
     function setFormat($format) {
-        if (!in_array($format, LResponseFormat::FORMAT_LIST))
+        if (!in_array($format, LResponseFormat::FORMAT_LIST))   //ok cerca nei valori
                 throw new \Exception("Invalid response format.");
         
         $this->my_map->set('/format', $format);

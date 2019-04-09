@@ -202,14 +202,15 @@ class LCall {
 
                 switch ($method_search_spec) {
                     case 'meta': {
-                            if (in_array($param_name, $all_param_data)) {
+                            if (array_key_exists($param_name, $all_param_data)) {
                                 $prepared_parameters[] = $all_param_data[$param_name];
+                                
                                 continue 3;
-                            }
+                            } 
                             break;
                         }
                     case 'capture': {
-                            if (isset($all_param_data['capture']) && in_array($param_name, $all_param_data['capture'])) {
+                            if (isset($all_param_data['capture']) && array_key_exists($param_name, $all_param_data['capture'])) { //cerca nelle chiavi
                                 $prepared_parameters[] = $all_param_data['capture'][$param_name];
                                 continue 3;
                             }

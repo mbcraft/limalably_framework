@@ -102,7 +102,7 @@ class LClassLoader {
     }
     
     private static function isSkipCacheRoute() {
-        $is_skip_cache_route = in_array($_SERVER['ROUTE'],LConfigReader::simple('/classloader/skip_cache_route_list'));
+        $is_skip_cache_route = in_array($_SERVER['ROUTE'],LConfigReader::simple('/classloader/skip_cache_route_list')); //ok cerca nei valori
         $skip_cache_query_parameter = LConfigReader::simple('/classloader/skip_cache_query_parameter');
         if ($skip_cache_query_parameter) {
             $is_skip_cache_route |= strpos($_SERVER['RAW_ROUTE'],$skip_cache_query_parameter)!==false;

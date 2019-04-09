@@ -58,25 +58,25 @@ class LTemplateRendering {
                 //import all the other variables
                 foreach ($import_into_variables as $import_name) {
                     switch ($import_name) {
-                        case 'urlmap' : $this->my_output->set('urlmap', $this->my_urlmap->get('.'));
+                        case 'urlmap' : $this->my_output->set('urlmap', $this->my_urlmap->get('/'));
                             break;
-                        case 'urlmap_string' : $this->my_output->set('urlmap_string', $this->my_json_encode('urlmap', $this->my_urlmap->get('.')));
+                        case 'urlmap_string' : $this->my_output->set('urlmap_string', $this->my_json_encode('urlmap', $this->my_urlmap->get('/')));
                             break;
-                        case 'relative_input' : $this->my_output->set('rel_input', $this->my_input->get('.'));
+                        case 'rel_input' : $this->my_output->set('rel_input', $this->my_input->get('.'));
                             break;
-                        case 'relative_input_string' : $this->my_output->set('rel_input_string', $this->my_json_encode('input', $this->my_input->get('.')));
+                        case 'rel_input_string' : $this->my_output->set('rel_input_string', $this->my_json_encode('input', $this->my_input->get('.')));
                             break;
-                        case 'absolute_input' : $this->my_output->set('input', $this->my_input->get('/'));
+                        case 'input' : $this->my_output->set('input', $this->my_input->get('/'));
                             break;
-                        case 'absolute_input_string' : $this->my_output->set('input_string', $this->my_json_encode('input', $this->my_input->get('/')));
+                        case 'input_string' : $this->my_output->set('input_string', $this->my_json_encode('input', $this->my_input->get('/')));
                             break;
-                        case 'relative_session' : $this->my_output->set('rel_session', $this->my_session->get('.'));
+                        case 'rel_session' : $this->my_output->set('rel_session', $this->my_session->get('.'));
                             break;
-                        case 'relative_session_string' : $this->my_output->set('rel_session_string', $this->my_json_encode('session', $this->my_session->get('.')));
+                        case 'rel_session_string' : $this->my_output->set('rel_session_string', $this->my_json_encode('session', $this->my_session->get('.')));
                             break;
-                        case 'absolute_session' : $this->my_output->set('session', $this->my_session->get('/'));
+                        case 'session' : $this->my_output->set('session', $this->my_session->get('/'));
                             break;
-                        case 'absolute_session_string' : $this->my_output->set('session_string', $this->my_json_encode('session', $this->my_session->get('/')));
+                        case 'session_string' : $this->my_output->set('session_string', $this->my_json_encode('session', $this->my_session->get('/')));
                             break;
                         case 'parameters' : $this->my_output->set('parameters', $this->my_parameters);
                             break;

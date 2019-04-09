@@ -79,7 +79,7 @@ class LExecutionMode {
     private static function modeFileExists($filename) {
         $file_path = self::getModeDir().$filename;
         
-        return is_writable($file_path);
+        return file_exists($file_path);
     }
     
     private static function getModeDir() {

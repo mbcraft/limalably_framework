@@ -7,10 +7,10 @@ class LUrlMapTemplateSourceFactory {
                 
         $factory = new $template_factory_class();
         
-        $root_path = LConfigReader::simple('/template/root_path');
+        $root_folder = LConfigReader::simple('/template/root_folder');
         $cache_path = LConfigReader::simple('/template/cache_folder');
         
-        return $factory->createFileTemplateSource($root_path,$cache_path);
+        return $factory->createFileTemplateSource($root_folder,$cache_path);
     }
 
     public function createStringArrayTemplateSource(array $data_map) {

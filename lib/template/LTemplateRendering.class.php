@@ -24,7 +24,7 @@ class LTemplateRendering {
         
         $this->template_factory = new LUrlMapTemplateSourceFactory();
 
-        $this->template_source = $template_factory->createFileTemplateSource();
+        $this->template_source = $this->template_factory->createFileTemplateSource();
     }
 
     private function my_json_encode($name, $value) {

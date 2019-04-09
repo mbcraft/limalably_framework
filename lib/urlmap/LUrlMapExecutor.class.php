@@ -287,8 +287,14 @@ class LUrlMapExecutor {
 
             $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $capture, $parameters, $output);
 
+            LResult::framework_debug("Searching for template : ".$template_path);
+            
             $my_template_path = $renderer->searchTemplate($template_path);
 
+            LResult::framework_debug("Found template at path : ".$my_template_path);
+            
+            if (!$my_template_path) throw new \Exception("Unable to find template : ".$template_path);
+            
             if (!$this->my_url_map->is_set('/format')) {
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::HTML)) {

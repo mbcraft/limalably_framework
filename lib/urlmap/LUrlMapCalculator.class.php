@@ -56,24 +56,7 @@ class LUrlMapCalculator {
                 }
             }
         }
-        
-        if (!$url_map_hash->is_set('/format')) {
-            $template = $url_map_hash->get('/template',null);
-            if ($template) {
-                if (LStringUtils::startsWith($template, 'html')) {
-                    $my_format = 'html';
-                }
-                if (LStringUtils::startsWith($template, 'json')) {
-                    $my_format = 'json';
-                }
-                if (LStringUtils::startsWith($template, 'xml')) {
-                    $my_format = 'xml';
-                }
-                $url_map_hash->set('/format', $my_format);
-            }
-            
-        }
-        
+                
         return $url_map_hash->getRoot();
     }
     

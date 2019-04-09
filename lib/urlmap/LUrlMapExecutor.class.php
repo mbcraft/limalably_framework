@@ -312,6 +312,7 @@ class LUrlMapExecutor {
                 }
             } else {
                 $this->my_format = $this->my_url_map->get('/format');
+                LResult::framework_debug("Recognized format inside urlmap : ".$this->my_format);
             }
             $result = $renderer->render($my_template_path);
 

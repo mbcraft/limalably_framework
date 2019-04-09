@@ -2,7 +2,7 @@
 
 class LUrlMapExecutor {
 
-    const AVAILABLE_NODES = ['conditions', '!conditions', 'load', 'init' ,'input', 'session', 'before_exec','dynamic_exec', 'exec', 'after_exec' ,'dynamic_template', 'template', 'format'];
+    const AVAILABLE_NODES = ['conditions', '!conditions', 'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format'];
 
     private $my_url_map = null;
     private $is_root = false;
@@ -22,7 +22,7 @@ class LUrlMapExecutor {
     }
 
     function executeRootRequest($route) {
-        LResult::framework_debug("Executing root request : ".$route);
+        LResult::framework_debug("Executing root request : " . $route);
         $this->is_root = true;
 
         $parameters = isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];
@@ -32,15 +32,13 @@ class LUrlMapExecutor {
 
         try {
             $result = $this->execute($route, $parameters, $capture, $input_tree, $session_tree);
-            
-            if (!$result) { 
+
+            if (!$result) {
                 //a script executed correctly
-                exit; 
+                exit;
+            } else {
+                throw new \Exception("Unexpected state, result returned to root : " . var_export($result, true));
             }
-            else {
-                throw new \Exception("Unexpected state, result returned to root : ".var_export($result,true));
-            }
-            
         } catch (\LHttpResponse $response) {
             $response->execute($this->my_format);
         } catch (\Exception $ex) {
@@ -50,8 +48,8 @@ class LUrlMapExecutor {
 
     public function execute($route, $parameters, $capture, $treeview_input, $treeview_session) {
 
-        LResult::framework_debug("Start evaluating routemap for route : ".$route);
-        
+        LResult::framework_debug("Start evaluating routemap for route : " . $route);
+
         $abs_input = $treeview_input->view('/');
         $abs_session = $treeview_session->view('/');
 
@@ -92,18 +90,18 @@ class LUrlMapExecutor {
             }
         }
 
-       
+
         //loading prepared input
         if ($this->my_url_map->is_set('/load')) {
-             LResult::framework_debug("Loading data into input ...");
+            LResult::framework_debug("Loading data into input ...");
             try {
                 $this->loadDataInTreeMap($this->my_url_map->get('/load'), $treeview_input);
             } catch (\Exception $ex) {
                 LErrorList::saveFromException('load', $ex);
             }
         }
-        
-        
+
+
         //capture resolution
         if ($this->my_url_map->is_set('/capture')) {
             LResult::framework_debug("Evaluating capture ...");
@@ -117,7 +115,7 @@ class LUrlMapExecutor {
         } else {
             $capture = [];
         }
-        
+
         //init tree
 
         if ($this->my_url_map->is_set('/init')) {
@@ -131,7 +129,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session ,'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -151,7 +149,7 @@ class LUrlMapExecutor {
             $session_validator = new LParameterGroupValidator('session', $treeview_session, $this->my_url_map->get('/session'));
             LErrorList::saveFromErrors('session', $session_validator->validate($treeview_input, $treeview_session));
         }
-        
+
         //input parameters check
 
         if ($this->my_url_map->is_set('/input')) {
@@ -159,7 +157,7 @@ class LUrlMapExecutor {
             $input_validator = new LParameterGroupValidator('input', $treeview_input, $this->my_url_map->get('/input'));
             LErrorList::saveFromErrors('input', $input_validator->validate($treeview_input, $treeview_session));
         }
-        
+
         //before exec tree
 
         if ($this->my_url_map->is_set('/before_exec')) {
@@ -221,7 +219,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session ,'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -247,7 +245,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session , 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $capture, 'parameters' => $parameters];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -287,38 +285,45 @@ class LUrlMapExecutor {
 
             $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $capture, $parameters, $output);
 
-            LResult::framework_debug("Searching for template : ".$template_path);
-            
+            LResult::framework_debug("Searching for template : " . $template_path);
+
             $my_template_path = $renderer->searchTemplate($template_path);
 
-            LResult::framework_debug("Found template at path : ".$my_template_path);
-            
-            if (!$my_template_path) throw new \Exception("Unable to find template : ".$template_path);
-            
+            LResult::framework_debug("Found template at path : " . $my_template_path);
+
+            if (!$my_template_path)
+                throw new \Exception("Unable to find template : " . $template_path);
+
             if (!$this->my_url_map->is_set('/format')) {
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::HTML)) {
+                    LResult::framework_debug("Setting response format as html.");
                     $this->my_format = LFormat::HTML;
                 }
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::JSON)) {
+                    LResult::framework_debug("Setting response format as json.");
                     $this->my_format = LFormat::JSON;
                 }
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::XML)) {
+                    LResult::framework_debug("Setting response format as xml.");
                     $this->my_format = LFormat::XML;
                 }
+            } else {
+                $this->my_format = $this->my_url_map->get('/format');
             }
             $result = $renderer->render($my_template_path);
 
             if ($result) {
                 if ($this->is_root) {
-                    if ($this->my_format == LFormat::HTML)
-                        throw new LHtmlResponse($result);
-                    if ($this->my_format == LFormat::JSON)
-                        throw new LJsonResponse($result);
-                    if ($this->my_format == LFormat::XML)
-                        throw new LXmlResponse($result);
+                    switch ($this->my_format) {
+                        case LFormat::HTML : throw new LHtmlResponse($result);
+                        case LFormat::JSON : throw new LJsonResponse($result);
+                        case LFormat::XML : throw new LXmlResponse($result);
+
+                        default : throw new \Exception("Unrecognized response format ...");
+                    }
                 } else
                     return $result;
             }

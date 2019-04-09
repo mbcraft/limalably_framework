@@ -93,8 +93,7 @@ class LTemplateRendering {
                         case 'output_string' : break; //already done to avoid output accumulation
 
                         case 'i18n' : throw new \Exception("i18n not implemented yet");
-                            break;
-
+                            
                         default : throw new \Exception("Unable to import into variables : " . $import_name . " .Available imports : " . var_export(self::AVAILABLE_IMPORTS, true));
                     }
                 }

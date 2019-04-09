@@ -139,7 +139,7 @@ class LExecutionMode {
         $mode_long = self::get();
         
         switch ($mode_long) {
-            case self::MODE_FRAMEWORK_DEVELOPMENT : return self::MODE_DEVELOPMENT_SHORT;
+            case self::MODE_FRAMEWORK_DEVELOPMENT : return self::MODE_FRAMEWORK_DEVELOPMENT_SHORT;
             case self::MODE_DEVELOPMENT : return self::MODE_DEVELOPMENT_SHORT;
             case self::MODE_TESTING : return self::MODE_TESTING_SHORT;
             case self::MODE_PRODUCTION : return self::MODE_PRODUCTION_SHORT;

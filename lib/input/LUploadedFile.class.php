@@ -6,17 +6,13 @@ class LUploadedFile implements ArrayAccess {
         return self::normalizeArray($_FILES);
     }
     
-    static function normalizeArrayAsTree($data) {
+    static function normalizeArray($data) {
         $t = new LTreeMap($data);
         $result = new LTreeMap();
         foreach ($data as $key => $value) {
             self::normalizeBranch($t, $key, '/', $value['name'] ,$result);
         }
-        return $result;
-    }
-    
-    static function normalizeArray($data) {
-        return self::normalizeArrayAsTree($data)->getRoot();
+        return $result->getRoot();
     }
     
     private static function normalizeBranch($treemap_data,$starting_part,$current_path,$current_value,$treemap_result) {

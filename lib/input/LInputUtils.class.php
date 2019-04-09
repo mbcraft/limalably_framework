@@ -11,7 +11,7 @@ class LInputUtils {
         foreach ($source_list as $source) {
             switch ($source) {
                 case 'files' : {
-                    $import_list[] = $_FILES; break;
+                    $import_list[] = LUploadedFile::normalizeFileUploads(); break;
                 }
                 case 'post' : $import_list[] = $_POST; break;
                 case 'get' : $import_list[] = $_GET; break;

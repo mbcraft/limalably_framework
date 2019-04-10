@@ -22,7 +22,7 @@ class LFolderPermissionChecker {
     }
 
     private function getProjectFoldersSpecList() {
-        return [
+        $result = [
             new LFolderCheck(LConfigReader::simple('/urlmap/static_routes_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/urlmap/hash_db_routes_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/urlmap/private_routes_folder'),"?,r"),
@@ -35,8 +35,16 @@ class LFolderPermissionChecker {
             new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/json/error_templates_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/classloader/proc_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/classloader/data_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'), '/logging/%type%/log_folder'),"?,w")
+            
         ];
+        
+        $log_type = LConfigReader::executionMode('/logging/type');
+                
+        if (LStringUtils::endsWith($log_type, 'file')) {
+            $result[] = new LFolderCheck(LConfigReader::executionModeWithType(LConfigReader::executionMode('/logging/type'), '/logging/%type%/log_folder'),"?,w");
+        }
+        
+        return $result;
     }
 
     public function checkFrameworkFolders() {

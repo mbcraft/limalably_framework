@@ -112,8 +112,7 @@
                 "min_level": "debug"
             },
             "output": {
-                "min_level": "debug",
-                "log_folder" : "logs/"
+                "min_level": "debug"
             }
         },
         "treemap": {
@@ -123,8 +122,8 @@
             "code_file_ends_with": [".class.php", ".interface.php", ".trait.php"],
             "framework_folder_list": ["lib/"],
             "project_folder_list": ["lib/", "urlmap/handlers/"],
-            "map_cache_file_path": "temp/classloader/map/classloader_map_cache.php",
-            "class_cache_folder": "temp/classloader/classes/",
+            "map_cache_file_path": "temp/cache/classloader/map/classloader_map_cache.php",
+            "class_cache_folder": "temp/cache/classloader/classes/",
             "cache_commented_call_list": ["LResult::framework_debug", "LResult::debug", "LLog::debug", "LLog::info"],
             "skip_cache_route_list": [],
             "skip_cache_query_parameter": null,

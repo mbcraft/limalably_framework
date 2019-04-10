@@ -13,7 +13,7 @@ class LSqliteConnection implements LIDbConnection {
     
     public function close() {
         if ($this->is_open) {
-            sqlite_close($this->my_handle);
+            $this->my_handle = null;
             $this->is_open = false;
         }
     }
@@ -30,7 +30,7 @@ class LSqliteConnection implements LIDbConnection {
 
     public function open() {
         try {
-            $filename = $this->params->mustGet('filename');
+            $filename = $this->params['filename'];
             if (!LStringUtils::startsWith($filename, '/')) {
                 $filename = LConfig::mustGet('PROJECT_DIR').$filename;
             }

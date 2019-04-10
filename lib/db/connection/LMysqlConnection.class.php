@@ -12,7 +12,7 @@ class LMysqlConnection implements LIDbConnection {
 
     public function close() {
         if ($this->is_open) {
-            mysqli_close($this->my_handle);
+            $this->my_handle = null;
             $this->is_open = false;
         }
     }
@@ -30,11 +30,11 @@ class LMysqlConnection implements LIDbConnection {
     public function open() {
         
         try {
-            $host = $this->params->mustGet('host');
-            $port = $this->params->get('port',3306);
-            $username = $this->params->mustGet('username');
-            $password = $this->params->mustGet('password');
-            $db_name = $this->params->mustGet('db_name');
+            $host = $this->params['host'];
+            $port = isset($this->params['port']) ? $this->params['port'] : 3306;
+            $username = $this->params['username'];
+            $password = $this->params['password'];
+            $db_name = $this->params['db_name'];
        
             $conn_string = 'mysql:host='.$host.';';
             if ($port!=3306) {

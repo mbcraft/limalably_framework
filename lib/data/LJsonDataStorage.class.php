@@ -9,7 +9,7 @@ class LJsonDataStorage implements LIDataStorage {
     }
     
     function initWithDefaults() {
-        $this->root_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/data_folder');
+        $this->root_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/misc/data_folder');
     }
     
     function init($root_path) {

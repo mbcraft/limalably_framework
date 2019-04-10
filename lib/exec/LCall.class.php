@@ -30,9 +30,9 @@ class LCall {
         $this->initialized = true;
 
         $this->base_dir = $_SERVER['PROJECT_DIR'];
-        $this->proc_folder = LConfigReader::simple('/classloader/proc_folder');
-        $this->proc_extension = LConfigReader::simple('/classloader/proc_extension');
-        $this->data_folder = LConfigReader::simple('/classloader/data_folder');
+        $this->proc_folder = LConfigReader::simple('/misc/proc_folder');
+        $this->proc_extension = LConfigReader::simple('/misc/proc_extension');
+        $this->data_folder = LConfigReader::simple('/misc/data_folder');
     }
 
     public static function isDataImport($call_spec) {

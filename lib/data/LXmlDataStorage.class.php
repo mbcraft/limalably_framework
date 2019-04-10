@@ -18,7 +18,7 @@ class LXmlDataStorage implements LIDataStorage {
     }
 
     public function initWithDefaults() {
-        $this->root_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/classloader/data_folder');
+        $this->root_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/misc/data_folder');
     }
 
     public function isInitialized() {

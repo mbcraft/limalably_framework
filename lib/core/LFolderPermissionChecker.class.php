@@ -33,8 +33,8 @@ class LFolderPermissionChecker {
             new LFolderCheck(LConfigReader::simple('/classloader/class_cache_folder'),"f"),
             new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/html/error_templates_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/json/error_templates_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::simple('/classloader/proc_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::simple('/classloader/data_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/misc/proc_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/misc/data_folder'),"?,r"),
             
         ];
         

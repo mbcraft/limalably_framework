@@ -15,13 +15,13 @@ class LErrorList {
         self::$data[$type][] = $ex;
         self::$data['all'][] = $ex;
 
-        $log_errors = LConfigReader::executionMode('/error/log');
+        $log_errors = LConfigReader::executionMode('/misc/errors/log');
 
         if ($log_errors) {
             LLog::exception($ex);
         }
 
-        $continue_execution_on_errors = LConfigReader::executionMode('/error/continue_on_errors');
+        $continue_execution_on_errors = LConfigReader::executionMode('/misc/errors/continue_on_errors');
 
         if (!$continue_execution_on_errors) {
             switch ($type) {
@@ -55,7 +55,7 @@ class LErrorList {
 
         self::$data = array_merge_recursive(self::$data, array($type => $result_errors, 'all' => $result_errors));
 
-        $log_errors = LConfigReader::executionMode('/error/log');
+        $log_errors = LConfigReader::executionMode('/misc/errors/log');
 
         if ($log_errors) {
 
@@ -64,7 +64,7 @@ class LErrorList {
             }
         }
 
-        $continue_execution_on_errors = LConfigReader::executionMode('/error/continue_on_errors');
+        $continue_execution_on_errors = LConfigReader::executionMode('/misc/errors/continue_on_errors');
 
         if (!$continue_execution_on_errors) {
             switch ($type) {

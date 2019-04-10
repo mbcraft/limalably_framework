@@ -15,7 +15,7 @@ class LResult {
      * @param string $message
      */
     public static function trace(string $message) {
-        if (LConfigReader::executionMode('/trace')) {
+        if (LConfigReader::executionMode('/misc/trace_enabled')) {
             echo $message;
             self::newline();
         }
@@ -28,7 +28,7 @@ class LResult {
      * @param string $message
      */
     public static function debug(string $message) {
-        if (LConfigReader::executionMode('/debug')) {
+        if (LConfigReader::executionMode('/misc/debug_enabled')) {
             echo $message;
             self::newline();
         }

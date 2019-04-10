@@ -9,6 +9,10 @@
     ],
     "require": {
         "twig/twig": "v2.6.2",
-        "respect/validation": "^1.1"
+        "respect/validation": "^1.1",
+	"atlas/orm": "~3.0"
+    },
+    "require-dev": {
+        "atlas/cli": "~2.0"
     }
 }

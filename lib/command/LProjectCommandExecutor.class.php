@@ -45,6 +45,19 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
     }
     
+    private function handleGenerateDataObjects() {
+        $this->setCommandAsExecuted();
+        
+        if (isset($_SERVER['argv'][2])) {
+            $connection_name = $_SERVER['argv'][2];
+        } else {
+            $connection_name = 'default';
+        }
+        
+        LAtlasSkeletonGenerator::generate($connection_name);
+        
+    }
+    
     public function tryExecuteCommand() {
         $route = $_SERVER['ROUTE'];
         switch ($route) {
@@ -52,6 +65,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'internal/get_execution_mode' : $this->handleGetExecutionMode();break;
             case 'internal/run_tests' : $this->handleRunTests();break;
             case 'internal/run_tests_fast' : $this->handleRunTestsFast();break;
+            case 'internal/generate_data_objects' : $this->handleGenerateDataObjects();break;
         }
     }
 

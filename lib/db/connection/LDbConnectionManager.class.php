@@ -23,9 +23,19 @@ class LDbConnectionManager {
         
     }
     
+    public static function getConnectionString($connection_name = 'default') {
+        if (!isset(self::$connections[$connection_name])) {
+            self::$connections[$connection_name] = self::createAndOpen($connection_name);    
+        }
+        
+        $params = LConfigReader::simple('/database/'.$connection_name);
+        
+        return self::$connections[$connection_name]->getConnectionString($params);
+    }
+    
     private static function createAndOpen($connection_name) {
         
-        $params = LConfigReader::executionMode('/database/'.$connection_name);
+        $params = LConfigReader::simple('/database/'.$connection_name);
         
         $type = $params['type'];
         switch ($type) {
@@ -45,7 +55,9 @@ class LDbConnectionManager {
         
         foreach (self::$connections as $conn) {
             
-            if ($conn->isOpen()) $conn->close();
+            if ($conn->isOpen())  {
+                $conn->close();
+            }
             
         }
         

@@ -9,14 +9,16 @@ class LAtlasSkeletonGenerator {
 
     static function generate($connection_name='default') {
 
+        $db_config_atlas = LConfigReader::simple('/database/'.$connection_name.'/atlas');
+        
         $database_config = LConfigReader::simple('/database/'.$connection_name);
         
         $input = [
             "pdo" => [
                 LDbConnectionManager::getConnectionString($connection_name)
             ],
-            'namespace' => $database_config['atlas']['namespace'],
-            'directory' => $database_config['atlas']['directory']
+            'namespace' => $db_config_atlas['namespace'],
+            'directory' => $db_config_atlas['directory']
         ];
         
         if (isset($database_config['username'])) {
@@ -31,12 +33,12 @@ class LAtlasSkeletonGenerator {
             if (isset($database_config['username'])) throw new \Exception("Password is missing from database configuration");
         }
         
-        if (isset($database_config['atlas']['transform'])) {
-            $input['transform'] = $database_config['atlas']['transform'];
+        if (isset($db_config_atlas['transform'])) {
+            $input['transform'] = $db_config_atlas['transform'];
         }
         
-        if (isset($database_config['atlas']['templates'])) {
-            $input['templates'] = $database_config['atlas']['templates'];
+        if (isset($db_config_atlas['templates'])) {
+            $input['templates'] = $db_config_atlas['templates'];
         }
         
         $command = new Skeleton(

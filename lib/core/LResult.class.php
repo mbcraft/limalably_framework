@@ -14,8 +14,8 @@ class LResult {
      * 
      * @param string $message
      */
-    public static function framework_debug(string $message) {
-        if (LExecutionMode::isFrameworkDevelopment()) {
+    public static function trace(string $message) {
+        if (LConfigReader::executionMode('/trace')) {
             echo $message;
             self::newline();
         }
@@ -28,7 +28,7 @@ class LResult {
      * @param string $message
      */
     public static function debug(string $message) {
-        if (LExecutionMode::isDevelopment() || LExecutionMode::isFrameworkDevelopment()) {
+        if (LConfigReader::executionMode('/debug')) {
             echo $message;
             self::newline();
         }

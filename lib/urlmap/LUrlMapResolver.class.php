@@ -80,7 +80,7 @@ class LUrlMapResolver {
     private function isPrivateRoute($route) {
         $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
-        LResult::framework_debug('Cerco private route : '.$route);
+        LResult::trace('Cerco private route : '.$route);
         return is_readable($path);
     }
     
@@ -99,7 +99,7 @@ class LUrlMapResolver {
     private function isHashRoute($route) {
         $path = $this->root_folder.$this->hash_db_folder.sha1($route).self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
-        LResult::framework_debug('Cerco hash route : '.$route);
+        LResult::trace('Cerco hash route : '.$route);
         return is_readable($path);
     }
         
@@ -148,7 +148,7 @@ class LUrlMapResolver {
     private function getPublicUrlMapAsArray($route) {
         $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
-        LResult::framework_debug("Ritorno l'urlmap pubblica alla route ".$route);
+        LResult::trace("Ritorno l'urlmap pubblica alla route ".$route);
         return $this->readUrlMapAsArray($path);
     }
     
@@ -161,7 +161,7 @@ class LUrlMapResolver {
     private function isPublicRoute($route) {
         $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
-        LResult::framework_debug('Cerco static route : '.$route);
+        LResult::trace('Cerco static route : '.$route);
         return is_readable($path);
     }
     
@@ -208,7 +208,7 @@ class LUrlMapResolver {
     private function resolvePublicUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
-            LResult::framework_debug("Risolvo la route pubblica : ".$route);
+            LResult::trace("Risolvo la route pubblica : ".$route);
             if ($this->isPublicRoute($route)) {
                 
                 $array_map = $this->getPublicUrlMapAsArray($route);
@@ -296,7 +296,7 @@ class LUrlMapResolver {
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);
         
         if (($search_flags & self::FLAGS_SEARCH_PUBLIC) == self::FLAGS_SEARCH_PUBLIC) {
-            LResult::framework_debug("Cerco la route in static e hash : ".$route);
+            LResult::trace("Cerco la route in static e hash : ".$route);
             $route_check_order = LConfigReader::executionMode('/urlmap/search_order');
             $route_checks = explode(',',$route_check_order);
             foreach ($route_checks as $route_check) {
@@ -320,7 +320,7 @@ class LUrlMapResolver {
             }
         }
         if (($search_flags & self::FLAGS_SEARCH_PRIVATE) == self::FLAGS_SEARCH_PRIVATE) {
-            LResult::framework_debug("Cerco la route in private : ".$route);
+            LResult::trace("Cerco la route in private : ".$route);
             if ($this->isPrivateRoute($route)) {
                 return $this->resolvePrivateUrlMap($route);
             }

@@ -24,7 +24,7 @@ class LUrlMapExecutor {
     }
 
     function executeRootRequest($route) {
-        LResult::framework_debug("Executing root request : " . $route);
+        LResult::trace("Executing root request : " . $route);
         $this->is_root = true;
         
         $parameters = LParameters::all();
@@ -53,7 +53,7 @@ class LUrlMapExecutor {
 
         $this->capture = $capture;
         
-        LResult::framework_debug("Start evaluating routemap for route : " . $route);
+        LResult::trace("Start evaluating routemap for route : " . $route);
 
         $abs_input = $treeview_input->view('/');
         $abs_session = $treeview_session->view('/');
@@ -72,7 +72,7 @@ class LUrlMapExecutor {
 
         //evaluating condition
         if ($this->my_url_map->is_set('/conditions')) {
-            LResult::framework_debug("Evaluating urlmap conditions ...");
+            LResult::trace("Evaluating urlmap conditions ...");
             $cond = new LCondition();
 
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/conditions'));
@@ -84,7 +84,7 @@ class LUrlMapExecutor {
         }
         //negated condition
         if ($this->my_url_map->is_set('/!conditions')) {
-            LResult::framework_debug("Evaluating urlmap negative conditions ...");
+            LResult::trace("Evaluating urlmap negative conditions ...");
             $cond = new LCondition();
 
             $result = $cond->evaluate('urlmap', $this->my_url_map->get('/!conditions'));
@@ -98,7 +98,7 @@ class LUrlMapExecutor {
 
         //loading prepared input
         if ($this->my_url_map->is_set('/load')) {
-            LResult::framework_debug("Loading data into input ...");
+            LResult::trace("Loading data into input ...");
             try {
                 $this->loadDataInTreeMap($this->my_url_map->get('/load'), $treeview_input);
             } catch (\Exception $ex) {
@@ -109,7 +109,7 @@ class LUrlMapExecutor {
 
         //capture resolution
         if ($this->my_url_map->is_set('/capture')) {
-            LResult::framework_debug("Evaluating capture ...");
+            LResult::trace("Evaluating capture ...");
             try {
                 $capture_resolver = new LRouteCapture();
                 $capture_pattern = $this->my_url_map->get('/capture');
@@ -124,7 +124,7 @@ class LUrlMapExecutor {
         //init tree
 
         if ($this->my_url_map->is_set('/init')) {
-            LResult::framework_debug("Evaluating init section ...");
+            LResult::trace("Evaluating init section ...");
             $exec_list = $this->my_url_map->get('/init');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -150,7 +150,7 @@ class LUrlMapExecutor {
         //session parameters check
 
         if ($this->my_url_map->is_set('/session')) {
-            LResult::framework_debug("Evaluating session parameters constraints ...");
+            LResult::trace("Evaluating session parameters constraints ...");
             $session_validator = new LParameterGroupValidator($treeview_session, $this->my_url_map->get('/session'));
             LErrorList::saveFromErrors('session', $session_validator->validate('session', $treeview_input, $treeview_session));
         }
@@ -158,7 +158,7 @@ class LUrlMapExecutor {
         //input parameters check
 
         if ($this->my_url_map->is_set('/input')) {
-            LResult::framework_debug("Evaluating input parameters contraints ...");
+            LResult::trace("Evaluating input parameters contraints ...");
             $input_validator = new LParameterGroupValidator( $treeview_input, $this->my_url_map->get('/input'));
             LErrorList::saveFromErrors('input', $input_validator->validate('input',$treeview_input, $treeview_session));
         }
@@ -166,7 +166,7 @@ class LUrlMapExecutor {
         //before exec tree
 
         if ($this->my_url_map->is_set('/before_exec')) {
-            LResult::framework_debug("Evaluating before_exec section ...");
+            LResult::trace("Evaluating before_exec section ...");
             $exec_list = $this->my_url_map->get('/before_exec');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -192,7 +192,7 @@ class LUrlMapExecutor {
         //dynamic exec
 
         if ($this->my_url_map->is_set('/dynamic_exec')) {
-            LResult::framework_debug("Evaluating dynamic_exec section ...");
+            LResult::trace("Evaluating dynamic_exec section ...");
             $exec_list = $this->my_url_map->get('/dynamic_exec');
             if (!is_array($exec_list))
                 $exec_list = array($exec_list);
@@ -214,7 +214,7 @@ class LUrlMapExecutor {
         //exec tree
 
         if ($this->my_url_map->is_set('/exec')) {
-            LResult::framework_debug("Evaluating exec section ...");
+            LResult::trace("Evaluating exec section ...");
             $exec_list = $this->my_url_map->get('/exec');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -240,7 +240,7 @@ class LUrlMapExecutor {
         //after exec tree
 
         if ($this->my_url_map->is_set('/after_exec')) {
-            LResult::framework_debug("Evaluating after_exec section ...");
+            LResult::trace("Evaluating after_exec section ...");
             $exec_list = $this->my_url_map->get('/after_exec');
             foreach ($exec_list as $path => $exec_spec_list) {
                 if (!is_array($exec_spec_list))
@@ -266,7 +266,7 @@ class LUrlMapExecutor {
         //dynamic template
 
         if ($this->my_url_map->is_set('/dynamic_template')) {
-            LResult::framework_debug("Evaluating dynamic_template ...");
+            LResult::trace("Evaluating dynamic_template ...");
             $dynamic_template_spec = $this->my_url_map->get('/dynamic_template');
             if (!is_string($dynamic_template_spec)) {
                 LErrorList::saveFromErrors('dynamic_template',"Unable to execute dynamic template call : value is not a string.");
@@ -285,16 +285,16 @@ class LUrlMapExecutor {
         //template rendering
 
         if ($this->my_url_map->is_set('/template')) {
-            LResult::framework_debug("Evaluating template ...");
+            LResult::trace("Evaluating template ...");
             $template_path = $this->my_url_map->get('/template');
 
             $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $this->capture, $parameters, $this->output);
 
-            LResult::framework_debug("Searching for template : " . $template_path);
+            LResult::trace("Searching for template : " . $template_path);
 
             $my_template_path = $renderer->searchTemplate($template_path);
 
-            LResult::framework_debug("Found template at path : " . $my_template_path);
+            LResult::trace("Found template at path : " . $my_template_path);
 
             if (!$my_template_path)
                 throw new \Exception("Unable to find template : " . $template_path);
@@ -302,22 +302,22 @@ class LUrlMapExecutor {
             if (!$this->my_url_map->is_set('/format')) {
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::HTML)) {
-                    LResult::framework_debug("Setting response format as html.");
+                    LResult::trace("Setting response format as html.");
                     $this->my_format = LFormat::HTML;
                 }
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::JSON)) {
-                    LResult::framework_debug("Setting response format as json.");
+                    LResult::trace("Setting response format as json.");
                     $this->my_format = LFormat::JSON;
                 }
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::XML)) {
-                    LResult::framework_debug("Setting response format as xml.");
+                    LResult::trace("Setting response format as xml.");
                     $this->my_format = LFormat::XML;
                 }
             } else {
                 $this->my_format = $this->my_url_map->get('/format');
-                LResult::framework_debug("Recognized format inside urlmap : ".$this->my_format);
+                LResult::trace("Recognized format inside urlmap : ".$this->my_format);
             }
             $result = $renderer->render($my_template_path);
 
@@ -336,7 +336,7 @@ class LUrlMapExecutor {
         }
 
         //format resolution
-        LResult::framework_debug("Evaluating response format ...");
+        LResult::trace("Evaluating response format ...");
         if ($this->my_url_map->is_set('/format')) {
             $this->my_format = $this->my_url_map->get('/format');
         } else {

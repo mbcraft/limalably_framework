@@ -9,7 +9,7 @@ class LMaintenanceRouteExecutor implements LICommandExecutor {
     }
 
     public function tryExecuteCommand() {
-        LResult::framework_debug("Executing maintenance route executor ...");
+        LResult::trace("Executing maintenance route executor ...");
         $this->executed = true;
 
         if (LEnvironmentUtils::getEnvironment() == 'script') {

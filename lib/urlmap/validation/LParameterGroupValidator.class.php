@@ -30,7 +30,7 @@ class LParameterGroupValidator {
             }
         }
         
-        LResult::framework_debug("Final validation of ".$type." is : ".var_export($final_result,true));
+        LResult::trace("Final validation of ".$type." is : ".var_export($final_result,true));
         
         return $final_result;
         

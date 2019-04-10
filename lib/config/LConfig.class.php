@@ -10,7 +10,7 @@ class LConfig {
     private static $init_called = false;
     private static $php_config_found = false;
     private static $json_config_found = false;
-
+    
     public static function phpConfigFound() {
         return self::$php_config_found;
     }
@@ -24,17 +24,17 @@ class LConfig {
 
         if (!self::is_set($var_name)) {
             self::$tree_map->set($var_name, $_SERVER[$var_name]);
-            LResult::framework_debug('Server var ' . $var_name . ' persisted into configuration ...');
+            //LResult::trace('Server var ' . $var_name . ' persisted into configuration ...');
         }
     }
 
     private static function detectAndSaveDirs() {
         if (isset($_SERVER['PROJECT_DIR'])) {
             LConfig::saveServerVar('PROJECT_DIR');
-            LResult::framework_debug("Project dir detected : " . $_SERVER['PROJECT_DIR']);
+            //LResult::trace("Project dir detected : " . $_SERVER['PROJECT_DIR']);
         }
         LConfig::saveServerVar('FRAMEWORK_DIR');
-        LResult::framework_debug("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);
+        //LResult::trace("Loading framework from : " . $_SERVER['FRAMEWORK_DIR']);
     }
 
     private static function detectAndSaveEnvironment() {
@@ -44,7 +44,7 @@ class LConfig {
         }
 
         LConfig::saveServerVar('ENVIRONMENT');
-        LResult::framework_debug("Environment detected : " . $_SERVER['ENVIRONMENT']);
+        //LResult::trace("Environment detected : " . $_SERVER['ENVIRONMENT']);
     }
 
     private static function detectAndSaveHostnameRawRouteAndParameters() {
@@ -106,11 +106,11 @@ class LConfig {
 
         $_SERVER['HOSTNAME'] = $hostname;
         LConfig::saveServerVar('HOSTNAME');
-        LResult::framework_debug("Hostname detected : " . $_SERVER['HOSTNAME']);
+        //LResult::trace("Hostname detected : " . $_SERVER['HOSTNAME']);
 
         // hostname set
         LConfig::saveServerVar('RAW_ROUTE');
-        LResult::framework_debug("Raw route detected : " . $_SERVER['RAW_ROUTE']);
+        //LResult::trace("Raw route detected : " . $_SERVER['RAW_ROUTE']);
     }
 
     private static function initRoute() {
@@ -129,7 +129,7 @@ class LConfig {
         $_SERVER['ROUTE'] = $route;
         LConfig::saveServerVar('ROUTE');
         // route set
-        LResult::framework_debug("Route detected : " . $_SERVER['ROUTE']);
+        //LResult::trace("Route detected : " . $_SERVER['ROUTE']);
     }
 
     private static function initFromConfigFiles() {
@@ -178,7 +178,7 @@ class LConfig {
                 exit(1);
             } else {
                 // config dir found
-                LResult::framework_debug("Config dir found : " . $config_dir_path);
+                //LResult::trace("Config dir found : " . $config_dir_path);
             }
 
             if (is_file($config_dir_path . 'config.php')) {
@@ -220,7 +220,7 @@ class LConfig {
             $message .= ' + ';
         if (self::jsonConfigFound())
             $message .= '/config/hostnames/' . $_SERVER['HOSTNAME'] . '/config'.self::CONFIG_EXTENSION;
-        LResult::framework_debug($message);
+        //LResult::trace($message);
     }
 
     public static function init() {
@@ -239,7 +239,7 @@ class LConfig {
         
         self::initRoute();
         
-        LResult::framework_debug("Execution mode : " . LExecutionMode::get());
+        //LResult::trace("Execution mode : " . LExecutionMode::get());
 
         // loading internal config ...
 

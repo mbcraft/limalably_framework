@@ -51,7 +51,9 @@
                 },
                 "template": {
                     "auto_reload": false
-                }
+                },
+                "trace" : false,
+                "debug" : false
             },
             "production": {
                 "logging": {
@@ -63,7 +65,9 @@
                 },
                 "template": {
                     "auto_reload": false
-                }
+                },
+                "trace" : false,
+                "debug" : false
             }
         },
         "urlmap": {
@@ -124,7 +128,7 @@
             "project_folder_list": ["lib/", "urlmap/handlers/"],
             "map_cache_file_path": "temp/cache/classloader/map/classloader_map_cache.php",
             "class_cache_folder": "temp/cache/classloader/classes/",
-            "cache_commented_call_list": ["LResult::framework_debug", "LResult::debug", "LLog::debug", "LLog::info"],
+            "cache_commented_call_list": ["LResult::trace", "LResult::debug", "LLog::debug", "LLog::info"],
             "skip_cache_route_list": [],
             "skip_cache_query_parameter": null,
             "proc_folder": "proc/",
@@ -154,6 +158,8 @@
         "error" : {
             "log" : true,
             "continue_on_errors" : false
-        }
+        },
+        "trace" : true,
+        "debug" : true
     }
 }

@@ -76,7 +76,7 @@ class LLog {
                 $connection_name = LConfigReader::executionModeWithType( $logger_type, '/logging/%type%/connection_name');
                 $max_records = LConfigReader::executionModeWithType($logger_type, '/logging/%type%/max_records');
                 $table_name = LConfigReader::executionModeWithType($logger_type, '/logging/%type%/table_name');
-                LResult::framework_debug("Creating instance of dblogger ...");
+                LResult::trace("Creating instance of dblogger ...");
                 self::$my_logger = new LDbLogger($connection_name,$log_mode,$max_records,$table_name);
                 break;
             }

@@ -36,7 +36,13 @@ class LMysqlConnection implements LIDbConnection {
             $password = $this->params->mustGet('password');
             $db_name = $this->params->mustGet('db_name');
        
-            $result = mysqli_connect($host.':'.$port,$username,$password,$db_name);
+            $conn_string = 'mysql:host='.$host.';';
+            if ($port!=3306) {
+                $conn_string.= 'port='.$port.';';
+            }
+            $conn_string.= 'dbname='.$db_name.';';
+            
+            $result = new PDO($conn_string,$username,$password);
             
             if ($result) {
                 $this->my_handle = $result;

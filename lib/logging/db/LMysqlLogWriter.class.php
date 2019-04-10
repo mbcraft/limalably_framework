@@ -29,16 +29,16 @@ class LMysqlLogWriter implements LILogWriter {
             
             $query = self::QUERY_COUNT_RECORDS;
             $query = str_replace('%table_name%',$this->table_name,$query);
-            $result = mysqli_query($this->my_handle, $query);
-            $result_array = $result->fetch_assoc();
-            $result->free();
+            $result_statement = $this->my_handle->query($query);
+            $result_array = $result_statement->fetchAll(PDO::FETCH_ASSOC);
+            
             $records_count = $result_array['records_count'];
             
             if ($records_count>$this->max_records) {
                 $query = self::QUERY_DELETE_RECORDS;
                 $query = str_replace('%table_name%',$this->table_name,$query);
                 $query = str_replace('%level%',self::LEVEL_WARNING,$query);
-                mysqli_query($this->my_handle, $query);
+                $this->my_handle->exec($query);
             }
         }
     }
@@ -48,14 +48,14 @@ class LMysqlLogWriter implements LILogWriter {
         //create table if not exists 
         $query = self::QUERY_CREATE_TABLE;
         $query = str_replace('%table_name%',$this->table_name,$query);
-        mysqli_query($this->my_handle, $query);
+        $this->my_handle->exec($query);
         
         // truncate table if reset mode
         if ($this->log_mode == self::MODE_RESET) {
             $query = self::QUERY_RESET_TABLE;
             $query = str_replace('%table_name%',$this->table_name,$query);
             
-            mysqli_query($this->my_handle, $query);
+            $this->my_handle->exec($query);
         }
     }
 
@@ -79,7 +79,7 @@ class LMysqlLogWriter implements LILogWriter {
         $query = str_replace('%route%', mysqli_escape_string($this->my_handle, LConfig::mustGet('ROUTE')),$query);
         $query = str_replace('%message%', mysqli_escape_string($this->my_handle, $message),$query);
         
-        mysqli_query($this->my_handle, $query);
+        $this->my_handle->exec($query);
         
     }
 

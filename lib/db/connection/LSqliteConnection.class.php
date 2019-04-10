@@ -34,14 +34,12 @@ class LSqliteConnection implements LIDbConnection {
             if (!LStringUtils::startsWith($filename, '/')) {
                 $filename = LConfig::mustGet('PROJECT_DIR').$filename;
             }
-            $error_message = null;
-            $result = sqlite_open($filename, 0666, $error_message);
-            if ($result) {
-                $this->my_handle = $result;
-                return true;
-            } else {
-                throw new \Exception($error_message);
-            }
+            
+            $result = new PDO('sqlite:'.$filename);
+            
+            $this->my_handle = $result;
+            return true;
+            
         } catch (\Exception $ex) {
             LResult::exception($ex);
             return false;

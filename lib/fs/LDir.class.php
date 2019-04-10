@@ -190,11 +190,11 @@ class LDir extends LFileSystemElement
             {
                 if ($this->isDir())
                     $partial_path = $this->__path.$element;
-                if ($filter & self::FILTER_ALL_DIRECTORIES == self::FILTER_ALL_DIRECTORIES) {
+                if (($filter & self::FILTER_ALL_DIRECTORIES) == self::FILTER_ALL_DIRECTORIES) {
                     if (LFileSystemUtils::isDir($this->__path.$element))
                         $all_dirs[] = new LDir($partial_path);
                 }
-                if ($filter & self::FILTER_ALL_FILES == self::FILTER_ALL_FILES) {
+                if (($filter & self::FILTER_ALL_FILES) == self::FILTER_ALL_FILES) {
                     if (LFileSystemUtils::isFile($this->__path.'/'.$element))
                         $all_files[] = new LFile($partial_path);
                 }
@@ -248,11 +248,11 @@ class LDir extends LFileSystemElement
             {
                 if ($this->isDir())
                     $partial_path = $this->__path.$element;
-                if ($filter & self::FILTER_ALL_DIRECTORIES == self::FILTER_ALL_DIRECTORIES) {
+                if (($filter & self::FILTER_ALL_DIRECTORIES) == self::FILTER_ALL_DIRECTORIES) {
                     if (LFileSystemUtils::isDir($this->__path.$element))
                         $all_dirs[] = new LDir($partial_path);
                 }
-                if ($filter & self::FILTER_ALL_FILES == self::FILTER_ALL_FILES) {
+                if (($filter & self::FILTER_ALL_FILES) == self::FILTER_ALL_FILES) {
                     if (LFileSystemUtils::isFile($this->__path.DS.$element))
                         $all_files[] = new LFile($partial_path);
                 }

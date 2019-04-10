@@ -24,7 +24,7 @@ class LFile extends LFileSystemElement
     function rename($new_name)
     {
         if (strstr($new_name,"/")!==false)
-            throw new \LIOException("Il nome contiene caratteri non ammessi ( / )!!");
+            throw new \LIOException("The name contains forbidden characters : / !!");
 
         $this_dir = $this->getDirectory();
 
@@ -126,12 +126,12 @@ class LFile extends LFileSystemElement
 
     public function openReader()
     {
-        if (!$this->exists()) throw new \LIOException("Impossibile aprire il reader al percorso : ".$this->__full_path.". Il file non esiste!!");
+        if (!$this->exists()) throw new \LIOException("Unable to open file reader at path : ".$this->__full_path.". The file does not exist!!");
 
 
         $handle = fopen($this->__full_path,"r");
 
-        if ($handle===false) throw new \LIOException("Impossibile aprire il reader al percorso : ".$this->__full_path.".");
+        if ($handle===false) throw new \LIOException("Unable to open file reader at path : ".$this->__full_path.".");
 
         if (flock($handle, LOCK_SH))
         {
@@ -148,7 +148,7 @@ class LFile extends LFileSystemElement
     {
         $handle = fopen($this->__full_path,"c+");
 
-        if ($handle===false) throw new \LIOException("Impossibile aprire il writer al percorso : ".$this->__full_path);
+        if ($handle===false) throw new \LIOException("Unable to open file writer at path : ".$this->__full_path);
 
         if (flock($handle,LOCK_EX))
         {

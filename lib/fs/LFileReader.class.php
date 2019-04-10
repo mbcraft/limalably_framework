@@ -13,7 +13,7 @@ class LFileReader
 
     protected function checkClosed()
     {
-        if (!$this->open) throw new \Exception("Lo stream risulta essere chiuso!!");
+        if (!$this->open) throw new \LIOException("The stream is closed!!");
     }
 
     function isOpen()
@@ -104,7 +104,7 @@ class LFileReader
             $this->my_handle = null;
         }
         else
-            throw new \Exception("Reader/Writer already closed.");
+            throw new \LIOException("Reader/Writer already closed.");
 
     }
     

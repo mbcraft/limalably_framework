@@ -234,7 +234,7 @@ abstract class LFileSystemElement
             {
                 return substr($this->__path,strlen($path));
             }
-            else throw new \Exception("Il percorso non comincia col percorso specificato : ".$this->__path." non comincia con ".$path);
+            else throw new \LIOException("The path does not begin with the specified path : ".$this->__path." does not begin with ".$path);
         }
     }
 

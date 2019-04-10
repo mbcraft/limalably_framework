@@ -19,15 +19,7 @@ class LParameters {
         return $_SERVER['PARAMETERS'][$index];
         
     }
-    
-    static function shift() {
         
-        if (self::count()==0) throw new \Exception("Can't shift more parameters.");
-        
-        return array_shift($_SERVER['PARAMETERS']);
-        
-    }
-    
     static function all() {
         return isset($_SERVER['PARAMETERS']) ? $_SERVER['PARAMETERS'] : [];
     }

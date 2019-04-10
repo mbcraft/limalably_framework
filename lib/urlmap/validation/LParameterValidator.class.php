@@ -15,6 +15,7 @@ class LParameterValidator {
     private $rules;
     private $has_default_value;
     private $default_value;
+    private $normalize;
     
     function __construct($type,$name,$is_set,$value,$parameters) {
         $this->type = $type;
@@ -26,6 +27,8 @@ class LParameterValidator {
         $this->neg_condition = array_key_exists('!conditions',$parameters) ? $parameters['!conditions'] : [];
         
         $this->rules = array_key_exists('rules',$parameters) ? $parameters['rules'] : [];
+        
+        $this->normalize = array_key_exists('normalize',$parameters) ? $parameters['normalize'] : true;
         
         $this->has_default_value = array_key_exists('default_value',$parameters);
         $this->default_value = array_key_exists('default_value',$parameters) ? $parameters['default_value'] : null;
@@ -54,6 +57,7 @@ class LParameterValidator {
     }
         
     function hasNormalizedValue() {
+        if (!$this->normalize) return false;
         if ($this->is_set) return true;
         if (!$this->is_set) {
             if ($this->has_default_value) return true;

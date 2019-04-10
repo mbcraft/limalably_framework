@@ -11,7 +11,7 @@ class LDbLogger implements LILogger {
     
     function __construct($connection_name,$log_mode, $max_records = 1000000, $table_name = 'logs') {
         
-        $params = LConfig::get('/database/'.$connection_name.'/');
+        $params = LConfigReader::simple('/database/'.$connection_name.'/');
         if (!isset($params['type']))
             throw new \Exception("Database type is not set in database params.");
         $type = $params['type'];

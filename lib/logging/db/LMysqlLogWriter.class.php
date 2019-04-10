@@ -11,7 +11,7 @@ class LMysqlLogWriter implements LILogWriter {
     const QUERY_COUNT_RECORDS = "SELECT COUNT(*) as records_count FROM `%table_name%`;";
     const QUERY_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `%table_name%` ( `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT , `level` MEDIUMINT UNSIGNED NOT NULL , `level_string` VARCHAR(16) NOT NULL , `code` VARCHAR(16) , `datetime_created` DATETIME NOT NULL , `route` VARCHAR(256) NOT NULL , `message` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = MyISAM CHARSET=utf8 COLLATE utf8_unicode_ci COMMENT = 'Table for logs';";
     const QUERY_RESET_TABLE = "TRUNCATE TABLE %table_name%;";
-    const QUERY_WRITE_LOG = "INSERT INTO `%table_name%` (`id`, `level`, `level_string`, `code`, `datetime_created`, `route`, `message`) VALUES (NULL, '%level%', '%level_string%', NOW(), '%route%', '%message%')";
+    const QUERY_WRITE_LOG = "INSERT INTO `%table_name%` (`id`, `level`, `level_string`, `code`, `datetime_created`, `route`, `message`) VALUES (NULL, :level, :level_string, :code ,NOW(), :route, :message)";
     
     function __construct($connection_name,$log_mode, $max_records = 1000000 ,$table_name = 'logs') {
         
@@ -63,7 +63,6 @@ class LMysqlLogWriter implements LILogWriter {
         //write message into db
         $query = self::QUERY_WRITE_LOG;
         $query = str_replace('%table_name%',$this->table_name,$query);
-        $query = str_replace('%level%',mysqli_escape_string($this->my_handle, $level),$query);
         
         switch ($level) {
             case self::LEVEL_DEBUG : $level_string = 'debug';break;
@@ -74,12 +73,11 @@ class LMysqlLogWriter implements LILogWriter {
             default : $level_string = 'unknown';break;
         }
         
-        $query = str_replace('%level_string%', mysqli_escape_string($this->my_handle, $level_string),$query);
-        $query = str_replace('%code%', mysqli_escape_string($this->my_handle, $code),$query);
-        $query = str_replace('%route%', mysqli_escape_string($this->my_handle, LConfig::mustGet('ROUTE')),$query);
-        $query = str_replace('%message%', mysqli_escape_string($this->my_handle, $message),$query);
+        $stmt = $this->my_handle->prepare($query);
         
-        $this->my_handle->exec($query);
+        $route = LConfig::mustGet('ROUTE');
+                
+        $result = $stmt->execute(array(':level' => $level,':code' => $code,':level_string' => $level_string,':route' => $route,':message' => $message));
         
     }
 

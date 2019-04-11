@@ -4,7 +4,7 @@ class I18nUtils {
     
     public static function getAvailableLanguages() {
         
-        $i18n_dir = LConfigReader::simple('/i18n/root_folder');
+        $i18n_dir = LConfigReader::simple('/i18n/translations_root_folder');
         
         $lang_dir = $_SERVER['PROJECT_DIR'].$i18n_dir;
         
@@ -34,7 +34,7 @@ class I18nUtils {
             $t = new LTreeMap($_SESSION);
             $current_lang = $t->get($session_variable_path,null);
             
-            if (in_array($current_lang, $available_languages)) return $current_lang;
+            if ($current_lang && in_array($current_lang, $available_languages)) return $current_lang;
         }
         
         //second check in browser languages
@@ -67,7 +67,7 @@ class I18nUtils {
         
         $my_factory = new $source_factory_class();
         
-        $root_folder = LConfigReader::simple('/i18n/root_folder');
+        $root_folder = LConfigReader::simple('/i18n/translations_root_folder');
         
         $root_lang_folder = $root_folder.$lang.'/';
         
@@ -108,6 +108,11 @@ class I18nUtils {
     }
     
     private static function recursiveScanDir($folder) {
+        $ini_reader = new LIniDataStorage();
+        $ini_reader->init($folder);
+        $xml_reader = new LXmlDataStorage();
+        $xml_reader->init($folder);
+        
         $result = [];
         $elements = scandir($folder);
         foreach ($elements as $elem) {
@@ -116,10 +121,23 @@ class I18nUtils {
                 $result = array_merge($result,recursiveScanDir($folder.$elem.'/'));
             }
             if (is_file($folder.$elem)) {
-                
+                //ini
+                if ($ini_reader->isValidFilename($elem)) {
+                    $raw_data_array = $ini_reader->loadArray($elem);
+                    foreach ($raw_data_array as $key => $trans) {
+                        $result[self::normalizeTranslationKey($key)] = $trans;
+                    }
+                }
+                //xml
+                if ($xml_reader->isValidFilename($elem)) {
+                    $raw_data_array = $xml_reader->loadArray($elem);
+                    foreach ($raw_data_array as $key => $trans) {
+                        $result[self::normalizeTranslationKey($key)] = $trans;
+                    }
+                }
+                //json for translations is not supported
             }
         }
-        
         
         return $result;
     }

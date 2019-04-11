@@ -93,7 +93,7 @@ class LTemplateRendering {
                             break;
                         case 'output_string' : break; //already done to avoid output accumulation
 
-                        case 'i18n' : $this->my_output->set('i18n',I18nUtils::getCurrentLangData()); 
+                        case 'i18n' : $this->my_output->set('i18n', LI18nUtils::getCurrentLangData()); 
                            break;
                         
                         default : throw new \Exception("Unable to import into variables : " . $import_name . " .Available imports : " . var_export(self::AVAILABLE_IMPORTS, true));

@@ -105,7 +105,7 @@ class LI18nUtils {
         foreach (array_keys($all_template_translations) as $key) {
             if (!$template_source->searchTemplate($key)) throw new \Exception("Unable to find template : ".$key);
             
-            $all_prepared_templates[$key] = $template_source->getTemplate($key);
+            $all_prepared_templates[$key] = $template_source->getTemplate($key)->getImplementationObject();
             
         }
         //merging the plain translations and the prepared templates

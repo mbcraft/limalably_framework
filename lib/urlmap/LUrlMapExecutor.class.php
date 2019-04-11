@@ -321,8 +321,11 @@ class LUrlMapExecutor {
                 $this->my_format = $this->my_url_map->get('/format');
                 LResult::trace("Recognized format inside urlmap : ".$this->my_format);
             }
+            LResult::trace("Rendering template ...");
+            
             $result = $renderer->render($my_template_path);
-
+            
+            LResult::trace("Template rendered correctly.");
             if ($result) {
                 if ($this->is_root) {
                     switch ($this->my_format) {

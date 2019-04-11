@@ -94,12 +94,12 @@ class LTemplateRendering {
                         case 'output_string' : break; //already done to avoid output accumulation
 
                         case 'i18n' : $this->my_output->set('i18n',I18nUtils::getCurrentLangData()); 
-                            break;
-                            
+                           break;
+                        
                         default : throw new \Exception("Unable to import into variables : " . $import_name . " .Available imports : " . var_export(self::AVAILABLE_IMPORTS, true));
                     }
                 }
-
+                //LResult::trace("Data is ready, now doing real rendering ...");
                 return $template->render($this->my_output->getRoot());
             } catch (\Exception $ex) {
                 LErrorList::saveFromException('template', $ex);

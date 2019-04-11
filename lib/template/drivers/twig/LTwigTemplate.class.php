@@ -11,5 +11,9 @@ class LTwigTemplate implements LITemplate {
     public function render(array $params) {
         return $this->my_template->render($params);
     }
+    
+    public function getImplementationObject() {
+        return $this->my_template;
+    }
 
 }

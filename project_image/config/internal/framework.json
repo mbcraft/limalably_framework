@@ -160,7 +160,21 @@
         "misc" : {
             "errors" : {
                 "log" : true,
-                "continue_on_errors" : false
+                "continue_on_errors" : false,
+                "reporting" : {
+                    "error" : true,
+                    "warning" : true,
+                    "parse" : true,
+                    "notice" : true,
+                    "core_error" : true,
+                    "core_warning" : true,
+                    "compile_error" : true,
+                    "compile_warning" : true,
+                    "user_error" : true,
+                    "user_warning" : true,
+                    "user_notice" : true,
+                    "recoverable_error" : true
+                }
             },
             "trace_enabled" : true,
             "debug_enabled" : true,

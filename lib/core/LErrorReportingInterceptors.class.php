@@ -65,6 +65,8 @@ class LErrorReportingInterceptors {
             $report_mask |= E_ERROR;
         if (LConfigReader::simple('/error/reporting/warning', false))
             $report_mask |= E_WARNING;
+        if (LConfigReader::simple('/error/reporting/parse', false))
+            $report_mask |= E_PARSE;
         if (LConfigReader::simple('/error/reporting/notice', false))
             $report_mask |= E_NOTICE;
         if (LConfigReader::simple('/error/reporting/core_error', false))

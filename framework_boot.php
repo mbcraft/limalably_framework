@@ -14,6 +14,7 @@ require_once ('lib/config/LExecutionMode.class.php');
 require_once ('lib/config/LEnvironmentUtils.class.php');
 
 //core
+require_once ('lib/core/LErrorReportingInterceptors.class.php');
 require_once ('lib/core/LInvalidParameterException.class.php');
 require_once ('lib/core/LResult.class.php');
 require_once ('lib/core/LClassLoader.class.php');
@@ -21,7 +22,9 @@ require_once ('lib/core/LClassLoader.class.php');
 //utils
 require_once ('lib/utils/LStringUtils.class.php');
 
-
 LConfig::init();
 
 LClassLoader::init();
+
+$error_reporter = new LErrorReportingInterceptors();
+$error_reporter->register();

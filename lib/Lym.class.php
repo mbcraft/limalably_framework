@@ -11,7 +11,7 @@ class Lym {
     private static function setBootAsCalled() {
         self::$boot_called = true;
     }
-
+    
     public static function framework_boot() {
         if (self::isBootCalled())
             throw new \Exception("Boot function already called.");

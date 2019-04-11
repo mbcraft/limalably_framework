@@ -24,8 +24,12 @@ class LIniDataStorage implements LIDataStorage {
     public function isInitialized() {
         return $this->root_path!=null;
     }
+    
+    public function isValidFilename($filename) {
+        return LStringUtils::endsWith($filename, '.ini');
+    }
 
-    public function is_saved(string $path) {
+    public function isSaved(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $my_path1 = $this->root_path.$path.'.ini';
@@ -35,14 +39,18 @@ class LIniDataStorage implements LIDataStorage {
         
         return is_file($my_path1);
     }
-
-    public function load(string $path) {
+    
+    public function loadArray(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $my_path1 = $this->root_path.$path.'.ini';
         $my_path1 = str_replace('//', '/', $my_path1);
         
-        $result_array = parse_ini_file($my_path1, false, INI_SCANNER_TYPED);
+        return parse_ini_file($my_path1, false, INI_SCANNER_TYPED);
+    }
+
+    public function load(string $path) {
+        $result_array = $this->loadArray($path);
         
         $result_tree = new LTreeMap();
         

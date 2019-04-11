@@ -7,7 +7,7 @@ class IniDataStorageTest extends LTestCase {
         $d = new LIniDataStorage();
         $d->init($_SERVER['FRAMEWORK_DIR'].'tests/');
         
-        $this->assertTrue($d->is_saved('data/my_data2'),"Il file con i dati non è stato trovato!");
+        $this->assertTrue($d->isSaved('data/my_data2'),"Il file con i dati non è stato trovato!");
         
         $my_data = $d->load('data/my_data2');
                 

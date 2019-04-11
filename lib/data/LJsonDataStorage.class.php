@@ -16,6 +16,10 @@ class LJsonDataStorage implements LIDataStorage {
         $this->root_path = $root_path;
     }
     
+    function loadArray($path) {
+        throw new \Exception("Json loadArray operation is not supported.");
+    }
+    
     function load(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
@@ -27,7 +31,11 @@ class LJsonDataStorage implements LIDataStorage {
         return LJsonUtils::parseContent("data file",$path,$content);
     }
     
-    function is_saved(string $path) {
+    public function isValidFilename($filename) {
+        return LStringUtils::endsWith($filename, '.json');
+    }
+    
+    function isSaved(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $my_path1 = $this->root_path.$path.'.json';

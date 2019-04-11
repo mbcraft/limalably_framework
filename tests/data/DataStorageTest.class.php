@@ -7,7 +7,7 @@ class DataStorageTest extends LTestCase {
         $d = new LDataStorage();
         $d->init($_SERVER['FRAMEWORK_DIR']);
         
-        $this->assertTrue($d->is_saved("tests/data/mixed_data"),"I dati salvati non sono stati trovati!");
+        $this->assertTrue($d->isSaved("tests/data/mixed_data"),"I dati salvati non sono stati trovati!");
         
         $my_data = $d->load("tests/data/mixed_data");
         

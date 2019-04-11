@@ -80,7 +80,7 @@ class LCall {
 
         $data_storage = new LDataStorage();
 
-        if (!$data_storage->is_saved($data_path))
+        if (!$data_storage->isSaved($data_path))
             throw new \Exception("Unable to find data file at path : " . $data_path);
 
         return $data_storage->load($data_path);

@@ -30,20 +30,36 @@ class LDataStorage implements LIDataStorage {
         $this->my_ini_storage->initWithDefaults();
     }
     
+    function loadArray(string $path) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
+        $current_data = [];
+                
+        if ($this->my_xml_storage->isSaved($path)) {
+            $current_data = array_merge($current_data,$this->my_xml_storage->loadArray($path));
+        }
+         
+        if ($this->my_ini_storage->isSaved($path)) {
+            $current_data = array_merge($current_data,$this->my_ini_storage->loadArray($path));
+        }
+        
+        return $current_data;
+    }
+    
     function load(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $current_data = [];
         
-        if ($this->my_json_storage->is_saved($path)) {
+        if ($this->my_json_storage->isSaved($path)) {
             $current_data = array_replace_recursive($current_data,$this->my_json_storage->load($path));
         }
         
-        if ($this->my_xml_storage->is_saved($path)) {
+        if ($this->my_xml_storage->isSaved($path)) {
             $current_data = array_replace_recursive($current_data,$this->my_xml_storage->load($path));
         }
          
-        if ($this->my_ini_storage->is_saved($path)) {
+        if ($this->my_ini_storage->isSaved($path)) {
             $current_data = array_replace_recursive($current_data,$this->my_ini_storage->load($path));
         }
         
@@ -51,10 +67,14 @@ class LDataStorage implements LIDataStorage {
 
     }
     
-    function is_saved(string $path) {
+    public function isValidFilename($filename) {
+        return $this->my_ini_storage->isValidFilename($filename) || $this->my_json_storage->isValidFilename($filename) || $this->my_xml_storage->isValidFilename($filename);
+    }
+    
+    function isSaved(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        return $this->my_json_storage->is_saved($path) || $this->my_xml_storage->is_saved($path) || $this->my_ini_storage->is_saved($path);
+        return $this->my_json_storage->isSaved($path) || $this->my_xml_storage->isSaved($path) || $this->my_ini_storage->isSaved($path);
     }
     
     function save(string $path,array $data) {

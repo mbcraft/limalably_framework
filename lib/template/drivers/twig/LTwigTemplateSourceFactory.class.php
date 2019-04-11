@@ -4,6 +4,10 @@ class LTwigTemplateSourceFactory implements LITemplateSourceFactory {
     
     private $root_path = null;
     
+    public function isTemplateSource($string_source) {
+        return strpos($string_source,'{{')!==0 || strpos($string_source,'{%')!==0;
+    }
+    
     public function createFileTemplateSource(string $relative_folder_path,string $relative_cache_path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         

@@ -3,6 +3,8 @@
 
 interface LITemplateSourceFactory {
     
+    function isTemplateSource(string $string_source);
+    
     function isInitialized();
     
     function init(string $root_path);

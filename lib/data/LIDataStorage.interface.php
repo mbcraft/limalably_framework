@@ -8,9 +8,13 @@ interface LIDataStorage {
     
     function initWithDefaults();
     
+    function loadArray(string $path);
+    
     function load(string $path);
     
-    function is_saved(string $path);
+    function isValidFilename($filename);
+    
+    function isSaved(string $path);
     
     function save(string $path,array $data);
     

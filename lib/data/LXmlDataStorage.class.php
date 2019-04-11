@@ -25,7 +25,11 @@ class LXmlDataStorage implements LIDataStorage {
         return $this->root_path!=null;
     }
 
-    public function is_saved(string $path) {
+    public function isValidFilename($filename) {
+        return LStringUtils::endsWith($filename, '.xml');
+    }
+    
+    public function isSaved(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $my_path1 = $this->root_path.$path.'.xml';
@@ -35,8 +39,8 @@ class LXmlDataStorage implements LIDataStorage {
         
         return is_file($my_path1);
     }
-
-    public function load(string $path) {
+    
+    public function loadArray(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $my_path1 = $this->root_path.$path.'.xml';
@@ -45,7 +49,7 @@ class LXmlDataStorage implements LIDataStorage {
         $dom = new \DOMDocument();
         $dom->load($my_path1);
         
-        $result_tree = new LTreeMap();
+        $result = [];
         
         $root_node = $dom->documentElement;
         
@@ -60,8 +64,21 @@ class LXmlDataStorage implements LIDataStorage {
                     $value .= $nested_node->ownerDocument->saveHTML($nested_node);
                 }
             
-                $result_tree->set($path,$value);
+                $result[$path] = $value;
             }
+        }
+                
+        return $result;
+    }
+
+    public function load(string $path) {
+        
+        $result_array = $this->loadArray($path);
+        
+        $result_tree = new LTreeMap();
+        
+        foreach ($result_array as $path => $value) {
+            $result_tree->set($path,$value);
         }
                 
         return $result_tree->getRoot();

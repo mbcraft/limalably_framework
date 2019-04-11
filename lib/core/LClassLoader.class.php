@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL);
+
 /**
  * Alias of require_once but with project path as base folder
  * 

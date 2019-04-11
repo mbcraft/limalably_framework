@@ -5,7 +5,9 @@
  */
 class LConfigReader {
     
-    public static function simple($config_path) {
+    const NO_DEFAULT_VALUE = -16;
+    
+    public static function simple($config_path,$default_value = self::NO_DEFAULT_VALUE) {
         if (LConfig::is_set($config_path)) {
             return LConfig::mustGetOriginal($config_path);
         }
@@ -13,10 +15,12 @@ class LConfigReader {
             return LConfig::mustGetOriginal('/defaults/'.$config_path);
         }
         
+        if ($default_value != self::NO_DEFAULT_VALUE) return $default_value;
+        
         throw new \Exception("Value not found in config : ".$config_path);
     }
     
-    public static function executionMode($config_path) {
+    public static function executionMode($config_path,$default_value = self::NO_DEFAULT_VALUE) {
         $exec_mode = LExecutionMode::get();
         
         if (LConfig::is_set($config_path)) {
@@ -35,10 +39,12 @@ class LConfigReader {
             return LConfig::mustGetOriginal('/defaults/'.$config_path);
         }
         
+        if ($default_value != self::NO_DEFAULT_VALUE) return $default_value;
+        
         throw new \Exception("Value not found in config : ".$config_path);
     }
     
-    public static function executionModeWithType($type,$config_path) {
+    public static function executionModeWithType($type,$config_path,$default_value = self::NO_DEFAULT_VALUE) {
         $exec_mode = LExecutionMode::get();
         $path_no_type = str_replace('%type%','',$config_path);
         $path_type = str_replace('%type%',$type,$config_path);
@@ -55,6 +61,8 @@ class LConfigReader {
         if (LConfig::is_set('/defaults/'.$path_type)) {
             return LConfig::mustGetOriginal('/defaults/'.$path_type);
         }
+        
+        if ($default_value != self::NO_DEFAULT_VALUE) return $default_value;
         
         throw new \Exception("Value not found in config : ".$config_path);
     }

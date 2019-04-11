@@ -1,6 +1,6 @@
 <?php
 
-class I18nUtils {
+class LI18nUtils {
     
     public static function getAvailableLanguages() {
         
@@ -63,11 +63,13 @@ class I18nUtils {
     } 
     
     public static function getLangData($lang) {
+        $base_folder = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
+        
         $source_factory_class = LConfigReader::simple('/template/source_factory_class');
         
         $my_factory = new $source_factory_class();
         
-        $root_folder = LConfigReader::simple('/i18n/translations_root_folder');
+        $root_folder = $base_folder . LConfigReader::simple('/i18n/translations_root_folder');
         
         if (!is_dir($root_folder)) return [];
         
@@ -90,7 +92,7 @@ class I18nUtils {
         
         //translations are separated, now create a string template source
         
-        $cache_folder = LConfigReader::simple('/i18n/cache_folder');
+        $cache_folder = $base_folder . LConfigReader::simple('/i18n/cache_folder');
         
         $lang_cache_folder = $cache_folder.$lang.'/';
         //getting a string template source using a cache dir depending by the language

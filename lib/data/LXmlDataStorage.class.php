@@ -51,9 +51,7 @@ class LXmlDataStorage implements LIDataStorage {
             $my_path1 = $this->root_path.$path.'.xml';
         }
         $my_path1 = str_replace('//', '/', $my_path1);
-        
-        echo "my path of xml document is ".$my_path1;
-        
+                
         $dom = new \DOMDocument();
         $dom->load($my_path1);
         

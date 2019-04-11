@@ -51,7 +51,11 @@ class LIniDataStorage implements LIDataStorage {
         }
         $my_path1 = str_replace('//', '/', $my_path1);
         
-        return parse_ini_file($my_path1, false, INI_SCANNER_TYPED);
+        $result = parse_ini_file($my_path1, false, INI_SCANNER_TYPED);
+        
+        if ($result===false) LErrorList::saveFromErrors ('ini', "Error parsing ini file : ".$my_path1.". The data is not valid. Use \" to delimit strings.");
+        
+        return $result;
     }
 
     public function load(string $path) {

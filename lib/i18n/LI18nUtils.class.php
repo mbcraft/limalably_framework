@@ -79,6 +79,9 @@ class LI18nUtils {
         if (!is_dir($root_lang_folder)) return [];
         
         $all_translations = self::recursiveScanDir($root_lang_folder);
+            
+        echo "All translations : \n<br>";
+        var_dump($all_translations);
         
         $all_template_translations = [];
         $all_plain_translations = [];
@@ -90,6 +93,11 @@ class LI18nUtils {
                 $all_plain_translations[$key] = $trans;
             }
         }
+        
+        echo "Plain translations : <br><br>";
+        var_dump($all_plain_translations);
+        echo "Template translations : <br><br>";
+        var_dump($all_template_translations);
         
         //translations are separated, now create a string template source
         
@@ -105,17 +113,18 @@ class LI18nUtils {
             $all_prepared_templates[$key] = $template_source->getTemplate($key);
         }
         //merging the plain translations and the prepared templates
-        $final_translations_array = array_merge($all_plain_translations,$all_prepared_templates);
+        $final_translations_array = array_merge_recursive($all_plain_translations,$all_prepared_templates);
         //putting all results in tree and getting the resulting data
         $t = new LTreeMap();
         foreach ($final_translations_array as $key => $value) {
             $t->set($key,$value);
         }
+        
         return $t->getRoot();
     }
     
     private static function recursiveScanDir($folder) {
-        echo "Searching $folder for translations ...\n<br >";
+
         $ini_reader = new LIniDataStorage();
         $ini_reader->init($folder);
         $xml_reader = new LXmlDataStorage();
@@ -126,25 +135,22 @@ class LI18nUtils {
         
         foreach ($elements as $elem) {
             if ($elem=='.' || $elem=='..') continue;
-            echo "is_dir ( ".$folder.$elem." ) \n <br>";
+
             if (is_dir($folder.$elem)) {
-                echo "Found subdir : $elem \n<br >";
-                $result = array_merge($result,recursiveScanDir($folder.$elem.'/'));
+                $result = array_merge_recursive($result,self::recursiveScanDir($folder.$elem.'/'));
             }
             if (is_file($folder.$elem)) {
                 //ini
                 if ($ini_reader->isValidFilename($elem)) {
-                    echo "Found ini file ".$elem."\n<br >";
                     $raw_data_array = $ini_reader->loadArray($elem);
+                    var_dump($raw_data_array);
                     foreach ($raw_data_array as $key => $trans) {
                         $result[self::normalizeTranslationKey($key)] = $trans;
                     }
                 }
                 //xml
                 if ($xml_reader->isValidFilename($elem)) {
-                    echo "Found xml file ".$elem."\n<br >";
                     $raw_data_array = $xml_reader->loadArray($elem);
-                    var_dump($raw_data_array);
                     foreach ($raw_data_array as $key => $trans) {
                         $result[self::normalizeTranslationKey($key)] = $trans;
                     }

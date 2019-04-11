@@ -90,6 +90,8 @@ class Lym {
 
         LLog::close();
 
+        $_SERVER['EXIT'] = true;
+        
         exit();
     }
 

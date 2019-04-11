@@ -29,7 +29,7 @@ class LTemplateRendering {
 
     private function my_json_encode($name, $value) {
         try {
-            return json_encode($value, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+            return json_encode($value, JSON_PRETTY_PRINT);
         } catch (\Exception $ex) {
             LErrorList::saveFromErrors('template', "Unable to render as json the " . $name . " variable without errors!!");
         }

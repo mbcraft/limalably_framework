@@ -4,11 +4,12 @@ class LSessionUtils {
     
     private static $session_tree = null;
     
-    static function currentSessionTree() {
+    public static function currentSessionTree() {
         return self::$session_tree;
     }
     
-    static function create() {
+    public static function create() {
+        if (self::$session_tree) throw new \Exception("Session Create was already called!");
         
         $a = session_id();
         if(empty($a)) 
@@ -29,12 +30,12 @@ class LSessionUtils {
         return self::currentSessionTree();
     }
     
-    static function destroy() {
+    public static function destroy() {
         session_destroy();
         self::$session_tree = null;
     }
     
-    static function finishedWrite() {
+    public static function finishedWrite() {
         session_write_close();
     }
     

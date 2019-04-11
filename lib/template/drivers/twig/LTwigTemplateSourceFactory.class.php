@@ -38,7 +38,7 @@ class LTwigTemplateSourceFactory implements LITemplateSourceFactory {
     }
 
     public function initWithDefaults() {
-        $this->root_path = $_SERVER['PROJECT_DIR'];
+        $this->root_path = LEnvironmentUtils::getBaseDir();
     }
 
     public function isInitialized() {

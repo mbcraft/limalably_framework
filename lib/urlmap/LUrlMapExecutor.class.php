@@ -37,6 +37,8 @@ class LUrlMapExecutor {
 
             if (!$result) {
                 //a script executed correctly
+                echo "No result was returned!";
+                
                 exit;
             } else {
                 throw new \Exception("Unexpected state, result returned to root : " . var_export($result, true));

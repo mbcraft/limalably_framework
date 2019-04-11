@@ -79,10 +79,7 @@ class LI18nUtils {
         if (!is_dir($root_lang_folder)) return [];
         
         $all_translations = self::recursiveScanDir($root_lang_folder);
-            
-        echo "All translations : \n<br>";
-        var_dump($all_translations);
-        
+                    
         $all_template_translations = [];
         $all_plain_translations = [];
         //separating all plain translations from templates
@@ -93,27 +90,27 @@ class LI18nUtils {
                 $all_plain_translations[$key] = $trans;
             }
         }
-        
-        echo "Plain translations : <br><br>";
-        var_dump($all_plain_translations);
-        echo "Template translations : <br><br>";
-        var_dump($all_template_translations);
-        
+                
         //translations are separated, now create a string template source
         
-        $cache_folder = $base_folder . LConfigReader::simple('/i18n/cache_folder');
+        $cache_folder = LConfigReader::simple('/i18n/cache_folder');
         
         $lang_cache_folder = $cache_folder.$lang.'/';
+        
         //getting a string template source using a cache dir depending by the language
         $template_source = $my_factory->createStringArrayTemplateSource($all_template_translations,$lang_cache_folder);
-        
+                
         $all_prepared_templates = [];
         
         foreach (array_keys($all_template_translations) as $key) {
+            if (!$template_source->searchTemplate($key)) throw new \Exception("Unable to find template : ".$key);
+            
             $all_prepared_templates[$key] = $template_source->getTemplate($key);
+            
         }
         //merging the plain translations and the prepared templates
         $final_translations_array = array_merge_recursive($all_plain_translations,$all_prepared_templates);
+        
         //putting all results in tree and getting the resulting data
         $t = new LTreeMap();
         foreach ($final_translations_array as $key => $value) {
@@ -143,7 +140,6 @@ class LI18nUtils {
                 //ini
                 if ($ini_reader->isValidFilename($elem)) {
                     $raw_data_array = $ini_reader->loadArray($elem);
-                    var_dump($raw_data_array);
                     foreach ($raw_data_array as $key => $trans) {
                         $result[self::normalizeTranslationKey($key)] = $trans;
                     }

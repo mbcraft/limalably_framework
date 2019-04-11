@@ -18,7 +18,8 @@ class LXmlDataStorage implements LIDataStorage {
     }
 
     public function initWithDefaults() {
-        $this->root_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/misc/data_folder');
+        
+        $this->root_path = LEnvironmentUtils::getBaseDir().LConfigReader::simple('/misc/data_folder');
     }
 
     public function isInitialized() {
@@ -43,8 +44,15 @@ class LXmlDataStorage implements LIDataStorage {
     public function loadArray(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        $my_path1 = $this->root_path.$path.'.xml';
+        if (LStringUtils::endsWith($path, '.xml')) {
+            $my_path1 = $this->root_path.$path;
+        }
+        else {
+            $my_path1 = $this->root_path.$path.'.xml';
+        }
         $my_path1 = str_replace('//', '/', $my_path1);
+        
+        echo "my path of xml document is ".$my_path1;
         
         $dom = new \DOMDocument();
         $dom->load($my_path1);

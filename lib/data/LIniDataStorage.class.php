@@ -18,7 +18,7 @@ class LIniDataStorage implements LIDataStorage {
     }
 
     public function initWithDefaults() {
-        $this->root_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/misc/data_folder');
+        $this->root_path = LEnvironmentUtils::getBaseDir().LConfigReader::simple('/misc/data_folder');
     }
 
     public function isInitialized() {
@@ -43,7 +43,12 @@ class LIniDataStorage implements LIDataStorage {
     public function loadArray(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        $my_path1 = $this->root_path.$path.'.ini';
+        if (LStringUtils::endsWith($path, '.ini')) {
+            $my_path1 = $this->root_path.$path;
+        }
+        else {
+            $my_path1 = $this->root_path.$path.'.ini';
+        }
         $my_path1 = str_replace('//', '/', $my_path1);
         
         return parse_ini_file($my_path1, false, INI_SCANNER_TYPED);

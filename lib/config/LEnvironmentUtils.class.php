@@ -77,6 +77,10 @@ class LEnvironmentUtils {
         return $_SERVER['PROJECT_DIR'];
     }
     
+    public static function getBaseDir() {
+        return isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
+    }
+    
     public static function getRequestMethod() {
         if (isset($_SERVER['REQUEST_METHOD'])) return $_SERVER['REQUEST_METHOD'];
         else return 'CLI';

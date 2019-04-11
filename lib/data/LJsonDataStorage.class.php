@@ -9,7 +9,7 @@ class LJsonDataStorage implements LIDataStorage {
     }
     
     function initWithDefaults() {
-        $this->root_path = $_SERVER['PROJECT_DIR'].LConfigReader::simple('/misc/data_folder');
+        $this->root_path = LEnvironmentUtils::getBaseDir().LConfigReader::simple('/misc/data_folder');
     }
     
     function init($root_path) {
@@ -23,7 +23,12 @@ class LJsonDataStorage implements LIDataStorage {
     function load(string $path) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        $my_path1 = $this->root_path.$path.'.json';
+        if (LStringUtils::endsWith($path, '.json')) {
+            $my_path1 = $this->root_path.$path;
+        }
+        else {
+            $my_path1 = $this->root_path.$path.'.json';
+        }
         $my_path1 = str_replace('//', '/', $my_path1);
         
         $content = file_get_contents($my_path1);

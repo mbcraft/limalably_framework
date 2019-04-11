@@ -63,7 +63,8 @@ class LI18nUtils {
     } 
     
     public static function getLangData($lang) {
-        $base_folder = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
+        
+        $base_folder = LEnvironmentUtils::getBaseDir();
         
         $source_factory_class = LConfigReader::simple('/template/source_factory_class');
         
@@ -114,6 +115,7 @@ class LI18nUtils {
     }
     
     private static function recursiveScanDir($folder) {
+        echo "Searching $folder for translations ...\n<br >";
         $ini_reader = new LIniDataStorage();
         $ini_reader->init($folder);
         $xml_reader = new LXmlDataStorage();
@@ -121,14 +123,18 @@ class LI18nUtils {
         
         $result = [];
         $elements = scandir($folder);
+        
         foreach ($elements as $elem) {
             if ($elem=='.' || $elem=='..') continue;
+            echo "is_dir ( ".$folder.$elem." ) \n <br>";
             if (is_dir($folder.$elem)) {
+                echo "Found subdir : $elem \n<br >";
                 $result = array_merge($result,recursiveScanDir($folder.$elem.'/'));
             }
             if (is_file($folder.$elem)) {
                 //ini
                 if ($ini_reader->isValidFilename($elem)) {
+                    echo "Found ini file ".$elem."\n<br >";
                     $raw_data_array = $ini_reader->loadArray($elem);
                     foreach ($raw_data_array as $key => $trans) {
                         $result[self::normalizeTranslationKey($key)] = $trans;
@@ -136,7 +142,9 @@ class LI18nUtils {
                 }
                 //xml
                 if ($xml_reader->isValidFilename($elem)) {
+                    echo "Found xml file ".$elem."\n<br >";
                     $raw_data_array = $xml_reader->loadArray($elem);
+                    var_dump($raw_data_array);
                     foreach ($raw_data_array as $key => $trans) {
                         $result[self::normalizeTranslationKey($key)] = $trans;
                     }

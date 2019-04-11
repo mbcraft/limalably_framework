@@ -69,7 +69,11 @@ class I18nUtils {
         
         $root_folder = LConfigReader::simple('/i18n/translations_root_folder');
         
+        if (!is_dir($root_folder)) return [];
+        
         $root_lang_folder = $root_folder.$lang.'/';
+        
+        if (!is_dir($root_lang_folder)) return [];
         
         $all_translations = self::recursiveScanDir($root_lang_folder);
         

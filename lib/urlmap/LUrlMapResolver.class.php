@@ -77,7 +77,7 @@ class LUrlMapResolver {
      * @param string $route
      * @return boolean true se la route è valida e punta a una url map privata, false altrimenti.
      */
-    private function isPrivateRoute($route) {
+    public function isPrivateRoute($route) {
         $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::trace('Cerco private route : '.$route);
@@ -90,14 +90,18 @@ class LUrlMapResolver {
         return $this->readUrlMapAsArray($path);
     }
     
+    public function getHashDbFilename($route) {
+        return sha1($route).self::URLMAP_EXTENSION;
+    }
+    
     /**
      * Ritorna true se la route parametro è inserita nell'hash_db delle route.
      * 
      * @param string $route La route
      * @return boolean Se la route è valida per l'hash db.
      */
-    private function isHashRoute($route) {
-        $path = $this->root_folder.$this->hash_db_folder.sha1($route).self::URLMAP_EXTENSION;
+    public function isHashRoute($route) {
+        $path = $this->root_folder.$this->hash_db_folder.$this->getHashDbFilename($route);
         $path = str_replace('//', '/', $path);
         LResult::trace('Cerco hash route : '.$route);
         return is_readable($path);
@@ -158,7 +162,7 @@ class LUrlMapResolver {
      * @param string $route La route
      * @return boolean True se è una route pubblica, false altrimenti
      */
-    private function isPublicRoute($route) {
+    public function isStaticRoute($route) {
         $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::trace('Cerco static route : '.$route);
@@ -209,7 +213,7 @@ class LUrlMapResolver {
         $calculator = new LUrlMapCalculator();
         do {
             LResult::trace("Risolvo la route pubblica : ".$route);
-            if ($this->isPublicRoute($route)) {
+            if ($this->isStaticRoute($route)) {
                 
                 $array_map = $this->getPublicUrlMapAsArray($route);
                 if ($this->isUrlMapWithIncludes($array_map)) {
@@ -302,7 +306,7 @@ class LUrlMapResolver {
             foreach ($route_checks as $route_check) {
                 switch ($route_check) {
                     case 'static' : {
-                        if ($this->isPublicRoute($route)) {
+                        if ($this->isStaticRoute($route)) {
                             if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and public");
                             return $this->resolvePublicUrlMap($route);
                         }

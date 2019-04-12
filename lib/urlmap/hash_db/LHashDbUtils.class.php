@@ -20,7 +20,7 @@ class LHashDbUtils {
         
         $entries = [];
         
-        foreach ($real_elements as $k => $element) {
+        foreach ($real_elements as $element) {
             $content = file_get_contents($final_hash_db_folder.$element);
         
             try {
@@ -40,6 +40,24 @@ class LHashDbUtils {
     }
     
     function addRoute($public_route_name,$wanted_route_name) {
+        
+        $route_resolver = new LUrlMapResolver();
+        
+        if (!$route_resolver->isStaticRoute($public_route_name)) return "Unable to find public route : ".$public_route_name;
+        
+        $builder = new LUrlMapBuilder();
+        $builder->setExtends($public_route_name);
+        $builder->setRealUrl($wanted_route_name);
+        
+        $base_dir = LEnvironmentUtils::getBaseDir();
+        
+        $hash_db_folder = LConfigReader::simple('/urlmap/hash_db_routes_folder');
+        
+        $final_filename = $base_dir.$hash_db_folder.$route_resolver->getHashDbFilename($wanted_route_name);
+        
+        $builder->writeToFile($final_filename);
+        
+        return "Entry added.";
         
     }
     

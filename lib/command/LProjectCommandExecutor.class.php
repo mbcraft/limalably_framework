@@ -58,6 +58,53 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
     }
     
+    private function handleHashDbList() {
+        $this->setCommandAsExecuted();
+        
+        $hash_db_utils = new LHashDbUtils();
+        
+        $elements = $hash_db_utils->listRoutes();
+        
+        foreach ($elements as $k => $el) {
+            echo "$k : $el \n";
+        }
+    }
+    
+    private function handleHashDbAdd() {
+        $this->setCommandAsExecuted();
+        
+        if (LParameters::count()!=2) {
+            echo "Two parameters needed : the name of the public route and the name of the wanted route. \n";
+            return;
+        }
+        
+        $public_route = LParameters::getByIndex(0);
+        $wanted_route = LParameters::getByIndex(1);
+        
+        $hash_db_utils = new LHashDbUtils();
+        
+        $result = $hash_db_utils->addRoute($public_route, $wanted_route);
+        
+        echo $result;
+    }
+    
+    private function handleHashDbRemove() {
+        $this->setCommandAsExecuted();
+        
+        if (LParameters::count()!=1) {
+            echo "One index of the entry to remove is needed. Use list command to list available hash db routes.\n";
+            return;
+        }
+                
+        $index = LParameters::getByIndex(0);
+        
+        $hash_db_utils = new LHashDbUtils();
+        
+        $result = $hash_db_utils->removeRouteByIndex($index);
+        
+        echo $result;
+    }
+    
     public function tryExecuteCommand() {
         $route = $_SERVER['ROUTE'];
         switch ($route) {
@@ -66,6 +113,9 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'internal/run_tests' : $this->handleRunTests();break;
             case 'internal/run_tests_fast' : $this->handleRunTestsFast();break;
             case 'internal/generate_data_objects' : $this->handleGenerateDataObjects();break;
+            case 'internal/hash_db_list' : $this->handleHashDbList();break;
+            case 'internal/hash_db_add' : $this->handleHashDbAdd();break;
+            case 'internal/hash_db_remove' : $this->handleHashDbRemove();break;
         }
     }
 

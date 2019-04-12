@@ -175,7 +175,7 @@ class LUrlMapResolver {
         return is_readable($path);
     }
     
-    private function normalizeUrlMapWithIncludes($array_map,$includes_search_flags) {
+    public function normalizeUrlMapWithIncludes($array_map,$includes_search_flags) {
         $url_map_calculator = new LUrlMapCalculator();
         if (isset($array_map['extends'])) {
             $route_list = $array_map['extends'];

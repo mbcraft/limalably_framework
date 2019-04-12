@@ -65,6 +65,13 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
         $elements = $hash_db_utils->listRoutes();
         
+        if (empty($elements)) {
+            echo "No routes found in hash db.\n";
+            exit();
+        }
+        
+        echo "Routes found in hash db : ".count($elements)."\n\n";
+        
         foreach ($elements as $k => $el) {
             echo "$k : $el \n";
         }

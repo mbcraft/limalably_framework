@@ -78,6 +78,8 @@ class LUrlMapResolver {
      * @return boolean true se la route è valida e punta a una url map privata, false altrimenti.
      */
     public function isPrivateRoute($route) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::trace('Cerco private route : '.$route);
@@ -101,6 +103,8 @@ class LUrlMapResolver {
      * @return boolean Se la route è valida per l'hash db.
      */
     public function isHashRoute($route) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         $path = $this->root_folder.$this->hash_db_folder.$this->getHashDbFilename($route);
         $path = str_replace('//', '/', $path);
         LResult::trace('Cerco hash route : '.$route);
@@ -149,7 +153,7 @@ class LUrlMapResolver {
         else return false;
     }
       
-    private function getPublicUrlMapAsArray($route) {
+    private function getStaticUrlMapAsArray($route) {
         $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::trace("Ritorno l'urlmap pubblica alla route ".$route);
@@ -163,19 +167,21 @@ class LUrlMapResolver {
      * @return boolean True se è una route pubblica, false altrimenti
      */
     public function isStaticRoute($route) {
+        if (!$this->isInitialized()) $this->initWithDefaults ();
+        
         $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         LResult::trace('Cerco static route : '.$route);
         return is_readable($path);
     }
     
-    private function normalizeUrlMapWithIncludes($array_map) {
+    private function normalizeUrlMapWithIncludes($array_map,$includes_search_flags) {
         $url_map_calculator = new LUrlMapCalculator();
         if (isset($array_map['extends'])) {
             $route_list = $array_map['extends'];
             if (!is_array($route_list)) $route_list = array($route_list);
             foreach ($route_list as $route) {
-                $map = $this->internalResolveUrlMap($route,self::FLAGS_SEARCH_PRIVATE);
+                $map = $this->internalResolveUrlMap($route,$includes_search_flags);
                 if ($map) {
                     $url_map_calculator->addUrlMapData($map);
                 } else {
@@ -196,7 +202,7 @@ class LUrlMapResolver {
         
         if ($route_list) {
             foreach ($route_list as $route) {
-                $map = $this->internalResolveUrlMap($route,self::FLAGS_SEARCH_PRIVATE);
+                $map = $this->internalResolveUrlMap($route,$includes_search_flags);
                 if ($map) {
                     $url_map_calculator->addUrlMapData($map);
                 } else {
@@ -209,15 +215,15 @@ class LUrlMapResolver {
         return $url_map_calculator->calculate();
     }
          
-    private function resolvePublicUrlMap($route) {
+    private function resolveStaticUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
             LResult::trace("Risolvo la route pubblica : ".$route);
             if ($this->isStaticRoute($route)) {
                 
-                $array_map = $this->getPublicUrlMapAsArray($route);
+                $array_map = $this->getStaticUrlMapAsArray($route);
                 if ($this->isUrlMapWithIncludes($array_map)) {
-                    $array_map = $this->normalizeUrlMapWithIncludes($array_map);
+                    $array_map = $this->normalizeUrlMapWithIncludes($array_map,self::FLAGS_SEARCH_PRIVATE);
                 }
                 $calculator->unshiftUrlMapData($array_map);
             }
@@ -232,7 +238,7 @@ class LUrlMapResolver {
             if ($this->isPrivateRoute($route)) {
                 $array_map = $this->getPrivateUrlMapAsArray($route);
                 if ($this->isUrlMapWithIncludes($array_map)) {
-                    $array_map = $this->normalizeUrlMapWithIncludes($array_map);
+                    $array_map = $this->normalizeUrlMapWithIncludes($array_map,self::FLAGS_SEARCH_PRIVATE);
                 }
                 $calculator->unshiftUrlMapData($array_map);
             }
@@ -244,7 +250,7 @@ class LUrlMapResolver {
     private function resolveHashUrlMap($route) {
         $array_map = $this->getHashUrlMapAsArray($route);
         if ($this->isUrlMapWithIncludes($array_map)) {
-            $array_map = $this->normalizeUrlMapWithIncludes($array_map);
+            $array_map = $this->normalizeUrlMapWithIncludes($array_map,self::FLAGS_SEARCH_ALL);
         }
         return $array_map;
     }
@@ -308,7 +314,7 @@ class LUrlMapResolver {
                     case 'static' : {
                         if ($this->isStaticRoute($route)) {
                             if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and public");
-                            return $this->resolvePublicUrlMap($route);
+                            return $this->resolveStaticUrlMap($route);
                         }
                         break;
                     }

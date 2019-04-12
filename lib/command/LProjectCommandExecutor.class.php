@@ -92,7 +92,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
         $result = $hash_db_utils->addRoute($public_route, $wanted_route);
         
-        echo $result;
+        echo $result."\n";
     }
     
     private function handleHashDbRemove() {
@@ -109,7 +109,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
         $result = $hash_db_utils->removeRouteByIndex($index);
         
-        echo $result;
+        echo $result."\n";
     }
     
     public function tryExecuteCommand() {

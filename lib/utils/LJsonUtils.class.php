@@ -24,7 +24,7 @@ class LJsonUtils {
     }
     
     public static function encodeData($object_name,$path,$data) {
-        $result_content = json_encode($data);
+        $result_content = json_encode($data,JSON_PRETTY_PRINT);
         $last_error = json_last_error();
         if ($last_error == JSON_ERROR_NONE) {
             return $result_content;

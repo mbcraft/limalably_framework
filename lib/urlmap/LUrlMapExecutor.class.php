@@ -37,7 +37,7 @@ class LUrlMapExecutor {
 
             if (!$result) {
                 //a script executed correctly
-                echo "No result was returned!";
+                LResult::error_message("No result was returned by urlmap!");
                 
                 Lym::finish(1);
             } else {

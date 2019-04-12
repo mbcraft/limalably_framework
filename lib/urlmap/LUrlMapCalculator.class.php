@@ -28,9 +28,24 @@ class LUrlMapCalculator {
     }
        
     private function beforeNormalizeUrlMap(&$url_map_array_data) {
+        if (isset($url_map_array_data['init'])) {
+            if (is_string(($url_map_array_data['init']))) {
+                $url_map_array_data['init'] = array(self::ROOT_PATH => $url_map_array_data['init']);
+            }
+        }
+        if (isset($url_map_array_data['before_exec'])) {
+            if (is_string(($url_map_array_data['before_exec']))) {
+                $url_map_array_data['before_exec'] = array(self::ROOT_PATH => $url_map_array_data['before_exec']);
+            }
+        }
         if (isset($url_map_array_data['exec'])) {
             if (is_string(($url_map_array_data['exec']))) {
                 $url_map_array_data['exec'] = array(self::ROOT_PATH => $url_map_array_data['exec']);
+            }
+        }
+        if (isset($url_map_array_data['after_exec'])) {
+            if (is_string(($url_map_array_data['after_exec']))) {
+                $url_map_array_data['after_exec'] = array(self::ROOT_PATH => $url_map_array_data['after_exec']);
             }
         }
     }
@@ -38,7 +53,7 @@ class LUrlMapCalculator {
     private function afterNormalizeUrlMap($url_map_data) {
         $url_map_hash = new LTreeMap($url_map_data);
         
-        $area_list = ['exec','session','input'];
+        $area_list = ['init','exec','session','input'];
         foreach ($area_list as $area) {
             if ($url_map_hash->is_set('/'.$area)) {
                 $keys = $url_map_hash->keys('/'.$area);
@@ -50,7 +65,7 @@ class LUrlMapCalculator {
                     }
                     if (LStringUtils::startsWith($key, '+')) {
                         $key_ok = substr($key, 1);
-                        $url_map_hash->add('/'.$area.'/'.$key_ok, $url_map_hash->mustGetOriginal('/'.$area.'/'.$key));
+                        $url_map_hash->merge('/'.$area.'/'.$key_ok, $url_map_hash->mustGetOriginal('/'.$area.'/'.$key));
                         $url_map_hash->remove('/'.$area.'/'.$key);
                     }
                 }

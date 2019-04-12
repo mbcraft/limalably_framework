@@ -8,4 +8,4 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PARENT_DIR="$(dirname $DIR)"
 
-php $PARENT_DIR/init.php internal/generate_data_objects $1
+php $PARENT_DIR/init.php internal/hash_db_list

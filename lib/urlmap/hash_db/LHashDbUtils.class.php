@@ -41,6 +41,10 @@ class LHashDbUtils {
     
     function addRoute($public_route_name,$wanted_route_name) {
         
+        if (LStringUtils::startsWith($public_route_name, '/')) $public_route_name = substr ($public_route_name, 1);
+        if (LStringUtils::startsWith($wanted_route_name, '/')) $wanted_route_name = substr ($wanted_route_name, 1);
+        
+        
         $route_resolver = new LUrlMapResolver();
         
         if (!$route_resolver->isStaticRoute($public_route_name)) return "Unable to find public route : ".$public_route_name;

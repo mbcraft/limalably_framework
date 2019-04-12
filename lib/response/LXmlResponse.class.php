@@ -8,7 +8,7 @@ class LXmlResponse extends LHttpResponse {
         $this->my_result = $data;
     }
 
-    public function execute() {
+    public function execute($format = null) {
         header("Content-Type: application/xml; charset=utf-8");
         header("Content-Length: " . strlen($this->my_result));
         header("Connection: close");

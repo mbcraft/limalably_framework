@@ -2,7 +2,7 @@
 
 class LUrlMapExecutor {
 
-    const AVAILABLE_NODES = ['conditions', '!conditions', 'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format'];
+    const AVAILABLE_NODES = ['real_url','imports','extends','conditions', '!conditions', 'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format'];
 
     private $my_url_map = null;
     private $is_root = false;

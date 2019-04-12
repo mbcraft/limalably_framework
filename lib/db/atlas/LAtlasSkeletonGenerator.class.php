@@ -48,7 +48,7 @@ class LAtlasSkeletonGenerator {
         );
 
         $code = $command();
-        exit($code);
+        Lym::finish($code);
     }
 
 }

@@ -21,6 +21,8 @@ class LFrameworkCommandExecutor implements LICommandExecutor {
         switch ($route) {
             case 'internal/run_framework_tests' : $this->handleRunFrameworkTests();break;
         }
+        
+        if ($this->hasExecutedCommand()) Lym::finish ();
     }
 
     public function hasExecutedCommand() {

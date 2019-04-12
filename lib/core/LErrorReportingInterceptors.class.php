@@ -1,23 +1,26 @@
 <?php
 
 function lym_fatal_handler() {
-    
-    if (isset($_SERVER['EXIT'])) exit();
-    
-    $errfile = "unknown file";
-    $errstr  = "shutdown";
-    $errno   = E_CORE_ERROR;
-    $errline = 0;
 
-    $error = error_get_last();
+    if (isset($_SERVER['EXIT'])) {
+        exit();
+    } else {
 
-    if( $error !== NULL) {
-        $errno   = $error["type"];
-        $errfile = $error["file"];
-        $errline = $error["line"];
-        $errstr  = $error["message"];
+        $errfile = "unknown file";
+        $errstr = "shutdown";
+        $errno = E_CORE_ERROR;
+        $errline = 0;
 
-        report($errno, $errstr, $errfile, $errline,[]);
+        $error = error_get_last();
+
+        if ($error !== NULL) {
+            $errno = $error["type"];
+            $errfile = $error["file"];
+            $errline = $error["line"];
+            $errstr = $error["message"];
+
+            lym_report($errno, $errstr, $errfile, $errline, []);
+        }
     }
 }
 
@@ -67,11 +70,11 @@ function lym_report(int $errno, string $errstr, string $errfile, int $errline, a
             break;
     }
 
-    echo "Error type: ".$type."\n<br>";
-    echo "Error : ".$errstr."\n<br>";
-    echo "File : ".$errfile."\n<br>";
-    echo "Line number : ".$errline."\n<br>";
-    
+    echo "Error type: " . $type . "\n<br>";
+    echo "Error : " . $errstr . "\n<br>";
+    echo "File : " . $errfile . "\n<br>";
+    echo "Line number : " . $errline . "\n<br>";
+
     return false;
 }
 
@@ -112,7 +115,7 @@ class LErrorReportingInterceptors {
         set_error_handler('lym_report', $report_mask);
 
         register_shutdown_function('lym_fatal_handler');
-        
+
         error_reporting($report_mask);
     }
 

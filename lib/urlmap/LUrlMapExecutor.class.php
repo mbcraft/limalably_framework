@@ -39,7 +39,7 @@ class LUrlMapExecutor {
                 //a script executed correctly
                 echo "No result was returned!";
                 
-                exit;
+                Lym::finish(1);
             } else {
                 throw new \Exception("Unexpected state, result returned to root : " . var_export($result, true));
             }

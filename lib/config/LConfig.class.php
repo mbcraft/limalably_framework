@@ -80,7 +80,7 @@ class LConfig {
                 LConfig::saveServerVar('PARAMETERS');
             } else {
                 LResult::error_message("Route not found in command-line execution.");
-                exit(1);
+                Lym::finish(1);
             }
         }
 
@@ -98,7 +98,7 @@ class LConfig {
                 LConfig::saveServerVar('PARAMETERS');
             } else {
                 LResult::error_message("Route not found in command-line execution.");
-                exit(1);
+                Lym::finish(1);
             }
         }
 
@@ -148,7 +148,7 @@ class LConfig {
         }
         if (!is_file($internal_config_file_path)) {
             LResult::error_message("Internal config not found : " . $internal_config_file_path);
-            exit(1);
+            Lym::finish(1);
         }
 
         try {
@@ -158,7 +158,7 @@ class LConfig {
         } catch (\Exception $ex) {
             LResult::error_message("Errore nella lettura del file di configurazione interna " . $internal_config_file_path . " ...");
             LResult::exception($ex);
-            exit(1);
+            Lym::finish(1);
         }
 
         // loading config ...
@@ -174,7 +174,7 @@ class LConfig {
 
             if (!is_dir($config_dir_path)) {
                 LResult::error_message("Config dir not found : " . $config_dir_path);
-                exit(1);
+                Lym::finish(1);
             } else {
                 // config dir found
                 //LResult::trace("Config dir found : " . $config_dir_path);
@@ -196,7 +196,7 @@ class LConfig {
                 } catch (\Exception $ex) {
                     LResult::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config".self::CONFIG_EXTENSION." ...");
                     LResult::exception($ex);
-                    exit(1);
+                    Lym::finish(1);
                 }
             }
 

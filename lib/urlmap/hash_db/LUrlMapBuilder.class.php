@@ -20,6 +20,8 @@ class LUrlMapBuilder {
         $content = LJsonUtils::encodeData('urlmap', $path, $this->my_map->getRoot());
         
         file_put_contents($path, $content);
+        
+        chmod($path,0777);
     }
     
 }

@@ -67,7 +67,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
         if (empty($elements)) {
             echo "No routes found in hash db.\n";
-            exit();
+            Lym::finish(0);
         }
         
         echo "Routes found in hash db : ".count($elements)."\n\n";
@@ -124,6 +124,8 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'internal/hash_db_add' : $this->handleHashDbAdd();break;
             case 'internal/hash_db_remove' : $this->handleHashDbRemove();break;
         }
+        
+        if ($this->hasExecutedCommand()) Lym::finish ();
     }
 
     public function hasExecutedCommand() {

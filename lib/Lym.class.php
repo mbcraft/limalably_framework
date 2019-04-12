@@ -24,7 +24,7 @@ class Lym {
             foreach ($folder_checker->getErrors() as $error) {
                 echo $error."\n";
             }
-            exit(1);
+            Lym::finish();
         }
 
         LLog::init();
@@ -50,7 +50,7 @@ class Lym {
             foreach ($folder_checker->getErrors() as $error) {
                 echo $error."\n<br />";
             }
-            exit(1);
+            Lym::finish();
         }
         
         LLog::init();
@@ -84,7 +84,7 @@ class Lym {
 
     }
 
-    public static function finish() {
+    public static function finish($exit_code = 0) {
 
         LDbConnectionManager::dispose();
 
@@ -92,7 +92,7 @@ class Lym {
 
         $_SERVER['EXIT'] = true;
         
-        exit();
+        exit($exit_code);
     }
 
 }

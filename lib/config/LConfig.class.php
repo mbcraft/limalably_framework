@@ -190,9 +190,8 @@ class LConfig {
             if (is_file($config_dir_path . 'config'.self::CONFIG_EXTENSION)) {
                 self::$json_config_found = true;
                 try {
-                    $json_config = json_decode(file_get_contents($config_dir_path . 'config'.self::CONFIG_EXTENSION), true);
-                    if (empty($json_config))
-                        throw new \Exception("Empty config found or error in json decoding ...");
+                    $json_config = LJsonUtils::parseContent('config',$config_dir_path . 'config'.self::CONFIG_EXTENSION,file_get_contents($config_dir_path . 'config'.self::CONFIG_EXTENSION));
+                    
                 } catch (\Exception $ex) {
                     LResult::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config".self::CONFIG_EXTENSION." ...");
                     LResult::exception($ex);

@@ -21,6 +21,7 @@ require_once ('lib/core/LClassLoader.class.php');
 
 //utils
 require_once ('lib/utils/LStringUtils.class.php');
+require_once ('lib/utils/LJsonUtils.class.php');
 
 LConfig::init();
 

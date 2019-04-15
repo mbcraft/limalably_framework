@@ -35,6 +35,8 @@ class LFolderPermissionChecker {
             new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/json/error_templates_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/misc/proc_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/misc/data_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/i18n/translations_root_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/i18n/cache_folder'),"?,r,w,x"),
         ];
         
         $log_type = LConfigReader::executionMode('/logging/type');
@@ -79,8 +81,8 @@ class LFolderPermissionChecker {
             switch ($spec) {
                 case '?': {
                         if (!file_exists($full_folder_path)) {
-                            mkdir($full_folder_path,0777,true);
-                            chmod($full_folder_path,0777);
+                            $result = mkdir($full_folder_path,0777,true);
+                            if ($result) chmod($full_folder_path,0777);
                         }
                         if (!file_exists($full_folder_path)) {
                             $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not exist!';

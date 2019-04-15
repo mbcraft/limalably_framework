@@ -181,8 +181,10 @@ class LLog {
     }
     
     public static function close() {
-        self::$my_logger->close();
-        self::$my_logger = null;
+        if (self::$my_logger) {
+            self::$my_logger->close();
+            self::$my_logger = null;
+        }
     }
     
 }

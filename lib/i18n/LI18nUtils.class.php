@@ -49,7 +49,9 @@ class LI18nUtils {
         if (in_array($default_lang, $available_languages)) return $default_lang;
         
         //fourth pick the first available language
-        return $available_languages[0];
+        if (isset($available_languages[0])) return $available_languages[0];
+        
+        return "";
     }
     
     public static function getCurrentLangData() {

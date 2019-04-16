@@ -44,13 +44,20 @@ class LI18nUtils {
             if (in_array($preferred_lang, $available_languages)) return $preferred_lang;
         }
         
-        //third check the default language
+        //try with prefix of languages
+        foreach ($preferred_lang_array as $preferred_lang2) {
+            $lang_prefix = explode('_',$preferred_lang2);
+            if (in_array($lang_prefix, $available_languages)) return $lang_prefix;
+        }
+        
+        //fourth check the default language
         $default_lang = LConfigReader::simple('/i18n/default_language');
         if (in_array($default_lang, $available_languages)) return $default_lang;
         
-        //fourth pick the first available language
+        //fifth pick the first available language
         if (isset($available_languages[0])) return $available_languages[0];
         
+        //return empty string if no languages are available.
         return "";
     }
     

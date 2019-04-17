@@ -348,7 +348,7 @@ class LTreeMap implements ArrayAccess, Iterator {
 
     //array access
     
-    public function offsetExists($offset): bool {
+    public function offsetExists($offset) {
         return $this->is_set($offset);
     }
 
@@ -356,11 +356,11 @@ class LTreeMap implements ArrayAccess, Iterator {
         return $this->mustGet($offset);
     }
 
-    public function offsetSet($offset, $value): void {
+    public function offsetSet($offset, $value) {
         $this->set($offset,$value);
     }
 
-    public function offsetUnset($offset): void {
+    public function offsetUnset($offset) {
         $this->remove($offset);
     }
 
@@ -372,17 +372,17 @@ class LTreeMap implements ArrayAccess, Iterator {
         return $this->current_keys[$this->current_index];
     }
 
-    public function next(): void {
+    public function next() {
         $this->current_index++;
     }
 
-    public function rewind(): void {
+    public function rewind() {
         $this->current_keys = $this->keys('/');
         $this->current_keys[] = null;
         $this->current_index = 0;
     }
 
-    public function valid(): bool {
+    public function valid() {
         return isset($this->current_keys[$this->current_index]);
     }
 

@@ -82,7 +82,7 @@ class LStringUtils {
         return $message;
     }
     
-    static function getExceptionMessage(\Exception $ex,bool $print_stack_trace = true,bool $use_newline=true) {
+    static function getExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {
         $exceptions = [$ex];
         if ($print_stack_trace) {
             while ($ex->getPrevious()!=null) {

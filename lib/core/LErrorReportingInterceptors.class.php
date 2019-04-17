@@ -24,7 +24,7 @@ function lym_fatal_handler() {
     }
 }
 
-function lym_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext): bool {
+function lym_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
 
     $available_constants = [E_COMPILE_ERROR, E_COMPILE_WARNING, E_CORE_ERROR, E_CORE_WARNING, E_ERROR, E_PARSE, E_NOTICE, E_WARNING, E_RECOVERABLE_ERROR, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE];
 

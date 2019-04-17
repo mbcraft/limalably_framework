@@ -41,7 +41,7 @@ class LResult {
      * @param string $message The message to be printed.
      * @param bool $new_line_after true if newline must be appended, false otherwise. Defaults to true,
      */
-    public static function message(string $message,bool $new_line_after=true) {
+    public static function message(string $message,bool $new_line_after) {
         echo $message;
         if ($new_line_after) {
             self::newline();
@@ -72,7 +72,7 @@ class LResult {
      * 
      * @param \Exception $ex The exception to print.
      */
-    public static function exception(\Exception $ex,bool $print_stack_trace = true) {
+    public static function exception(\Exception $ex,bool $print_stack_trace) {
         self::$has_error = true;
         
         if (LExecutionMode::displayErrors()) {

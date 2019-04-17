@@ -144,7 +144,7 @@ class LTreeMapView implements ArrayAccess, Iterator {
 
     //array access
 
-    public function offsetExists($path): bool {
+    public function offsetExists($path) {
 
         return $this->view_map->is_set($this->viewPath($path));
     }
@@ -154,12 +154,12 @@ class LTreeMapView implements ArrayAccess, Iterator {
         return $this->view_map->mustGet($this->viewPath($path));
     }
 
-    public function offsetSet($path, $value): void {
+    public function offsetSet($path, $value) {
 
         $this->view_map->set($this->viewPath($path), $value);
     }
 
-    public function offsetUnset($path): void {
+    public function offsetUnset($path) {
 
         $this->view_map->remove($this->viewPath($path));
     }
@@ -172,17 +172,17 @@ class LTreeMapView implements ArrayAccess, Iterator {
         return $this->current_keys[$this->current_index];
     }
 
-    public function next(): void {
+    public function next() {
         $this->current_index++;
     }
 
-    public function rewind(): void {
+    public function rewind() {
         $this->current_keys = $this->view_map->keys($this->view_prefix);
         $this->current_keys[] = null;
         $this->current_index = 0;
     }
 
-    public function valid(): bool {
+    public function valid() {
         return isset($this->current_keys[$this->current_index]);
     }
 

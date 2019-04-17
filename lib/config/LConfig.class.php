@@ -115,15 +115,11 @@ class LConfig {
 
     private static function initRoute() {
 
-        $folder_route = LConfig::get('folder_route', 'index.html');
-
+        
         $route = $_SERVER['RAW_ROUTE'];
 
         if ($route == null) {
             $route = '';
-        }
-        if ($route[strlen($route) - 1] == '/') {
-            $route .= $folder_route;
         }
 
         $_SERVER['ROUTE'] = $route;

@@ -4,7 +4,7 @@ class LTwigTemplateSourceFactory implements LITemplateSourceFactory {
     
     private $root_path = null;
     
-    public function isTemplateSource($string_source) {
+    public function isTemplateSource(string $string_source) {
         return (strpos($string_source,'{{')!==false) || (strpos($string_source,'{%')!==false);
     }
     

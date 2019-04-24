@@ -91,10 +91,13 @@ class LTemplateRendering {
                             break;
                         case 'env_string' : $this->my_output->set('env_string', $this->my_json_encode('env', LEnvironmentUtils::getReplacementsArray()));
                             break;
-                        case 'output_string' : break; //already done to avoid output accumulation
-
                         case 'i18n' : $this->my_output->set('i18n', LI18nUtils::getCurrentLangData()); 
                            break;
+                        case 'flags' : $this->my_output->set('flags', array('debug_enabled' => LConfigReader::executionMode('/misc/debug_enabled'),'trace_enabled' => LConfigReader::executionMode('/misc/trace_enabled'),'introspection_enabled' => LConfigReader::executionMode('/misc/introspection_enabled'))); 
+                            break;
+                        case 'output_string' : break; //already done to avoid output accumulation
+
+
                         
                         default : throw new \Exception("Unable to import into variables : " . $import_name . " .Available imports : " . var_export(self::AVAILABLE_IMPORTS, true));
                     }

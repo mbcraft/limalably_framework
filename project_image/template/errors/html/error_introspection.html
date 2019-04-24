@@ -1,63 +1,64 @@
-<button class="collapsible">Introspection</button>
-<div class="content">
+{% if flags.introspection_enabled %}
+<button class="introspection_collapsible">Introspection</button>
+<div class="introspection_content">
     {% if urlmap_string %}
-    <button class="collapsible">Urlmap</button>
-    <div class="content">
+    <button class="introspection_collapsible">Urlmap</button>
+    <div class="introspection_content">
         {{ urlmap_string }}
     </div>
     {% endif %}
     {% if env_string %}
-    <button class="collapsible">Environment</button>
-    <div class="content">
+    <button class="introspection_collapsible">Environment</button>
+    <div class="introspection_content">
         {{ env_string }}
     </div>
     {% endif %}
     {% if input_string %}
-    <button class="collapsible">Input</button>
-    <div class="content">
+    <button class="introspection_collapsible">Input</button>
+    <div class="introspection_content">
         {{ input_string }}
     </div>
     {% endif %}
     {% if session_string %}
-    <button class="collapsible">Session</button>
-    <div class="content">
+    <button class="introspection_collapsible">Session</button>
+    <div class="introspection_content">
         {{ session_string }}
     </div>
     {% endif %}
     {% if parameters_string %}
-    <button class="collapsible">Parameters</button>
-    <div class="content">
+    <button class="introspection_collapsible">Parameters</button>
+    <div class="introspection_content">
         {{ parameters_string }}
     </div>
     {% endif %}
     {% if capture_string %}
-    <button class="collapsible">Capture</button>
-    <div class="content">
+    <button class="introspection_collapsible">Capture</button>
+    <div class="introspection_content">
         {{ capture_string }}
     </div>
     {% endif %}
     {% if output_string %}
-    <button class="collapsible">Output</button>
-    <div class="content">
+    <button class="introspection_collapsible">Output</button>
+    <div class="introspection_content">
         {{ output_string }}
     </div>
     {% endif %}
 </div>
     {% if errors.all %}
-    <button class="collapsible">Errors</button>
-    <div class="content">
+    <button class="introspection_collapsible">Errors</button>
+    <div class="introspection_content">
         {% for error in errors.all %}
         <p>{{ error.getMessage }}</p>
         {% endfor %}
     </div>
     {% endif %}
 <script>
-    var coll = document.getElementsByClassName("collapsible");
+    var coll = document.getElementsByClassName("introspection_collapsible");
     var i;
 
     for (i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function () {
-            this.classList.toggle("active");
+            this.classList.toggle("introspection_active");
             var content = this.nextElementSibling;
             if (content.style.maxHeight) {
                 content.style.maxHeight = null;
@@ -67,3 +68,4 @@
         });
     }
 </script>
+{% endif %}

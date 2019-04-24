@@ -180,7 +180,8 @@
             "debug_enabled" : true,
             "proc_folder": "proc/",
             "proc_extension": ".proc.php",
-            "data_folder": "data/"
+            "data_folder": "data/",
+            "autofix_folder_permissions" : true
         },
         "i18n" : {
             "translations_root_folder" : "i18n/",

@@ -90,20 +90,45 @@ class LFolderPermissionChecker {
                         break;
                     }
                 case 'r': {
-                        if (!is_readable($full_folder_path))
-                            $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not have read permission!';
-
+                        if (!is_readable($full_folder_path)) {
+                            if (LConfigReader::simple('/misc/autofix_folder_permissions')) {
+                                $fixed = chmod($full_folder_path,0440);
+                            } else {
+                                $fixed = false;
+                            }
+                            if (!$fixed) {
+                                $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not have read permission!';
+                            }
+                        }
+                            
                         break;
                     }
                 case 'w': {
-                        if (!is_writable($full_folder_path))
-                            $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not have write permission!';
-
+                        if (!is_writable($full_folder_path)) {
+                            if (LConfigReader::simple('/misc/autofix_folder_permissions')) {
+                                $fixed = chmod($full_folder_path,0660);
+                            } else {
+                                $fixed = false;
+                            }
+                        
+                            if (!$fixed) {
+                                $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not have write permission!';
+                            }
+                        }
                         break;
                     }
                 case 'x': {
-                        if (!is_dir($full_folder_path))
-                            $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not have execution permission!';
+                        if (!is_dir($full_folder_path)) {
+                            if (LConfigReader::simple('/misc/autofix_folder_permissions')) {
+                                $fixed = chmod($full_folder_path,0770);
+                            } else {
+                                $fixed = false;
+                            }
+                        
+                            if (!$fixed) {
+                                $this->errors[] = 'The ' . ($is_framework_folder ? 'framework' : 'project') . ' folder "' . $relative_folder . '" does not have execution permission!';
+                            }
+                        }
                         break;
                     }
                 case 'f': {

@@ -278,6 +278,9 @@ class LUrlMapResolver {
     }
     
     public function resolveUrlMap(string $route, int $search_flags = self::FLAGS_SEARCH_ALL) {
+        
+        if (!$route) $route = '_folder';
+        
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
         $this->original_route = $route;

@@ -152,8 +152,8 @@ class LConfig {
             if (empty($internal_json_config))
                 throw new \Exception("Empty internal config found or error in json decoding ...");
         } catch (\Exception $ex) {
-            LResult::error_message("Errore nella lettura del file di configurazione interna " . $internal_config_file_path . " ...");
-            LResult::exception($ex);
+            echo ("Errore nella lettura del file di configurazione interna " . $internal_config_file_path . " ...\n");
+            var_dump($ex);
             Lym::finish(1);
         }
 
@@ -169,7 +169,7 @@ class LConfig {
             $config_dir_path = $_SERVER['PROJECT_DIR'] . implode('/', $path_parts) . '/';
 
             if (!is_dir($config_dir_path)) {
-                LResult::error_message("Config dir not found : " . $config_dir_path);
+                echo("Config dir not found : " . $config_dir_path."\n");
                 Lym::finish(1);
             } else {
                 // config dir found

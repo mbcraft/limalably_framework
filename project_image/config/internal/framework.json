@@ -27,6 +27,12 @@
                 },
                 "template": {
                     "auto_reload": true
+                },
+                "misc" : {
+                    "errors" : {
+                        "log" : false,
+                        "display" : true
+                    }
                 }
             },
             "development": {
@@ -39,6 +45,11 @@
                 },
                 "template": {
                     "auto_reload": true
+                },
+                "misc" : {
+                    "errors" : {
+                        "display" : true
+                    }
                 }
             },
             "testing": {
@@ -52,7 +63,10 @@
                 "template": {
                     "auto_reload": false
                 },
-                "misc" : {
+                "misc" : {             
+                    "errors" : {
+                        "display" : true
+                    },
                     "trace_enabled" : false,
                     "debug_enabled" : false
                 }
@@ -160,6 +174,7 @@
         "misc" : {
             "errors" : {
                 "log" : true,
+                "display" : false,
                 "continue_on_errors" : false,
                 "reporting" : {
                     "error" : true,

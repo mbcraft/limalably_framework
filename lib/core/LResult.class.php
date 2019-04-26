@@ -57,11 +57,11 @@ class LResult {
     public static function error_message(string $message) {
         self::$has_error = true;
         
-        if (LExecutionMode::displayErrors()) {
+        if (LConfigReader::executionMode("/misc/errors/display")) {
             echo $message;
             self::newline();
         } 
-        if (LExecutionMode::logErrors())
+        if (LConfigReader::executionMode("/misc/errors/log"))
         {
             LLog::error($message);
         }
@@ -75,11 +75,11 @@ class LResult {
     public static function exception(\Exception $ex,bool $print_stack_trace) {
         self::$has_error = true;
         
-        if (LExecutionMode::displayErrors()) {
+        if (LConfigReader::executionMode("/misc/errors/display")) {
             $use_newline = $_SERVER['ENVIRONMENT'] == 'script';
             echo LStringUtils::getExceptionMessage($ex, $print_stack_trace, $use_newline);
         } 
-        if (LExecutionMode::logErrors())
+        if (LConfigReader::executionMode("/misc/errors/log"))
         {
             LLog::exception($ex);
         }

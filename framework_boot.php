@@ -23,6 +23,9 @@ require_once ('lib/core/LClassLoader.class.php');
 require_once ('lib/utils/LStringUtils.class.php');
 require_once ('lib/utils/LJsonUtils.class.php');
 
+//lym
+require_once ('lib/Lym.class.php');
+
 LConfig::init();
 
 LClassLoader::init();

@@ -86,9 +86,13 @@ class Lym {
 
     public static function finish($exit_code = 0) {
 
-        LDbConnectionManager::dispose();
+        if (class_exists('LDbConnectionManager')) {
+            LDbConnectionManager::dispose();
+        }
 
-        LLog::close();
+        if (class_exists('LLog')) {
+            LLog::close();
+        }
 
         $_SERVER['EXIT'] = true;
         

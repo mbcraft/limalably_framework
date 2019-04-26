@@ -1,6 +1,6 @@
 {
-    "name": "vendor/lym-sample-project",
-    "description": "Description of project LymSampleProject.",
+    "name": "mbcraft/lym_framework",
+    "description": "Lym Framework developed by MBCRAFT.",
     "authors": [
         {
             "name": "Marco Bagnaresi",

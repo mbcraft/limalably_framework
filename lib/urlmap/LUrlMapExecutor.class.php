@@ -2,7 +2,7 @@
 
 class LUrlMapExecutor {
 
-    const AVAILABLE_NODES = ['real_url','imports','extends','conditions', '!conditions', 'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format'];
+    const AVAILABLE_NODES = ['real_url','imports','extends','conditions', '!conditions', 'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format','http_error','http_redirect'];
 
     private $my_url_map = null;
     private $is_root = false;
@@ -283,6 +283,17 @@ class LUrlMapExecutor {
                 }
             }
         }
+        
+        //handling http errors and http redirect
+        
+        if ($this->my_url_map->is_set('/http_redirect')) {
+            throw new LHttpRedirect($this->my_url_map->get('/http_redirect'));
+        }
+        
+        if ($this->my_url_map->is_set('/http_error')) {
+            throw new LHttpError($this->my_url_map->get('/http_error'));
+        }
+        
 
         //template rendering
 

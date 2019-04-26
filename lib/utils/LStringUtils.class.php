@@ -75,14 +75,14 @@ class LStringUtils {
         }
     }
     
-    static function getErrorMessage(string $error,string $file,int $line,$use_newline=true) {
+    static function getErrorMessage(string $error,string $file,int $line,bool $use_newline=true) {
         $NL = $use_newline ? "\n" : '<br>';
         $message = 'Error : '.$error.$NL;
         $message .= 'File : '.$file.' Line : '.$line.$NL;
         return $message;
     }
     
-    static function getExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {
+    static function getExceptionMessage(\Exception $ex,bool $print_stack_trace=true,bool $use_newline=true) {
         $exceptions = [$ex];
         if ($print_stack_trace) {
             while ($ex->getPrevious()!=null) {

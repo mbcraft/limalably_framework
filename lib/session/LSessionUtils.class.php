@@ -18,7 +18,9 @@ class LSessionUtils {
             
             $params = [];
             foreach ($session_params as $session_param => $value) {
-                $params['session.'.$session_param] = $value;
+                if ($value !== null) {
+                    $params['session.'.$session_param] = $value;
+                }
             }
             
             session_start($params);

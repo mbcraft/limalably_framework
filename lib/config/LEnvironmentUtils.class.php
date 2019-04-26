@@ -3,7 +3,8 @@
 class LEnvironmentUtils {
     
     public static function getServerUser() {
-        return isset($_SERVER['USER']) ? $_SERVER['USER'] : $_ENV['APACHE_RUN_USER'];
+        
+        return isset($_SERVER['USER']) ? $_SERVER['USER'] : (isset($_ENV['APACHE_RUN_USER']) ? $_ENV['APACHE_RUN_USER'] : 'apache' );
     }
     
     public static function getRemoteIp() {

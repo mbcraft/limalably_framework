@@ -59,13 +59,13 @@ class LXmlDataStorage implements LIDataStorage {
         
         $root_node = $dom->documentElement;
         
-        for ($i = 0 ; $i < $root_node->childNodes->count() ; $i++) {
+        for ($i = 0 ; $i < $root_node->childNodes->length ; $i++) {
             $node = $root_node->childNodes->item($i);
             
             if ($node instanceof \DOMElement) {
                 $path = $node->getAttribute('path');
                 $value = "";
-                for ($j = 0 ; $j < $node->childNodes->count(); $j++) {
+                for ($j = 0 ; $j < $node->childNodes->length; $j++) {
                     $nested_node = $node->childNodes->item($j);
                     $value .= $nested_node->ownerDocument->saveHTML($nested_node);
                 }

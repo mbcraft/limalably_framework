@@ -279,10 +279,10 @@ class LUrlMapResolver {
     
     public function resolveUrlMap(string $route, int $search_flags = self::FLAGS_SEARCH_ALL) {
         
-        if (!$route) $route = $this->folder_route;
-        
         if (!$this->isInitialized()) $this->initWithDefaults ();
-        
+                
+        if (!$route) $route = $this->folder_route;
+                
         $this->original_route = $route;
         $this->urlmap_references = [];
         do {

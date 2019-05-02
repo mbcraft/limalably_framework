@@ -197,7 +197,8 @@
             "proc_folder": "proc/",
             "proc_extension": ".proc.php",
             "data_folder": "data/",
-            "autofix_folder_permissions" : true
+            "autofix_folder_permissions" : true,
+            "build" : 0
         },
         "i18n" : {
             "translations_root_folder" : "i18n/",

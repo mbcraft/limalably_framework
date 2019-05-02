@@ -87,6 +87,14 @@ class LEnvironmentUtils {
         else return 'CLI';
     }
     
+    public static function getBuildNumber() {
+        if (LExecutionMode::isFrameworkDevelopment() || LExecutionMode::isDevelopment()) {
+            return "t".time();
+        } else {
+            return LConfigReader::simple('/misc/build');
+        }
+    }
+    
     public static function getReplacementsArray() {
       
         return array('request_method' => strtolower(LEnvironmentUtils::getRequestMethod()),
@@ -94,7 +102,8 @@ class LEnvironmentUtils {
                     'exec_mode' => LExecutionMode::getShort(),
                     'environment' => LEnvironmentUtils::getEnvironment(),
                     'hostname' => LEnvironmentUtils::getHostname(),
-                    'preferred_language' => LEnvironmentUtils::getPreferredLanguageArray()[0]
+                    'preferred_language' => LEnvironmentUtils::getPreferredLanguageArray()[0],
+                    'build' => LEnvironmentUtils::getBuildNumber()
             );
     
     }

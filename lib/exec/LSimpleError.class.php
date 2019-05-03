@@ -20,5 +20,5 @@ class LSimpleError {
     public function getCode() {
         return $this->code;
     }
-    
+        
 }

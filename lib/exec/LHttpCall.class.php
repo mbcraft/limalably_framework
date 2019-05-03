@@ -3,6 +3,9 @@
 class LHttpCall {
     
     static function raw_get($url,$params = array()) {
+        
+        if (!function_exists('curl_init')) throw new Exception("Unable to use curl. Please install curl.");
+        
         if (!empty($params)) {
             $url .= '?';
             $first_param = true;
@@ -20,6 +23,9 @@ class LHttpCall {
     }
     
     static function raw_post($url,$params = array()) {
+        
+        if (!function_exists('curl_init')) throw new Exception("Unable to use curl. Please install curl.");
+        
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);

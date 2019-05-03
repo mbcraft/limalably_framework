@@ -129,8 +129,12 @@ class LUrlMapExecutor {
             LResult::trace("Evaluating init section ...");
             $exec_list = $this->my_url_map->get('/init');
             foreach ($exec_list as $path => $exec_spec_list) {
-                if (!is_array($exec_spec_list))
+                if (!is_array($exec_spec_list)) {
                     $exec_spec_list = array($exec_spec_list);
+                    $merge = false;
+                } else {
+                    $merge = true;
+                }
 
                 $output_view = $treeview_output->view($path);
                 $input_view = $treeview_input->view($path);
@@ -141,7 +145,7 @@ class LUrlMapExecutor {
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
                     try {
-                        $executor->execute($call_spec, $call_params);
+                        $executor->execute($call_spec, $call_params,$merge);
                     } catch (\Exception $ex) {
                         LErrorList::saveFromException('init', $ex);
                     }
@@ -171,8 +175,12 @@ class LUrlMapExecutor {
             LResult::trace("Evaluating before_exec section ...");
             $exec_list = $this->my_url_map->get('/before_exec');
             foreach ($exec_list as $path => $exec_spec_list) {
-                if (!is_array($exec_spec_list))
+                if (!is_array($exec_spec_list)) {
                     $exec_spec_list = array($exec_spec_list);
+                    $merge = false;
+                } else {
+                    $merge = true;
+                }
 
                 $output_view = $treeview_output->view($path);
                 $input_view = $treeview_input->view($path);
@@ -183,7 +191,7 @@ class LUrlMapExecutor {
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
                     try {
-                        $executor->execute($call_spec, $call_params);
+                        $executor->execute($call_spec, $call_params,$merge);
                     } catch (\Exception $ex) {
                         LErrorList::saveFromException('before_exec', $ex);
                     }
@@ -196,8 +204,12 @@ class LUrlMapExecutor {
         if ($this->my_url_map->is_set('/dynamic_exec')) {
             LResult::trace("Evaluating dynamic_exec section ...");
             $exec_list = $this->my_url_map->get('/dynamic_exec');
-            if (!is_array($exec_list))
+            if (!is_array($exec_list)) {
                 $exec_list = array($exec_list);
+                $merge = false;
+            } else {
+                $merge = true;
+            }
 
             $call_params = ['output' => $this->output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $this->capture, 'parameters' => $parameters];
 
@@ -205,7 +217,7 @@ class LUrlMapExecutor {
 
             foreach ($exec_list as $call_spec) {
                 try {
-                    $dynamic->saveIntoExec($call_spec, $call_params, $this->my_url_map);
+                    $dynamic->saveIntoExec($call_spec, $call_params, $this->my_url_map, $merge);
                 } catch (\Exception $ex) {
                     LErrorList::saveFromException('dynamic_exec', $ex);
                 }
@@ -219,9 +231,12 @@ class LUrlMapExecutor {
             LResult::trace("Evaluating exec section ...");
             $exec_list = $this->my_url_map->get('/exec');
             foreach ($exec_list as $path => $exec_spec_list) {
-                if (!is_array($exec_spec_list))
+                if (!is_array($exec_spec_list)) {
                     $exec_spec_list = array($exec_spec_list);
-
+                    $merge = false;
+                } else {
+                    $merge = true;
+                }
                 $output_view = $treeview_output->view($path);
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
@@ -231,7 +246,7 @@ class LUrlMapExecutor {
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
                     try {
-                        $executor->execute($call_spec, $call_params);
+                        $executor->execute($call_spec, $call_params,$merge);
                     } catch (\Exception $ex) {
                         LErrorList::saveFromException('exec', $ex);
                     }
@@ -245,9 +260,12 @@ class LUrlMapExecutor {
             LResult::trace("Evaluating after_exec section ...");
             $exec_list = $this->my_url_map->get('/after_exec');
             foreach ($exec_list as $path => $exec_spec_list) {
-                if (!is_array($exec_spec_list))
+                if (!is_array($exec_spec_list)) {
                     $exec_spec_list = array($exec_spec_list);
-
+                    $merge = false;
+                } else {
+                    $merge = true;
+                }
                 $output_view = $treeview_output->view($path);
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
@@ -257,7 +275,7 @@ class LUrlMapExecutor {
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
                     try {
-                        $executor->execute($call_spec, $call_params);
+                        $executor->execute($call_spec, $call_params, $merge);
                     } catch (\Exception $ex) {
                         LErrorList::saveFromException('after_exec', $ex);
                     }

@@ -506,5 +506,18 @@ class TreeMapTest extends LTestCase {
 
     }
     
+    function testReplaceSingleValue() {
+        
+        
+        $t = new LTreeMap();
+        $data = "This is a sample string";
+        
+        $t->replace('/my_path', $data);
+        
+        $value = $t->get('/my_path');
+        
+        $this->assertFalse(is_array($value),"Il valore salvato con replace risulta essere un array!");
+    }
+    
     
 }

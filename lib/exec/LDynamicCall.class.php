@@ -2,7 +2,7 @@
 
 class LDynamicCall {
     
-    const REPLACE_DATA_CALL_OPTION_SUFFIX = '!';
+    const MERGE_DATA_CALL_OPTION_SUFFIX = ',';
     
     private $my_call = null;
     
@@ -27,11 +27,11 @@ class LDynamicCall {
         
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        if (LStringUtils::endsWith($call_spec,self::REPLACE_DATA_CALL_OPTION_SUFFIX)) {
-            $use_replace = true;
+        if (LStringUtils::endsWith($call_spec,self::MERGE_DATA_CALL_OPTION_SUFFIX)) {
+            $use_replace = false;
             $my_call_spec = substr($call_spec,0,-1);
         } else {
-            $use_replace = false;
+            $use_replace = true;
             $my_call_spec = $call_spec;
         }
                 

@@ -20,7 +20,7 @@ class LExecCall {
         $this->my_call = new LCall();
     }
     
-    public function execute(string $call_spec,array $all_param_data,bool $merge) {
+    public function execute(string $call_spec,array $all_param_data,bool $add) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
                         
         $result = $this->my_call->execute($call_spec,$all_param_data,false);
@@ -42,8 +42,8 @@ class LExecCall {
         if ($my_output instanceof LTreeMap) $my_output_path = '/';
         if ($my_output instanceof LTreeMapView) $my_output_path = '.';
         
-        if ($merge) {
-            $all_param_data['rel_output']->merge($my_output_path,$result);
+        if ($add) {
+            $all_param_data['rel_output']->add($my_output_path,$result);
         } else {
             $all_param_data['rel_output']->set($my_output_path,$result);
         }

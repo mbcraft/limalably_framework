@@ -32,7 +32,7 @@ class LDynamicCall {
         $this->urlmap_tree->set('/template',$result);
     }
     
-    function saveIntoExec($call_spec,$all_param_data,$urlmap_tree,bool $merge) {
+    function saveIntoExec($call_spec,$all_param_data,$urlmap_tree,bool $add) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
                 
         $call = new LCall();
@@ -41,9 +41,9 @@ class LDynamicCall {
         
         if (!is_array($result)) throw new \Exception("Dynamic exec result is not a valid array");
         
-        if ($merge) {
+        if ($add) {
             foreach ($result as $key => $value) {
-                $urlmap_tree->merge('/exec/'.$key,$value);
+                $urlmap_tree->add('/exec/'.$key,$value);
             }
         } else {
             foreach ($result as $key => $value) {

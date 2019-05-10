@@ -73,7 +73,7 @@
             },
             "production": {
                 "logging": {
-                    "type": "db",
+                    "type": "distinct-file",
                     "min_level": "error"
                 },
                 "urlmap": {
@@ -168,7 +168,6 @@
             "default_error_format" : "html"
         },
         "session" : {
-            "use_strict_mode" : true
         },
 
         "misc" : {
@@ -198,6 +197,7 @@
             "proc_extension": ".proc.php",
             "data_folder": "data/",
             "autofix_folder_permissions" : true,
+            "wwwroot_folder" : "wwwroot/",
             "build" : 0
         },
         "i18n" : {

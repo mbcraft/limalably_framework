@@ -25,8 +25,17 @@ class LI18nUtils {
 
     public static function getCurrentLang() {
 
+        if (isset($_SERVER['CAPTURE'])) $last_capture = $_SERVER['CAPTURE'];
+        else $last_capture = null;
+        
         $available_languages = self::getAvailableLanguages();
 
+        //zero check, from the capture
+        $capture_lang_variable = LConfigReader::simple('/i18n/capture_lang_variable');
+        if ($last_capture && isset($last_capture[$capture_lang_variable]) && in_array($last_capture[$capture_lang_variable], $available_languages)) {
+            return $last_capture[$capture_lang_variable];
+        }
+        
         //first check in session variable
         $session_variable_path = LConfigReader::simple('/i18n/session_lang_variable_path');
 
@@ -40,7 +49,7 @@ class LI18nUtils {
         
         //second try with the lang cookie
         $cookie_lang_variable = LConfigReader::simple('/i18n/cookie_lang_variable');
-        if (isset($_COOKIE) && isset($_COOKIE[$cookie_lang_variable])) {
+        if (isset($_COOKIE) && isset($_COOKIE[$cookie_lang_variable]) && in_array($_COOKIE[$cookie_lang_variable], $available_languages)) {
             return $_COOKIE[$cookie_lang_variable];
         }
 

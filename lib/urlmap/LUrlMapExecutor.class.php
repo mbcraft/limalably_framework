@@ -2,7 +2,7 @@
 
 class LUrlMapExecutor {
 
-    const AVAILABLE_NODES = ['real_url','imports','extends','conditions', '!conditions', 'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format','http_error','http_redirect'];
+    const AVAILABLE_NODES = ['real_url','imports','extends','conditions', '!conditions', 'capture' ,'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format','http_error','http_redirect'];
 
     private $my_url_map = null;
     private $is_root = false;
@@ -68,7 +68,7 @@ class LUrlMapExecutor {
         $current_keys = $this->my_url_map->keys('/');
         foreach ($current_keys as $urlmap_key) {
             if (!in_array($urlmap_key, self::AVAILABLE_NODES)) {    //ok cerca nei valori
-                LErrorList::saveFromErrors('urlmap', 'Urlmap contains one one or more invalid nodes : ' . $urlmap_key);
+                LErrorList::saveFromErrors('urlmap', 'Urlmap contains one or more invalid nodes : ' . $urlmap_key);
             }
         }
 
@@ -116,6 +116,7 @@ class LUrlMapExecutor {
                 $capture_resolver = new LRouteCapture();
                 $capture_pattern = $this->my_url_map->get('/capture');
                 $this->capture = $capture_resolver->captureParameters($capture_pattern, $route);
+                $_SERVER['CAPTURE'] = $this->capture;
             } catch (\Exception $ex) {
                 LErrorList::saveFromException('capture', $ex);
             }

@@ -37,8 +37,14 @@ class LI18nUtils {
             if ($current_lang && in_array($current_lang, $available_languages))
                 return $current_lang;
         }
+        
+        //second try with the lang cookie
+        $cookie_lang_variable = LConfigReader::simple('/i18n/cookie_lang_variable');
+        if (isset($_COOKIE) && isset($_COOKIE[$cookie_lang_variable])) {
+            return $_COOKIE[$cookie_lang_variable];
+        }
 
-        //second check in browser languages
+        //third check in browser languages
         $preferred_lang_array = LEnvironmentUtils::getPreferredLanguageArray();
 
         foreach ($preferred_lang_array as $preferred_lang) {
@@ -46,19 +52,19 @@ class LI18nUtils {
                 return $preferred_lang;
         }
 
-        //try with prefix of languages
+        //fourth - try with prefix of languages
         foreach ($preferred_lang_array as $preferred_lang2) {
             $lang_prefix = explode('_', $preferred_lang2);
             if (in_array($lang_prefix, $available_languages))
                 return $lang_prefix;
         }
 
-        //fourth check the default language
+        //fifth check the default language
         $default_lang = LConfigReader::simple('/i18n/default_language');
         if (in_array($default_lang, $available_languages))
             return $default_lang;
 
-        //fifth pick the first available language
+        //sixth pick the first available language
         if (isset($available_languages[0]))
             return $available_languages[0];
 

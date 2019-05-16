@@ -203,6 +203,7 @@
         "i18n" : {
             "translations_root_folder" : "i18n/",
             "session_lang_variable_path" : "/lang",
+            "cookie_lang_variable" : "lang",
             "default_language" : "it",
             "cache_folder" : "temp/cache/i18n/",
             "override_default_lang" : true

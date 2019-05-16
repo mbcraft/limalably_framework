@@ -102,7 +102,7 @@ class LEnvironmentUtils {
                     'exec_mode' => LExecutionMode::getShort(),
                     'environment' => LEnvironmentUtils::getEnvironment(),
                     'hostname' => LEnvironmentUtils::getHostname(),
-                    'preferred_language' => LEnvironmentUtils::getPreferredLanguageArray()[0],
+                    'language' => LI18nUtils::getCurrentLang(),
                     'build' => LEnvironmentUtils::getBuildNumber()
             );
     

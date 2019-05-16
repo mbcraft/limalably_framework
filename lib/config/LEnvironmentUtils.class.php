@@ -103,7 +103,9 @@ class LEnvironmentUtils {
                     'environment' => LEnvironmentUtils::getEnvironment(),
                     'hostname' => LEnvironmentUtils::getHostname(),
                     'language' => LI18nUtils::getCurrentLang(),
-                    'build' => LEnvironmentUtils::getBuildNumber()
+                    'build' => LEnvironmentUtils::getBuildNumber(),
+                    'route' => LEnvironmentUtils::getRoute(),
+                    'raw_route' => LEnvironmentUtils::getRawRoute()
             );
     
     }

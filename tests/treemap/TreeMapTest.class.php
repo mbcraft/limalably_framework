@@ -293,6 +293,48 @@ class TreeMapTest extends LTestCase {
         $this->assertEqual($r->get("/html/head/keywords")[1],"spank","Il numero di keywords non corrisponde!!");
     }
     
+    function testAddAfterSetRoot() {
+        $r = new LTreeMap();
+        
+        $r->set("/","hello");
+        
+        $this->assertFalse(is_array($r->get("/html/head/keywords")),"Il dato è un array e non dovrebbe esserlo!!");
+        
+        $r->add("/","spank");
+        
+        $this->assertEqual(count($r->get("/")),2,"Il numero di keywords non corrisponde!!");
+        $this->assertEqual($r->get("/")[0],"hello","Il numero di keywords non corrisponde!!");
+        $this->assertEqual($r->get("/")[1],"spank","Il numero di keywords non corrisponde!!");
+    }
+    
+    function testSetAfterAdd() {
+        $r = new LTreeMap();
+        
+        $r->add("/html/head/keywords","hello");
+        
+        $this->assertTrue(is_array($r->get("/html/head/keywords")),"Il dato è un array e non dovrebbe esserlo!!");
+        
+        $r->set("/html/head/keywords","spank");
+        
+        $this->assertFalse(is_array($r->get("/html/head/keywords")),"Il dato risulta essere ancora un array!!");
+        $this->assertEqual($r->get("/html/head/keywords"),"spank","Il dato non corrisponde!!");
+    }
+    
+    function testSetAfterAddRoot() {
+        $r = new LTreeMap();
+        
+        $r->add("/","hello");
+        
+        $this->assertNull($r->get("/a/b/c"),"Il dato reperito non è nullo come invece ci si aspetta!!");
+        
+        $this->assertTrue(is_array($r->get("/")),"Il dato è un array e non dovrebbe esserlo!!");
+        
+        $r->set("/","spank");
+        
+        $this->assertFalse(is_array($r->get("/")),"Il dato risulta essere ancora un array!!");
+        $this->assertEqual($r->get("/"),"spank","Il dato non corrisponde!!");
+    }
+    
     function testAdd()
     {
         $r = new LTreeMap();
@@ -371,6 +413,17 @@ class TreeMapTest extends LTestCase {
         $r->merge("/html/head/keywords",array("ciao","mondo"));
         
         $this->assertEqual(count($r->get("/html/head/keywords")),4,"Il numero di keywords non corrisponde!!");
+    }
+    
+    function testMergeRoot()
+    {        
+        $r = new LTreeMap();
+        
+        $r->set("/",array("hello","spank"));
+        
+        $r->merge("/",array("ciao","mondo"));
+        
+        $this->assertEqual(count($r->get("/")),4,"Il numero di keywords non corrisponde!!");
     }
     
     function testPurge()
@@ -516,7 +569,7 @@ class TreeMapTest extends LTestCase {
         
         $value = $t->get('/my_path');
         
-        $this->assertFalse(is_array($value),"Il valore salvato con replace risulta essere un array!");
+        $this->assertFalse(is_array($value),"Il valore salvato con replace risulta essere un array! : ".print_r($value,true));
     }
     
     

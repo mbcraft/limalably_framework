@@ -39,14 +39,23 @@ class LTreeMap implements ArrayAccess, Iterator {
     public static function all_but_last_path_tokens($path)
     {
         $path_tokens = self::path_tokens($path);
-        array_pop($path_tokens);
-        return $path_tokens;
+        
+        if (count($path_tokens)>0) {
+            array_pop($path_tokens);
+            return $path_tokens;
+        } else {
+            return null;
+        }
     }
     
     public static function last_path_token($path)
     {
         $path_tokens = self::path_tokens($path);
-        return array_pop($path_tokens);
+        if (count($path_tokens)>0) {
+            return array_pop($path_tokens);
+        } else {
+            return null;
+        }
     }
     
     public function getArray($path,$default_value) {
@@ -134,19 +143,26 @@ class LTreeMap implements ArrayAccess, Iterator {
         
         $current_node = &$this->data;
         
-        foreach ($path_used as $p)
-        {            
-            if (!array_key_exists($p,$current_node))
-                $current_node[$p] = array();
+        if ($path_used === null) {
+            if ($value instanceof LTreeMap || $value instanceof LTreeMapView) //link
+                $current_node = $value->get("/");//&$value->data;
+            else
+                $current_node = $value;
+        } else {
+            foreach ($path_used as $p)
+            {            
+                if (!array_key_exists($p,$current_node))
+                    $current_node[$p] = array();
 
-            $current_node = &$current_node[$p];
-            
+                $current_node = &$current_node[$p];
+
+            }
+
+            if ($value instanceof LTreeMap || $value instanceof LTreeMapView) //link
+                $current_node[self::last_path_token($path)] = $value->get("/");//&$value->data;
+            else
+                $current_node[self::last_path_token($path)] = $value;
         }
-        
-        if ($value instanceof LTreeMap || $value instanceof LTreeMapView) //link
-            $current_node[self::last_path_token($path)] = $value->get("/");//&$value->data;
-        else
-            $current_node[self::last_path_token($path)] = $value;
     }
    
     /*
@@ -177,13 +193,20 @@ class LTreeMap implements ArrayAccess, Iterator {
             $current_node = &$current_node[$p];
         }
         
+        if (!is_array($current_node)) $current_node = array($current_node);
         if ($value instanceof LTreeMap || $value instanceof LTreeMapView)
             $current_node[] = $value->get("/");//&$value;
         else
             $current_node[] = $value;
     }
     
-    private function storeValue($path,$value,$storing_function) {
+    /*
+     * Effettua il merge di un'array di valori all'interno di un'altro array.
+     * La differenza rispetto ad add sta nel fondere i due array.
+     * Da usare se non si vogliono aggiungere i valori ad un array.
+     */
+    function merge($path,$value)
+    {        
         if (!is_array($value)) $real_value = [$value];
         else $real_value = $value;
 
@@ -198,21 +221,12 @@ class LTreeMap implements ArrayAccess, Iterator {
             $current_node = &$current_node[$p];
         }
         
-        $current_node = $storing_function($current_node,$real_value);
-    }
-    
-    /*
-     * Effettua il merge di un'array di valori all'interno di un'altro array.
-     * La differenza rispetto ad add sta nel fondere i due array.
-     * Da usare se non si vogliono aggiungere i valori ad un array.
-     */
-    function merge($path,$value)
-    {        
-        $this->storeValue($path, $value, 'array_merge_recursive');
+        $current_node = array_merge_recursive($current_node,$real_value);
     }
     
     function replace($path,$value) {
-        $this->storeValue($path, $value, 'array_replace_recursive');
+        if ($this->is_set($path)) $this->remove ($path);
+        $this->set($path,$value);
     }
     
     /*
@@ -240,13 +254,18 @@ class LTreeMap implements ArrayAccess, Iterator {
         else
         {
             $path_parts = self::all_but_last_path_tokens($path);
-        
+            
             $current_node = &$this->data;
-            foreach ($path_parts as $p)
-            {
-                $current_node = &$current_node[$p];
+            if ($path_parts==null) {
+                $current_node = null;
             }
-            unset($current_node[self::last_path_token($path)]);
+            else {
+                foreach ($path_parts as $p)
+                {
+                    $current_node = &$current_node[$p];
+                }
+                unset($current_node[self::last_path_token($path)]);
+            }
         
         }
     }
@@ -279,6 +298,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         $current_node = $this->data;
         foreach ($path_parts as $p)
         {
+            if (!isset($current_node[$p])) return null;
             $current_node = $current_node[$p];
         }
         
@@ -308,6 +328,7 @@ class LTreeMap implements ArrayAccess, Iterator {
         $path_parts = self::path_tokens($path);
         
         $current_node = $this->data;
+        if (!is_array($current_node)) return true;
         foreach ($path_parts as $p)
         {
             if (!array_key_exists($p,$current_node))

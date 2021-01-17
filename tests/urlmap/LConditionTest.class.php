@@ -14,7 +14,7 @@ class LConditionTest extends LTestCase {
     
     function testCondition2() {
         
-        $cond = array("preferred_language" => [2,"a"]);
+        $cond = array("language" => [2,"a"]);
         
         $c = new LCondition();
         

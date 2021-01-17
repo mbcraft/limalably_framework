@@ -37,7 +37,7 @@ class LCondition {
                     }
                 }
             } else {
-                throw new \Exception("Unable to evaluate ".$node_type." condition : ".$k.". Available conditions : ". array_keys($env_variables));
+                throw new \Exception("Unable to evaluate ".$node_type." condition : ".$k.". Available conditions : ". print_r($env_variables,true));
             }
         }
         return true;

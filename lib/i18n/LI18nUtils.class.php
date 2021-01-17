@@ -4,6 +4,8 @@ class LI18nUtils {
 
     public static function getAvailableLanguages() {
 
+        if (!isset($_SERVER['PROJECT_DIR'])) return array();
+        
         $i18n_dir = LConfigReader::simple('/i18n/translations_root_folder');
 
         $lang_dir = $_SERVER['PROJECT_DIR'] . $i18n_dir;
@@ -24,7 +26,9 @@ class LI18nUtils {
     }
 
     public static function getCurrentLang() {
-
+        
+        if (LEnvironmentUtils::getEnvironment()=="script") return "default";
+        
         if (isset($_SERVER['CAPTURE'])) $last_capture = $_SERVER['CAPTURE'];
         else $last_capture = null;
         

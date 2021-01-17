@@ -12,11 +12,11 @@ class ExecCallTest extends LTestCase {
         
         $params = ["rel_input" => new LTreeMap(),"rel_session" => new LTreeMap(),"rel_output" => $output];
         
-        $e->execute("/urlmap/sample_file_42",$params);
+        $e->execute("/urlmap/sample_file_42",$params,false);
         
         $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
         
-        $this->assertEqual($output->get("/")[0],42,"Il risultato atteso non corrisponde!");
+        $this->assertEqual($output->get("/")[0],42,"Il risultato atteso non corrisponde! : ".print_r($output,true));
         
     }
     
@@ -32,10 +32,10 @@ class ExecCallTest extends LTestCase {
         
         $params = ["rel_input" => $input,"rel_session" => new LTreeMap(),"rel_output" => $output];
         
-        $e->execute("ExecCallTest#myMethodOk",$params);
+        $e->execute("ExecCallTest#myMethodOk",$params,false);
         
         $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
-        $this->assertEqual($output->get("/")[0],10,"Il risultato atteso non corrisponde!");
+        $this->assertEqual($output->get("/")[0],10,"Il risultato atteso non corrisponde! : ".print_r($output->get('/'),true));
         
     }
     
@@ -54,7 +54,7 @@ class ExecCallTest extends LTestCase {
         
         $params = ["rel_input" => $input,"rel_session" => new LTreeMap(),"rel_output" => $output];
         
-        $e->execute("ExecCallTest::myStaticMethodOk",$params);
+        $e->execute("ExecCallTest::myStaticMethodOk",$params,false);
         
         $this->assertTrue(is_array($output->get("/")),"Il risultato ottenuto non è un array!");
         $this->assertEqual($output->get("/")[0],1,"Il risultato atteso non corrisponde!");

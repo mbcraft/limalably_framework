@@ -40,6 +40,7 @@ class LEnvironmentUtils {
             }
             return $final_result;
         }
+        return ["default"];
     }
     
     public static function getRequestTime() {

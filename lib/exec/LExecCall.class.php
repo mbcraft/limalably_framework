@@ -42,7 +42,7 @@ class LExecCall {
         if ($my_output instanceof LTreeMap) $my_output_path = '/';
         if ($my_output instanceof LTreeMapView) $my_output_path = '.';
         
-        if ($add) {
+        if ($add) {    
             $all_param_data['rel_output']->add($my_output_path,$result);
         } else {
             $all_param_data['rel_output']->set($my_output_path,$result);

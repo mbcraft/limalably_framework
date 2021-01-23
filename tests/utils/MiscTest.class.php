@@ -65,14 +65,17 @@ class MiscTest extends LTestCase {
         $my_path = "/qualcosa/qualcosaltro";
         
         $dirname = dirname($my_path);
+        $dirname = str_replace('\\','/',$dirname);
         
         $this->assertEqual($dirname,'/qualcosa',"Il dirname non corrisponde!");
         
         $dirname2 = dirname($dirname);
+        $dirname2 = str_replace('\\','/',$dirname2);
         
         $this->assertEqual($dirname2,'/',"Il dirname2 non corrisponde! : ".$dirname2);
         
         $dirname3 = dirname($dirname2);
+        $dirname3 = str_replace('\\','/',$dirname3);
         
         $this->assertEqual($dirname3,'/',"Il dirname3 non corrisponde! : ".$dirname3);
     }

@@ -1,0 +1,2 @@
+- il dirname cambia il verso delle barre nei percorsi e nei percorsi windows mette le barre \ invece di lasciare quelle linux /.
+

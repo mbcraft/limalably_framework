@@ -4,7 +4,8 @@
 
 // booting framework ONLY ...
 
-$path_parts = explode('/',__FILE__);
+$uniform_file_path = str_replace('\\','/',__FILE__);
+$path_parts = explode('/',$uniform_file_path);
 array_pop($path_parts); //rimuovo l'ultimo elemento
 
 $framework_dir = implode('/',$path_parts).'/';

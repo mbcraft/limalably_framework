@@ -17,7 +17,7 @@ class TwigFactoryTest extends LTestCase {
         
         $result = $hello_template->render(['name' => 'Abcdefg']);
         
-        $this->assertEqual($result,'Hello Abcdefg!!',"Il risultato del template non corrisponde!!");
+        $this->assertEqual($result,'Hello Abcdefg!!',"Il risultato del template non corrisponde!! : ".$result);
         
         $hello_template = $template_source->getTemplate('hello/test');
         

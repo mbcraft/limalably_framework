@@ -23,7 +23,7 @@ function project_require($filename_relative_path) {
 class LClassLoader {
       
     //patterns
-    const PATTERN_FIND_NAMESPACES = "/\n(\s)*namespace(\s)+(?<namespace>[a-zA-Z_0-9\\\\]+)[;{ \n]+/i";
+    const PATTERN_FIND_NAMESPACES = "/\n(\s)*namespace(\s)+(?<namespace>[a-zA-Z_0-9\\\\]+)(\s)*[;{ \n]+/i";
     const PATTERN_FIND_CLASSES = "/\n(\s)*(abstract)?(final)?(\s)*class(\s)+(?<class>[a-zA-Z_0-9]+)(\s)*[{ \n]+/i";
     const PATTERN_FIND_TRAITS = "/\n(\s)*trait(\s)+(?<trait>[a-zA-Z_0-9]+)(\s)*[{ \n]+/i";
     const PATTERN_FIND_INTERFACES = "/\n(\s)*interface(\s)+(?<interface>[a-zA-Z_0-9]+)(\s)*[{ \n]+/i";

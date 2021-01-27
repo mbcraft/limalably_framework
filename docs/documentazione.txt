@@ -1,0 +1,103 @@
+### Documentazione
+
+## Comandi disponibili nel framework
+
+Il framework mette a disposizione due comandi :
+
+- lym_framework/bin/run_framework_tests.sh    : esegue tutti gli unit test del framework, attualmente 100% OK sia su linux che su windows
+- lym_framework/bin/create_project.sh         : prepara una cartella con i file principali del progetto
+
+## Percorso del framework
+
+Il percorso del framework va impostato nel file init.php che si trova nella root del progetto. Attualmente sono presenti alcuni esempi e non è presente un concetto di versione, 
+ma non è detto che questo non possa cambiare in futuro.
+
+## Configurazione del framework
+
+Il framework utilizza per tutti i suoi default un file di configurazione salvato all'interno del progetto in una cartella speciale e teoricamente quel file non sarebbe da modificare perchè rappresentano dei default di cui il framework ha bisogno nel caso in cui non si faccia l'override dei valori nel file di configurazione del progetto.
+
+I file di configurazione sono suddivisi e caricati in base all'hostname, quindi nella cartella "config/hostnames/" troviamo l'elenco degli hostname su cui dovrà girare il progetto.
+Ogni nome di cartella dovrà quindi essere uguale al nome dell'hostname. All'interno di ogni cartella hostname andremo a inserire il file di configurazione del progetto, in formato php o json (o anche entrambi). Il file php dovrà ritornare un array, mentre il json è già nel "formato corretto". Tutto quello che è configurato dal framework può essere modificato.
+
+Nella cartella di config chiamata "mode" viene posizionato dal framework un file che serve ad esso per sapere la modalità di esecuzione corrente.
+Nella cartella di config chiamata "internal" troviamo invece il file di configurazione interno del framework che non andrebbe modificato se non per valide ragioni.
+
+Tutta la configurazione di default del framework è inserita nella chiave "defaults".
+La prima parte di configurazione del framework è la sezione "execution_mode". In questa sezione, per ogni execution mode sono presenti le chiavi per configurare i comportamenti del framework. Nello specifico :
+
+		"logging": {
+		    "type": "together-file",			// specifica il tipo di log. Sono presenti "together-file","distinct-file","db" e "output"
+		    "min_level": "debug",				// specifica il livello minimo di log. E' possibile specificare "debug","warning","info","error","fatal"
+		    "log_mode": "normal"				// specifica la modalità di log che si aggancia al tipo. Per i file è possibile indicare "normal","reset" oppure "rolling"
+		    									// è possibile specificare per ogni type delle chiavi con all'interno ulteriori parametri. Nello specifico per i file è possibile specificare : "log_mode", "log_folder" ,"log_format", "date_format", "max_mb".
+	    										// per il tipo "db" è possibile specificare : "log_mode", "connection_name", "max_records", "table_name".
+	    										// il logger "db" crea automaticamente la tabella coi campi di cui ha bisogno per effettuare il log (al momento è supportato solo MySql).
+		},
+		"urlmap": {
+		    "private_routes_visible": false 	// imposta la visibilità delle route private, true o false
+		},
+		"template": {
+		    "auto_reload": true 				//imposta l'auto-reloading dei template, true o false
+		},
+		"request" : {
+		    "route_handler_class" : "LMaintenanceRouteExecutor"		// se specificata sovrascrive quella di default
+		},
+		"misc" : {
+		    "errors" : {
+		        "log" : false, 										// specifica se vanno loggati gli errori
+		        "display" : true 									// specifica se vanno visualizzati gli errori
+		    },
+            "trace_enabled" : false,								// chiave non obbligatoria, se non presente vale true
+            "debug_enabled" : false 								// chiave non obbligatoria, se non presente vale true
+		}
+
+## Comandi di progetto disponibili
+
+La versione corrente del framework mette a disposizione i seguenti comandi di progetto :
+
+- my_project/bin/generate_data_object.sh		: genera automaticamente i data object andando a leggere le tabelle dal database di default
+- my_project/bin/get_execution_mode.sh			: ritorna la modalità di esecuzione corrente
+- my_project/bin/hash_db_add.sh					: aggiunge alle url hashed una entry
+- my_project/bin/hash_db_list.sh				: visualizza l'elenco delle url hashed
+- my_project/bin/hash_db_remove.sh				: rimuove una url hashed
+- my_project/bin/run_tests.sh					: esegue gli unit test (normale)
+- my_project/bin/run_tests_fast.sh				: esegue gli unit test (veloci)
+- my_project/bin/set_execution_mode.sh 			: imposta la modalità di esecuzione
+
+## Supporto agli unit test
+
+Il framework offre supporto agli unit test fornendo delle classi comode che possono essere utilizzate senza preoccupazioni e che offrono tutto il necessario per fare degli unit test. 
+Per il programmatore è sufficiente inserire le classi dentro la cartella "my_project/tests/" per quanto riguarda tutti i test che si andranno ad accumulare e mettere nella cartella "my_project/tests_fast/" quelli che saranno eseguiti più spesso e che hanno un'esecuzione più rapida (in sostanza quelli di quello che si sta sviluppando).
+Le classi con gli unit test possono essere organizzate senza problemi in sottocartelle, l'unico requisito è che ereditino da LTestCase e che finiscano col suffisso "*Test.class.php". Si andranno poi a utilizzare i metodi messi a disposizione dal LTestCase (ereditati da LAssert) per fare gli unit test.
+La classe LTestCase mette quindi a disposizione i seguenti metodi :
+
+- assertFalse($value,$message)
+- assertTrue($value,$message)
+- assertNotSame($actual,$expected,$message)
+- assertSame($actual,$expected,$message)
+- assertLessThanOrEqual($actual,$max,$message)
+- assertLessThan($actual,$max,$message)
+- assertGreaterThanOrEqual($actual,$min,$message)
+- assertGreaterThan($actual,$min,$message)
+- assertNotEqual($actual,$expected,$message)
+- assertEqual($actual,$expected,$message)
+- assertNull($actual,$message)
+- assertNotNull($actual,$message)
+- fail($message)
+
+## Modalità di esecuzione
+
+Il framework può funzionare con diverse modalità di esecuzione, e ogni modalità praticamente offre una serie di comportamenti che dipendono in sostanza dalla modalità stessa e che rappresenta una diversa fase dello sviluppo. Le modalità disponibili sono le seguenti :
+
+- framework_development		: da utilizzare quando si sta sviluppando il framework lym, non ha bisogno di un progetto. Gli errori vengono solo mostrati all'utente e non loggati.
+
+- development 				: da utilizzare quando si è in fase di sviluppo del progetto, gli errori presentati all'utente e vengono salvati in file di log distinti e vengono loggati i messaggi di livello debug. Le routes private sono visibili, i template si auto-ricaricano.
+
+- testing					: gli errori vengono presentati all'utente e loggati su file come per la modalità development ma vengono loggati solo gli statement di livello error. Le routes private non sono visibili e i template non si auto-ricaricano. Trace e debug sono disabilitati. 
+
+- production				: gli errori non vengono presentati all'utente ma inseriti solo in file di log. All'utente viene mostrata una generica schermata di errore. Le routes private non sono visibili, i template non si auto-ricaricano e trace e debug sono disabilitati.
+
+- maintenance				: questa modalità indipendentemente dall'url mostra una schermata fissa e va utilizzata in fase di manutenzione per evitare che gli utenti possano compiere azioni durante eventuali aggiornamenti del progetto.
+
+I comportamenti delle modalità di esecuzione possono eventualmente essere modificati dalla configurazione.
+

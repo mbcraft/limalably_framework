@@ -1,2 +1,7 @@
 - il dirname cambia il verso delle barre nei percorsi e nei percorsi windows mette le barre \ invece di lasciare quelle linux /.
 
+- non si capisce perchè si chiamano "hash db". Sono un database di url, ma non c'entra il concetto di hash ... sembra proprio un nome sbagliato
+
+- più che tests_fast avrebbe forse senso chiamarli tests_dev in quanto sono i test che si eseguono durante lo sviluppo
+
+- non è presente qualcosa che permette di decidere se gli errori vanno presentati all'utente nelle varie modalità di esecuzione, sembra essere hardcoded

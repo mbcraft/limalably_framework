@@ -5,3 +5,5 @@
 - più che tests_fast avrebbe forse senso chiamarli tests_dev in quanto sono i test che si eseguono durante lo sviluppo
 
 - non è presente qualcosa che permette di decidere se gli errori vanno presentati all'utente nelle varie modalità di esecuzione, sembra essere hardcoded
+
+- considerando che in un'interfaccia javascript possono essere presenti ulteriori chiamate al server, la modalità di log "reset" andrebbe forse sistemate per resettare solo se è passato più di un certo numero di secondi (default a 60) dall'ultima request.

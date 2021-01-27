@@ -22,7 +22,10 @@ Ogni nome di cartella dovrà quindi essere uguale al nome dell'hostname. All'int
 Nella cartella di config chiamata "mode" viene posizionato dal framework un file che serve ad esso per sapere la modalità di esecuzione corrente.
 Nella cartella di config chiamata "internal" troviamo invece il file di configurazione interno del framework che non andrebbe modificato se non per valide ragioni.
 
+Viene di seguito riportata una spiegazione sommaria del file di configurazione del framework. E' una lista abbastanza lunga.
+
 Tutta la configurazione di default del framework è inserita nella chiave "defaults".
+
 La prima parte di configurazione del framework è la sezione "execution_mode". In questa sezione, per ogni execution mode sono presenti le chiavi per configurare i comportamenti del framework. Nello specifico :
 
 		"logging": {
@@ -50,6 +53,140 @@ La prima parte di configurazione del framework è la sezione "execution_mode". I
             "trace_enabled" : false,								// chiave non obbligatoria, se non presente vale true
             "debug_enabled" : false 								// chiave non obbligatoria, se non presente vale true
 		}
+
+La sezione successiva è "urlmap". Contiene le seguenti chiavi :
+
+        "static_routes_folder" : "urlmap/public/static/",			// cartella in cui si trovano le urlmap statiche
+        "hash_db_routes_folder" : "urlmap/public/hash_db/",			// cartella in cui si trovano le urlmap hashed
+        "private_routes_folder" : "urlmap/private/",				// cartella in cui si trovano le urlmap private
+        "search_order": "hash_db,static",							// ordine di ricerca delle urlmap
+        "special_folder_route": "_folder",							// nome della urlmap che mappa la cartella (url che finisce con /)
+        "special_inherited_route": "_default",						// nome della urlmap che si utilizza per gestire l'ereditarietà
+        "special_truncate_route": "_stop",							// nome della urlmap che si utilizza per gestire il troncamento dell'url
+        "ignore_missing_extends": false,							// flag per segnalare se lanciare un errore quando mancano degli extends nella urlmap
+        "ignore_missing_imports": false,							// flag per segnalare se lanciare un errore quanto mancano degli import nella urlmap
+        "validation_driver_class": "LRespectValidationDriver"		// classe da usare come driver per le validazioni usate dentro la urlmap
+
+La sezione successiva è "template". Contiene le seguenti chiavi :
+
+        "source_factory_class": "LTwigTemplateSourceFactory",		// classe factory per la gestione dei template. Attualmente c'è il supporto per twig
+        "root_folder": "template/",									// cartella root dei template
+        "cache_folder": "temp/cache/template/",						// cartella cache dei template
+        "strict_variables": false,									// utilizzo delle variabili del template in modalità strict
+        "autoescape" : "name",										// autoescape
+        "import_into_variables": ["env", "env_string" , "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string","i18n","flags"],	// elenco dei gruppi di chiavi da importare dentro le variabili del template. Sono elencate tutte.
+        "extension_search_list" : [".html",".xhtml",".json",".twig"]	// lista delle estensioni valide per i template. Va in ricerca seguendo l'elenco
+
+La sezione successiva è "logging". Specifica i valori di default per ogni tipologia di logging. Viene riportato uno stralcio del file di configurazione :
+
+        "distinct-file": {
+            "date_format": "d/m/Y H:i:s",
+            "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
+            "log_mode": "normal",
+            "max_mb": 10,
+            "log_folder": "logs/",
+            "min_level": "debug"
+        },
+        "together-file": {
+            "date_format": "d/m/Y H:i:s",
+            "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
+            "log_mode": "rolling",
+            "max_mb": 10,
+            "log_folder": "logs/",
+            "min_level": "debug"
+        },
+        "db": {
+            "log_mode": "normal",
+            "connection_name": "default",
+            "max_records": 1000000,
+            "table_name": "logs",
+            "min_level": "debug"
+        },
+        "output": {
+            "min_level": "debug"
+        }
+
+La sezione successiva è "treemap". Al momento ha un'unica chiave :
+
+        "false_values": ["false", "null", "0", "no", 0, false, null]	//elenco dei valori considerati "false" all'interno delle treemap.
+
+La sezione successiva è "classloader". Sono presenti le seguenti chiavi :
+
+        "code_file_ends_with": [".class.php", ".interface.php", ".trait.php"],			//elenco dei suffissi di file di codice ritenuti validi
+        "framework_folder_list": ["lib/"],												//elenco delle cartelle del framework in cui cercare delle classi
+        "project_folder_list": ["lib/", "urlmap/handlers/"],							//elenco delle cartelle del progetto in cui cercare delle classi
+        "map_cache_file_path": "temp/cache/classloader/map/classloader_map_cache.php",  //percorso del file di cache della mappa delle classi
+        "class_cache_folder": "temp/cache/classloader/classes/",						//percorso della cartella che contiene la cache delle classi
+        "cache_commented_call_list": ["LLog::debug", "LLog::info"],						//elenco delle chiamate da commentare all'interno dei file nella cache
+        "skip_cache_route_list": [],													//elenco delle route che non utilizzano le classi nella cache
+        "skip_cache_query_parameter": null 												//parametro nella query per non utilizzare le classi nella cache
+
+La sezione successiva è "request". Sono presenti le seguenti chiavi :
+
+        "input_source_list": ["files", "post", "get"],						// elenco degli array nel preciso ordine in cui vengono letti dei parametri in input
+        "route_handler_class" : "LDefaultRouteExecutor" 					// classe che gestisce le route di default
+
+La sezione successiva è "exec". E' disponibile la seguente chiave :
+
+        "method_parameter_search_list": ["meta", "capture", "rel_input", "input", "rel_session", "session", "rel_output", "output", "default_value"]
+        									// specifica come viene cercato un parametro per agganciarlo al metodo che viene eseguito, in particolare l'ordine degli elementi in cui viene cercato. "meta" rappresenta le variabili speciali, le altre sono poi "contenitori" in cui cercare la chiave che fa match.
+
+La sezione successiva è "format". Sono disponibili le seguenti chiavi :
+
+        "html": {
+            "error_templates_folder": "errors/html/"			// percorso della cartella con i template per gli errori in formato html.
+        },
+        "json": {
+            "encode_options": ["THROW_ON_ERROR"],				// opzioni di encoding dei json
+            "error_templates_folder": "errors/json/"			// percorso dei template di errore per gli output json
+        },
+        "default_error_format" : "html"							// formato per gli errori di default
+
+La sezione "session" al momento è vuota.
+
+La sezione successiva è "misc". Sono disponibili le seguenti chiavi :
+
+        "errors" : {								// sottosezione relativa agli errori
+            "log" : true,							// flag per abilitare/disabilitare globalmente il log
+            "display" : false,						// flag per abilitare/disabilitare globalmente il display
+            "continue_on_errors" : false,			// flag per cercare di far continuare l'esecuzione in caso di errori
+            "reporting" : {							// sezione relativa al reporting, per ogni tipologia è presente un valore 
+            										// true o false per abilitare/disabilitare il reporting. Di default sono tutti a true.
+                "error" : true,
+                "warning" : true,
+                "parse" : true,
+                "notice" : true,
+                "core_error" : true,
+                "core_warning" : true,
+                "compile_error" : true,
+                "compile_warning" : true,
+                "user_error" : true,
+                "user_warning" : true,
+                "user_notice" : true,
+                "recoverable_error" : true
+            }
+        },
+        "trace_enabled" : true,						// flag per abilitare/disabilitare il trace a livello globale
+        "debug_enabled" : true,						// flag per abilitare/disabilitare il debug a livello globale
+        "introspection_enabled" : true,				// flag per abilitare/disabilitare l'introspezione
+        "proc_folder": "proc/",						// cartella in cui cercare le 'procedure'
+        "proc_extension": ".proc.php",				// estensione usata dalle procedure
+        "data_folder": "data/",						// percorso della cartella dati
+        "autofix_folder_permissions" : true,		// fix automatico dei permessi delle folder
+        "wwwroot_folder" : "wwwroot/",				// percorso della cartella root per apache (wwwroot)
+        "build" : 0    								// valore della build
+
+La sezione successiva è "i18n". Sono disponibili le seguenti chiavi :
+
+        "translations_root_folder" : "i18n/",		// percorso della cartella root dei file con le traduzioni
+        "capture_lang_variable" : "lang",			// variabile che salva la lingua corrente
+        "session_lang_variable_path" : "/lang",		// percorso nella sessione in cui salvare la lingua corrente
+        "cookie_lang_variable" : "lang",			// variabile del cookie in cui salvare la lingua corrente
+        "default_language" : "it",					// lingua di default
+        "cache_folder" : "temp/cache/i18n/",		// percorso delle cache per i file di lingua
+        "override_default_lang" : true     			// flag per abilitare l'override della lingua di default
+
+Il file di configurazione di default non ha altre sezioni. Un file di progetto potrebbe averne molte meno e sovrascrivere solo le poche cose che necessitano di essere personalizzate.
 
 ## Comandi di progetto disponibili
 
@@ -100,4 +237,24 @@ Il framework può funzionare con diverse modalità di esecuzione, e ogni modalit
 - maintenance				: questa modalità indipendentemente dall'url mostra una schermata fissa e va utilizzata in fase di manutenzione per evitare che gli utenti possano compiere azioni durante eventuali aggiornamenti del progetto.
 
 I comportamenti delle modalità di esecuzione possono eventualmente essere modificati dalla configurazione.
+
+## Supporto al logging
+
+Il framework mette a disposizione la classe LLog per poter effettuare del logging in tutta comodità. Sono presenti i metodi statici :
+
+- isDebug()
+- debug($message)
+- isInfo()
+- info($message)
+- isWarning()
+- warning($message)
+- isError()
+- error($message,$code = '')
+- exception(\Exception $ex)
+- isFatal()
+- fatal($message)
+- close()
+
+Il log può poi essere redirezionato nelle varie modalità disponibili (vedi sezione configurazione).
+La cartella dei log può essere anche esterna al progetto, dipende se comincia con '/' o con la lettera di un drive 'C:', 'D:', ecc.
 

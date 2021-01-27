@@ -15,7 +15,8 @@ class LLog {
     const LEVEL_FATAL = 5;
         
     private static function adjustLogFolder($log_folder) {
-        if (!LStringUtils::startsWith($log_folder, '/')) {
+        // added fix for windows folders
+        if (!LStringUtils::startsWith($log_folder, '/') && $log_folder[1]!=':') {
             return $_SERVER['PROJECT_DIR'].$log_folder;
         } else {
             return $log_folder;

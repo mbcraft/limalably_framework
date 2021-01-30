@@ -258,3 +258,19 @@ Il framework mette a disposizione la classe LLog per poter effettuare del loggin
 Il log può poi essere redirezionato nelle varie modalità disponibili (vedi sezione configurazione).
 La cartella dei log può essere anche esterna al progetto, dipende se comincia con '/' o con la lettera di un drive 'C:', 'D:', ecc.
 
+## Supporto alla localizzazione
+
+Nel framework è disponibile il supporto alla localizzazione. La lingua corrente è un'impostazione che viene rilevata automaticamente in base alle preferenze dell'utente. I file di localizzazione vanno salvati nella cartella i18n/.
+All'interno di tale cartella vanno inserite delle sottocartelle delle lingue col loro codice (es sottocartella 'it', 'en'), ecc.
+All'interno della cartella della lingua è possibile inserire i file della localizzazione. Sono supportati vari formati, tra cui file xml e file .ini.
+I file xml sono utilizzati per traduzioni multi riga, mentre i file .ini per traduzioni di singola riga. In entrambi i file è possibile usare chiavi in un formato con percorsi che contengono punti come separatori, es 'sample.template1'. All'interno dei template è possibile avere anche dei parametri (le stringhe vengono elaborate come template) in modo da avere traduzioni con all'interno informazioni che provengono dalla business logic.
+
+//Per utilizzare le traduzioni all'interno della business logic è possibile utilizzare la classe LI18nUtils.
+//Questa classe mette a disposizioni vari metodi statici che possono essere chiamati :
+//
+//- getAvailableLanguages()
+//- getCurrentLang()
+//- getCurrentLangData()
+//
+
+

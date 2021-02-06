@@ -5,7 +5,7 @@ class LUrlAliasDbUtils {
     function listRoutes() {
         $base_dir = LEnvironmentUtils::getBaseDir();
         
-        $url_alias_db_folder = LConfigReader::simple('/urlmap/url_alias_db_routes_folder');
+        $url_alias_db_folder = LConfigReader::simple('/urlmap/alias_db_routes_folder');
         
         $final_url_alias_db_folder = $base_dir.$url_alias_db_folder;
         
@@ -55,7 +55,7 @@ class LUrlAliasDbUtils {
         
         $base_dir = LEnvironmentUtils::getBaseDir();
         
-        $url_alias_db_folder = LConfigReader::simple('/urlmap/url_alias_db_routes_folder');
+        $url_alias_db_folder = LConfigReader::simple('/urlmap/alias_db_routes_folder');
         
         $final_filename = $base_dir.$url_alias_db_folder.$route_resolver->getUrlAliasDbFilename($wanted_route_name);
         
@@ -73,7 +73,7 @@ class LUrlAliasDbUtils {
         
         $base_dir = LEnvironmentUtils::getBaseDir();
         
-        $url_alias_db_folder = LConfigReader::simple('/urlmap/url_alias_db_routes_folder');
+        $url_alias_db_folder = LConfigReader::simple('/urlmap/alias_db_routes_folder');
         
         $final_url_alias_db_folder = $base_dir.$url_alias_db_folder;
         

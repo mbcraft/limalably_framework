@@ -1,5 +1,5 @@
-composer.phar
-installer
-nbproject/
-vendor/
-tests/template/cache/
+1.0/composer.phar
+1.0/installer
+1.0/nbproject/
+1.0/vendor/
+1.0/tests/template/cache/

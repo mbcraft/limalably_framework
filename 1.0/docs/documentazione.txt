@@ -273,4 +273,6 @@ I file xml sono utilizzati per traduzioni multi riga, mentre i file .ini per tra
 //- getCurrentLangData()
 //
 
+E' possibile accedere alle traduzioni utilizzando la chiave i18n all'interno dei template utilizzando il formato classico del template, es : {{ i18n.home.riconoscimenti.title }}.
+In questo esempio si prendere la chiave 'home.riconoscimenti.title'.
 

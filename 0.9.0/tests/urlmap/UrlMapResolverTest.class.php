@@ -5,7 +5,7 @@ class UrlMapResolverTest extends LTestCase {
     function newUrlMapResolver() {
         $resolver = new LUrlMapResolver();
         
-        $resolver->init($_SERVER['FRAMEWORK_DIR'],'tests/urlmap/public/static/','tests/urlmap/public/hash_db/','tests/urlmap/private/');
+        $resolver->init($_SERVER['FRAMEWORK_DIR'],'tests/urlmap/public/static/','tests/urlmap/public/alias_db/','tests/urlmap/private/');
         
         return $resolver; 
     }

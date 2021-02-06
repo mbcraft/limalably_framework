@@ -58,26 +58,26 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
     }
     
-    private function handleHashDbList() {
+    private function handleUrlAliasDbList() {
         $this->setCommandAsExecuted();
         
-        $hash_db_utils = new LHashDbUtils();
+        $url_alias_db_utils = new LUrlAliasDbUtils();
         
-        $elements = $hash_db_utils->listRoutes();
+        $elements = $url_alias_db_utils->listRoutes();
         
         if (empty($elements)) {
-            echo "No routes found in hash db.\n";
+            echo "No routes found in url alias db.\n";
             Lym::finish(0);
         }
         
-        echo "Routes found in hash db : ".count($elements)."\n\n";
+        echo "Routes found in url alias db : ".count($elements)."\n\n";
         
         foreach ($elements as $k => $el) {
             echo "$k : $el \n";
         }
     }
     
-    private function handleHashDbAdd() {
+    private function handleUrlAliasDbAdd() {
         $this->setCommandAsExecuted();
         
         if (LParameters::count()!=2) {
@@ -88,26 +88,26 @@ class LProjectCommandExecutor implements LICommandExecutor {
         $public_route = LParameters::getByIndex(0);
         $wanted_route = LParameters::getByIndex(1);
         
-        $hash_db_utils = new LHashDbUtils();
+        $url_alias_db_utils = new LUrlAliasDbUtils();
         
-        $result = $hash_db_utils->addRoute($public_route, $wanted_route);
+        $result = $url_alias_db_utils->addRoute($public_route, $wanted_route);
         
         echo $result."\n";
     }
     
-    private function handleHashDbRemove() {
+    private function handleUrlAliasDbRemove() {
         $this->setCommandAsExecuted();
         
         if (LParameters::count()!=1) {
-            echo "One index of the entry to remove is needed. Use list command to list available hash db routes.\n";
+            echo "One index of the entry to remove is needed. Use list command to list available url alias db routes.\n";
             return;
         }
                 
         $index = LParameters::getByIndex(0);
         
-        $hash_db_utils = new LHashDbUtils();
+        $url_alias_db_utils = new LUrlAliasDbUtils();
         
-        $result = $hash_db_utils->removeRouteByIndex($index);
+        $result = $url_alias_db_utils->removeRouteByIndex($index);
         
         echo $result."\n";
     }
@@ -120,9 +120,9 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'internal/run_tests' : $this->handleRunTests();break;
             case 'internal/run_tests_fast' : $this->handleRunTestsFast();break;
             case 'internal/generate_data_objects' : $this->handleGenerateDataObjects();break;
-            case 'internal/hash_db_list' : $this->handleHashDbList();break;
-            case 'internal/hash_db_add' : $this->handleHashDbAdd();break;
-            case 'internal/hash_db_remove' : $this->handleHashDbRemove();break;
+            case 'internal/url_alias_db_list' : $this->handleUrlAliasDbList();break;
+            case 'internal/url_alias_db_add' : $this->handleUrlAliasDbAdd();break;
+            case 'internal/url_alias_db_remove' : $this->handleUrlAliasDbRemove();break;
         }
         
         if ($this->hasExecutedCommand()) Lym::finish ();

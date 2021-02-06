@@ -90,9 +90,9 @@
         },
         "urlmap": {
             "static_routes_folder" : "urlmap/public/static/",
-            "hash_db_routes_folder" : "urlmap/public/hash_db/",
+            "alias_db_routes_folder" : "urlmap/public/alias_db/",
             "private_routes_folder" : "urlmap/private/",
-            "search_order": "hash_db,static",
+            "search_order": "alias_db,static",
             "special_folder_route": "_folder",
             "special_inherited_route": "_default",
             "special_truncate_route": "_stop",

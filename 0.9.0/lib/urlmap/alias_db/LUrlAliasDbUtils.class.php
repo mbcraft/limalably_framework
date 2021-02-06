@@ -1,15 +1,15 @@
 <?php
 
-class LHashDbUtils {
+class LUrlAliasDbUtils {
     
     function listRoutes() {
         $base_dir = LEnvironmentUtils::getBaseDir();
         
-        $hash_db_folder = LConfigReader::simple('/urlmap/hash_db_routes_folder');
+        $url_alias_db_folder = LConfigReader::simple('/urlmap/url_alias_db_routes_folder');
         
-        $final_hash_db_folder = $base_dir.$hash_db_folder;
+        $final_url_alias_db_folder = $base_dir.$url_alias_db_folder;
         
-        $elements = scandir($final_hash_db_folder);
+        $elements = scandir($final_url_alias_db_folder);
         
         $real_elements = [];
         
@@ -21,10 +21,10 @@ class LHashDbUtils {
         $entries = [];
         
         foreach ($real_elements as $element) {
-            $content = file_get_contents($final_hash_db_folder.$element);
+            $content = file_get_contents($final_url_alias_db_folder.$element);
         
             try {
-                $array_data = LJsonUtils::parseContent('urlmap', $final_hash_db_folder.$element, $content);
+                $array_data = LJsonUtils::parseContent('urlmap', $final_url_alias_db_folder.$element, $content);
             } catch (\Exception $ex) {
                 $array_data = [];
             }
@@ -32,7 +32,7 @@ class LHashDbUtils {
             if (isset($array_data['real_url'])) {
                 $entries[] = $array_data['real_url'];
             } else {
-                $entries[] = "-- Invalid hash db entry --";
+                $entries[] = "-- Invalid url alias db entry --";
             }
         }
         
@@ -55,9 +55,9 @@ class LHashDbUtils {
         
         $base_dir = LEnvironmentUtils::getBaseDir();
         
-        $hash_db_folder = LConfigReader::simple('/urlmap/hash_db_routes_folder');
+        $url_alias_db_folder = LConfigReader::simple('/urlmap/url_alias_db_routes_folder');
         
-        $final_filename = $base_dir.$hash_db_folder.$route_resolver->getHashDbFilename($wanted_route_name);
+        $final_filename = $base_dir.$url_alias_db_folder.$route_resolver->getUrlAliasDbFilename($wanted_route_name);
         
         $builder->writeToFile($final_filename);
         
@@ -73,11 +73,11 @@ class LHashDbUtils {
         
         $base_dir = LEnvironmentUtils::getBaseDir();
         
-        $hash_db_folder = LConfigReader::simple('/urlmap/hash_db_routes_folder');
+        $url_alias_db_folder = LConfigReader::simple('/urlmap/url_alias_db_routes_folder');
         
-        $final_hash_db_folder = $base_dir.$hash_db_folder;
+        $final_url_alias_db_folder = $base_dir.$url_alias_db_folder;
         
-        $elements = scandir($final_hash_db_folder);
+        $elements = scandir($final_url_alias_db_folder);
         
         $real_elements = [];
         
@@ -90,20 +90,20 @@ class LHashDbUtils {
         
         $my_element = $real_elements[$index];
         
-        $content = file_get_contents($final_hash_db_folder.$my_element);
+        $content = file_get_contents($final_url_alias_db_folder.$my_element);
         
         try {
-            $array_data = LJsonUtils::parseContent('urlmap', $final_hash_db_folder.$my_element, $content);
+            $array_data = LJsonUtils::parseContent('urlmap', $final_url_alias_db_folder.$my_element, $content);
         } catch (\Exception $ex) {
-            return "The provided index does not point to a valid hash_db entry : invalid json file";
+            return "The provided index does not point to a valid url_alias_db entry : invalid json file";
         }
         
         if ($array_data['real_url']) {
-            @unlink($final_hash_db_folder.$my_element);
+            @unlink($final_url_alias_db_folder.$my_element);
             
             return "Deleted entry ".$index." for url : ".$array_data['real_url'];
         } else {
-            return "The provided index does not point to a valid hash_db entry : missing real_url key";
+            return "The provided index does not point to a valid url_alias_db entry : missing real_url key";
         }
         
     }

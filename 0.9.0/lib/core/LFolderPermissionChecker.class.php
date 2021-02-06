@@ -24,7 +24,7 @@ class LFolderPermissionChecker {
     private function getProjectFoldersSpecList() {
         $result = [
             new LFolderCheck(LConfigReader::simple('/urlmap/static_routes_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::simple('/urlmap/hash_db_routes_folder'),"?,r"),
+            new LFolderCheck(LConfigReader::simple('/urlmap/alias_db_routes_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/urlmap/private_routes_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/template/root_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/template/cache_folder'),"?,r,w,x"),

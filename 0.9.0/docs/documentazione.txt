@@ -57,9 +57,9 @@ La prima parte di configurazione del framework è la sezione "execution_mode". I
 La sezione successiva è "urlmap". Contiene le seguenti chiavi :
 
         "static_routes_folder" : "urlmap/public/static/",			// cartella in cui si trovano le urlmap statiche
-        "hash_db_routes_folder" : "urlmap/public/hash_db/",			// cartella in cui si trovano le urlmap hashed
+        "alias_db_routes_folder" : "urlmap/public/alias_db/",		// cartella in cui si trovano le urlmap alias
         "private_routes_folder" : "urlmap/private/",				// cartella in cui si trovano le urlmap private
-        "search_order": "hash_db,static",							// ordine di ricerca delle urlmap
+        "search_order": "alias_db,static",							// ordine di ricerca delle urlmap
         "special_folder_route": "_folder",							// nome della urlmap che mappa la cartella (url che finisce con /)
         "special_inherited_route": "_default",						// nome della urlmap che si utilizza per gestire l'ereditarietà
         "special_truncate_route": "_stop",							// nome della urlmap che si utilizza per gestire il troncamento dell'url
@@ -194,9 +194,9 @@ La versione corrente del framework mette a disposizione i seguenti comandi di pr
 
 - my_project/bin/generate_data_object.sh		: genera automaticamente i data object andando a leggere le tabelle dal database di default
 - my_project/bin/get_execution_mode.sh			: ritorna la modalità di esecuzione corrente
-- my_project/bin/hash_db_add.sh					: aggiunge alle url hashed una entry
-- my_project/bin/hash_db_list.sh				: visualizza l'elenco delle url hashed
-- my_project/bin/hash_db_remove.sh				: rimuove una url hashed
+- my_project/bin/url_alias_db_add.sh					: aggiunge alle url alias una entry nel db
+- my_project/bin/url_alias_db_list.sh				: visualizza l'elenco delle url alias nel db
+- my_project/bin/url_alias_db_remove.sh				: rimuove una url alias dal db
 - my_project/bin/run_tests.sh					: esegue gli unit test (normale)
 - my_project/bin/run_tests_fast.sh				: esegue gli unit test (veloci)
 - my_project/bin/set_execution_mode.sh 			: imposta la modalità di esecuzione

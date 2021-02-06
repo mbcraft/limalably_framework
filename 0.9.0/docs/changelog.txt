@@ -3,3 +3,4 @@
 
 Added support for versions inside the repository
 Changed init.php file inside project_image for reflecting the new working
+Renamed "Hash Db" into "Url Alias Db" into docs, configs and classes

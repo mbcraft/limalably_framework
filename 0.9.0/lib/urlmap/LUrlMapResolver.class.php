@@ -14,7 +14,7 @@ class LUrlMapResolver {
     private $root_folder;
     
     private $static_folder;
-    private $hash_db_folder;
+    private $alias_db_folder;
     private $private_folder;
     
     private $folder_route;
@@ -34,7 +34,7 @@ class LUrlMapResolver {
     private function finalizeInit() {
         if (!is_dir($this->root_folder)) throw new \Exception("La cartella root per la risoluzione degli urlmap non esiste : ".$this->root_folder);
         if (!is_dir($this->root_folder.$this->static_folder)) throw new \Exception("La cartella per gli urlmap pubblici statici non esiste : ".$this->static_folder);
-        if (!is_dir($this->root_folder.$this->hash_db_folder)) throw new \Exception("La cartella per gli urlmap pubblici hash non esiste : ".$this->hash_db_folder);
+        if (!is_dir($this->root_folder.$this->alias_db_folder)) throw new \Exception("La cartella per gli urlmap pubblici alias non esiste : ".$this->alias_db_folder);
         if (!is_dir($this->root_folder.$this->private_folder)) throw new \Exception("La cartella per gli urlmap privati non esiste : ".$this->private_folder);
         
         $this->folder_route = LConfigReader::simple('/urlmap/special_folder_route');
@@ -45,11 +45,11 @@ class LUrlMapResolver {
         $this->ignore_missing_imports = LConfigReader::simple('/urlmap/ignore_missing_imports');
     }
     
-    function init(string $root_folder,string $static_folder,string $hash_db_folder,string $private_folder) {
+    function init(string $root_folder,string $static_folder,string $alias_db_folder,string $private_folder) {
         
         $this->root_folder = $root_folder;
         $this->static_folder = $static_folder;
-        $this->hash_db_folder = $hash_db_folder;
+        $this->alias_db_folder = $alias_db_folder;
         $this->private_folder = $private_folder;
         
         $this->finalizeInit();
@@ -59,7 +59,7 @@ class LUrlMapResolver {
         
         $this->root_folder = $_SERVER['PROJECT_DIR'];
         $this->static_folder = LConfigReader::simple('/urlmap/static_routes_folder');
-        $this->hash_db_folder = LConfigReader::simple('/urlmap/hash_db_routes_folder');
+        $this->alias_db_folder = LConfigReader::simple('/urlmap/alias_db_routes_folder');
         $this->private_folder = LConfigReader::simple('/urlmap/private_routes_folder');
         
         $this->finalizeInit();
@@ -86,28 +86,28 @@ class LUrlMapResolver {
         return is_readable($path);
     }
     
-    private function getHashUrlMapAsArray($route) {
-        $path = $this->root_folder.$this->hash_db_folder.sha1($route).self::URLMAP_EXTENSION;
+    private function getAliasUrlMapAsArray($route) {
+        $path = $this->root_folder.$this->alias_db_folder.sha1($route).self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
         return $this->readUrlMapAsArray($path);
     }
     
-    public function getHashDbFilename($route) {
+    public function getAliasDbFilename($route) {
         return sha1($route).self::URLMAP_EXTENSION;
     }
     
     /**
-     * Ritorna true se la route parametro è inserita nell'hash_db delle route.
+     * Ritorna true se la route parametro è inserita nell'url_hash_db delle route.
      * 
      * @param string $route La route
-     * @return boolean Se la route è valida per l'hash db.
+     * @return boolean Se la route è valida per l'url alias db.
      */
-    public function isHashRoute($route) {
+    public function isAliasRoute($route) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        $path = $this->root_folder.$this->hash_db_folder.$this->getHashDbFilename($route);
+        $path = $this->root_folder.$this->alias_db_folder.$this->getAliasDbFilename($route);
         $path = str_replace('//', '/', $path);
-        LResult::trace('Cerco hash route : '.$route);
+        LResult::trace('Cerco url alias route : '.$route);
         return is_readable($path);
     }
         
@@ -247,8 +247,8 @@ class LUrlMapResolver {
         return $calculator->calculate();
     }
     
-    private function resolveHashUrlMap($route) {
-        $array_map = $this->getHashUrlMapAsArray($route);
+    private function resolveAliasUrlMap($route) {
+        $array_map = $this->getAliasUrlMapAsArray($route);
         if ($this->isUrlMapWithIncludes($array_map)) {
             $array_map = $this->normalizeUrlMapWithIncludes($array_map,self::FLAGS_SEARCH_ALL);
         }
@@ -309,7 +309,7 @@ class LUrlMapResolver {
         if (LStringUtils::startsWith($route, '/')) $route = substr ($route, 1);
         
         if (($search_flags & self::FLAGS_SEARCH_PUBLIC) == self::FLAGS_SEARCH_PUBLIC) {
-            LResult::trace("Cerco la route in static e hash : ".$route);
+            LResult::trace("Cerco la route in static e alias : ".$route);
             $route_check_order = LConfigReader::executionMode('/urlmap/search_order');
             $route_checks = explode(',',$route_check_order);
             foreach ($route_checks as $route_check) {
@@ -321,10 +321,10 @@ class LUrlMapResolver {
                         }
                         break;
                     }
-                    case 'hash_db' : {
-                        if ($this->isHashRoute($route)) {
-                            if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and hash");
-                            return $this->resolveHashUrlMap($route);
+                    case 'alias_db' : {
+                        if ($this->isAliasRoute($route)) {
+                            if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and alias");
+                            return $this->resolveAliasUrlMap($route);
                         }
                         break;
                     }

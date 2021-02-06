@@ -7,7 +7,7 @@
 
 $lym_framework_path = '../lym_framework/';
 
-
+$version = "1.0";
 // --------------- DO NOT CHANGE ANYTHING AFTER THIS LINE ----------------------------
 
 // booting framework ...
@@ -24,7 +24,7 @@ if (strpos($lym_framework_path,'/')===0) {
     $framework_path = $_SERVER['PROJECT_DIR'].$lym_framework_path;
 }
 
-$final_framework_path = realpath($framework_path).'/';
+$final_framework_path = realpath($framework_path).'/'.$version.'/';
 
 if (!is_dir($final_framework_path) || !is_file($final_framework_path.'framework_boot.php')) {
     echo "Framework not found in path : ".$final_framework_path;
@@ -34,4 +34,8 @@ if (!is_dir($final_framework_path) || !is_file($final_framework_path.'framework_
     require_once($final_framework_path.'framework_boot.php');
 }
 
+try {
 Lym::project_boot();
+} catch (\Exception $ex) {
+    var_dump($ex);
+}

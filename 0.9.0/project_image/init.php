@@ -7,7 +7,7 @@
 
 $lym_framework_path = '../lym_framework/';
 
-$version = "1.0";
+$version = "0.9.0";
 // --------------- DO NOT CHANGE ANYTHING AFTER THIS LINE ----------------------------
 
 // booting framework ...

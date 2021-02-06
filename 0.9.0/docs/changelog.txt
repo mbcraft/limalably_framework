@@ -1,0 +1,5 @@
+
+---- Created version 0.9.0 from current framework version
+
+Added support for versions inside the repository
+Changed init.php file inside project_image for reflecting the new working

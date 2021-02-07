@@ -344,5 +344,10 @@ Infine c'è il parametro
 
 che serve per definire il formato della risposta, e tipicamente può assumere i valori : "html", "json", "xml" o "data".
 
+Tipicamente nelle varie chiamate, quando si desidera importare dati si usa il prefisso '=', quando si desidera utilizzare il risultato di un'altra route interna
+si usa il prefisso '->', quando si vuole chiamare un metodo non statico si usa "MyCallClass#myCallMethod", mentre invece quando il metodo è statico si usa il
+separatore '::', ad esempio "MyCallClass::myCallStaticMethod". Eventualmente se non si usa nessuno dei formalismi precedentemente descritti si possono anche eseguire
+delle proc, ovvero delle procedure php che sono dei file nella cartella (tipicamente) "proc". Quindi per chiamare una proc si mette il percorso, ad esempio "myProcedureFolder/myProcFile". Quando si eseguono delle proc gli eventuali parametri come i dati della sessione o dell'input saranno all'interno di variabili ben definite, di nome "parameters", "input", "rel_input","session", "rel_session", "capture" e "context_path". Questo perchè non ci sono metodi ma si tratta di file php grezzi. 
+
 
 

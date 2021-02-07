@@ -276,3 +276,73 @@ I file xml sono utilizzati per traduzioni multi riga, mentre i file .ini per tra
 E' possibile accedere alle traduzioni utilizzando la chiave i18n all'interno dei template utilizzando il formato classico del template, es : {{ i18n.home.riconoscimenti.title }}.
 In questo esempio si prendere la chiave 'home.riconoscimenti.title'.
 
+## Urlmap in formato json con molteplici funzionalità
+
+Le urlmap sono file che mappano uno specifico percorso nel sito o nel gestionale a una specifica esecuzione.
+In particolare nelle urlmap è possibile specificare nelle chiave 
+
+"conditions" e anche "!conditions" 
+
+delle condizioni e delle condizioni negate che vengono valutate prima di consentire l'accesso. Queste condizioni non tengono conto dei parametri di input e sessione
+che vengono valutati in sezioni separate.
+
+Una volta eseguite le conditions viene valutato
+
+"load" 
+
+che serve per caricare nei parametri in input dei dati arbitrari.
+
+E' poi la volta di 
+
+"capture"
+
+che permette di catturare dall'url eventuali variabili.
+
+E' poi la volta di
+
+"session" e "input"
+
+che eseguono controlli sulla sessione e sull'input prima di far proseguire l'esecuzione.
+
+troviamo poi la sezione
+
+"before_exec"
+
+che viene eseguita prima dell'exec vero e proprio.
+
+Poi abbiamo
+
+"dynamic_exec"
+
+che serve per popolare l'exec dinamicamente, e poi
+
+"exec"
+
+per l'esecuzione vera e propria, poi
+
+"after_exec" 
+
+per il dopo esecuzione.
+
+Poi abbiamo 
+
+"dynamic_template"
+
+che serve per popolare la sezione dei template in modo dinamico.
+
+"http_redirect" e "http_error" che servono per effettuare redirect o forzare un errore http.
+
+Poi c'è la sezione
+
+"template"
+
+per il rendering del template.
+
+Infine c'è il parametro 
+
+"format"
+
+che serve per definire il formato della risposta, e tipicamente può assumere i valori : "html", "json", "xml" o "data".
+
+
+

@@ -4,8 +4,8 @@
 
 Il framework mette a disposizione due comandi :
 
-- lym_framework/bin/run_framework_tests.sh    : esegue tutti gli unit test del framework, attualmente 100% OK sia su linux che su windows
-- lym_framework/bin/create_project.sh         : prepara una cartella con i file principali del progetto
+- lymk_framework/bin/run_framework_tests.sh    : esegue tutti gli unit test del framework, attualmente 100% OK sia su linux che su windows
+- lymk_framework/bin/create_project.sh         : prepara una cartella con i file principali del progetto
 
 ## Percorso del framework
 
@@ -349,5 +349,34 @@ si usa il prefisso '->', quando si vuole chiamare un metodo non statico si usa "
 separatore '::', ad esempio "MyCallClass::myCallStaticMethod". Eventualmente se non si usa nessuno dei formalismi precedentemente descritti si possono anche eseguire
 delle proc, ovvero delle procedure php che sono dei file nella cartella (tipicamente) "proc". Quindi per chiamare una proc si mette il percorso, ad esempio "myProcedureFolder/myProcFile". Quando si eseguono delle proc gli eventuali parametri come i dati della sessione o dell'input saranno all'interno di variabili ben definite, di nome "parameters", "input", "rel_input","session", "rel_session", "capture" e "context_path". Questo perchè non ci sono metodi ma si tratta di file php grezzi. 
 
+## Formato dei dati
+
+Sono disponibili per i dati 3 formati diversi di file che hanno caratteristiche differenti :
+
+- file .ini : utilizzati per valori brevi che non comprendono newline
+- file .json : utilizzati per valori molto strutturati
+- file .xml : utilizzati per valori lunghi e che comprendono anche caratteri newline
+
+Nei file .ini si utilizzano percorsi separati da '.', si mette poi l'uguale e di seguito fino alla fine della riga il valore.
+Es:
+
+mio.percorso.particolare = MioValore
+
+Nei file json si possono mettere chiavi annidate e alla fine vengono considerati solo i valori terminali.
+Nei file xml si utilizza una particolare struttura composta come l'esempio qui di seguito :
+
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+    <entry path="sample.string2">
+        Lorem ipsum dolor sit amet
+    </entry>
+    <entry path="sample.template2">
+        Ciao carissimo {{ name }}. Posso offrirti un the coi biscotti?
+    </entry>
+</data>
+
+Anche qui i percorsi sono separati col '.' per non creare ambiguità col carattere di fine tag, ed è inoltre possibile inserire anche variabili all'interno dei valori trattandoli come se fossero dei template. Questo è possibile farlo con tutti i formati ma l'xml è sicuramente il più adatto per questo.
+Il tag root è 'data' e contiene n tag 'entry'. L'attributo path stabilisce il percorso in cui il dato è salvato all'interno dell'albero, mentre il contenuto del tag racchiude il valore.
+Tutti i valori dei file dati sono quindi salvati in una struttura chiamata TreeMap e gestiti da un'apposita classe.
 
 

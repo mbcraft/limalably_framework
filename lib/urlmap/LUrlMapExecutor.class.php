@@ -39,7 +39,7 @@ class LUrlMapExecutor {
                 //a script executed correctly
                 LResult::error_message("No result was returned by urlmap!");
                 
-                Lym::finish(1);
+                Lymlym::finish(1);
             } else {
                 throw new \Exception("Unexpected state, result returned to root : " . var_export($result, true));
             }

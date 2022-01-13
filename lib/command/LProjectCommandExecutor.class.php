@@ -67,7 +67,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
         if (empty($elements)) {
             echo "No routes found in url alias db.\n";
-            Lym::finish(0);
+            Lymlym::finish(0);
         }
         
         echo "Routes found in url alias db : ".count($elements)."\n\n";
@@ -125,7 +125,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'internal/url_alias_db_remove' : $this->handleUrlAliasDbRemove();break;
         }
         
-        if ($this->hasExecutedCommand()) Lym::finish ();
+        if ($this->hasExecutedCommand()) Lymlym::finish ();
     }
 
     public function hasExecutedCommand() {

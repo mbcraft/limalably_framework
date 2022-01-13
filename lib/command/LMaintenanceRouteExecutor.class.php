@@ -27,7 +27,7 @@ class LMaintenanceRouteExecutor implements LICommandExecutor {
             } else {
 
                 echo "Unable to find route : " . $route . ".\n";
-                Lym::finish(1);
+                Lymlym::finish(1);
             }
         } else {
             

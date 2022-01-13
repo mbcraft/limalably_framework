@@ -1,6 +1,6 @@
 <?php
 
-class Lym {
+class Lymlym {
 
     private static $boot_called = false;
 
@@ -24,7 +24,7 @@ class Lym {
             foreach ($folder_checker->getErrors() as $error) {
                 echo $error."\n";
             }
-            Lym::finish();
+            Lymlym::finish();
         }
 
         LLog::init();
@@ -50,7 +50,7 @@ class Lym {
             foreach ($folder_checker->getErrors() as $error) {
                 echo $error."\n<br />";
             }
-            Lym::finish();
+            Lymlym::finish();
         }
         
         LLog::init();

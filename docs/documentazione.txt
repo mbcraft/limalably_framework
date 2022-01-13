@@ -4,8 +4,8 @@
 
 Il framework mette a disposizione due comandi :
 
-- lymk_framework/bin/run_framework_tests.sh    : esegue tutti gli unit test del framework, attualmente 100% OK sia su linux che su windows
-- lymk_framework/bin/create_project.sh         : prepara una cartella con i file principali del progetto
+- lymlym_framework/bin/run_framework_tests.sh    : esegue tutti gli unit test del framework, attualmente 100% OK sia su linux che su windows
+- lymlym_framework/bin/create_project.sh         : prepara una cartella con i file principali del progetto
 
 ## Percorso del framework
 

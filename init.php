@@ -13,4 +13,4 @@ $_SERVER['FRAMEWORK_DIR'] = $framework_dir;
 
 require_once('framework_boot.php');
 
-Lym::framework_boot();
+Lymlym::framework_boot();

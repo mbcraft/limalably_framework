@@ -178,6 +178,8 @@ class LI18nUtils {
 
     private static function recursiveScanDir($folder) {
 
+        $json_reader = new LJsonDataStorage();
+        $json_reader->init($folder);
         $ini_reader = new LIniDataStorage();
         $ini_reader->init($folder);
         $xml_reader = new LXmlDataStorage();
@@ -208,7 +210,14 @@ class LI18nUtils {
                         $result[self::normalizeTranslationKey($key)] = $trans;
                     }
                 }
-                //json for translations is not supported
+                //json
+                if ($json_reader->isValidFilename($elem)) {
+                    $raw_data_array = $json_reader->loadArray($elem);
+                    foreach ($raw_data_array as $key => $trans) {
+                        $result[self::normalizeTranslationKey($key)] = $trans;
+                    }
+                }
+
             }
         }
 

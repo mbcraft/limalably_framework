@@ -84,7 +84,8 @@
                 },
                 "misc" : {
                     "trace_enabled" : false,
-                    "debug_enabled" : false
+                    "debug_enabled" : false,
+                    "introspection_enabled" : false
                 }
             }
         },

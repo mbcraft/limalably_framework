@@ -22,7 +22,7 @@ class LFrameworkCommandExecutor implements LICommandExecutor {
             case 'internal/run_framework_tests' : $this->handleRunFrameworkTests();break;
         }
         
-        if ($this->hasExecutedCommand()) Lymlym::finish ();
+        if ($this->hasExecutedCommand()) Lymz::finish ();
     }
 
     public function hasExecutedCommand() {

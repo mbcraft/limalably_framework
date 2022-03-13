@@ -35,7 +35,7 @@ class LDefaultRouteExecutor implements LICommandExecutor {
         } else {
             if (LEnvironmentUtils::getEnvironment()=='script') {
                 echo "Unable to find route : ".$route.".\n";
-                Lymlym::finish(1);
+                Lymz::finish(1);
             } else {
                 $error_format = LConfigReader::simple("/format/default_error_format");
                 $page_not_found = new LHttpError(LHttpError::ERROR_PAGE_NOT_FOUND);

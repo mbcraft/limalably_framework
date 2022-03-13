@@ -24,7 +24,7 @@ require_once ('lib/utils/LStringUtils.class.php');
 require_once ('lib/utils/LJsonUtils.class.php');
 
 //lym
-require_once ('lib/Lymlym.class.php');
+require_once ('lib/Lymz.class.php');
 
 LConfig::init();
 

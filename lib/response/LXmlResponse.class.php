@@ -15,7 +15,7 @@ class LXmlResponse extends LHttpResponse {
         
         echo $this->my_result;
 
-        Lymlym::finish();
+        Lymz::finish();
     }
 
 }

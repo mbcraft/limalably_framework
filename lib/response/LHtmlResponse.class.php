@@ -18,7 +18,7 @@ class LHtmlResponse extends LHttpResponse {
         
         echo $this->my_data;
         
-        Lymlym::finish();
+        Lymz::finish();
     }
 
 }

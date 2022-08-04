@@ -5,7 +5,7 @@
 // same level as project : '../lymz_framework/'
 // absolute path : '/var/lib/lymz_framework/'
 
-$lymz_framework_path = '../../lymz_framework_repository/';
+$lymz_framework_path = '../lymz_framework_repository/';
 
 $version = "0.9.7";
 // --------------- DO NOT CHANGE ANYTHING AFTER THIS LINE ----------------------------

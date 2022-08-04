@@ -15,3 +15,4 @@ mv ../project_image ../$1
 
 echo "Project '"$1"' created successfully."
 echo "Remember to correct the framework folder in project init.php file."
+echo "Then run 'composer update' to install the required framework dependencies."

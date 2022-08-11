@@ -1,5 +1,6 @@
 <?php
 
+
 class LJsonDataStorage implements LIDataStorage {
     
     private $root_path = null;

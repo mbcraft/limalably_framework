@@ -1,5 +1,6 @@
 <?php
 
+
 class LDataStorage implements LIDataStorage {
     
     private $my_json_storage;

@@ -1,5 +1,6 @@
 <?php
 
+
 class LAtlas {
     
     static function db($connection_name='default') {

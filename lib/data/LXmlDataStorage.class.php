@@ -1,5 +1,6 @@
 <?php
 
+
 class LXmlDataStorage implements LIDataStorage {
     
     private $root_path = null;

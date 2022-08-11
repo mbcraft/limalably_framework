@@ -20,6 +20,38 @@ function project_require($filename_relative_path) {
     require($_SERVER['PROJECT_DIR'].$filename_relative_path);
 }
 
+function ensure_all_strings($code_place_description,$var_list) {
+    foreach ($var_list as $var) {
+        if (!is_string($var)) throw new \Exception("Invalid string found in ".$code_place_description.".");
+    }
+}
+
+function ensure_all_numbers_or_strings($code_place_description,$var_list) {
+    
+    foreach ($var_list as $var) {
+        if (!is_string($var) && !is_numeric($var))
+            throw new \Exception("Some variable is not a simple numeric type or string. ".get_class($var)." was found in ".$code_place_description.".");
+    }
+}
+
+function ensure_instance_of($code_place_description,$var,$class_list) {
+        foreach ($class_list as $clazz) {
+            if ($var instanceof $clazz) return;
+        }    
+
+        throw new \Exception("Variable is not an instance of the listed classes : ".implode(',',$class_name_list)." in ".$code_place_description);
+}
+
+function ensure_all_instances_of($code_place_description,$var_list,$class_list) {
+
+    foreach ($var_list as $var) {
+
+        ensure_instance_of($code_place_description,$var,$class_list);
+
+    }
+
+}
+
 class LClassLoader {
       
     //patterns

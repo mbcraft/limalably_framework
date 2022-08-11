@@ -8,6 +8,12 @@ class LWarningList {
         self::$data = [];
     }
     
+    public static function add(string $type,string $text)
+    {
+        self::$data[$type][] = $text;
+        self::$data['all'][] = $text;
+    }
+
     public static function saveFromException(string $type,\Exception $ex) {
         self::$data[$type][] = $ex;
         self::$data['all'][] = $ex;

@@ -1,5 +1,6 @@
 <?php
 
+
 class LIniDataStorage implements LIDataStorage {
     
     private $root_path = null;

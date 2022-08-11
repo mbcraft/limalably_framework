@@ -1,5 +1,7 @@
 <?php
 
+
+
 class LDbConnectionManager {
     
     const CONNECTION_TYPE_MYSQL = 'mysql';

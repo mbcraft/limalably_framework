@@ -26,6 +26,11 @@ function ensure_all_strings_or_null($code_place_description,$var_list) {
     }
 }
 
+function ensure_string_not_null($code_place_description,$st) {
+    if ($st==null) throw new \Exception("String is null in ".$code_place_description." : found ".$st);
+    if (!is_string($st)) throw new \Exception("Variable is not a string in ".$code_place_description." : found ".$st);
+}
+
 function ensure_all_strings($code_place_description,$var_list) {
     foreach ($var_list as $var) {
         if (!is_string($var)) throw new \Exception("Invalid string found in ".$code_place_description.".");

@@ -127,6 +127,14 @@ class LMysqlQueryFunctionLayer {
 			return new LMysqlElementListList(... $lists);
 		}
 
+		function asc($field_name) {
+			return $field_name." ASC";
+		}
+
+		function desc($field_name) {
+			return $field_name." DESC";
+		}
+
 	}
 
 

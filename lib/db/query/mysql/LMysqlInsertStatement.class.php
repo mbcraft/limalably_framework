@@ -1,6 +1,6 @@
 <?php
 
-class LMysqlInsertStatement
+class LMysqlInsertStatement extends LMysqlAbstractCrudStatement
 {
 
 	private $ignore_option = "";

@@ -3,7 +3,7 @@
 
 
 
-class LMysqlSelectStatement {
+class LMysqlSelectStatement extends LMysqlAbstractCrudStatement {
 	
 	private $distinct_option = "";
 	private $field_name_list;

@@ -11,7 +11,7 @@ class LMysqlTruncateTableStatment {
 	}
 
 	public function __toString() {
-		return "TRUNCATE TABLE ".$this->table_name.";";
+		return "TRUNCATE TABLE ".$this->table_name;
 	}
 
 }

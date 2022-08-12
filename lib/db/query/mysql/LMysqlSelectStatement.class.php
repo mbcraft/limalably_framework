@@ -120,6 +120,6 @@ $		this->join_list[] = LMysqlGenericJoin::right_join($table_name,$condition_elem
 	}
 
 	public function __toString() {
-		return "SELECT ".$this->distinct_option.$this->field_name_list->toRawStringListWithoutParenthesis()." FROM ".$this->table_name_list->toRawStringListWithoutParenthesis()." ".implode(' ',$this->join_list)." ".$this->where_block." ".$this->group_by_clause->toRawStringListWithoutParenthesis().$this->with_rollup_option." ".$this->having_clause." ".$this->order_by_clause->toRawStringListWithoutParenthesis()." ".$this->limit_clause.";";
+		return "SELECT ".$this->distinct_option.$this->field_name_list->toRawStringListWithoutParenthesis()." FROM ".$this->table_name_list->toRawStringListWithoutParenthesis()." ".implode(' ',$this->join_list)." ".$this->where_block." ".$this->group_by_clause->toRawStringListWithoutParenthesis().$this->with_rollup_option." ".$this->having_clause." ".$this->order_by_clause->toRawStringListWithoutParenthesis()." ".$this->limit_clause;
 	}
 }

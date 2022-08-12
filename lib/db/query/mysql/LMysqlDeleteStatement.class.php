@@ -48,7 +48,7 @@ class LMysqlDeleteStatement extends LMysqlAbstractCrudStatement
 			$join_table_list_obj = new LMysqlElementList($this->join_table_list);
 		}
 
-		return "DELETE ".$join_table_list_obj->toRawStringListWithoutParenthesis()." FROM ".$this->table_name." ".implode(' ',$this->join_list)." "$this->where_block.";";
+		return "DELETE ".$join_table_list_obj->toRawStringListWithoutParenthesis()." FROM ".$this->table_name." ".implode(' ',$this->join_list)." "$this->where_block;
 	}
 	
 }

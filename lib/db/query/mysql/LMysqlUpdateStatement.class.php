@@ -27,7 +27,7 @@ class LMysqlUpdateStatement extends LMysqlAbstractCrudStatement
 	}
 
 	public function __toString() {
-		return "UPDATE ".$this->table_name." SET ".$this->name_value_pair_list." ".$this->where_block.";";
+		return "UPDATE ".$this->table_name." SET ".$this->name_value_pair_list." ".$this->where_block;
 	}
 
 }

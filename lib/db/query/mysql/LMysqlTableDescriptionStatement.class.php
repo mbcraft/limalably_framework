@@ -12,7 +12,7 @@ class LMysqlTableDescriptionStatement {
 	}
 
 	public function __toString() {
-		return "DESC ".$this->table_name.";";
+		return "DESC ".$this->table_name;
 	}
 
 	public static function parse_table_description($result) {

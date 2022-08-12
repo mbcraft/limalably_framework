@@ -1,6 +1,10 @@
 <?php
 
 
+function db($connection_name = 'default') {
+    return LDbConnectionManager::get($connection_name);
+} 
+
 
 class LDbConnectionManager {
     
@@ -21,7 +25,7 @@ class LDbConnectionManager {
             self::$connections[$connection_name] = self::createAndOpen($connection_name);    
         } 
         
-        return self::$connections[$connection_name]->getHandle();
+        return self::$connections[$connection_name];
         
     }
     

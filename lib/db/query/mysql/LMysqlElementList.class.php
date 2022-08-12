@@ -5,17 +5,23 @@ class LMysqlElementList {
 	
 	private $elements;
 
-	function __construct(... $elements) {
+	public function __construct(... $elements) {
 		$this->elements = $elements;
 	}
 
-	function toRawStringList() {
+	public function toRawStringList() {
 		ensure_all_strings($this->elements)
 
 		return "(".implode(',',$this->elements).")";
 	}
 
-	function toEscapedStringList() {
+	public function toRawStringListWithoutParenthesis() {
+		ensure_all_strings($this->elements)
+
+		return implode(',',$this->elements);
+	}
+
+	public function toEscapedStringList() {
 		ensure_all_numbers_or_strings($this->elements);
 
 		$converted_elements = [];
@@ -31,7 +37,7 @@ class LMysqlElementList {
 		return "(".implode(',',$converted_elements).")";
 	}
 
-	function __toString() {
+	public function __toString() {
 		return $this->toEscapedStringList();
 	}
 

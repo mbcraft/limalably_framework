@@ -5,14 +5,14 @@ class LMysqlElementListList {
 	
 	private $lists;
 
-	function __construct(... $lists) {
+	public function __construct(... $lists) {
 		
 		ensure_all_instances_of("data part of mysql insert",$lists,[LMysqlElementList::class]);
 		
 		$this->lists = $lists;
 	}
 
-	function __toString() {
+	public function __toString() {
 
 
 		$sql_pieces = [];

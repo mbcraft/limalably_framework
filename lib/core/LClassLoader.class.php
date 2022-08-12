@@ -20,11 +20,26 @@ function project_require($filename_relative_path) {
     require($_SERVER['PROJECT_DIR'].$filename_relative_path);
 }
 
+function ensure_all_strings_or_null($code_place_description,$var_list) {
+    foreach ($var_list as $var) {
+        if (!is_string($var) && $var!==null) throw new \Exception("Invalid string or null found in ".$code_place_description.".");
+    }
+}
+
 function ensure_all_strings($code_place_description,$var_list) {
     foreach ($var_list as $var) {
         if (!is_string($var)) throw new \Exception("Invalid string found in ".$code_place_description.".");
     }
 }
+
+function ensure_all_numbers_or_strings_or_null($code_place_description,$var_list) {
+    
+    foreach ($var_list as $var) {
+        if (!is_string($var) && !is_numeric($var) && $var !== null)
+            throw new \Exception("Some variable is not a simple numeric type or string or null. ".get_class($var)." was found in ".$code_place_description.".");
+    }
+}
+
 
 function ensure_all_numbers_or_strings($code_place_description,$var_list) {
     

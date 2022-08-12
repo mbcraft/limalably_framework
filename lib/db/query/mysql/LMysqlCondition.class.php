@@ -29,13 +29,13 @@ class LMysqlCondition {
 		return new LMysqlCondition($field_name,'IS','NOT','NULL');
 	}
 
-	public static function equals($field_name,$field_value) {
-		ensure_string_not_null("mysql 'equals' condition",$field_name);
+	public static function equal($field_name,$field_value) {
+		ensure_string_not_null("mysql 'equal' condition",$field_name);
 		return new LMysqlCondition($field_name,'=',$this->prepare_value($field_value));
 	}
 
-	public static function not_equals($field_name,$field_value) {
-		ensure_string_not_null("mysql 'not equals' condition",$field_name);
+	public static function not_equal($field_name,$field_value) {
+		ensure_string_not_null("mysql 'not equal' condition",$field_name);
 		return new LMysqlCondition($field_name,'!=',$this->prepare_value($field_value));
 	}
 

@@ -25,7 +25,7 @@ class LMysqlNameValuePairList {
 		foreach ($this->name_value_pair_list as $k => $v) {
 			$el = $k." = ";
 			if (is_string($v)) {
-				$el .= "'".$v."'";
+				$el .= "'".mysqli_real_escape_string($v)."'";
 			} else {
 				$el .= $v;
 			}

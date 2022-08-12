@@ -5,7 +5,7 @@ class LMysqlElementList {
 	
 	private $elements;
 
-	public function __construct(array $elements) {
+	public function __construct(... $elements) {
 		$this->elements = $elements;
 	}
 

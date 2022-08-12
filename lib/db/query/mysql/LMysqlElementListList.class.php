@@ -5,7 +5,7 @@ class LMysqlElementListList {
 	
 	private $lists;
 
-	public function __construct(array $lists) {
+	public function __construct(... $lists) {
 		
 		ensure_all_instances_of("data part of mysql insert",$lists,[LMysqlElementList::class]);
 		

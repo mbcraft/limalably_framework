@@ -7,15 +7,15 @@ class LMysqlGenericJoin {
 	private $table_name;
 	private $on_block = "";
 
-	private function __construct($join_type,$table_name,$condition_element=null) {
+	private function __construct($join_type,$table_name,$on_block=null) {
 
 		$this->join_type = $join_type;
 
 		if (!is_string($table_name)) throw new \Exception("Invalid table name in ".$join_type." clause in mysql select statement.");
 		$this->table_name = $table_name;
 
-		if ($condition_element!=null)
-			$this->on_block = new LMysqlOnBlock($condition_element);
+		if ($on_block!=null)
+			$this->on_block = $on_block;
 
 	}
 

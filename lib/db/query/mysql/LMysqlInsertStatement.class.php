@@ -15,7 +15,8 @@ class LMysqlInsertStatement extends LMysqlAbstractCrudStatement
 		if (!is_string($table_name)) throw new \Exception("Table name is not a valid string. ".$table_name." found.");
 		$this->table_name = $table_name;
 		
-		ensure_instance_of("mysql column list in insert statement",$column_list,[LMysqlElementList::class]);
+		if (is_array($column_list)) $column_list = new LMysqlElementList(... $column_list);
+		else ensure_instance_of("mysql column list in insert statement",$column_list,[LMysqlElementList::class]);
 		$this->column_list = $column_list;
 		
 		if ($data instanceof LMysqlSelectStatement)

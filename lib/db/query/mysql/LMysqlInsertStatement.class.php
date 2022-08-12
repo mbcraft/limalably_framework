@@ -8,6 +8,7 @@ class LMysqlInsertStatement extends LMysqlAbstractCrudStatement
 	private $column_list;
 	private $insert_data_connector;
 	private $data;
+	private $on_duplicate_key_update_option = "";
 	
 	public function __construct($table_name,$column_list,$data) {
 
@@ -31,7 +32,16 @@ class LMysqlInsertStatement extends LMysqlAbstractCrudStatement
 		return $this;
 	}
 
+	public function on_duplicate_key_update(array $name_value_pair_list) {
+
+		$name_value_pair_list_obj = new LMysqlNameValuePairList($name_value_pair_list);
+
+		$this->on_duplicate_key_update_option = " ON DUPLICATE KEY UPDATE ".$name_value_pair_list_obj;
+
+		return $this;
+	}
+
 	public function __toString() {
-		return "INSERT".$this->ignore_option." INTO ".$this->table_name.$this->column_list->toRawStringList().$this->insert_data_connector.$this->data.";";
+		return "INSERT".$this->ignore_option." INTO ".$this->table_name.$this->column_list->toRawStringList().$this->insert_data_connector.$this->data.$this->on_duplicate_key_update_option";";
 	}
 }

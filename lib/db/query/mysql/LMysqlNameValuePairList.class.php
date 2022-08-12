@@ -4,7 +4,7 @@ class LMysqlNameValuePairList {
 	
 	private $name_value_pair_list;
 
-	public function __construct(... $name_value_pair_list) {
+	public function __construct(array $name_value_pair_list) {
 
 		$keys = array_keys($name_value_pair_list);
 
@@ -18,7 +18,7 @@ class LMysqlNameValuePairList {
 
 	}
 
-	public __toString() {
+	public function __toString() {
 
 		$elements = array();
 

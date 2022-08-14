@@ -1,7 +1,7 @@
 <?php
 
 
-class LMysqlTruncateTableStatment {
+class LMysqlTruncateTableStatment extends LMysqlAbstractQuery{
 	
 	private $table_name;
 

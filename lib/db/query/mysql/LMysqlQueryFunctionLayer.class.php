@@ -11,7 +11,7 @@ class LMysqlQueryFunctionLayer {
 
 		self::$initialized = true;
 
-		function select($field_name_list,$table_name_list,$where_block) {
+		function select($field_name_list,$table_name_list,$where_block=null) {
 			return new LMysqlSelectStatement($field_name_list,$table_name_list,$where_block);
 		}
 
@@ -19,12 +19,12 @@ class LMysqlQueryFunctionLayer {
 			return new LMysqlInsertStatement($table_name,$column_list,$data);
 		}
 
-		function update($table_name,$name_value_pair_list,$where_block) {
+		function update($table_name,$name_value_pair_list,$where_block=null) {
 			return new LMysqlUpdateStatement($table_name,$name_value_pair_list,$where_block);
 		}
 
 		function delete($table_name,$where_block) {
-			return new LMysqlDeleteStatement($table_name,$where_block);
+			return new LMysqlDeleteStatement($table_name,$where_block=null);
 		}
 
 		function replace($table_name,$column_list,$select_set_or_values) {

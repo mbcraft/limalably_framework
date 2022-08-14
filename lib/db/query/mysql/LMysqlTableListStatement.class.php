@@ -1,6 +1,6 @@
 <?php
 
-class LMysqlTableListStatement {
+class LMysqlTableListStatement extends LMysqlAbstractQuery {
 	
 
 	public function __toString() {

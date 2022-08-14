@@ -1,7 +1,7 @@
 <?php
 
 
-class LMysqlDeleteStatement extends LMysqlAbstractCrudStatement
+class LMysqlDeleteStatement extends LMysqlAbstractQuery
 {
 	private $table_name;
 	private $join_table_list = [];

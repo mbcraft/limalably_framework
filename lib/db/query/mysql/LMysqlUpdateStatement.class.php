@@ -1,7 +1,7 @@
 <?php
 
 
-class LMysqlUpdateStatement extends LMysqlAbstractCrudStatement
+class LMysqlUpdateStatement extends LMysqlAbstractQuery
 {
 
 	private $table_name;

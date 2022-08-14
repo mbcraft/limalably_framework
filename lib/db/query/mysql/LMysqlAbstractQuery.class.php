@@ -3,13 +3,15 @@
 
 abstract class LMysqlAbstractQuery {
 	
-	private $connection_handle;
+	private $connection_handle=null;
 
 	function setupConnectionHandle($connection_handle) {
 		$this->connection_handle = $connection_handle;
 	}
 
 	function go() {
+		if (!$this->connection_handle) throw new \Exception("Internal mysql connection handle is not initialized!");
+
 		$result = mysqli_query($this->connection_handle,$this.";");
 
 		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($this->connection_handle));
@@ -28,6 +30,8 @@ abstract class LMysqlAbstractQuery {
 	}
 
 	function iterator() {
+		if (!$this->connection_handle) throw new \Exception("Internal mysql connection handle is not initialized!");
+
 		$result = mysqli_query($this->connection_handle,$this->end(),MYSQLI_USE_RESULT);
 
 		return new LMysqlResultIterator($result);

@@ -1,6 +1,6 @@
 <?php
 
-class LMysqlTableDescriptionStatement {
+class LMysqlTableDescriptionStatement extends LMysqlAbstractQuery {
 	
 	private $table_name;
 

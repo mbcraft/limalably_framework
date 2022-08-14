@@ -1,7 +1,7 @@
 <?php
 
 
-class LMysqlReplaceStatement {
+class LMysqlReplaceStatement  extends LMysqlAbstractQuery {
 
 	private $table_name;
 	private $column_list = "";

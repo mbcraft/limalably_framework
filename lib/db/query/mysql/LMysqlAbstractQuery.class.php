@@ -3,16 +3,14 @@
 
 abstract class LMysqlAbstractQuery {
 
-	function go($connection_name='default') {
+	function go($connection) {
 
-		$conn = LDbConnectionManager::get($connection_name);
+		if (!$connection) throw new \Exception("Connection is not set!");
 
-		if (!$conn) throw new \Exception("Internal mysql connection '".$connection_name."' is not initialized!");
+		if (!$connection->isOpen()) $connection->open();
 
-		if (!$conn->isOpen()) $conn->open();
+		$connection_handle = $connection->getHandle();
 
-		$connection_handle = $conn->getHandle();
-		
 		$result = mysqli_query($connection_handle,$this.";");
 
 		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($connection_handle));
@@ -30,15 +28,13 @@ abstract class LMysqlAbstractQuery {
 		return $this.";";
 	}
 
-	function iterator($connection_name='default') {
+	function iterator($connection) {
 
-		$conn = LDbConnectionManager::get($connection_name);
+		if (!$connection) throw new \Exception("Connection is not set!");
 
-		if (!$conn) throw new \Exception("Internal mysql connection '".$connection_name."' is not initialized!");
+		if (!$connection->isOpen()) $connection->open();
 
-		if (!$conn->isOpen()) $conn->open();
-
-		$connection_handle = $conn->getHandle();
+		$connection_handle = $connection->getHandle();
 
 		$result = mysqli_query($connection_handle,$this->end(),MYSQLI_USE_RESULT);
 

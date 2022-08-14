@@ -78,6 +78,9 @@ class LMysqlConnection implements LIDbConnection {
             if ($result) {
                 $this->my_handle = $result;
                 $this->is_open = true;
+
+                LQueryFunctions::useMysqlLayer();
+
                 return true;
             } else {
                 return false;

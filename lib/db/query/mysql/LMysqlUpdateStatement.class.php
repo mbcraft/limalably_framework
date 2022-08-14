@@ -8,7 +8,7 @@ class LMysqlUpdateStatement extends LMysqlAbstractCrudStatement
 	private $name_value_pair_list;
 	private $where_block;
 
-	public function __construct($table_name,$name_value_pair_list,$where_block) {
+	public function __construct($table_name,$name_value_pair_list,$where_block=null) {
 		
 		if (!is_string($table_name)) throw new \Exception("The table name of the update statement is not a string.");
 		$this->table_name = $table_name;
@@ -25,6 +25,12 @@ class LMysqlUpdateStatement extends LMysqlAbstractCrudStatement
 		}
 		
 		
+	}
+
+	public function where($element) {
+		$this->where_block = new LMysqlWhereBlock($element);
+
+		$this->where_block = $element;
 	}
 
 	public function __toString() {

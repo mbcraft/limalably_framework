@@ -8,7 +8,7 @@ class LMysqlDeleteStatement extends LMysqlAbstractCrudStatement
 	private $join_list = [];
 	private $where_condition;
 
-	public function __construct($table_name,$where_block) {
+	public function __construct($table_name,$where_block=null) {
 		
 		if (!is_string($table_name)) throw new \Exception("The table name of the update statement is not a string.");
 		$this->join_table_list[] = $table_name;
@@ -20,6 +20,12 @@ class LMysqlDeleteStatement extends LMysqlAbstractCrudStatement
 		} else {
 			$this->where_block = "";
 		}
+	}
+
+	public function where($element) {
+		$this->where_block = new LMysqlWhereBlock($element);
+
+		return $this;
 	}
 
 	public function inner_join($table_name,$condition_element=null) {

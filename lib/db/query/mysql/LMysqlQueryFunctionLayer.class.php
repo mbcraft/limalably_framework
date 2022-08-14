@@ -162,7 +162,7 @@ class LMysqlQueryFunctionLayer {
 			return LMysqlCondition::not_exists($select);
 		}
 
-		function w($something) {
+		function wh($something) {
 			return new LMysqlWhereBlock($something);
 		}
 

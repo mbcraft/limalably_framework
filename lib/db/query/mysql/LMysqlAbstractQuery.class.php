@@ -10,10 +10,17 @@ abstract class LMysqlAbstractQuery {
 	}
 
 	function go() {
-		$result = mysqli_execute($this->connection_handle,$this.";");
+		$result = mysqli_query($this->connection_handle,$this.";");
+
+		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($this->connection_handle));
 		
 		if ($this instanceof LMysqlInsertStatement) return mysqli_insert_id($this->connection_handle);
-		if ($this instanceof LMysqlSelectStatement) return mysqli_
+		if ($this instanceof LMysqlSelectStatement) {
+			$full_result = [];
+
+			while ($row = mysqli_fetch_assoc($result)) $full_result[] = $row;
+			return $full_result;
+		}
 	}
 
 	function end() {
@@ -21,7 +28,9 @@ abstract class LMysqlAbstractQuery {
 	}
 
 	function iterator() {
-		$result = mysqli_execute($this->connection_handle,$this->end());
+		$result = mysqli_query($this->connection_handle,$this->end(),MYSQLI_USE_RESULT);
+
+		return new LMysqlResultIterator($result);
 		
 	}
 

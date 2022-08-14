@@ -7,4 +7,6 @@ interface LIResultIterator {
 
 	function nextRow();
 
+	fuction stop();
+
 }

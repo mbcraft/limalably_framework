@@ -9,7 +9,9 @@
 class SelectTest extends TestCase {
 	
 	function testBasicSelect() {
+		$db = db();
 
+		
 	}
 
 }

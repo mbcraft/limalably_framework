@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LTogetherFileLogger implements LILogger {
         
     const TOGETHER_FILENAME = 'log.all.txt';

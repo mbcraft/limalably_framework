@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LDistinctFileLogger implements LILogger {
         
     const DEBUG_FILENAME = 'log.debug.txt';

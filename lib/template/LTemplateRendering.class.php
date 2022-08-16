@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LTemplateRendering {
 
     const AVAILABLE_IMPORTS = ['urlmap', 'urlmap_string', 'relative_input', 'relative_input_string', 'absolute_input', 'absolute_input_string', 'relative_session', 'relative_session_string', 'absolute_session', 'absolute_session_string', 'parameters', 'parameters_string', 'capture', 'capture_string', 'env', 'env_string', 'output_string'];

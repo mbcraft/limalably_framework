@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 /*
 Aggiungere gestione condition
 Aggiungere lettura automatica dei vari parametri dall'array, no parametri multipli nel costruttore

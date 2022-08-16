@@ -1,5 +1,11 @@
 <?php
 
+/**
+* @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it 
+*
+*
+*/
+
 class ClassLoaderTest extends LTestCase {
     
     private $data1 = <<<EOS

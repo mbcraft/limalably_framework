@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LFrameworkCommandExecutor implements LICommandExecutor {
     
     private $command_executed = false;

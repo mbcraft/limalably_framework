@@ -1,10 +1,11 @@
 <?php
 
 /**
- * Description of TreeMap2Test
- *
- * @author Marco Bagnaresi <marco.bagnaresi@gmail.com>
- */
+* @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it 
+*
+*
+*/
+
 class TreeMap2Test extends LTestCase{
     function testRootOperationsAdd() {
         

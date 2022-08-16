@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LHttpError extends LHttpResponse {
     
     const ERROR_BAD_REQUEST = '400';

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 use Atlas\Cli\Config;
 use Atlas\Cli\Fsio;
 use Atlas\Cli\Logger;

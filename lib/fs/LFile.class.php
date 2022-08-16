@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 /*
  * Rappresenta un puntatore a un determinato percorso, in questo caso un file
  */

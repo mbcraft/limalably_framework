@@ -1,6 +1,10 @@
 <?php
 
-// --------------- DO NOT CHANGE ANYTHING AFTER THIS LINE ----------------------------
+/**
+* @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it 
+*
+*
+*/
 
 // booting framework ONLY ...
 

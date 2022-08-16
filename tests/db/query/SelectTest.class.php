@@ -6,4 +6,10 @@
 *
 */
 
-require_once('../init.php');
+class SelectTest extends TestCase {
+	
+	function testBasicSelect() {
+
+	}
+
+}

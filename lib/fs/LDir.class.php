@@ -1,5 +1,10 @@
 <?php
-/* This software is released under the BSD license. Full text at project root -> license.txt */
+
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
 
 /*
  * Rappresenta un puntatore a un determinato percorso, in questo caso una directory

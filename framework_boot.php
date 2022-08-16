@@ -1,5 +1,11 @@
 <?php
 
+/**
+* @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it 
+*
+*
+*/
+
 //hashmap
 require_once ('lib/treemap/LTreeMap.class.php');
 require_once ('lib/treemap/LTreeMapView.class.php');

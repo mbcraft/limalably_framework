@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
+/**
  * Models and handles the execution mode of the framework. Only 4 execution modes are supported : maintenance, framework_debug, debug and production.
  * Each execution modes makes the framework work in a slightly different way.
  */

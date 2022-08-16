@@ -1,5 +1,11 @@
 <?php
 
+/**
+* @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it 
+*
+*
+*/
+
 class UploadedFileTest extends LTestCase {
     
     const UPLOAD_NESTED_1 = array ( 'upload' => array ( 'name' => array ( 'file1' => 'Analisi.odt', 'file2' => '', ), 'type' => array ( 'file1' => 'application/vnd.oasis.opendocument.text', 'file2' => '', ), 'tmp_name' => array ( 'file1' => '/tmp/php0L6p8y', 'file2' => '', ), 'error' => array ( 'file1' => 0, 'file2' => 4, ), 'size' => array ( 'file1' => 36404, 'file2' => 0, ), ), );

@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
+/**
  * Interface to be implemented for validators
  */
 interface LIValidatorDriver {

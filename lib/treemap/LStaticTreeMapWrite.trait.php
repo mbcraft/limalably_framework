@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 /*
 Some help from :
  * https://stackoverflow.com/questions/36515677/php-instanceof-for-traits

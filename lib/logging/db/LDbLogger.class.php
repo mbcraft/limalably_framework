@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LDbLogger implements LILogger {
     
     const CONNECTION_TYPE_MYSQL = 'mysql';

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 function lym_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {

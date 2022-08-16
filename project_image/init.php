@@ -1,5 +1,11 @@
 <?php
 
+/**
+* @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it 
+*
+*
+*/
+
 //change this path if needed, always end with slash, examples :
 // same dir inside project : 'lymz_framework/'
 // same level as project : '../lymz_framework/'

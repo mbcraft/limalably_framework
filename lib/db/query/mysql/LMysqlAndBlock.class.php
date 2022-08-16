@@ -1,8 +1,11 @@
 <?php
 
 /**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
  * 
+ *  
  */
+
 class LMysqlAndBlock
 {
 	private $conditions;

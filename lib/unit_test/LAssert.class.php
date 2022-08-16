@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LTestFailure extends \Exception {
     public function printFailure() {
         $stack_trace = $this->getTrace();

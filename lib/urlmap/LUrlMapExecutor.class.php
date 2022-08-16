@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LUrlMapExecutor {
 
     const AVAILABLE_NODES = ['real_url','imports','extends','conditions', '!conditions', 'capture' ,'load', 'init', 'input', 'session', 'before_exec', 'dynamic_exec', 'exec', 'after_exec', 'dynamic_template', 'template', 'format','http_error','http_redirect'];

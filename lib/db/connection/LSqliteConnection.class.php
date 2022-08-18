@@ -34,11 +34,11 @@ class LSqliteConnection implements LIDbConnection {
         return $this->is_open;
     }
 
-    public function getConnectionString($params) {
+    public function getConnectionString() {
         
-        if (!isset($params['file'])) throw new \Exception("The path of the sqlite database file is not set with the 'file' parameter");
+        if (!isset($this->params['file'])) throw new \Exception("The path of the sqlite database file is not set with the 'file' parameter");
         
-        $file_path = $params['file'];
+        $file_path = $this->params['file'];
         if (!LStringUtils::startsWith($file_path, '/')) {
             $file_path = LConfig::mustGet('PROJECT_DIR').$file_path;
         }

@@ -6,12 +6,6 @@
  *  
  */
 
-
-function db($connection_name = 'default') {
-    return LDbConnectionManager::get($connection_name);
-} 
-
-
 class LDbConnectionManager {
     
     const CONNECTION_TYPE_MYSQL = 'mysql';
@@ -49,12 +43,12 @@ class LDbConnectionManager {
         
         $params = LConfigReader::simple('/database/'.$connection_name);
         
-        $type = $params['type'];
-        switch ($type) {
+        $driver = $params['driver'];
+        switch ($driver) {
             case self::CONNECTION_TYPE_MYSQL : $conn = new LMysqlConnection($params);break;
             case self::CONNECTION_TYPE_SQLITE : $conn = new LSqliteConnection($params);break;
             
-            default : throw new \Exception('Unrecognized connection type : '.$type);
+            default : throw new \Exception('Unrecognized connection driver : '.$driver);
         }
         $conn->open();
         return $conn;

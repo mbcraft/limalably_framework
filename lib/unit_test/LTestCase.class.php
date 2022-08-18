@@ -47,6 +47,10 @@ class LTestCase extends \LAssert {
         //empty
     }
 
+    public static function defineRequiredClass() {
+        return null;
+    }
+
     private function callTestMethod($method_name) {
         self::$total_test_methods++;
         try {
@@ -82,6 +86,9 @@ class LTestCase extends \LAssert {
 
     public static function run() {
         //echo "Running test ...\n";
+
+        if (static::defineRequiredClass()!=null && !class_exists(static::defineRequiredClass())) return;
+
         self::$total_test_cases++;
         $clazz_name = static::class;
         $all_methods = get_class_methods($clazz_name);

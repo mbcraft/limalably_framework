@@ -8,7 +8,7 @@
 
 class LMysqlLogWriter implements LILogWriter {
     
-    private $my_handle;
+    private $connection;
     private $log_mode;
     private $max_records;
     private $table_name;
@@ -21,7 +21,7 @@ class LMysqlLogWriter implements LILogWriter {
     
     function __construct($connection_name,$log_mode, $max_records = 1000000 ,$table_name = 'logs') {
         
-        $this->my_handle = LDbConnectionManager::get($connection_name);
+        $this->connection = LDbConnectionManager::get($connection_name);
         $this->log_mode = $log_mode;
         $this->max_records = $max_records;
         $this->table_name = $table_name;
@@ -35,8 +35,8 @@ class LMysqlLogWriter implements LILogWriter {
             
             $query = self::QUERY_COUNT_RECORDS;
             $query = str_replace('%table_name%',$this->table_name,$query);
-            $result_statement = $this->my_handle->query($query);
-            $result_array = $result_statement->fetchAll(PDO::FETCH_ASSOC);
+            $result = mysqli_query($this->connection->getHandle(),$query);
+            $result_array = mysqli_fetch_all($this->connection->getHandle(),$result);
             
             $records_count = $result_array['records_count'];
             
@@ -44,7 +44,7 @@ class LMysqlLogWriter implements LILogWriter {
                 $query = self::QUERY_DELETE_RECORDS;
                 $query = str_replace('%table_name%',$this->table_name,$query);
                 $query = str_replace('%level%',self::LEVEL_WARNING,$query);
-                $this->my_handle->exec($query);
+                $mysqli_query($this->connection->getHandle(),$query);
             }
         }
     }
@@ -54,14 +54,14 @@ class LMysqlLogWriter implements LILogWriter {
         //create table if not exists 
         $query = self::QUERY_CREATE_TABLE;
         $query = str_replace('%table_name%',$this->table_name,$query);
-        $this->my_handle->exec($query);
+        mysqli_query($this->connection->getHandle(),$query);
         
         // truncate table if reset mode
         if ($this->log_mode == self::MODE_RESET) {
             $query = self::QUERY_RESET_TABLE;
             $query = str_replace('%table_name%',$this->table_name,$query);
             
-            $this->my_handle->exec($query);
+            mysqli_query($this->connection->getHandle(),$query);
         }
     }
 
@@ -79,7 +79,7 @@ class LMysqlLogWriter implements LILogWriter {
             default : $level_string = 'unknown';break;
         }
         
-        $stmt = $this->my_handle->prepare($query);
+        $stmt = new mysqli_stmt($this->connection->getHandle(),$query);
         
         $route = LConfig::mustGet('ROUTE');
                 

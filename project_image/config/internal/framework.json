@@ -1,5 +1,14 @@
 {
     "defaults": {
+        "database": {
+            "unit_tests" : {
+                "driver" : "mysql",
+                "host" : "mysql.mbcraftlab.it",
+                "username" : "db_mbcraftlab",
+                "password" : "pdx1-mysql-a7-2b!",
+                "db_name" : "db_mbcraftlab_test"
+            }
+        },
         "execution_mode": {
             "maintenance": {
                 "logging": {

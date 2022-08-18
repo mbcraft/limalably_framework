@@ -8,6 +8,10 @@
 
 class ValidationDriverTest extends LTestCase {
     
+    static function defineRequiredClass() {
+        return "Respect\Validation\Rules\AllOf";
+    }
+
     function testOkValidation() {
         
         $v = new LRespectValidationDriver();

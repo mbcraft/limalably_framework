@@ -109,7 +109,7 @@ abstract class LFileSystemElement
         return self::$defaultPermissionsRwx;
     }
     
-    protected function __construct($path)
+    public function __construct($path)
     {
         //SAFETY NET, rimuovo tutti i .. all'interno del percorso.
         $path = str_replace('/..', "", $path);
@@ -164,6 +164,10 @@ abstract class LFileSystemElement
         $octal_permissions = self::toOctalPermissions($rwx_permissions);
 
         chmod($this->__full_path, $octal_permissions);
+    }
+
+    function isReadable() {
+        return $this->hasPermissions("-r------");
     }
 
     function hasPermissions($rwx_permissions)

@@ -8,8 +8,13 @@
 
 class TwigFactoryTest extends LTestCase {
     
+
+    static function defineRequiredClass() {
+        return "Twig\Loader\ArrayLoader";
+    }
+
     function testSimpleCache() {
-        
+
         $f = new LTwigTemplateSourceFactory();
         $f->init($_SERVER['FRAMEWORK_DIR']);
         

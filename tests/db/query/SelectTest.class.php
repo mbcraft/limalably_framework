@@ -6,10 +6,10 @@
 *
 */
 
-class SelectTest extends TestCase {
+class SelectTest extends LTestCase {
 	
 	function testBasicSelect() {
-		$db = db();
+		$db = db("unit_tests");
 
 		
 	}

@@ -167,7 +167,7 @@ abstract class LFileSystemElement
     }
 
     function isReadable() {
-        return $this->hasPermissions("-r------");
+        return $this->hasPermissions("-r--------");
     }
 
     function hasPermissions($rwx_permissions)

@@ -18,6 +18,6 @@ class LMysqlAndBlock
 	}
 
 	public function __toString() {
-		return " ( ".implode(' AND ',$this->conditions)." ) ";
+		return "( ".implode(' AND ',$this->conditions)." )";
 	}
 }

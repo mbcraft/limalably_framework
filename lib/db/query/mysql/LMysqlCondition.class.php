@@ -90,14 +90,14 @@ class LMysqlCondition {
 
 	public static function in($field_name,$data_set_or_select) {
 		ensure_string_not_null("mysql 'in' condition",$field_name);
-		if ($data_set_or_select instanceof LMysqlSelectStatement) return LMysqlCondition($field_name,'IN','(',$data_set_or_select,')');
+		if ($data_set_or_select instanceof LMysqlSelectStatement) return new LMysqlCondition($field_name,'IN','(',trim($data_set_or_select),')');
 		if ($data_set_or_select==null) $data_set_or_select = ['!'];
 		return new LMysqlCondition($field_name,'IN',new LMysqlElementList(... $data_set_or_select));
 	}
 
 	public static function not_in($field_name,$data_set_or_select) {
 		ensure_string_not_null("mysql 'not in' condition",$field_name);
-		if ($data_set_or_select instanceof LMysqlSelectStatement) return LMysqlCondition($field_name,'NOT IN','(',$data_set_or_select,')');
+		if ($data_set_or_select instanceof LMysqlSelectStatement) return new LMysqlCondition($field_name,'NOT IN','(',trim($data_set_or_select),')');
 		if ($data_set_or_select==null) $data_set_or_select = ['!'];
 		return new LMysqlCondition($field_name,'NOT IN',new LMysqlElementList(... $data_set_or_select));
 	}
@@ -114,12 +114,12 @@ class LMysqlCondition {
 
 	public static function exists($select) {
 		ensure_instance_of("mysql 'exists' condition",$select,[LMysqlSelectStatement::class]);
-		return new LMysqlCondition('EXISTS','(',$select,')');
+		return new LMysqlCondition('EXISTS(',trim($select),')');
 	}
 
 	public static function not_exists($select) {
 		ensure_instance_of("mysql 'not exists' condition",$select,[LMysqlSelectStatement::class]);
-		return new LMysqlCondition('NOT','EXISTS','(',$select,')');
+		return new LMysqlCondition('NOT','EXISTS(',trim($select),')');
 	}
 
 }

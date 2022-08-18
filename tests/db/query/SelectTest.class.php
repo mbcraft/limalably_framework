@@ -9,9 +9,13 @@
 class SelectTest extends LTestCase {
 	
 	function testBasicSelect() {
-		//$db = db("framework_unit_tests");
+		
+		$db = db("framework_unit_tests");
 
-		//select('*','targhetta_albero')->where(_eq('codice_targhetta','ABC123'))->go($db);
+		$s = select('*','mia_tabella');
+
+		$this->assertEqual(trim($s),"SELECT * FROM mia_tabella","L'SQL della select non corrisponde!");
+
 	}
 
 }

@@ -182,11 +182,13 @@ class ConditionsTest extends LTestCase {
 		$c2 = _in('field_name',[1,2,3]);
 		$c3 = _in('field_name',['ab','cd','ef']);
 		$c4 = _in('field_name',['ab',12]);
+		$c5 = _in('field_name',select('*','mia_tabella'));
 
 		$this->assertEqual($c1,"field_name IN ('!')","Il valore della _in non corrisponde!");
 		$this->assertEqual($c2,"field_name IN (1,2,3)","Il valore della _in non corrisponde!");
 		$this->assertEqual($c3,"field_name IN ('ab','cd','ef')","Il valore della _in non corrisponde!");
 		$this->assertEqual($c4,"field_name IN ('ab',12)","Il valore della _in non corrisponde!");
+		$this->assertEqual($c5,"field_name IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde!");
 
 	}
 
@@ -199,11 +201,13 @@ class ConditionsTest extends LTestCase {
 		$c2 = _not_in('field_name',[1,2,3]);
 		$c3 = _not_in('field_name',['ab','cd','ef']);
 		$c4 = _not_in('field_name',['ab',12]);
+		$c5 = _not_in('field_name',select('*','mia_tabella'));
 
 		$this->assertEqual($c1,"field_name NOT IN ('!')","Il valore della _not_in non corrisponde!");
 		$this->assertEqual($c2,"field_name NOT IN (1,2,3)","Il valore della _not_in non corrisponde!");
 		$this->assertEqual($c3,"field_name NOT IN ('ab','cd','ef')","Il valore della _not_in non corrisponde!");
 		$this->assertEqual($c4,"field_name NOT IN ('ab',12)","Il valore della _not_in non corrisponde!");
+		$this->assertEqual($c5,"field_name NOT IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde!");
 
 	}
 
@@ -230,6 +234,42 @@ class ConditionsTest extends LTestCase {
 		$c2 = _n_bt('field_name',12,34);
 
 		$this->assertEqual($c1,"field_name NOT BETWEEN 12 AND 34","Il valore della _n_bt non corrisponde!");
+	}
+
+	function testExists() {
+		db('framework_unit_tests');
+
+		$c1 = _exists(select('*','mia_tabella'));
+
+		$this->assertEqual($c1,"EXISTS( SELECT * FROM mia_tabella )","Il valore della _exists non corrisponde!");
+	}
+
+	function testNotExists() {
+		db('framework_unit_tests');
+
+		$c1 = _not_exists(select('*','mia_tabella'));
+
+		$this->assertEqual($c1,"NOT EXISTS( SELECT * FROM mia_tabella )","Il valore della _not_exists non corrisponde!");
+	}
+
+	function testAnd() {
+
+		db('framework_unit_tests');
+
+		$c1 = _and(_eq('a',1),_eq('b','z'));
+
+		$this->assertEqual($c1,"( a = 1 AND b = 'z' )","Il valore della _and non corrisponde!");
+
+	}
+
+	function testOr() {
+
+		db('framework_unit_tests');
+
+		$c1 = _or(_eq('a',1),_eq('b','z'));
+
+		$this->assertEqual($c1,"( a = 1 OR b = 'z' )","Il valore della _or non corrisponde!");
+
 	}
 
 

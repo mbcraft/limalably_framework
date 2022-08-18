@@ -18,6 +18,6 @@ class LMysqlOrBlock
 	}
 
 	public function __toString() {
-		return " ( ".implode(' OR ',$this->conditions)." ) ";
+		return "( ".implode(' OR ',$this->conditions)." )";
 	}
 }

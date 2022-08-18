@@ -13,23 +13,25 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	private $table_name_list;
 	private $where_block = "";
 	private $join_list = [];
-	private $order_by_clause = "";
-	private $group_by_clause = "";
+	private $order_by_clause;
+	private $group_by_clause;
 	private $with_rollup_option = "";
 	private $having_clause = "";
 	private $limit_clause = "";
 
 	public function __construct($field_name_list,$table_name_list,$where_block=null) {
 
-		if (is_string($field_name_list)) $field_name_list = new LMysqlElementList($field_name_list);
-		if (is_array($field_name_list)) $field_name_list = new LMysqlElementList($field_name_list);
-		ensure_instance_of("field name list of mysql select statement",$field_name_list,[LMysqlElementList::class]);
-		$this->field_name_list = $field_name_list;	
+		if (is_string($field_name_list)) $fnl = new LMysqlElementList($field_name_list);
+		if (is_array($field_name_list)) $fnl = new LMysqlElementList(... $field_name_list);
+		if ($field_name_list instanceof LMysqlElementList) $fnl = $field_name_list;
+		ensure_instance_of("field name list of mysql select statement",$fnl,[LMysqlElementList::class]);
+		$this->field_name_list = $fnl;
 
-		if (is_string($table_name_list)) $table_name_list = new LMysqlElementList($field_name_list);
-		if (is_array($table_name_list)) $table_name_list = new LMysqlElementList($field_name_list);
-		ensure_instance_of("table name list of mysql select statement",$table_name_list,[LMysqlElementList::class]);
-		$this->table_name_list = $table_name_list;
+		if (is_string($table_name_list)) $tnl = new LMysqlElementList($table_name_list);
+		if (is_array($table_name_list)) $tnl = new LMysqlElementList(... $table_name_list);
+		if ($table_name_list instanceof LMysqlElementList) $tnl = $table_name_list;
+		ensure_instance_of("table name list of mysql select statement",$tnl,[LMysqlElementList::class]);
+		$this->table_name_list = $tnl;
 
 		if ($where_block!=null) {
 			ensure_instance_of("where condition of mysql select statement",$where_block,[LMysqlWhereBlock::class]);
@@ -37,6 +39,9 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		} else {
 			$this->where_block = "";
 		}
+
+		$this->order_by_clause = new LMysqlElementList();
+		$this->group_by_clause = new LMysqlElementList();
 	}
 
 	public function where($element) {
@@ -133,6 +138,14 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	}
 
 	public function __toString() {
-		return "SELECT ".$this->distinct_option.$this->field_name_list->toRawStringListWithoutParenthesis()." FROM ".$this->table_name_list->toRawStringListWithoutParenthesis()." ".implode(' ',$this->join_list)." ".$this->where_block." ".$this->group_by_clause->toRawStringListWithoutParenthesis().$this->with_rollup_option." ".$this->having_clause." ".$this->order_by_clause->toRawStringListWithoutParenthesis()." ".$this->limit_clause;
+		return "SELECT ".$this->distinct_option.
+		$this->field_name_list->toRawStringListWithoutParenthesis().
+		" FROM ".$this->table_name_list->toRawStringListWithoutParenthesis().
+		" ".implode(' ',$this->join_list)." ".$this->where_block.
+		" ".$this->group_by_clause->toRawStringListWithoutParenthesis().
+		$this->with_rollup_option." "
+		.$this->having_clause." "
+		.$this->order_by_clause->toRawStringListWithoutParenthesis()." "
+		.$this->limit_clause;
 	}
 }

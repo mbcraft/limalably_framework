@@ -10,6 +10,6 @@
 class LMysqlWhereBlock extends LMysqlAbstractConditionsBlock {
 	
 	public function __construct($element) {
-		parent('where',$element);
+		parent::__construct('where',$element);
 	}
 }

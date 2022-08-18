@@ -21,9 +21,13 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 
 	public function __construct($field_name_list,$table_name_list,$where_block=null) {
 
-		ensure_instance_of("field name list of mysql select statement",$table_name_list,[LMysqlElementList::class]);
+		if (is_string($field_name_list)) $field_name_list = new LMysqlElementList($field_name_list);
+		if (is_array($field_name_list)) $field_name_list = new LMysqlElementList($field_name_list);
+		ensure_instance_of("field name list of mysql select statement",$field_name_list,[LMysqlElementList::class]);
 		$this->field_name_list = $field_name_list;	
 
+		if (is_string($table_name_list)) $table_name_list = new LMysqlElementList($field_name_list);
+		if (is_array($table_name_list)) $table_name_list = new LMysqlElementList($field_name_list);
 		ensure_instance_of("table name list of mysql select statement",$table_name_list,[LMysqlElementList::class]);
 		$this->table_name_list = $table_name_list;
 
@@ -73,7 +77,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	}
 
 	public function right_join($table_name,$condition_element=null) {
-$		this->join_list[] = LMysqlGenericJoin::right_join($table_name,$condition_element);
+		$this->join_list[] = LMysqlGenericJoin::right_join($table_name,$condition_element);
 
 		return $this;
 	}

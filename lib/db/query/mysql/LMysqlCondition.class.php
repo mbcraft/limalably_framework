@@ -19,9 +19,9 @@ class LMysqlCondition {
 		return implode(' ',$this->parts);
 	}
 
-	private function prepare_value($val) {
+	private static function prepare_value($val) {
 		if ($val===null) return 'NULL';
-		if (is_string($val)) return "'".mysqli_real_escape_string($val)."'";
+		if (is_string($val)) return "'".mysqli_real_escape_string(LDbConnectionManager::getLastConnectionUsed()->getHandle(),$val)."'";
 		else return $val;
 	}
 
@@ -37,69 +37,69 @@ class LMysqlCondition {
 
 	public static function equal($field_name,$field_value) {
 		ensure_string_not_null("mysql 'equal' condition",$field_name);
-		return new LMysqlCondition($field_name,'=',$this->prepare_value($field_value));
+		return new LMysqlCondition($field_name,'=',self::prepare_value($field_value));
 	}
 
 	public static function not_equal($field_name,$field_value) {
 		ensure_string_not_null("mysql 'not equal' condition",$field_name);
-		return new LMysqlCondition($field_name,'!=',$this->prepare_value($field_value));
+		return new LMysqlCondition($field_name,'!=',self::prepare_value($field_value));
 	}
 
 	public static function greater_than($field_name,$field_value) {
 		ensure_string_not_null("mysql 'greater than' condition",$field_name);
-		return new LMysqlCondition($field_name,'>',$this->prepare_value($field_value));
+		return new LMysqlCondition($field_name,'>',self::prepare_value($field_value));
 	}
 
 	public static function greater_than_or_equal($field_name,$field_value) {
 		ensure_string_not_null("mysql 'greater than or equal' condition",$field_name);
-		return new LMysqlCondition($field_name,'>=',$this->prepare_value($field_value));
+		return new LMysqlCondition($field_name,'>=',self::prepare_value($field_value));
 	}
 
 	public static function less_than($field_name,$field_value) {
 		ensure_string_not_null("mysql 'less than' condition",$field_name);
-		return new LMysqlCondition($field_name,'<',$this->prepare_value($field_value));
+		return new LMysqlCondition($field_name,'<',self::prepare_value($field_value));
 	}
 
 	public static function less_than_or_equal($field_name,$field_value) {
 		ensure_string_not_null("mysql 'less than or equal' condition",$field_name);
-		return new LMysqlCondition($field_name,'<=',$this->prepare_value($field_value));
+		return new LMysqlCondition($field_name,'<=',self::prepare_value($field_value));
 	}
 
 	public static function rlike($field_name,$pattern) {
 		ensure_string_not_null("mysql 'rlike' condition",$field_name);
-		return new LMysqlCondition($field_name,'RLIKE',$this->prepare_value($pattern));
+		return new LMysqlCondition($field_name,'RLIKE',self::prepare_value($pattern));
 	}
 	
 	public static function like($field_name,$pattern,$escape_char=null) {
 		ensure_string_not_null("mysql 'like' condition",$field_name);
 		if ($escape_char) {
 			if (strlen($escape_char)!=1) throw new \Exception("The escape character of like condition can be of only one character : '".$escape_char."' found");
-			return new LMysqlCondition($field_name,'LIKE',$this->prepare_value($field_value),'ESCAPE',$this->prepare_value($escape_char));
+			return new LMysqlCondition($field_name,'LIKE',self::prepare_value($pattern),'ESCAPE',self::prepare_value($escape_char));
 		}
-		else return new LMysqlCondition($field_name,'LIKE',$this->prepare_value($field_value));
+		else return new LMysqlCondition($field_name,'LIKE',self::prepare_value($pattern));
 	}
 	
 	public static function not_like($field_name,$pattern,$escape_char=null) {
 		ensure_string_not_null("mysql 'not like' condition",$field_name);
 		if ($escape_char) {
 			if (strlen($escape_char)!=1) throw new \Exception("The escape character of like condition can be of only one character : '".$escape_char."' found");
-			return new LMysqlCondition($field_name,'NOT LIKE',$this->prepare_value($field_value),'ESCAPE',$this->prepare_value($escape_char));
+			return new LMysqlCondition($field_name,'NOT LIKE',self::prepare_value($pattern),'ESCAPE',self::prepare_value($escape_char));
 		}
-		else return new LMysqlCondition($field_name,'NOT_LIKE',$this->prepare_value($field_value));
+		else return new LMysqlCondition($field_name,'NOT LIKE',self::prepare_value($pattern));
 	}
 
 	public static function in($field_name,$data_set_or_select) {
 		ensure_string_not_null("mysql 'in' condition",$field_name);
 		if ($data_set_or_select instanceof LMysqlSelectStatement) return LMysqlCondition($field_name,'IN','(',$data_set_or_select,')');
 		if ($data_set_or_select==null) $data_set_or_select = ['!'];
-		return LMysqlCondition($field_name,'IN',new LMysqlElementList($data_set_or_select));
+		return new LMysqlCondition($field_name,'IN',new LMysqlElementList(... $data_set_or_select));
 	}
 
 	public static function not_in($field_name,$data_set_or_select) {
 		ensure_string_not_null("mysql 'not in' condition",$field_name);
 		if ($data_set_or_select instanceof LMysqlSelectStatement) return LMysqlCondition($field_name,'NOT IN','(',$data_set_or_select,')');
 		if ($data_set_or_select==null) $data_set_or_select = ['!'];
-		return LMysqlCondition($field_name,'NOT IN',new LMysqlElementList($data_set_or_select));
+		return new LMysqlCondition($field_name,'NOT IN',new LMysqlElementList(... $data_set_or_select));
 	}
 
 	public static function between($field_name,$start_value,$end_value) {

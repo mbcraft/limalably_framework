@@ -1,7 +1,7 @@
 {
     "defaults": {
         "database": {
-            "unit_tests" : {
+            "framework_unit_tests" : {
                 "driver" : "mysql",
                 "host" : "mysql.mbcraftlab.it",
                 "username" : "db_mbcraftlab",

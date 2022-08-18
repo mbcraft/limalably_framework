@@ -6,7 +6,7 @@
  *  
  */
 
-class LMysqlInsertStatement extends LMysqlAbstractCrudStatement
+class LMysqlInsertStatement extends LMysqlAbstractQuery
 {
 
 	private $ignore_option = "";

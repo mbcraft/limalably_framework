@@ -327,6 +327,35 @@ ALTER TABLE `problema_check_up`
 --
 ALTER TABLE `provincia`
   ADD CONSTRAINT `provincia_regione_id_pk` FOREIGN KEY (`regione_id`) REFERENCES `regione` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+--
+-- Struttura della tabella `targhetta_albero`
+--
+
+CREATE TABLE `targhetta_albero` (
+  `id` bigint UNSIGNED NOT NULL,
+  `codice_targhetta` varchar(256) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indici per le tabelle scaricate
+--
+
+--
+-- Indici per le tabelle `targhetta_albero`
+--
+ALTER TABLE `targhetta_albero`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT per le tabelle scaricate
+--
+
+--
+-- AUTO_INCREMENT per la tabella `targhetta_albero`
+--
+ALTER TABLE `targhetta_albero`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -7,7 +7,7 @@
  */
 
 
-class LMysqlTruncateTableStatment extends LMysqlAbstractQuery{
+class LMysqlTruncateTableStatement extends LMysqlAbstractQuery {
 	
 	private $table_name;
 

@@ -17,6 +17,8 @@ abstract class LMysqlAbstractQuery {
 
 		$connection_handle = $connection->getHandle();
 
+		echo "executing query : ".$this.";";
+
 		$result = mysqli_query($connection_handle,$this.";");
 
 		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($connection_handle));

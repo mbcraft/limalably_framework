@@ -13,6 +13,13 @@ class LDbConnectionManager {
     
     private static $connections = [];
     
+    private static $last_connection_used = null;
+
+
+    public static function getLastConnectionUsed() {
+        return self::$last_connection_used;
+    }
+
     /**
      * Restituisce l'handle di una determinata connessione, come da configurazione.
      * 
@@ -25,7 +32,11 @@ class LDbConnectionManager {
             self::$connections[$connection_name] = self::createAndOpen($connection_name);    
         } 
         
-        return self::$connections[$connection_name];
+        $result = self::$connections[$connection_name];
+
+        self::$last_connection_used = $result;
+
+        return $result;
         
     }
     

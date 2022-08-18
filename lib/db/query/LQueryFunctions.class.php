@@ -18,11 +18,11 @@ class LQueryFunctions {
 		self::$current_layer_name = 'mysql';
 	}
 
-	private static function checkLayerSelected() {
+	public static function checkLayerSelected() {
 		if (self::$current_layer_name==null) throw new \Exception("Query function layer is not selected correctly.");
 	}
 
-	private static function throwFunctionNotSupported($function_name) {
+	public static function throwFunctionNotSupported($function_name) {
 		throw new \Exception("In function query layer ".self::$current_layer_name." the function ".$function_name." is not supported!");
 	}
 
@@ -81,7 +81,7 @@ class LQueryFunctions {
 		function truncate($table_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlTruncateStatement($table_name);
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlTruncateTableStatement($table_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -289,7 +289,7 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _n_bt($field_name,$start_end) {
+		function _n_bt($field_name,$start,$end) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_between($field_name,$start,$end);
@@ -297,7 +297,7 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _not_between($field_name,$start_end) {
+		function _not_between($field_name,$start,$end) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_between($field_name,$start,$end);

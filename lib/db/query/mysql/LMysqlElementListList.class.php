@@ -13,9 +13,18 @@ class LMysqlElementListList {
 
 	public function __construct(... $lists) {
 		
-		ensure_all_instances_of("data part of mysql insert",$lists,[LMysqlElementList::class]);
+		if (is_array($lists[0])) {
+			$prepared_lists = [];
+			foreach ($lists as $l) {
+				$prepared_lists[] = new LMysqlElementList($l);
+			}
+		} 
+		else {
+			$prepared_lists = $lists;
+		}
+		ensure_all_instances_of("data part of mysql insert",$prepared_lists,[LMysqlElementList::class]);
 		
-		$this->lists = $lists;
+		$this->lists = $prepared_lists;
 	}
 
 	public function __toString() {

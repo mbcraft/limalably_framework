@@ -1,6 +1,6 @@
 
 
-SELECT * from albero;
+SELECT * from specie_albero;
 
 SELECT * from regione;
 

@@ -9,9 +9,9 @@
 class SelectTest extends LTestCase {
 	
 	function testBasicSelect() {
-		$db = db("unit_tests");
+		//$db = db("framework_unit_tests");
 
-		
+		//select('*','targhetta_albero')->where(_eq('codice_targhetta','ABC123'))->go($db);
 	}
 
 }

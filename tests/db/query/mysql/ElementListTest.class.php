@@ -49,6 +49,21 @@ class ElementListTest extends LTestCase {
 
 	}
 
+	function testElementListWithArrayIntruder() {
+
+		db('framework_unit_tests');
+
+		try {
+
+			$el = el('a','b',[],12);
+
+			$this->fail("La lista viene creata anche quando contiene al suo interno un array!! Errore!!");
+		}
+		catch (\Exception $ex) {
+			//ok
+		}
+	}
+
 	function testEmptyElementList() {
 
 		db('framework_unit_tests');

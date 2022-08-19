@@ -11,6 +11,13 @@ class LMysqlElementList {
 	
 	private $elements;
 
+	private function checkNoArrayElementsOrElInside($arr) {
+		foreach ($arr as $arr_element) {
+			if (is_array($arr_element)) throw new \Exception("Invalid element list : contains an array");
+			if ($arr_element instanceof self) throw new \Exception("Invalid element list : contains another element list");
+		}
+	}
+
 	public function __construct(... $elements) {
 
 		if (count($elements)==0) throw new \Exception("Invalid element list : zero elements found - in mysql statement.");
@@ -19,9 +26,14 @@ class LMysqlElementList {
 
 			if (empty($elements[0])) throw new \Exception("Invalid element list : Empty array found - in mysql statement.");
 
+			$this->checkNoArrayElementsOrElInside($elements[0]);
+
 			$this->elements = $elements[0];
 		}
 		else {
+
+			$this->checkNoArrayElementsOrElInside($elements);
+
 			$this->elements = $elements;
 		}
 	}

@@ -409,6 +409,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function v() {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlValuePlaceholder();
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 	}
 
 

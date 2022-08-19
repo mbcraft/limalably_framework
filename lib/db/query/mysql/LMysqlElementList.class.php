@@ -58,12 +58,7 @@ class LMysqlElementList {
 		$converted_elements = [];
 
 		foreach ($this->elements as $elem) {
-			if ($elem === null) $converted_elements[] = 'NULL';
-			if (is_string($elem)) {
-				$converted_elements[] = "'".mysqli_real_escape_string(LDbConnectionManager::getLastConnectionUsed()->getHandle(),$elem)."'";
-			} else {
-				$converted_elements[] = $elem;
-			}
+			$converted_elements[] = new LMysqlValueRenderer($elem);
 		}
 
 		return "(".implode(',',$converted_elements).")";

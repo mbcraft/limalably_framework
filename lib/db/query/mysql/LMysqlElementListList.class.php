@@ -11,17 +11,29 @@ class LMysqlElementListList {
 	
 	private $lists;
 
+	private function isArrayOfArrays($lists) {
+		if (is_array($lists) && count($lists)>1 && is_array($lists[0])) return true;
+		else return false;
+	}
+
 	public function __construct(... $lists) {
 		
-		if (is_array($lists[0])) {
+		if (is_array($lists[0]) && count($lists)==1) {
 			$prepared_lists = [];
 			foreach ($lists as $l) {
 				$prepared_lists[] = new LMysqlElementList($l);
 			}
 		} 
 		else {
-			$prepared_lists = $lists;
+
+			if (count($lists)==0) 
+				$prepared_lists = [];
+			else {
+
+				$prepared_lists = $lists;
+			}
 		}
+		
 		ensure_all_instances_of("data part of mysql insert",$prepared_lists,[LMysqlElementList::class]);
 		
 		$this->lists = $prepared_lists;

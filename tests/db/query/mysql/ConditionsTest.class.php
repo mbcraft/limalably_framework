@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
 
 class ConditionsTest extends LTestCase {
 	
@@ -13,17 +18,17 @@ class ConditionsTest extends LTestCase {
 		$c2 = _eq('field_name',12.34);
 		$c3 = _eq('field_name','myvalue');
 
-		$this->assertEqual($c1,"field_name = 123","Il valore della _eq non corrisponde!");
-		$this->assertEqual($c2,"field_name = 12.34","Il valore della _eq non corrisponde!");
-		$this->assertEqual($c3,"field_name = 'myvalue'","Il valore della _eq non corrisponde!");
+		$this->assertEqual($c1,"field_name = 123","Il valore della _eq non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name = 12.34","Il valore della _eq non corrisponde a quello atteso!");
+		$this->assertEqual($c3,"field_name = 'myvalue'","Il valore della _eq non corrisponde a quello atteso!");
 
 		$c4 = _equal('field_name',123);
 		$c5 = _equal('field_name',12.34);
 		$c6 = _equal('field_name','myvalue');
 
-		$this->assertEqual($c4,"field_name = 123","Il valore della _equal non corrisponde!");
-		$this->assertEqual($c5,"field_name = 12.34","Il valore della _equal non corrisponde!");
-		$this->assertEqual($c6,"field_name = 'myvalue'","Il valore della _equal non corrisponde!");
+		$this->assertEqual($c4,"field_name = 123","Il valore della _equal non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name = 12.34","Il valore della _equal non corrisponde a quello atteso!");
+		$this->assertEqual($c6,"field_name = 'myvalue'","Il valore della _equal non corrisponde a quello atteso!");
 	}
 
 	function testNotEqual() {
@@ -34,17 +39,17 @@ class ConditionsTest extends LTestCase {
 		$c2 = _n_eq('field_name',12.34);
 		$c3 = _n_eq('field_name','myvalue');
 
-		$this->assertEqual($c1,"field_name != 123","Il valore della _n_eq non corrisponde!");
-		$this->assertEqual($c2,"field_name != 12.34","Il valore della _n_eq non corrisponde!");
-		$this->assertEqual($c3,"field_name != 'myvalue'","Il valore della _n_eq non corrisponde!");
+		$this->assertEqual($c1,"field_name != 123","Il valore della _n_eq non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name != 12.34","Il valore della _n_eq non corrisponde a quello atteso!");
+		$this->assertEqual($c3,"field_name != 'myvalue'","Il valore della _n_eq non corrisponde a quello atteso!");
 
 		$c4 = _not_equal('field_name',123);
 		$c5 = _not_equal('field_name',12.34);
 		$c6 = _not_equal('field_name','myvalue');
 
-		$this->assertEqual($c4,"field_name != 123","Il valore della _not_equal non corrisponde!");
-		$this->assertEqual($c5,"field_name != 12.34","Il valore della _not_equal non corrisponde!");
-		$this->assertEqual($c6,"field_name != 'myvalue'","Il valore della _not_equal non corrisponde!");
+		$this->assertEqual($c4,"field_name != 123","Il valore della _not_equal non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name != 12.34","Il valore della _not_equal non corrisponde a quello atteso!");
+		$this->assertEqual($c6,"field_name != 'myvalue'","Il valore della _not_equal non corrisponde a quello atteso!");
 	}
 
 	function testGreaterThan() {
@@ -54,14 +59,14 @@ class ConditionsTest extends LTestCase {
 		$c1 = _gt('field_name',123);
 		$c2 = _gt('field_name',12.34);
 
-		$this->assertEqual($c1,"field_name > 123","Il valore della _gt non corrisponde!");
-		$this->assertEqual($c2,"field_name > 12.34","Il valore della _gt non corrisponde!");
+		$this->assertEqual($c1,"field_name > 123","Il valore della _gt non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name > 12.34","Il valore della _gt non corrisponde a quello atteso!");
 
 		$c4 = _greater_than('field_name',123);
 		$c5 = _greater_than('field_name',12.34);
 
-		$this->assertEqual($c4,"field_name > 123","Il valore della _greater_than non corrisponde!");
-		$this->assertEqual($c5,"field_name > 12.34","Il valore della _greater_than non corrisponde!");
+		$this->assertEqual($c4,"field_name > 123","Il valore della _greater_than non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name > 12.34","Il valore della _greater_than non corrisponde a quello atteso!");
 	}
 
 	function testGreaterThanOrEqual() {
@@ -71,14 +76,14 @@ class ConditionsTest extends LTestCase {
 		$c1 = _gt_eq('field_name',123);
 		$c2 = _gt_eq('field_name',12.34);
 
-		$this->assertEqual($c1,"field_name >= 123","Il valore della _gt_eq non corrisponde!");
-		$this->assertEqual($c2,"field_name >= 12.34","Il valore della _gt_eq non corrisponde!");
+		$this->assertEqual($c1,"field_name >= 123","Il valore della _gt_eq non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name >= 12.34","Il valore della _gt_eq non corrisponde a quello atteso!");
 
 		$c4 = _greater_than_or_equal('field_name',123);
 		$c5 = _greater_than_or_equal('field_name',12.34);
 
-		$this->assertEqual($c4,"field_name >= 123","Il valore della _greater_than_or_equal non corrisponde!");
-		$this->assertEqual($c5,"field_name >= 12.34","Il valore della _greater_than_or_equal non corrisponde!");
+		$this->assertEqual($c4,"field_name >= 123","Il valore della _greater_than_or_equal non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name >= 12.34","Il valore della _greater_than_or_equal non corrisponde a quello atteso!");
 	}
 
 	function testLessThan() {
@@ -88,14 +93,14 @@ class ConditionsTest extends LTestCase {
 		$c1 = _lt('field_name',123);
 		$c2 = _lt('field_name',12.34);
 
-		$this->assertEqual($c1,"field_name < 123","Il valore della _lt non corrisponde!");
-		$this->assertEqual($c2,"field_name < 12.34","Il valore della _lt non corrisponde!");
+		$this->assertEqual($c1,"field_name < 123","Il valore della _lt non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name < 12.34","Il valore della _lt non corrisponde a quello atteso!");
 
 		$c4 = _less_than('field_name',123);
 		$c5 = _less_than('field_name',12.34);
 
-		$this->assertEqual($c4,"field_name < 123","Il valore della _less_than non corrisponde!");
-		$this->assertEqual($c5,"field_name < 12.34","Il valore della _less_than non corrisponde!");
+		$this->assertEqual($c4,"field_name < 123","Il valore della _less_than non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name < 12.34","Il valore della _less_than non corrisponde a quello atteso!");
 	}
 
 	function testLessThanOrEqual() {
@@ -105,14 +110,14 @@ class ConditionsTest extends LTestCase {
 		$c1 = _lt_eq('field_name',123);
 		$c2 = _lt_eq('field_name',12.34);
 
-		$this->assertEqual($c1,"field_name <= 123","Il valore della _lt_eq non corrisponde!");
-		$this->assertEqual($c2,"field_name <= 12.34","Il valore della _lt_eq non corrisponde!");
+		$this->assertEqual($c1,"field_name <= 123","Il valore della _lt_eq non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name <= 12.34","Il valore della _lt_eq non corrisponde a quello atteso!");
 
 		$c4 = _less_than_or_equal('field_name',123);
 		$c5 = _less_than_or_equal('field_name',12.34);
 
-		$this->assertEqual($c4,"field_name <= 123","Il valore della _less_than_or_equal non corrisponde!");
-		$this->assertEqual($c5,"field_name <= 12.34","Il valore della _less_than_or_equal non corrisponde!");
+		$this->assertEqual($c4,"field_name <= 123","Il valore della _less_than_or_equal non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name <= 12.34","Il valore della _less_than_or_equal non corrisponde a quello atteso!");
 	}
 
 	function testLike() {
@@ -122,8 +127,8 @@ class ConditionsTest extends LTestCase {
 		$c4 = _like('field_name','abc');
 		$c5 = _like('field_name','%abc%');
 
-		$this->assertEqual($c4,"field_name LIKE 'abc'","Il valore della _like non corrisponde!");
-		$this->assertEqual($c5,"field_name LIKE '%abc%'","Il valore della _like non corrisponde!");
+		$this->assertEqual($c4,"field_name LIKE 'abc'","Il valore della _like non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name LIKE '%abc%'","Il valore della _like non corrisponde a quello atteso!");
 	}
 
 	function testNotLike() {
@@ -133,8 +138,8 @@ class ConditionsTest extends LTestCase {
 		$c4 = _not_like('field_name','abc');
 		$c5 = _not_like('field_name','%abc%');
 
-		$this->assertEqual($c4,"field_name NOT LIKE 'abc'","Il valore della _not_like non corrisponde!");
-		$this->assertEqual($c5,"field_name NOT LIKE '%abc%'","Il valore della _not_like non corrisponde!");
+		$this->assertEqual($c4,"field_name NOT LIKE 'abc'","Il valore della _not_like non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name NOT LIKE '%abc%'","Il valore della _not_like non corrisponde a quello atteso!");
 	}
 
 	function testRLike() {
@@ -144,8 +149,8 @@ class ConditionsTest extends LTestCase {
 		$c4 = _rlike('field_name','abc');
 		$c5 = _rlike('field_name','def');
 
-		$this->assertEqual($c4,"field_name RLIKE 'abc'","Il valore della _rlike non corrisponde!");
-		$this->assertEqual($c5,"field_name RLIKE 'def'","Il valore della _rlike non corrisponde!");
+		$this->assertEqual($c4,"field_name RLIKE 'abc'","Il valore della _rlike non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name RLIKE 'def'","Il valore della _rlike non corrisponde a quello atteso!");
 	}
 
 	function testIsNull() {
@@ -155,8 +160,8 @@ class ConditionsTest extends LTestCase {
 		$c1 = _is_null('field_name');
 		$c2 = _is_null('field123');
 
-		$this->assertEqual($c1,"field_name IS NULL","Il valore della _is_null non corrisponde!");
-		$this->assertEqual($c2,"field123 IS NULL","Il valore della _is_null non corrisponde!");
+		$this->assertEqual($c1,"field_name IS NULL","Il valore della _is_null non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field123 IS NULL","Il valore della _is_null non corrisponde a quello atteso!");
 
 
 	}
@@ -168,8 +173,8 @@ class ConditionsTest extends LTestCase {
 		$c1 = _is_not_null('field_name');
 		$c2 = _is_not_null('field123');
 
-		$this->assertEqual($c1,"field_name IS NOT NULL","Il valore della _is_not_null non corrisponde!");
-		$this->assertEqual($c2,"field123 IS NOT NULL","Il valore della _is_not_null non corrisponde!");
+		$this->assertEqual($c1,"field_name IS NOT NULL","Il valore della _is_not_null non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field123 IS NOT NULL","Il valore della _is_not_null non corrisponde a quello atteso!");
 
 
 	}
@@ -184,11 +189,11 @@ class ConditionsTest extends LTestCase {
 		$c4 = _in('field_name',['ab',12]);
 		$c5 = _in('field_name',select('*','mia_tabella'));
 
-		$this->assertEqual($c1,"field_name IN ('!')","Il valore della _in non corrisponde!");
-		$this->assertEqual($c2,"field_name IN (1,2,3)","Il valore della _in non corrisponde!");
-		$this->assertEqual($c3,"field_name IN ('ab','cd','ef')","Il valore della _in non corrisponde!");
-		$this->assertEqual($c4,"field_name IN ('ab',12)","Il valore della _in non corrisponde!");
-		$this->assertEqual($c5,"field_name IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde!");
+		$this->assertEqual($c1,"field_name IN ('!')","Il valore della _in non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name IN (1,2,3)","Il valore della _in non corrisponde a quello atteso!");
+		$this->assertEqual($c3,"field_name IN ('ab','cd','ef')","Il valore della _in non corrisponde a quello atteso!");
+		$this->assertEqual($c4,"field_name IN ('ab',12)","Il valore della _in non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde a quello atteso!");
 
 	}
 
@@ -203,11 +208,11 @@ class ConditionsTest extends LTestCase {
 		$c4 = _not_in('field_name',['ab',12]);
 		$c5 = _not_in('field_name',select('*','mia_tabella'));
 
-		$this->assertEqual($c1,"field_name NOT IN ('!')","Il valore della _not_in non corrisponde!");
-		$this->assertEqual($c2,"field_name NOT IN (1,2,3)","Il valore della _not_in non corrisponde!");
-		$this->assertEqual($c3,"field_name NOT IN ('ab','cd','ef')","Il valore della _not_in non corrisponde!");
-		$this->assertEqual($c4,"field_name NOT IN ('ab',12)","Il valore della _not_in non corrisponde!");
-		$this->assertEqual($c5,"field_name NOT IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde!");
+		$this->assertEqual($c1,"field_name NOT IN ('!')","Il valore della _not_in non corrisponde a quello atteso!");
+		$this->assertEqual($c2,"field_name NOT IN (1,2,3)","Il valore della _not_in non corrisponde a quello atteso!");
+		$this->assertEqual($c3,"field_name NOT IN ('ab','cd','ef')","Il valore della _not_in non corrisponde a quello atteso!");
+		$this->assertEqual($c4,"field_name NOT IN ('ab',12)","Il valore della _not_in non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name NOT IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde a quello atteso!");
 
 	}
 
@@ -217,11 +222,11 @@ class ConditionsTest extends LTestCase {
 
 		$c1 = _between('field_name',12,34);
 
-		$this->assertEqual($c1,"field_name BETWEEN 12 AND 34","Il valore della _between non corrisponde!");
+		$this->assertEqual($c1,"field_name BETWEEN 12 AND 34","Il valore della _between non corrisponde a quello atteso!");
 
 		$c2 = _bt('field_name',12,34);
 
-		$this->assertEqual($c2,"field_name BETWEEN 12 AND 34","Il valore della _bt non corrisponde!");
+		$this->assertEqual($c2,"field_name BETWEEN 12 AND 34","Il valore della _bt non corrisponde a quello atteso!");
 	}
 
 	function testNotBetween() {
@@ -229,11 +234,11 @@ class ConditionsTest extends LTestCase {
 
 		$c1 = _not_between('field_name',12,34);
 
-		$this->assertEqual($c1,"field_name NOT BETWEEN 12 AND 34","Il valore della _not_between non corrisponde!");
+		$this->assertEqual($c1,"field_name NOT BETWEEN 12 AND 34","Il valore della _not_between non corrisponde a quello atteso!");
 
 		$c2 = _n_bt('field_name',12,34);
 
-		$this->assertEqual($c1,"field_name NOT BETWEEN 12 AND 34","Il valore della _n_bt non corrisponde!");
+		$this->assertEqual($c1,"field_name NOT BETWEEN 12 AND 34","Il valore della _n_bt non corrisponde a quello atteso!");
 	}
 
 	function testExists() {
@@ -241,7 +246,7 @@ class ConditionsTest extends LTestCase {
 
 		$c1 = _exists(select('*','mia_tabella'));
 
-		$this->assertEqual($c1,"EXISTS( SELECT * FROM mia_tabella )","Il valore della _exists non corrisponde!");
+		$this->assertEqual($c1,"EXISTS( SELECT * FROM mia_tabella )","Il valore della _exists non corrisponde a quello atteso!");
 	}
 
 	function testNotExists() {
@@ -249,7 +254,7 @@ class ConditionsTest extends LTestCase {
 
 		$c1 = _not_exists(select('*','mia_tabella'));
 
-		$this->assertEqual($c1,"NOT EXISTS( SELECT * FROM mia_tabella )","Il valore della _not_exists non corrisponde!");
+		$this->assertEqual($c1,"NOT EXISTS( SELECT * FROM mia_tabella )","Il valore della _not_exists non corrisponde a quello atteso!");
 	}
 
 	function testAnd() {
@@ -258,7 +263,7 @@ class ConditionsTest extends LTestCase {
 
 		$c1 = _and(_eq('a',1),_eq('b','z'));
 
-		$this->assertEqual($c1,"( a = 1 AND b = 'z' )","Il valore della _and non corrisponde!");
+		$this->assertEqual($c1,"( a = 1 AND b = 'z' )","Il valore della _and non corrisponde a quello atteso!");
 
 	}
 
@@ -268,7 +273,7 @@ class ConditionsTest extends LTestCase {
 
 		$c1 = _or(_eq('a',1),_eq('b','z'));
 
-		$this->assertEqual($c1,"( a = 1 OR b = 'z' )","Il valore della _or non corrisponde!");
+		$this->assertEqual($c1,"( a = 1 OR b = 'z' )","Il valore della _or non corrisponde a quello atteso!");
 
 	}
 

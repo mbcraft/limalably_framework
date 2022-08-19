@@ -337,6 +337,22 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function __replace_value($field_name,$search_value,$replace_value) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($field_name,$search_value,$replace_value);
+			
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function __repl($field_name,$search_value,$replace_value) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($field_name,$search_value,$replace_value);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 		function wh($something) {
 			LQueryFunctions::checkLayerSelected();
 

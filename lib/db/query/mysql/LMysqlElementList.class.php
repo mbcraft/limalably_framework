@@ -13,7 +13,12 @@ class LMysqlElementList {
 
 	public function __construct(... $elements) {
 
-		$this->elements = $elements;
+		if (count($elements)==1 && is_array($elements[0])) {
+			$this->elements = $elements[0];
+		}
+		else {
+			$this->elements = $elements;
+		}
 	}
 
 	public function toRawStringList() {

@@ -40,8 +40,8 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 			$this->where_block = "";
 		}
 
-		$this->order_by_clause = new LMysqlElementList();
-		$this->group_by_clause = new LMysqlElementList();
+		$this->order_by_clause = new LMysqlEmptyElementList();
+		$this->group_by_clause = new LMysqlEmptyElementList();
 	}
 
 	public function where($element) {

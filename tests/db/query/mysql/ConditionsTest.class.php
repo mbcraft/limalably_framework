@@ -187,13 +187,15 @@ class ConditionsTest extends LTestCase {
 		$c2 = _in('field_name',[1,2,3]);
 		$c3 = _in('field_name',['ab','cd','ef']);
 		$c4 = _in('field_name',['ab',12]);
-		$c5 = _in('field_name',select('*','mia_tabella'));
+		$c5 = _in('field_name',el('ab',12));
+		$c6 = _in('field_name',select('*','mia_tabella'));
 
 		$this->assertEqual($c1,"field_name IN ('!')","Il valore della _in non corrisponde a quello atteso!");
 		$this->assertEqual($c2,"field_name IN (1,2,3)","Il valore della _in non corrisponde a quello atteso!");
 		$this->assertEqual($c3,"field_name IN ('ab','cd','ef')","Il valore della _in non corrisponde a quello atteso!");
 		$this->assertEqual($c4,"field_name IN ('ab',12)","Il valore della _in non corrisponde a quello atteso!");
-		$this->assertEqual($c5,"field_name IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name IN ('ab',12)","Il valore della _in non corrisponde a quello atteso!");
+		$this->assertEqual($c6,"field_name IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde a quello atteso!");
 
 	}
 
@@ -206,13 +208,15 @@ class ConditionsTest extends LTestCase {
 		$c2 = _not_in('field_name',[1,2,3]);
 		$c3 = _not_in('field_name',['ab','cd','ef']);
 		$c4 = _not_in('field_name',['ab',12]);
-		$c5 = _not_in('field_name',select('*','mia_tabella'));
+		$c5 = _not_in('field_name',el('ab',12));
+		$c6 = _not_in('field_name',select('*','mia_tabella'));
 
 		$this->assertEqual($c1,"field_name NOT IN ('!')","Il valore della _not_in non corrisponde a quello atteso!");
 		$this->assertEqual($c2,"field_name NOT IN (1,2,3)","Il valore della _not_in non corrisponde a quello atteso!");
 		$this->assertEqual($c3,"field_name NOT IN ('ab','cd','ef')","Il valore della _not_in non corrisponde a quello atteso!");
 		$this->assertEqual($c4,"field_name NOT IN ('ab',12)","Il valore della _not_in non corrisponde a quello atteso!");
-		$this->assertEqual($c5,"field_name NOT IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde a quello atteso!");
+		$this->assertEqual($c5,"field_name NOT IN ('ab',12)","Il valore della _not_in non corrisponde a quello atteso!");
+		$this->assertEqual($c6,"field_name NOT IN ( SELECT * FROM mia_tabella )","Il valore della _not_in non corrisponde a quello atteso!");
 
 	}
 

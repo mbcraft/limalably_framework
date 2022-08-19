@@ -13,7 +13,12 @@ class LMysqlElementList {
 
 	public function __construct(... $elements) {
 
+		if (count($elements)==0) throw new \Exception("Invalid element list : zero elements found - in mysql statement.");
+
 		if (count($elements)==1 && is_array($elements[0])) {
+
+			if (empty($elements[0])) throw new \Exception("Invalid element list : Empty array found - in mysql statement.");
+
 			$this->elements = $elements[0];
 		}
 		else {

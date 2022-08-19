@@ -92,6 +92,7 @@ class LMysqlCondition {
 		ensure_string_not_null("mysql 'in' condition",$field_name);
 		if ($data_set_or_select instanceof LMysqlSelectStatement) return new LMysqlCondition($field_name,'IN','(',trim($data_set_or_select),')');
 		if ($data_set_or_select==null) $data_set_or_select = ['!'];
+		if ($data_set_or_select instanceof LMysqlElementList) return new LMysqlCondition($field_name,'IN',$data_set_or_select);
 		return new LMysqlCondition($field_name,'IN',new LMysqlElementList(... $data_set_or_select));
 	}
 
@@ -99,6 +100,7 @@ class LMysqlCondition {
 		ensure_string_not_null("mysql 'not in' condition",$field_name);
 		if ($data_set_or_select instanceof LMysqlSelectStatement) return new LMysqlCondition($field_name,'NOT IN','(',trim($data_set_or_select),')');
 		if ($data_set_or_select==null) $data_set_or_select = ['!'];
+		if ($data_set_or_select instanceof LMysqlElementList) return new LMysqlCondition($field_name,'NOT IN',$data_set_or_select);
 		return new LMysqlCondition($field_name,'NOT IN',new LMysqlElementList(... $data_set_or_select));
 	}
 

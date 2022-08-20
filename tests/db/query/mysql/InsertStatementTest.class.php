@@ -19,12 +19,6 @@ class InsertStatementTest extends LTestCase {
 
 	}
 
-	function testInsertInRealTable() {
 
-		$db = db('framework_unit_tests');
-
-		
-
-	}
 
 }

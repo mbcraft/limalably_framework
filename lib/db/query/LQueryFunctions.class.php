@@ -409,6 +409,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function f($field_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlTableField($field_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 		function p() {
 			LQueryFunctions::checkLayerSelected();
 

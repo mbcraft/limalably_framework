@@ -18,7 +18,7 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 	private $join_table_list = [];
 	private $join_list = [];
 	private $where_condition;
-	private $order_by = "";
+	private $order_by_clause = "";
 	private $limit = "";
 
 	public function __construct($table_name,$where_block=null) {
@@ -72,17 +72,17 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 		return $this;
 	}
 
-	public function order_by(... $field_list) {
+	public function order_by(... $field_list_with_ordering) {
+		foreach ($field_list_with_ordering as $order_by_element) {
+			$this->ensure_valid_order_by_element($order_by_element);	
+		}
 
-		ensure_all_strings("order by clause of delete statement",$field_list);
+		$order_by_elements = new LMysqlElementList($field_list_with_ordering);
 
-		$el = new LMysqlElementList(... $field_list);
-
-		$this->order_by = "ORDER BY ".$el->toRawStringListWithoutParenthesis();
+		$this->order_by_clause = "ORDER BY ".$order_by_elements->toRawStringListWithoutParenthesis();
 
 		return $this;
-
-	}
+	} 
 
 	public function limit(int $num_rows) {
 
@@ -99,10 +99,10 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 			$join_table_list_obj = new LMysqlElementList($this->join_table_list);
 		}
 
-		if ($this->order_by==null && $this->limit!=null) throw new \Exception("order_by and limit must be used both or none in mysql delete statement.");
-		if ($this->order_by!=null && $this->limit==null) throw new \Exception("order_by and limit must be used both or none in mysql delete statement.");
+		if ($this->order_by_clause==null && $this->limit!=null) throw new \Exception("order_by and limit must be used both or none in mysql delete statement.");
+		if ($this->order_by_clause!=null && $this->limit==null) throw new \Exception("order_by and limit must be used both or none in mysql delete statement.");
 
-		return $this->build_query("DELETE",$join_table_list_obj->toRawStringListWithoutParenthesis(),"FROM",$this->table_name,implode(' ',$this->join_list),$this->where_block,$this->order_by,$this->limit);
+		return $this->build_query("DELETE",$join_table_list_obj->toRawStringListWithoutParenthesis(),"FROM",$this->table_name,implode(' ',$this->join_list),$this->where_block,$this->order_by_clause,$this->limit);
 
 		/*
 		return trim("DELETE ".

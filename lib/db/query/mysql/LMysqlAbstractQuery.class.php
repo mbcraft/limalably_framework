@@ -14,6 +14,20 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 abstract class LMysqlAbstractQuery {
 
+	protected function ensure_valid_order_by_element($order_by_element) {
+
+		if (!is_string($order_by_element)) throw new \Exception("The order by element is not a string in the mysql select clause.");
+
+		$lowered = strtolower($order_by_element);
+		$parts = explode(' ',$order_by_element);
+
+		if (count($parts)>2) throw new \Exception("The order by element is not made of two space separated strings.");
+		if (count($parts)==2) {
+			$order_descriptor = $parts[1];
+
+			if ($order_descriptor!='ASC' && $order_descriptor!='DESC') throw new \Exception("Order descriptor is neither 'asc' or 'desc' in mysql select order by clause.");
+		}
+	}
 
 	protected function build_query(... $parts) {
 

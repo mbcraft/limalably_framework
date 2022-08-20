@@ -69,19 +69,6 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		$this->distinct_option = "DISTINCT ";
 
 		return $this;
-	}
-
-	private function ensure_valid_order_by_element($order_by_element) {
-
-		if (!is_string($order_by_element)) throw new \Exception("The order by element is not a string in the mysql select clause.");
-
-		$lowered = strtolower($order_by_element);
-		$parts = explode(' ',$order_by_element);
-
-		if (count($parts)!=2) throw new \Exception("The order by element is not made of two space separated strings.");
-		$order_descriptor = $parts[1];
-
-		if ($order_descriptor!='asc' && $order_descriptor!='desc') throw new \Exception("Order descriptor is neither 'asc' or 'desc' in mysql select order by clause.");
 	}	
 
 	public function inner_join($table_name,$condition_element=null) {
@@ -108,12 +95,14 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		return $this;
 	}
 
-
 	public function order_by(... $field_list_with_ordering) {
 		foreach ($field_list_with_ordering as $order_by_element) {
-			$this->ensure_valid_order_by_element($order_by_element);
-			$this->order_by_clause = new LMysqlElementList($field_list_with_ordering);
+			$this->ensure_valid_order_by_element($order_by_element);	
 		}
+
+		$order_by_elements = new LMysqlElementList($field_list_with_ordering);
+
+		$this->order_by_clause = "ORDER BY ".$order_by_elements->toRawStringListWithoutParenthesis();
 
 		return $this;
 	} 
@@ -123,7 +112,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		$limit_start = ($page_number-1)*$page_size;
 		$limit_end = ($page_number*$page_size)-1;
 
-		$this->limit_clause = " LIMIT ".$limit_start.",".$limit_end;
+		$this->limit_clause = "LIMIT ".$limit_start.",".$limit_end;
 
 		return $this;
 	}
@@ -157,7 +146,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		return $this->build_query("SELECT",$this->distinct_option,$this->field_name_list->toRawStringListWithoutParenthesis(),
 			"FROM",$this->table_name_list->toRawStringListWithoutParenthesis(),implode(' ',$this->join_list),$this->where_block,
 			$this->group_by_clause->toRawStringListWithoutParenthesis(),$this->with_rollup_option,$this->having_clause,
-			$this->order_by_clause->toRawStringListWithoutParenthesis(),$this->limit_clause);
+			$this->order_by_clause,$this->limit_clause);
 
 	}
 }

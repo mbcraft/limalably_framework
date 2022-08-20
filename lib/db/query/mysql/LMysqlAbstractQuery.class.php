@@ -9,6 +9,17 @@
 
 abstract class LMysqlAbstractQuery {
 
+
+	protected function build_query(... $parts) {
+
+		$final_part_list = [];
+		foreach ($parts as $p) {
+			if ($p == null || trim("".$p) == null) continue;
+			$final_part_list [] = $p;
+		}
+		return implode(' ',$final_part_list);
+	}
+
 	function go($connection) {
 
 		if (!$connection) throw new \Exception("Connection is not set!");

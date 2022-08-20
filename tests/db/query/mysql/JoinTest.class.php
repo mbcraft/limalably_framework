@@ -18,11 +18,11 @@ class JoinTest extends LTestCase {
 		$ij5 = LMysqlGenericJoin::inner_join('table_123',new LMysqlOnBlock(LMysqlCondition::equal('field_name',12)));
 
 
-		$this->assertEqual($ij1,"INNER JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($ij2,"INNER JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($ij3,"INNER JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($ij4,"INNER JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($ij5,"INNER JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($ij1,"INNER JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($ij2,"INNER JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($ij3,"INNER JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($ij4,"INNER JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($ij5,"INNER JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
 
 	}
 
@@ -35,11 +35,11 @@ class JoinTest extends LTestCase {
 		$lj5 = LMysqlGenericJoin::left_join('table_123',new LMysqlOnBlock(LMysqlCondition::equal('field_name',12)));
 
 
-		$this->assertEqual($lj1,"LEFT JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($lj2,"LEFT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($lj3,"LEFT JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($lj4,"LEFT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($lj5,"LEFT JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($lj1,"LEFT JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($lj2,"LEFT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($lj3,"LEFT JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($lj4,"LEFT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($lj5,"LEFT JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
 
 	}
 
@@ -52,11 +52,11 @@ class JoinTest extends LTestCase {
 		$rj5 = LMysqlGenericJoin::right_join('table_123',new LMysqlOnBlock(LMysqlCondition::equal('field_name',12)));
 
 
-		$this->assertEqual($rj1,"RIGHT JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($rj2,"RIGHT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($rj3,"RIGHT JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($rj4,"RIGHT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($rj5,"RIGHT JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($rj1,"RIGHT JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($rj2,"RIGHT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($rj3,"RIGHT JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($rj4,"RIGHT JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($rj5,"RIGHT JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
 
 	}
 
@@ -69,11 +69,11 @@ class JoinTest extends LTestCase {
 		$cj5 = LMysqlGenericJoin::cross_join('table_123',new LMysqlOnBlock(LMysqlCondition::equal('field_name',12)));
 
 
-		$this->assertEqual($cj1,"CROSS JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($cj2,"CROSS JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($cj3,"CROSS JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($cj4,"CROSS JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' ) ","Il valore dell'SQL della join non corrisponde al valore atteso!");
-		$this->assertEqual($cj5,"CROSS JOIN table_123 ON field_name = 12 ","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($cj1,"CROSS JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($cj2,"CROSS JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($cj3,"CROSS JOIN table_123 ON ( field_name1 = 12 OR field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($cj4,"CROSS JOIN table_123 ON ( field_name1 = 12 AND field_name2 != 'ab' )","Il valore dell'SQL della join non corrisponde al valore atteso!");
+		$this->assertEqual($cj5,"CROSS JOIN table_123 ON field_name = 12","Il valore dell'SQL della join non corrisponde al valore atteso!");
 
 	}
 

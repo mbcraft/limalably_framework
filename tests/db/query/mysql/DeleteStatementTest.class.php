@@ -17,10 +17,10 @@ class DeleteStatementTest extends LTestCase {
 		
 		
 		
-		$this->assertEqual($d1,"DELETE  FROM table_123  WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
-		$this->assertEqual($d2,"DELETE table_123,table_for_join FROM table_123 INNER JOIN table_for_join  WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
-		$this->assertEqual($d3,"DELETE table_123 FROM table_123 INNER JOIN table_for_join ON field_j1 = 3  WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
-		$this->assertEqual($d4,"DELETE  FROM table_123  WHERE field_name = 12 ORDER BY a,b LIMIT 5","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
+		$this->assertEqual($d1,"DELETE FROM table_123 WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
+		$this->assertEqual($d2,"DELETE table_123,table_for_join FROM table_123 INNER JOIN table_for_join WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
+		$this->assertEqual($d3,"DELETE table_123 FROM table_123 INNER JOIN table_for_join ON field_j1 = 3 WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
+		$this->assertEqual($d4,"DELETE FROM table_123 WHERE field_name = 12 ORDER BY a,b LIMIT 5","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
 		
 		try {
 			echo $d5;

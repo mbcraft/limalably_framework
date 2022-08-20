@@ -13,7 +13,7 @@ abstract class LMysqlAbstractConditionsBlock {
 	private $element;
 
 	public function __construct($mode,$element) {
-		if ($mode!='where' && $mode!='having' && $mode!='on') throw new \Exception("mode of conditions block is neither 'where' nor 'having'.");
+		if ($mode!='where' && $mode!='having' && $mode!=' on') throw new \Exception("mode of conditions block is neither 'where' nor 'having'.");
 		$this->mode = $mode;
 
 		if (is_array($element)) {
@@ -31,7 +31,7 @@ abstract class LMysqlAbstractConditionsBlock {
 	}
 
 	public function __toString() {
-		return " ".strtoupper($this->mode)." ".$this->element;
+		return strtoupper($this->mode)." ".$this->element;
 	}
 
 }

@@ -48,7 +48,9 @@ class LMysqlUpdateStatement extends LMysqlAbstractQuery
 	}
 
 	public function __toString() {
-		return trim("UPDATE ".$this->table_name." SET ".$this->name_value_pair_list.$this->where_block);
+
+		return $this->build_query("UPDATE",$this->table_name,"SET",$this->name_value_pair_list,$this->where_block);
+
 	}
 
 }

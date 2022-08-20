@@ -73,7 +73,7 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 
 		$el = new LMysqlElementList(... $field_list);
 
-		$this->order_by = " ORDER BY ".$el->toRawStringListWithoutParenthesis();
+		$this->order_by = "ORDER BY ".$el->toRawStringListWithoutParenthesis();
 
 		return $this;
 
@@ -81,7 +81,7 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 
 	public function limit(int $num_rows) {
 
-		$this->limit = " LIMIT ".$num_rows;
+		$this->limit = "LIMIT ".$num_rows;
 
 		return $this;
 	}
@@ -97,12 +97,16 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 		if ($this->order_by==null && $this->limit!=null) throw new \Exception("order_by and limit must be used both or none in mysql delete statement.");
 		if ($this->order_by!=null && $this->limit==null) throw new \Exception("order_by and limit must be used both or none in mysql delete statement.");
 
+		return $this->build_query("DELETE",$join_table_list_obj->toRawStringListWithoutParenthesis(),"FROM",$this->table_name,implode(' ',$this->join_list),$this->where_block,$this->order_by,$this->limit);
+
+		/*
 		return trim("DELETE ".
 		$join_table_list_obj->toRawStringListWithoutParenthesis().
 		" FROM ".
 		$this->table_name.
 		" ".implode(' ',$this->join_list)
 		.$this->where_block.$this->order_by.$this->limit);
+		*/
 	}
 	
 }

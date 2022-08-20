@@ -56,7 +56,7 @@ class LMysqlGenericJoin {
 	}
 
 	public function __toString() {
-		return strtoupper($this->join_type).$this->table_name.$this->on_block." ";
+		return trim(strtoupper($this->join_type).$this->table_name.$this->on_block);
 	}
 
 }

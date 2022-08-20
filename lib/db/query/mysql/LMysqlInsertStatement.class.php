@@ -49,6 +49,6 @@ class LMysqlInsertStatement extends LMysqlAbstractQuery
 	}
 
 	public function __toString() {
-		return "INSERT".$this->ignore_option." INTO ".$this->table_name.$this->column_list->toRawStringList().$this->insert_data_connector.$this->data.$this->on_duplicate_key_update_option;
+		return trim("INSERT".$this->ignore_option." INTO ".$this->table_name.$this->column_list->toRawStringList().$this->insert_data_connector.$this->data.$this->on_duplicate_key_update_option);
 	}
 }

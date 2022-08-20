@@ -24,7 +24,10 @@ class LMysqlUpdateStatement extends LMysqlAbstractQuery
 		$this->name_value_pair_list = $name_value_pair_list;
 
 		if ($where_block!=null) {
+			if (!$where_block instanceof LMysqlWhereBlock) $where_block = new LMysqlWhereBlock($where_block);
+
 			ensure_instance_of("where condition of mysql update statement",$where_block,[LMysqlWhereBlock::class]);
+			
 			$this->where_block = $where_block;
 		} else {
 			$this->where_block = "";
@@ -33,14 +36,19 @@ class LMysqlUpdateStatement extends LMysqlAbstractQuery
 		
 	}
 
-	public function where($element) {
-		$this->where_block = new LMysqlWhereBlock($element);
+	public function where(... $elements) {
 
-		$this->where_block = $element;
+		if (count($elements)==1 && is_array($elements[0])) {
+			$this->where_block = new LMysqlWhereBlock($elements[0]);
+		} else {
+			$this->where_block = new LMysqlWhereBlock($elements);
+		}
+		
+		return $this;
 	}
 
 	public function __toString() {
-		return "UPDATE ".$this->table_name." SET ".$this->name_value_pair_list." ".$this->where_block;
+		return trim("UPDATE ".$this->table_name." SET ".$this->name_value_pair_list.$this->where_block);
 	}
 
 }

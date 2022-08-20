@@ -6,7 +6,7 @@
  *  
  */
 
-class TruncateTest extends LTestCase {
+class TruncateStatementTest extends LTestCase {
 	
 
 	function testTruncate()

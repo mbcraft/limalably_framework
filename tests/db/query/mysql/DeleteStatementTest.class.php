@@ -1,7 +1,7 @@
 <?php
 
 
-class DeleteTest extends LTestCase {
+class DeleteStatementTest extends LTestCase {
 	
 
 	function testDeleteStatement() {

@@ -34,7 +34,11 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		$this->table_name_list = $tnl;
 
 		if ($where_block!=null) {
+
+			if (!$where_block instanceof LMysqlWhereBlock) $where_block = new LMysqlWhereBlock($where_block);
+
 			ensure_instance_of("where condition of mysql select statement",$where_block,[LMysqlWhereBlock::class]);
+			
 			$this->where_block = $where_block;
 		} else {
 			$this->where_block = "";
@@ -44,9 +48,14 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		$this->group_by_clause = new LMysqlEmptyElementList();
 	}
 
-	public function where($element) {
-		$this->where_block = new LMysqlWhereBlock($element);
+	public function where(... $elements) {
 
+		if (count($elements)==1 && is_array($elements[0])) {
+			$this->where_block = new LMysqlWhereBlock($elements[0]);
+		} else {
+			$this->where_block = new LMysqlWhereBlock($elements);
+		}
+		
 		return $this;
 	}
 
@@ -138,7 +147,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	}
 
 	public function __toString() {
-		return "SELECT ".$this->distinct_option.
+		return trim("SELECT ".$this->distinct_option.
 		$this->field_name_list->toRawStringListWithoutParenthesis().
 		" FROM ".$this->table_name_list->toRawStringListWithoutParenthesis().
 		" ".implode(' ',$this->join_list)." ".$this->where_block.
@@ -146,6 +155,6 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		$this->with_rollup_option." "
 		.$this->having_clause." "
 		.$this->order_by_clause->toRawStringListWithoutParenthesis()." "
-		.$this->limit_clause;
+		.$this->limit_clause);
 	}
 }

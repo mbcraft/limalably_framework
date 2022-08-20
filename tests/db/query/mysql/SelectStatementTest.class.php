@@ -6,7 +6,7 @@
 *
 */
 
-class SelectTest extends LTestCase {
+class SelectStatementTest extends LTestCase {
 	
 	function testBasicSelect() {
 		
@@ -14,7 +14,7 @@ class SelectTest extends LTestCase {
 
 		$s = select('*','mia_tabella');
 
-		$this->assertEqual(trim($s),"SELECT * FROM mia_tabella","L'SQL della select non corrisponde a quello atteso!");
+		$this->assertEqual($s,"SELECT * FROM mia_tabella","L'SQL della select non corrisponde a quello atteso!");
 
 	}
 

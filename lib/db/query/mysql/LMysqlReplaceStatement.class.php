@@ -31,13 +31,13 @@ class LMysqlReplaceStatement  extends LMysqlAbstractQuery {
 	public function __toString() {
 
 		if ($this->select_set_or_values instanceof LMysqlSelectStatement) {
-			return "REPLACE INTO ".$this->table_name.$this->column_list->toRawStringList()." ".$this->select_set_or_values;
+			return trim("REPLACE INTO ".$this->table_name.$this->column_list->toRawStringList()." ".$this->select_set_or_values);
 		}
 		if ($this->select_set_or_values instanceof LMysqlNameValuePairList) {
-			return "REPLACE INTO ".$this->table_name." SET ".$this->select_set_or_values;
+			return trim("REPLACE INTO ".$this->table_name." SET ".$this->select_set_or_values);
 		}
 
-		return "REPLACE INTO ".$this->table_name.$this->column_list->toRawStringList()." VALUES ".$this->select_set_or_values;
+		return trim("REPLACE INTO ".$this->table_name.$this->column_list->toRawStringList()." VALUES ".$this->select_set_or_values);
 	}
 
 }

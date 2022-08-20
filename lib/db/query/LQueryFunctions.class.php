@@ -62,10 +62,10 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function delete($table_name,$where_block) {
+		function delete($table_name,$where_block=null) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDeleteStatement($table_name,$where_block=null);
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDeleteStatement($table_name,$where_block);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -409,7 +409,7 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function v() {
+		function p() {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlValuePlaceholder();

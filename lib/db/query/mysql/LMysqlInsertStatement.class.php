@@ -28,7 +28,18 @@ class LMysqlInsertStatement extends LMysqlAbstractQuery
 		if ($data instanceof LMysqlSelectStatement)
 			$this->insert_data_connector = "";
 		else
-			$this->insert_data_connector = " VALUES ";
+			$this->insert_data_connector = "VALUES";
+
+		if (is_array($data))
+		{
+			if(is_array($data[0])) 
+			{
+				$data = new LMysqlElementListList(... $data);
+			} else {
+				$data = new LMysqlElementList(... $data);
+			}
+		}
+
 		ensure_instance_of("mysql data of insert statement",$data,[LMysqlSelectStatement::class,LMysqlElementList::class,LMysqlElementListList::class]);
 		$this->data = $data;
 	}
@@ -49,6 +60,9 @@ class LMysqlInsertStatement extends LMysqlAbstractQuery
 	}
 
 	public function __toString() {
-		return trim("INSERT".$this->ignore_option." INTO ".$this->table_name.$this->column_list->toRawStringList().$this->insert_data_connector.$this->data.$this->on_duplicate_key_update_option);
+
+		return $this->build_query("INSERT",$this->ignore_option,"INTO",$this->table_name,$this->column_list->toRawStringList(),$this->insert_data_connector,
+			$this->data,$this->on_duplicate_key_update_option);
+
 	}
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
 
 class DeleteStatementTest extends LTestCase {
 	
@@ -14,8 +19,6 @@ class DeleteStatementTest extends LTestCase {
 		$d4 = delete('table_123')->where(_eq('field_name',12))->order_by('a','b')->limit(5);
 		$d5 = delete('table_123')->where(_eq('field_name',12))->order_by('a','b');
 		$d6 = delete('table_123')->where(_eq('field_name',12))->limit(5);
-		
-		
 		
 		$this->assertEqual($d1,"DELETE FROM table_123 WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");
 		$this->assertEqual($d2,"DELETE table_123,table_for_join FROM table_123 INNER JOIN table_for_join WHERE field_name = 12","Il valore dell'SQL della query di delete non corrisponde al valore atteso!");

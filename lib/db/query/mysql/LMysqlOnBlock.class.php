@@ -11,7 +11,7 @@ class LMysqlOnBlock extends LMysqlAbstractConditionsBlock {
 	
 
 	public function __construct($element) {
-		parent('on',$element);
+		parent::__construct('on',$element);
 	}
 
 }

@@ -70,7 +70,7 @@ function ensure_instance_of($code_place_description,$var,$class_name_list) {
         if ($var instanceof $clazz) return;
     }    
 
-    throw new \Exception("Variable is not an instance of the listed classes : ".implode(',',$class_name_list)." in ".$code_place_description);
+    throw new \Exception("Variable is not an instance of the listed classes : ".implode(',',$class_name_list)." in ".$code_place_description." - found object of class :".get_class($var));
 }
 
 function ensure_all_instances_of($code_place_description,$var_list,$class_list) {

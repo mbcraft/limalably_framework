@@ -20,8 +20,22 @@ class LMysqlGenericJoin {
 		if (!is_string($table_name)) throw new \Exception("Invalid table name in ".$join_type." clause in mysql select statement.");
 		$this->table_name = $table_name;
 
-		if ($on_block!=null)
-			$this->on_block = $on_block;
+		if ($on_block!=null) {
+
+			if (is_array($on_block)) {
+				if (empty($on_block)) return;
+				$on_block_ok = new LMysqlOnBlock(new LMysqlAndBlock(... $on_block));
+			}
+			if ($on_block instanceof LMysqlElementList) $on_block_ok = new LMysqlOnBlock(new LMysqlAndBlock(... $on_block->getElements()));
+			if ($on_block instanceof LMysqlCondition) $on_block_ok = new LMysqlOnBlock($on_block);
+			if ($on_block instanceof LMysqlAndBlock) $on_block_ok = new LMysqlOnBlock($on_block);
+			if ($on_block instanceof LMysqlOrBlock) $on_block_ok = new LMysqlOnBlock($on_block);
+			if ($on_block instanceof LMysqlOnBlock) $on_block_ok = $on_block;
+
+			ensure_instance_of("The on block of the join condition is not a valid element type.",$on_block_ok,[LMysqlOnBlock::class]);
+
+			$this->on_block = $on_block_ok;
+		}
 
 	}
 
@@ -42,7 +56,7 @@ class LMysqlGenericJoin {
 	}
 
 	public function __toString() {
-		return strtoupper($this->join_mode).$this->table_name." ".$this->on_block." ";
+		return strtoupper($this->join_type).$this->table_name.$this->on_block." ";
 	}
 
 }

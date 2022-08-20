@@ -56,27 +56,35 @@ class MultipleQueryTest extends LTestCase {
 
 		$albero_id = insert('albero',['data_piantumazione','latitudine','longitudine','specie_albero_id','comune_id'],['2022-08-20',44.4105672,12.0095168,$specie_id,$comune_id])->go($db);
 		
-		insert('check_up_albero',['albero_id','data','esito'],[$albero_id,'2022-08-20',1],[$albero_id,'2022-08-20',2],[$albero_id,'2022-08-20',3],[$albero_id,'2022-08-20',4],[$albero_id,'2022-08-20',5])->go($db);
+		$i_query = insert('check_up_albero',['albero_id','data','esito'],[[$albero_id,'2022-08-20',1],[$albero_id,'2022-08-20',2],[$albero_id,'2022-08-20',3],[$albero_id,'2022-08-20',4],[$albero_id,'2022-08-20',5]]);
 
-		$qs = select(['a.latitudine,a.longitudine,cua.data,cua.esito'],'albero a')->left_join('check_up_albero cua',_eq('cua.albero_id',f('a.id')))->order_by(asc('data'))->paginate(2,1);
+		//echo $i_query;
 
-		echo $qs;
+		$i_query->go($db);
 
-		$result = $qs->go($db);
+		$r_qs1 = select('count(*) AS C','check_up_albero')->go($db);
+
+		$this->assertEqual($r_qs1[0]['C'],5,"Il numero di righe nella tabella check_up_albero non corrisponde a quelle attese!");
+
+		$qs2 = select(['a.latitudine,a.longitudine,cua.data,cua.esito'],'albero a')->left_join('check_up_albero cua',_eq('cua.albero_id',f('a.id')))->order_by(asc('data'))->paginate(2,1);
+
+		//echo $qs2;
+
+		$result = $qs2->go($db);
 
 		$this->assertEqual(count($result),2,"Il numero di righe ritornate dalla select non corrisponde a quelle attese!");
 
-		delete('check_up_albero')->go($db);
+		//delete('check_up_albero')->go($db);
 
-		delete('albero')->go($db);
+		//delete('albero')->go($db);
 
-		delete('specie_albero')->go($db);
+		//delete('specie_albero')->go($db);
 
-		delete('comune')->go($db);
+		//delete('comune')->go($db);
 
-		delete('provincia')->go($db);
+		//delete('provincia')->go($db);
 
-		delete('regione')->go($db);
+		//delete('regione')->go($db);
 
 	}
 

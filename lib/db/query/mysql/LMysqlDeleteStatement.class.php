@@ -104,14 +104,6 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 
 		return $this->build_query("DELETE",$join_table_list_obj->toRawStringListWithoutParenthesis(),"FROM",$this->table_name,implode(' ',$this->join_list),$this->where_block,$this->order_by_clause,$this->limit);
 
-		/*
-		return trim("DELETE ".
-		$join_table_list_obj->toRawStringListWithoutParenthesis().
-		" FROM ".
-		$this->table_name.
-		" ".implode(' ',$this->join_list)
-		.$this->where_block.$this->order_by.$this->limit);
-		*/
 	}
 	
 }

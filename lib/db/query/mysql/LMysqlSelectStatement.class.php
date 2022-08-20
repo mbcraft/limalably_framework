@@ -110,7 +110,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	public function paginate($page_size,$page_number) {
 		if ($page_number==0) throw new \Exception("Page number cannnot be zero, starts from one in mysql select statement limit clause.");
 		$limit_start = ($page_number-1)*$page_size;
-		$limit_end = ($page_number*$page_size)-1;
+		$limit_end = ($page_number*$page_size);
 
 		$this->limit_clause = "LIMIT ".$limit_start.",".$limit_end;
 

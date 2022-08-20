@@ -6,6 +6,12 @@
  *  
  */
 
+/*
+
+Thanks to www.mysqltutorial.org for its documentation.
+
+*/
+
 class LMysqlAndBlock
 {
 	private $conditions;

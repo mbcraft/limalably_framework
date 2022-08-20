@@ -6,6 +6,12 @@
  *  
  */
 
+/*
+
+Thanks to www.mysqltutorial.org for its documentation.
+
+*/
+
 class LMysqlNameValuePairList {
 	
 	private $name_value_pair_list;

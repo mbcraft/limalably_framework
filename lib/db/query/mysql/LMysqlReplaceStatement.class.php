@@ -6,6 +6,11 @@
  *  
  */
 
+/*
+
+Thanks to www.mysqltutorial.org for its documentation.
+
+*/
 
 class LMysqlReplaceStatement  extends LMysqlAbstractQuery {
 

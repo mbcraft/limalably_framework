@@ -6,6 +6,12 @@
  *  
  */
 
+/*
+
+Thanks to www.mysqltutorial.org for its documentation.
+
+*/
+
 class LMysqlInsertStatement extends LMysqlAbstractQuery
 {
 
@@ -45,7 +51,7 @@ class LMysqlInsertStatement extends LMysqlAbstractQuery
 	}
 
 	public function with_ignore() {
-		$this->ignore_option = " IGNORE";
+		$this->ignore_option = "IGNORE";
 
 		return $this;
 	}
@@ -54,7 +60,7 @@ class LMysqlInsertStatement extends LMysqlAbstractQuery
 
 		$name_value_pair_list_obj = new LMysqlNameValuePairList($name_value_pair_list);
 
-		$this->on_duplicate_key_update_option = " ON DUPLICATE KEY UPDATE ".$name_value_pair_list_obj;
+		$this->on_duplicate_key_update_option = "ON DUPLICATE KEY UPDATE ".$name_value_pair_list_obj;
 
 		return $this;
 	}

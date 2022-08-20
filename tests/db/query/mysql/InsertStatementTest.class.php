@@ -17,7 +17,13 @@ class InsertStatementTest extends LTestCase {
 		$this->assertEqual($i1,"INSERT INTO table_name123 (c1,c2,c3) VALUES ('a','b','c')","Lo statement SQL di insert non corrisponde al valore atteso!");
 		$this->assertEqual($i2,"INSERT INTO table_abc (c1,c2,c3) VALUES ('a','b','c'),('d','e','f')","Lo statement SQL di insert non corrisponde al valore atteso!");
 
+	}
 
+	function testInsertInRealTable() {
+
+		$db = db('framework_unit_tests');
+
+		
 
 	}
 

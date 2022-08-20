@@ -6,6 +6,12 @@
  *  
  */
 
+/*
+
+Thanks to www.mysqltutorial.org for its documentation.
+
+*/
+
 class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	
 	private $distinct_option = "";

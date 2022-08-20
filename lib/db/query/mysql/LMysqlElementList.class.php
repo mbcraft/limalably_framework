@@ -18,6 +18,10 @@ class LMysqlElementList {
 		}
 	}
 
+	public function getElements() {
+		return $this->elements;
+	}
+
 	public function __construct(... $elements) {
 
 		if (count($elements)==0) throw new \Exception("Invalid element list : zero elements found - in mysql statement.");

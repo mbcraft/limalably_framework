@@ -12,9 +12,11 @@ class TruncateTest extends LTestCase {
 	function testTruncate()
 	{
 
-		//$db = db('framework_unit_tests');
+		db('framework_unit_tests');
 
-		//truncate('targhetta_albero')->go($db);
+		$t = truncate('table_name123');
+
+		$this->assertEqual($t,"TRUNCATE TABLE table_name123","Il codice SQL della truncate non corrisponde a quello atteso!");
 
 	}
 

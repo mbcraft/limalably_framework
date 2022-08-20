@@ -16,6 +16,9 @@ abstract class LMysqlAbstractConditionsBlock {
 		if ($mode!='where' && $mode!='having' && $mode!='on') throw new \Exception("mode of conditions block is neither 'where' nor 'having'.");
 		$this->mode = $mode;
 
+		if (is_array($element)) $element = new LMysqlAndBlock(... $element);
+		if ($element instanceof LMysqlElementList) $element = new LMysqlAndBlock(... $element->getElements());
+
 		ensure_instance_of($mode." conditions block of mysql statement",$element,[LMysqlCondition::class,LMysqlOrBlock::class,LMysqlAndBlock::class]);
 
 		$this->element = $element;

@@ -23,20 +23,18 @@ class LMysqlResultIterator implements LIResultIterator {
 	}
 
 
-	function hasMore() {
-		return $this->last_assoc_row;
+	function hasNext() {
+		$this->last_assoc_row = mysqli_fetch_assoc($this->result);
+
+		return $this->last_assoc_row!=null;
 	}
 
 	function nextRow() {
-		if (!$this->result) throw new \Exception("Unable to fetch more rows from result!");
-
-		$this->last_assoc_row = mysqli_fetch_assoc($this->result);
-
 		return $this->last_assoc_row;
 	}
 
 	function stop() {
-		if ($this->hasMore()) {
+		if ($this->hasNext()) {
 			mysqli_free_result($this->result);
 			$this->last_assoc_row = null;
 			$this->result = null;

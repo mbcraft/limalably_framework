@@ -9,10 +9,10 @@
 
 interface LIResultIterator {
 	
-	function hasMore();
+	function hasNext();
 
 	function nextRow();
 
-	fuction stop();
+	function stop();
 
 }

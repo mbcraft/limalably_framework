@@ -6,7 +6,7 @@
 *
 */
 
-class QueryListTest extends LTestCase {
+class QueryListTesX extends LTestCase {
 	
 
 

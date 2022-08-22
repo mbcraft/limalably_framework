@@ -425,6 +425,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function table_list() {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlTableListStatement();
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
 	}
 
 

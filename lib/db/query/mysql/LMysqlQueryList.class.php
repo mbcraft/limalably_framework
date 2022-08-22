@@ -12,7 +12,7 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 */
 
-class LMysqlMultiQuery {
+class LMysqlQueryList {
 	
 
 	private $query_list;

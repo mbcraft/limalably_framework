@@ -74,17 +74,17 @@ class MultipleQueryTest extends LTestCase {
 
 		$this->assertEqual(count($result),2,"Il numero di righe ritornate dalla select non corrisponde a quelle attese!");
 
-		//delete('check_up_albero')->go($db);
+		delete('check_up_albero')->go($db);
 
-		//delete('albero')->go($db);
+		delete('albero')->go($db);
 
-		//delete('specie_albero')->go($db);
+		delete('specie_albero')->go($db);
 
-		//delete('comune')->go($db);
+		delete('comune')->go($db);
 
-		//delete('provincia')->go($db);
+		delete('provincia')->go($db);
 
-		//delete('regione')->go($db);
+		delete('regione')->go($db);
 
 	}
 

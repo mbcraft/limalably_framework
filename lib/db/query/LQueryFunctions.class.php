@@ -465,6 +465,22 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function col_def($column_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlColumnDefinition($column_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
+		function create_table($table_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlCreateTableStatement($table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
 	}
 
 

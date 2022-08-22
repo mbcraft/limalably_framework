@@ -441,6 +441,30 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function drop_table($table_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDropTableStatement($table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
+		function rename_table($old_table_name,$new_table_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlRenameTableStatement($old_table_name,$new_table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
+		function drop_table_columns($table_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDropColumnStatement($table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
 	}
 
 

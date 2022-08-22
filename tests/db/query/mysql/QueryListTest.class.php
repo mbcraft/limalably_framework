@@ -10,7 +10,7 @@ class QueryListTest extends LTestCase {
 	
 
 
-	function testMultiQueryFromStringWithFetchResults() {
+	function testQueryListFromStringWithFetchResults() {
 
 		$db = db("framework_unit_tests");
 
@@ -64,7 +64,7 @@ END_OF_QUERY_LIST;
 		
 	}
 
-	function testMultiQueryFromStringWithGoNoResults() {
+	function testQueryListFromStringWithGoNoResults() {
 
 		$db = db("framework_unit_tests");
 
@@ -93,7 +93,7 @@ END_OF_QUERY_LIST;
 		
 	}
 
-	function testMultiQueryFromFileFetchResults() {
+	function testQueryListFromFileFetchResults() {
 
 		$db = db("framework_unit_tests");
 
@@ -131,7 +131,7 @@ END_OF_QUERY_LIST;
 		
 	}
 
-	function testMultiQueryFromFileNoResults() {
+	function testQueryListFromFileNoResults() {
 
 		$db = db("framework_unit_tests");
 

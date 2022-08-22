@@ -40,7 +40,7 @@ class LMysqlColumnDescription implements LIColumnDescription {
 	}
 
 	public function isNull() {
-		return $this->is_null;
+		return $this->is_null!='NO';
 	}
 
 	public function key() {
@@ -48,7 +48,11 @@ class LMysqlColumnDescription implements LIColumnDescription {
 	}
 
 	public function getDefaultValue() {
-		return $this->default_value;
+		if($this->default_value=='NULL') {
+			return null;
+		} else {
+			return $this->default_value;
+		}
 	}
 
 	public function getExtraInfo() {

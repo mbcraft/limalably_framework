@@ -26,9 +26,9 @@ class TableDescriptionTest extends LTestCase {
 		$this->assertEqual($r2->getColumnType(),"varchar(32)","Il tipo del campo non corrisponde!");
 		$this->assertEqual($r3->getColumnType(),"varchar(32)","Il tipo del campo non corrisponde!");
 
-		$this->assertEqual($r1->isNull(),"NO","Il null del campo non corrisponde!");
-		$this->assertEqual($r2->isNull(),"NO","Il null del campo non corrisponde!");
-		$this->assertEqual($r3->isNull(),"NO","Il null del campo non corrisponde!");
+		$this->assertEqual($r1->isNull(),false,"Il null del campo non corrisponde!");
+		$this->assertEqual($r2->isNull(),false,"Il null del campo non corrisponde!");
+		$this->assertEqual($r3->isNull(),false,"Il null del campo non corrisponde!");
 			
 	}
 

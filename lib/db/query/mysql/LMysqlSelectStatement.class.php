@@ -20,6 +20,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	private $where_block = "";
 	private $join_list = [];
 	private $order_by_clause;
+	private $group_by_prefix = "";
 	private $group_by_clause;
 	private $with_rollup_option = "";
 	private $having_clause = "";
@@ -119,6 +120,9 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 
 	public function group_by(... $field_name_list) {
 
+
+		$this->group_by_prefix = "GROUP BY";
+
 		$this->group_by_clause = new LMysqlElementList($field_name_list);
 
 		$this->with_rollup_option = "";
@@ -145,7 +149,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 
 		return $this->build_query("SELECT",$this->distinct_option,$this->field_name_list->toRawStringListWithoutParenthesis(),
 			"FROM",$this->table_name_list->toRawStringListWithoutParenthesis(),implode(' ',$this->join_list),$this->where_block,
-			$this->group_by_clause->toRawStringListWithoutParenthesis(),$this->with_rollup_option,$this->having_clause,
+			$this->group_by_prefix,$this->group_by_clause->toRawStringListWithoutParenthesis(),$this->with_rollup_option,$this->having_clause,
 			$this->order_by_clause,$this->limit_clause);
 
 	}

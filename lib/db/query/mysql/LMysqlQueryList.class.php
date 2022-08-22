@@ -33,6 +33,21 @@ class LMysqlQueryList {
 
 	}
 
+	function go_no_results($connection) {
+		if (!$connection) throw new \Exception("Connection is not set!");
+
+		if (!$connection->isOpen()) $connection->open();
+
+		$connection_handle = $connection->getHandle();
+
+		mysqli_multi_query($connection_handle,$this->query_list);
+
+		do {
+			$result = mysqli_store_result($connection_handle);
+			//ok, continue
+		} while (mysqli_next_result($connection_handle));
+	}
+
 	function go($connection) {
 
 		if (!$connection) throw new \Exception("Connection is not set!");
@@ -42,7 +57,23 @@ class LMysqlQueryList {
 		$connection_handle = $connection->getHandle();
 
 		mysqli_multi_query($connection_handle,$this->query_list);
+
+		$results = [];
+
+		do {
+
+			while ($query_result = mysqli_store_result($connection_handle)) {
+				$res = [];
+				while ($row = mysqli_fetch_assoc($query_result)) {
+					$res[] = $row;
+				}
+				$results[] = $res;
+
+			}
+
+		} while(mysqli_next_result($connection_handle));	
 		
+		return $results;
 	}
 
 }

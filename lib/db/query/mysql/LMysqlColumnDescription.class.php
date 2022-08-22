@@ -12,7 +12,7 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 */
 
-class LMysqlColumnDescription {
+class LMysqlColumnDescription implements LIColumnDescription {
 	
 	private $column_name;
 	private $column_type;

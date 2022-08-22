@@ -433,6 +433,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function table_description($table_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlTableDescriptionStatement($table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
 	}
 
 

@@ -27,7 +27,10 @@ class LMysqlTableDescriptionStatement extends LMysqlAbstractQuery {
 		return "DESC ".$this->table_name;
 	}
 
-	public static function parse_table_description($result) {
+	public function go($connection) {
+
+		$result = parent::go($connection);
+
 		$column_description_list = [];
 
 		foreach ($result as $row) {

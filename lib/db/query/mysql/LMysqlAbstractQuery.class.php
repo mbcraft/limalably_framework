@@ -47,8 +47,6 @@ abstract class LMysqlAbstractQuery {
 
 		$connection_handle = $connection->getHandle();
 
-		//echo "executing query : ".$this.";";
-
 		$result = mysqli_query($connection_handle,$this.";");
 
 		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($connection_handle));
@@ -58,7 +56,7 @@ abstract class LMysqlAbstractQuery {
 			return mysqli_insert_id($connection_handle);
 			
 		}
-		if ($this instanceof LMysqlSelectStatement) {
+		if ($this instanceof LMysqlSelectStatement || $this instanceof LMysqlTableDescriptionStatement) {
 			$full_result = [];
 
 			while ($row = mysqli_fetch_assoc($result)) $full_result[] = $row;

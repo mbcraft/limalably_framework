@@ -30,40 +30,20 @@ class LMysqlAlterTableColumnsStatement extends LMysqlAbstractQuery {
 		return $this;
 	}
 
-	function change_column_first($old_column_name,$column_definition) {
+	function change_column($old_column_name,$column_definition) {
 		if (!is_string($old_column_name)) throw new \Exception("Old column name is not a string.");
 		if (!$column_definition instanceof LMysqlColumnDefinition) throw new \Exception("Column definition is not valid. Use col_def function to create column definitions.");
 
-		$this->changes[] = "CHANGE COLUMN ".$old_column_name." ".$column_definition." FIRST";
+		$this->changes[] = "CHANGE COLUMN ".$old_column_name." ".$column_definition;
 
 		return $this;
 	}
 
-	function change_column_after($old_column_name,$column_definition,$after_column) {
-		if (!is_string($old_column_name)) throw new \Exception("Old column name is not a string.");
-		if (!$column_definition instanceof LMysqlColumnDefinition) throw new \Exception("Column definition is not valid. Use col_def function to create column definitions.");
-		if (!is_string($old_column_name)) throw new \Exception("After column name is not a string.");
-
-		$this->changes[] = "CHANGE COLUMN ".$old_column_name." ".$column_definition." AFTER ".$after_column;
-
-		return $this;
-	}
-
-	function add_column_first($column_definition) {
+	function add_column($column_definition) {
 
 		if (!$column_definition instanceof LMysqlColumnDefinition) throw new \Exception("Column definition is not valid. Use col_def function to create column definitions.");
 
-		$this->changes[] = "ADD ".$column_definition." FIRST";
-
-		return $this;
-	}
-
-	function add_column_after($column_definition,$column_name) {
-
-		if (!$column_definition instanceof LMysqlColumnDefinition) throw new \Exception("Column definition is not valid. Use col_def function to create column definitions.");
-		if (!is_string($column_name)) throw new \Exception("After column name is not a string.");
-
-		$this->changes[] = "ADD ".$column_definition." AFTER ".$column_name;
+		$this->changes[] = "ADD ".$column_definition;
 
 		return $this;
 	}

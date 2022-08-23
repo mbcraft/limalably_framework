@@ -10,9 +10,24 @@ class LMysqlColumnDefinition {
 	private $default_value;
 	private $auto_increment = false;
 	private $column_constraint = "";
+	private $position_modifier = "";
 
 	function __construct($column_name) {
 		$this->column_name = $column_name;
+	}
+
+	function first() {
+		$this->position_modifier = " FIRST";
+
+		return $this;
+	}
+
+	function after($column_name) {
+		if (!is_string($column_name)) throw new \Exception("After column name is not a valid string!");
+
+		$this->position_modifier = " AFTER ".$column_name;
+
+		return $this;
 	}
 
 	function not_null() {
@@ -61,6 +76,7 @@ class LMysqlColumnDefinition {
 			$result .= " AUTO_INCREMENT";
 		}
 		$result .= $this->column_constraint;
+		$result .= $this->position_modifier;
 
 		return $result;
 	}

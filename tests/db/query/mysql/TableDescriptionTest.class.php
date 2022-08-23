@@ -14,9 +14,9 @@ class TableDescriptionTest extends LTestCase {
 
 		$this->assertEqual(count($td),3,"Il numero dei campi della descrizione della tabella 'regione' non corrisponde!");
 
-		$r1 = $td[0];
-		$r2 = $td[1];
-		$r3 = $td[2];
+		$r1 = $td['id'];
+		$r2 = $td['nome'];
+		$r3 = $td['codice'];
 
 		$this->assertEqual($r1->getColumnName(),"id","Il nome del campo non corrisponde!");
 		$this->assertEqual($r2->getColumnName(),"nome","Il nome del campo non corrisponde!");

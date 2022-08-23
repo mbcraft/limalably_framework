@@ -441,6 +441,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function create_table($table_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlCreateTableStatement($table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
 		function drop_table($table_name) {
 			LQueryFunctions::checkLayerSelected();
 
@@ -457,10 +465,10 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
-		function drop_table_columns($table_name) {
+		function alter_table_columns($table_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDropColumnStatement($table_name);
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlAlterTableColumnsStatement($table_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
@@ -473,13 +481,7 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
-		function create_table($table_name) {
-			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlCreateTableStatement($table_name);
-
-			LQueryFunctions::throwQueryLayerNotFound();	
-		}
 
 	}
 

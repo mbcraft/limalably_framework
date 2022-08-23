@@ -27,10 +27,10 @@ class SomeMiscTest extends LTestCase {
 
 		$data = ['a' => 1,'b' => 2,'c' => 3,'d' => 'k'];
 
-		$this->assertTrue(array_value_exists($data,1),"Il valore cercato non esiste!");
-		$this->assertTrue(array_value_exists($data,2),"Il valore cercato non esiste!");
-		$this->assertTrue(array_value_exists($data,3),"Il valore cercato non esiste!");
-		$this->assertTrue(array_value_exists($data,'k'),"Il valore cercato non esiste!");
-		$this->assertFalse(array_value_exists($data,'z'),"Il valore cercato non esiste!");
+		$this->assertTrue(array_value_exists(1,$data),"Il valore cercato non esiste!");
+		$this->assertTrue(array_value_exists(2,$data),"Il valore cercato non esiste!");
+		$this->assertTrue(array_value_exists(3,$data),"Il valore cercato non esiste!");
+		$this->assertTrue(array_value_exists('k',$data),"Il valore cercato non esiste!");
+		$this->assertFalse(array_value_exists('z',$data),"Il valore cercato non esiste!");
 	}
 }

@@ -34,7 +34,7 @@ class LMysqlTableDescriptionStatement extends LMysqlAbstractQuery {
 		$column_description_list = [];
 
 		foreach ($result as $row) {
-			$column_description_list[] = new LMysqlColumnDescription($row['Field'],$row['Type'],$row['Null'],$row['Key'],$row['Default'],$row['Extra']);
+			$column_description_list[$row['Field']] = new LMysqlColumnDescription($row['Field'],$row['Type'],$row['Null'],$row['Key'],$row['Default'],$row['Extra']);
 		}
 
 		return $column_description_list;

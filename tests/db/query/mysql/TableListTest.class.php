@@ -11,11 +11,11 @@ class TableListTest extends LTestCase {
 
 		$this->assertTrue(count($result)>10,"Il numero di tabelle restituite non corrisponde!");
 
-		$this->assertTrue(array_value_exists($result,'albero'),"La tabella cercata non esiste!");
-		$this->assertTrue(array_value_exists($result,'specie_albero'),"La tabella cercata non esiste!");
-		$this->assertTrue(array_value_exists($result,'regione'),"La tabella cercata non esiste!");
-		$this->assertTrue(array_value_exists($result,'provincia'),"La tabella cercata non esiste!");
-		$this->assertTrue(array_value_exists($result,'comune'),"La tabella cercata non esiste!");
+		$this->assertTrue(array_value_exists('albero',$result),"La tabella cercata non esiste!");
+		$this->assertTrue(array_value_exists('specie_albero',$result),"La tabella cercata non esiste!");
+		$this->assertTrue(array_value_exists('regione',$result),"La tabella cercata non esiste!");
+		$this->assertTrue(array_value_exists('provincia',$result),"La tabella cercata non esiste!");
+		$this->assertTrue(array_value_exists('comune',$result),"La tabella cercata non esiste!");
 
 	}
 

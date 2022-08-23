@@ -31,11 +31,24 @@ class AlterTableColumnsTest extends LTestCase {
 
 		$td = table_description('big_table')->go($db);
 
-		$this->assertTrue(array_key_exists('id',$td),"Il campo id nella tabella big_table non esiste!");
-		$this->assertTrue(array_key_exists('data_inizio',$td),"Il campo id nella tabella big_table non esiste!");
-		$this->assertFalse(array_key_exists('cliente_id',$td),"Il campo id nella tabella big_table non esiste!");
-		$this->assertFalse(array_key_exists('descrizione',$td),"Il campo id nella tabella big_table non esiste!");
+		$this->assertTrue(array_key_exists('id',$td),"La colonna id nella tabella big_table non esiste!");
+		$this->assertTrue(array_key_exists('data_inizio',$td),"La colonna id nella tabella big_table non esiste!");
+		$this->assertFalse(array_key_exists('cliente_id',$td),"La colonna id nella tabella big_table non esiste!");
+		$this->assertFalse(array_key_exists('descrizione',$td),"La colonna id nella tabella big_table non esiste!");
+
+		alter_table_columns('big_table')->add_column_after(col_def('prova')->t_text(),'conteggio_ore')->go($db);
+
+		$td = table_description('big_table')->go($db);
 		
+		$this->assertTrue(array_key_exists('prova',$td),"La colonna 'prova' nella tabella big_table non esiste!");
+		
+		alter_table_columns('big_table')->change_column_after('prova',col_def('prova_2')->t_u_bigint()->not_null(),'conteggio_ore')->go($db);
+
+		$td = table_description('big_table')->go($db);
+		
+		$this->assertFalse(array_key_exists('prova',$td),"La colonna 'prova' nella tabella big_table non esiste!");
+		$this->assertTrue(array_key_exists('prova_2',$td),"La colonna 'prova_2' nella tabella big_table non esiste!");
+			
 	}
 
 

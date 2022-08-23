@@ -8,7 +8,7 @@ class LMysqlDropTableStatement extends LMysqlAbstractQuery {
 
 	function __construct($table_name) {
 
-		if (strpos($table_name,'%')!==0) {
+		if (strpos($table_name,'%')!==false) {
 			$this->table_name = "LIKE '".$table_name."'"; 
 		}
 		else {
@@ -24,7 +24,7 @@ class LMysqlDropTableStatement extends LMysqlAbstractQuery {
 	}
 
 	function __toString() {
-		$this->build_query('DROP','TABLE',$this->if_exists_option,$this->table_name);
+		return $this->build_query('DROP','TABLE',$this->if_exists_option,$this->table_name);
 	}
 
 }

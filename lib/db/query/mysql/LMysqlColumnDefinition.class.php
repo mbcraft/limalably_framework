@@ -41,7 +41,8 @@ class LMysqlColumnDefinition {
 	function __toString() {
 		if ($this->data_type==null) throw new \Exception("Data type is not set in column definition.");
 
-		$result = $this->data_type;
+		$result = $this->column_name;
+		$result .= " ".$this->data_type;
 		$result.= $this->not_null;
 		if ($this->default_value_set) {
 			$result .= $this->default_value;
@@ -52,6 +53,12 @@ class LMysqlColumnDefinition {
 		$result .= $this->column_constraint;
 
 		return $result;
+	}
+
+	function t_boolean() {
+		$this->data_type = "BOOLEAN";
+
+		return $this;
 	}
 
 	function t_json() {

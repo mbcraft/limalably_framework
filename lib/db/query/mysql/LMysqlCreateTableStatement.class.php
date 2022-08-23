@@ -8,8 +8,6 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	private $column_definitions = [];
 	private $engine = "InnoDB";
 
-	private $column_definitions = [];
-
 	function __construct($table_name)
 	{
 		$this->table_name = $table_name;
@@ -23,9 +21,11 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	}
 
 	function column($column_definition) {
-		if (!$column_definitions instanceof LMysqlColumnDefinition) throw new \Exception("The parameter is not a valid column definition! Use column_def function to create column definitions.");
+		if (!$column_definition instanceof LMysqlColumnDefinition) throw new \Exception("The parameter is not a valid column definition! Use column_def function to create column definitions.");
 
 		$this->column_definitions[] = $column_definition;
+
+		return $this;
 	}
 
 	function engine_memory() {
@@ -50,7 +50,7 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 
 		if (empty($this->column_definitions)) throw new \Exception("At least one column definition is needed");
 
-		return $this->build_query("CREATE TABLE",$this->if_exists_option,$this->table_name,"(",implode($this->column_definitions),")","ENGINE","=",$this->engine);
+		return $this->build_query("CREATE TABLE",$this->if_not_exists_option,$this->table_name,"(",implode($this->column_definitions),")","ENGINE","=",$this->engine);
 
 	}
 

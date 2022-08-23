@@ -84,6 +84,13 @@ function ensure_all_instances_of($code_place_description,$var_list,$class_list) 
 
 }
 
+function array_value_exists($haystack,$needle) {
+    foreach ($haystack as $k => $v) {
+        if ($needle===$v) return true;
+    }
+    return false;
+}
+
 class LClassLoader {
       
     //patterns

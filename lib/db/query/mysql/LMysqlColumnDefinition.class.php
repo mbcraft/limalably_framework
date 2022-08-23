@@ -17,6 +17,8 @@ class LMysqlColumnDefinition {
 
 	function not_null() {
 		$this->not_null = " NOT NULL";
+
+		return $this;
 	}
 
 	function default_value($value) {
@@ -24,18 +26,26 @@ class LMysqlColumnDefinition {
 
 		$this->default_value_set = true;
 		$this->default_value = " DEFAULT ".$v;
+
+		return $this;
 	}
 
 	function auto_increment() {
 		$this->auto_increment = true;
+
+		return $this;
 	}
 
 	function primary_key() {
 		$this->column_constraint  = " PRIMARY KEY";
+
+		return $this;
 	}
 
 	function unique() {
 		$this->column_constraint = " UNIQUE";
+
+		return $this;
 	}
 
 	function __toString() {
@@ -53,6 +63,14 @@ class LMysqlColumnDefinition {
 		$result .= $this->column_constraint;
 
 		return $result;
+	}
+
+	function t_id() {
+		return $this->t_u_bigint()->auto_increment()->not_null()->primary_key();
+	}
+
+	function t_external_id() {
+		return $this->t_u_bigint();
 	}
 
 	function t_boolean() {
@@ -235,22 +253,46 @@ class LMysqlColumnDefinition {
 		return $this;
 	}
 
-	function t_tinyint($signed=false) {
+	private function t_tinyint($signed=false) {
 		$this->data_type = "TINYINT ".($signed ? "SIGNED" : "UNSIGNED");
 
 		return $this;
 	}
 
-	function t_int($signed=false) {
+	function t_s_tinyint() {
+		return $this->t_tinyint(true);
+	}
+
+	function t_u_tinyint() {
+		return $this->t_tinyint(false);
+	}
+
+	private function t_int($signed=false) {
 		$this->data_type = "INT ".($signed ? "SIGNED" : "UNSIGNED");
 
 		return $this;	
 	}
 
-	function t_bigint($signed=false) {
+	function t_u_int() {
+		return $this->t_int(false);
+	}
+
+	function t_s_int() {
+		return $this->t_int(true);
+	}
+
+	private function t_bigint($signed=false) {
 		$this->data_type = "BIGINT ".($signed ? "SIGNED" : "UNSIGNED");
 
 		return $this;	
+	}
+
+	function t_u_bigint() {
+		return $this->t_bigint(false);
+	}
+
+	function t_s_bigint() {
+		return $this->t_bigint(true);
 	}
 
 	function t_float() {

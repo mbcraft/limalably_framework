@@ -4,6 +4,7 @@
 class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	
 	private $table_name;
+	private $temporary_modifier = "";
 	private $if_not_exists_option = "";
 	private $column_definitions = [];
 	private $engine = "InnoDB";
@@ -12,6 +13,12 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	{
 		$this->table_name = $table_name;
 
+	}
+
+	function temporary() {
+		$this->temporary_modifier = "TEMPORARY";
+
+		return $this;
 	}
 
 	function if_not_exists() {
@@ -50,7 +57,7 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 
 		if (empty($this->column_definitions)) throw new \Exception("At least one column definition is needed");
 
-		return $this->build_query("CREATE TABLE",$this->if_not_exists_option,$this->table_name,"(",implode(",",$this->column_definitions),")","ENGINE","=",$this->engine);
+		return $this->build_query("CREATE",$this->temporary_modifier,"TABLE",$this->if_not_exists_option,$this->table_name,"(",implode(",",$this->column_definitions),")","ENGINE","=",$this->engine);
 
 	}
 

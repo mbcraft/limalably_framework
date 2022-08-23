@@ -481,6 +481,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function foreign_key_checks(bool $enable) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlForeignKeyChecksStatement($enable);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
 
 
 	}

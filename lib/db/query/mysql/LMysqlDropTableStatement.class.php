@@ -4,6 +4,7 @@ class LMysqlDropTableStatement extends LMysqlAbstractQuery {
 	
 
 	private $table_name;
+	private $temporary_modifier = "";
 	private $if_exists_option = "";
 
 	function __construct($table_name) {
@@ -17,6 +18,12 @@ class LMysqlDropTableStatement extends LMysqlAbstractQuery {
 
 	}
 
+	function temporary() {
+		$this->temporary_modifier = "TEMPORARY";
+
+		return $this;
+	}
+
 	function if_exists() {
 		$this->if_exists_option = "IF EXISTS";
 
@@ -24,7 +31,7 @@ class LMysqlDropTableStatement extends LMysqlAbstractQuery {
 	}
 
 	function __toString() {
-		return $this->build_query('DROP','TABLE',$this->if_exists_option,$this->table_name);
+		return $this->build_query('DROP',$this->temporary_modifier,'TABLE',$this->if_exists_option,$this->table_name);
 	}
 
 }

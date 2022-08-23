@@ -13,6 +13,15 @@ class LMysqlAlterTableColumnsStatement extends LMysqlAbstractQuery {
 
 	}
 
+	function drop_foreign_key($constraint_name) {
+		if (!is_string($constraint_name)) throw new \Exception("Constraint name to drop is not a string.");
+
+		$this->changes[] = "DROP FOREIGN KEY ".$constraint_name;
+
+		return $this;
+
+	}
+
 	function drop_column($column_name) {
 
 		if (!is_string($column_name)) throw new \Exception("Column name to drop is not a string.");

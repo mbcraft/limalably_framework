@@ -78,24 +78,12 @@ class LMysqlCsvDefinition {
 
 	public function lines_terminated_by(string $st) {
 		$this->lines_terminated_by = "LINES TERMINATED BY '".$this->escape_characters($st)."'";
-	}
 
-	public function __prepare_for_write() {
-		$f = new LFile($this->csv_path);
-
-		if ($f->exists()) $f->delete();
-		if (!$f->getParentDir()->isWritable()) throw new \Exception('parent csv write folder is not writable for csv : '.$this->csv_path);
+		return $this;
 	}
 
 	public function __write_header() {
 		return "INTO OUTFILE '".$this->csv_path."'";
-	}
-
-	public function __prepare_for_read() {
-		$f = new LFile($this->csv_path);
-
-		if (!$f->exists()) throw new \Exception('no csv file found at : '.$this->csv_path);
-		if (!$f->isReadable()) throw new \Exception("csv file has no read permissions");
 	}
 
 	public function __read_header() {

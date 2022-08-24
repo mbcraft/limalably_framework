@@ -29,8 +29,6 @@ abstract class LMysqlAbstractQuery {
 		}
 	}
 
-	protected function before_query_execution() {}
-
 	protected function build_query(... $parts) {
 
 		$final_part_list = [];
@@ -48,8 +46,6 @@ abstract class LMysqlAbstractQuery {
 		if (!$connection->isOpen()) $connection->open();
 
 		$connection_handle = $connection->getHandle();
-
-		$this->before_query_execution();
 
 		$result = mysqli_query($connection_handle,$this.";");
 
@@ -79,8 +75,6 @@ abstract class LMysqlAbstractQuery {
 		if (!$connection->isOpen()) $connection->open();
 
 		$connection_handle = $connection->getHandle();
-
-		$this->before_query_execution();
 
 		$result = mysqli_query($connection_handle,$this->end(),MYSQLI_USE_RESULT);
 

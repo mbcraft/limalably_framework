@@ -29,8 +29,6 @@ class LMysqlImportCsvIntoTableStatement extends LMysqlAbstractQuery {
 
 	public function __toString() {
 
-		$this->csv_def->__prepare_for_read();
-
 		return $this->build_query($this->csv_def->__read_header(),"INTO","TABLE",$this->table_name,$this->csv_def->__trailer(),$this->ignore_rows);
 	}
 

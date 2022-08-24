@@ -155,24 +155,18 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		return $this;
 	}
 
-	protected function before_query_execution() {
-		if ($this->export_to_csv_def) {
-			$this->export_to_csv_def->__prepare_for_write();
-		}
-	}
-
 	public function __toString() {
 
-		$export_to_csv = "";
+		$export_to_csv_trailer = "";
 
 		if ($this->export_to_csv_def) {
-			$export_to_csv = $this->export_to_csv_def->__write_header()." ".$this->export_to_csv_def->__trailer();
+			$export_to_csv_trailer = $this->export_to_csv_def->__write_header()." ".$this->export_to_csv_def->__trailer();
 		}
 
 		return $this->build_query("SELECT",$this->distinct_option,$this->field_name_list->toRawStringListWithoutParenthesis(),
 			"FROM",$this->table_name_list->toRawStringListWithoutParenthesis(),implode(' ',$this->join_list),$this->where_block,
 			$this->group_by_prefix,$this->group_by_clause->toRawStringListWithoutParenthesis(),$this->with_rollup_option,$this->having_clause,
-			$this->order_by_clause,$this->limit_clause,$export_to_csv);
+			$this->order_by_clause,$this->limit_clause,$export_to_csv_trailer);
 
 	}
 }

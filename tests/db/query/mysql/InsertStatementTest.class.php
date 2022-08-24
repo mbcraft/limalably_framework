@@ -23,6 +23,38 @@ class InsertStatementTest extends LTestCase {
 
 	}
 
+	function testInsertWithDifferentModes() {
+
+		$db = db('framework_unit_tests');
+
+		drop_table('my_test')->if_exists()->go($db);
+
+		create_table('my_test')->column(col_def('id')->t_id())->column(col_def('testo')->t_text32())->column(col_def('valore_int')->t_u_int())->go($db);
+
+		insert('my_test',['testo','valore_int'],['abcd1',12])->go($db);
+
+		insert('my_test')->column_list('testo','valore_int')->data(['abcd2',34])->go($db);
+
+		insert('my_test')->column_list(['testo','valore_int'])->data(['abcd2',12])->go($db);
+
+		insert('my_test')->column_list(['testo','valore_int'])->data([['abcd2',12],['abcd3',34]])->go($db);
+
+	}
+
+	function testInsertWithStrangeCharacters() {
+		$db = db('framework_unit_tests');
+
+		drop_table('my_test')->if_exists()->go($db);
+
+		create_table('my_test')->column(col_def('id')->t_id())->column(col_def('testo')->t_text32())->column(col_def('valore_int')->t_u_int())->go($db);
+
+		insert('my_test')->column_list('testo','valore_int')->data(["A'B\"",12])->go($db);
+
+		$result = select('*','my_test')->go($db);
+
+		$this->assertEqual($result[0]['testo'],"A'B\"","Il valore ritornato dalla select non corrisponde a quello inserito in tabella!");
+	}
+
 
 
 }

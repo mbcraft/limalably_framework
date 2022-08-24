@@ -48,7 +48,7 @@ class LQueryFunctions {
 			 LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function insert(string $table_name,$column_list,$data) {
+		function insert(string $table_name,$column_list=null,$data=null) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlInsertStatement($table_name,$column_list,$data);

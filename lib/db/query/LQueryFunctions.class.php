@@ -337,6 +337,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function _ifnull(string $column_name,$column_value) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlFunctions::ifnull($column_name,$column_value);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 		function __replace_value(string $column_name,$search_value,$replace_value) {
 			LQueryFunctions::checkLayerSelected();
 

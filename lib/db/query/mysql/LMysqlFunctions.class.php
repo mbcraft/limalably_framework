@@ -26,7 +26,7 @@ class LMysqlFunctions {
 	}
 
 	public static function ifnull(string $column_name,$column_value) {
-		return new LMysqlFunctions('IFNULL','(',new LMysqlColumnName($column_name),new LMysqlValueRenderer($column_value),')');
+		return new LMysqlFunctions('IFNULL','(',new LMysqlColumnName($column_name),",",new LMysqlValueRenderer($column_value),')');
 	}
 
 

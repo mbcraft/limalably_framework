@@ -70,7 +70,7 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function replace(string $table_name,$column_list,$select_set_or_values) {
+		function replace(string $table_name,$column_list=null,$select_set_or_values=null) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceStatement($table_name,$column_list,$select_set_or_values);

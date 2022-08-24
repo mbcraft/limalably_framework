@@ -81,16 +81,20 @@ abstract class LMysqlAbstractInsertOrReplaceStatement extends LMysqlAbstractQuer
 		if (is_array($data))
 		{
 			if (empty($data)) throw new \Exception("data array is empty in mysql ".$this->statement_name()." statement");
-			if(is_array($data[0])) 
-			{
-				$my_data = new LMysqlElementListList(... $data);
-			} else {
-				$keys = array_keys($data);
+			
+			$keys = array_keys($data);
 
-				if (is_string($keys[0]))
-					$my_data = new LMysqlNameValuePairList(... $data);
-				else
+			if (is_string($keys[0])) {
+				$my_data = new LMysqlNameValuePairList($data);
+			}
+			else 
+			{
+				if(is_array($data[0])) 
+				{
+					$my_data = new LMysqlElementListList(... $data);
+				} else {
 					$my_data = new LMysqlElementList(... $data);
+				}
 			}
 		}
 

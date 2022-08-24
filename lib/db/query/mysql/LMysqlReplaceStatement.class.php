@@ -12,7 +12,7 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 */
 
-class LMysqlReplaceStatement  extends LMysqlAbstractQuery {
+class LMysqlReplaceStatement  extends LMysqlAbstractInsertOrReplaceStatement {
 
 	protected function statement_name() {
 		return "replace";

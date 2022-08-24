@@ -497,6 +497,21 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function csv_def($file_or_path) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlCsvDefinition($file_or_path);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
+		function import_csv_into_table(string $table_name,$csv_def) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlImportCsvIntoTableStatement($file_or_path,$csv_def);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
 
 
 	}

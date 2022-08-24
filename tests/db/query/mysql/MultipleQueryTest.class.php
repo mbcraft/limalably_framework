@@ -66,7 +66,7 @@ class MultipleQueryTest extends LTestCase {
 
 		$this->assertEqual($r_qs1[0]['C'],5,"Il numero di righe nella tabella check_up_albero non corrisponde a quelle attese!");
 
-		$qs2 = select(['a.latitudine,a.longitudine,cua.data,cua.esito'],'albero a')->left_join('check_up_albero cua',_eq('cua.albero_id',f('a.id')))->order_by(asc('data'))->paginate(2,1);
+		$qs2 = select(['a.latitudine,a.longitudine,cua.data,cua.esito'],'albero a')->left_join('check_up_albero cua',_eq('cua.albero_id',c('a.id')))->order_by(asc('data'))->paginate(2,1);
 
 		//echo $qs2;
 

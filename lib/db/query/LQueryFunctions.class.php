@@ -40,10 +40,10 @@ class LQueryFunctions {
 
 		self::$initialized = true;
 
-		function select($field_name_list,$table_name_list,$where_block=null) {
+		function select($column_name_list,$table_name_list,$where_block=null) {
 			 LQueryFunctions::checkLayerSelected();
 
-			 if (LQueryFunctions::usingMysqlLayer()) return new LMysqlSelectStatement($field_name_list,$table_name_list,$where_block);
+			 if (LQueryFunctions::usingMysqlLayer()) return new LMysqlSelectStatement($column_name_list,$table_name_list,$where_block);
 
 			 LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -102,205 +102,205 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _nl(string $field_name) {
+		function _nl(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_null($field_name);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_null($column_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _is_null(string $field_name) {
+		function _is_null(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_null($field_name);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_null($column_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _n_nl(string $field_name) {
+		function _n_nl(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_not_null($field_name);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_not_null($column_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}		
 
-		function _is_not_null(string $field_name) {
+		function _is_not_null(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_not_null($field_name);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::is_not_null($column_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _eq(string $field_name,$field_value) {
+		function _eq(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::equal($field_name,$field_value);
-
-			LQueryFunctions::throwQueryLayerNotFound();
-		}
-
-
-		function _equal(string $field_name,$field_value) {
-			LQueryFunctions::checkLayerSelected();
-
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::equal($field_name,$field_value);
-
-			LQueryFunctions::throwQueryLayerNotFound();
-		}
-
-		function _n_eq(string $field_name,$field_value) {
-			LQueryFunctions::checkLayerSelected();
-
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_equal($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
 
-		function _not_equal(string $field_name,$field_value) {
+		function _equal(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_equal($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _gt(string $field_name,$field_value) {
+		function _n_eq(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
 
-		function _greater_than(string $field_name,$field_value) {
+		function _not_equal(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _gt_eq(string $field_name,$field_value) {
+		function _gt(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than_or_equal($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _greater_than_or_equal(string $field_name,$field_value) {
+
+		function _greater_than(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than_or_equal($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _lt(string $field_name,$field_value) {
+		function _gt_eq(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than_or_equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _less_than(string $field_name,$field_value) {
+		function _greater_than_or_equal(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::greater_than_or_equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _lt_eq(string $field_name,$field_value) {
+		function _lt(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than_or_equal($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _less_than_or_equal(string $field_name,$field_value) {
+		function _less_than(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than_or_equal($field_name,$field_value);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _rlike(string $field_name,$pattern) {
+		function _lt_eq(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::rlike($field_name,$pattern);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than_or_equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _like(string $field_name,$pattern,$escape_char=null) {
+		function _less_than_or_equal(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::like($field_name,$pattern,$escape_char);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::less_than_or_equal($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _not_like(string $field_name,$pattern,$escape_char=null) {
+		function _rlike(string $column_name,$pattern) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_like($field_name,$pattern,$escape_char);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::rlike($column_name,$pattern);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _in(string $field_name,$data) {
+		function _like(string $column_name,$pattern,$escape_char=null) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::in($field_name,$data);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::like($column_name,$pattern,$escape_char);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _not_in(string $field_name,$data) {
+		function _not_like(string $column_name,$pattern,$escape_char=null) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_in($field_name,$data);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_like($column_name,$pattern,$escape_char);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _bt(string $field_name,$start,$end) {
+		function _in(string $column_name,$data) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::between($field_name,$start,$end);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::in($column_name,$data);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _between(string $field_name,$start,$end) {
+		function _not_in(string $column_name,$data) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::between($field_name,$start,$end);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_in($column_name,$data);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _n_bt(string $field_name,$start,$end) {
+		function _bt(string $column_name,$start,$end) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_between($field_name,$start,$end);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::between($column_name,$start,$end);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function _not_between(string $field_name,$start,$end) {
+		function _between(string $column_name,$start,$end) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_between($field_name,$start,$end);
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::between($column_name,$start,$end);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function _n_bt(string $column_name,$start,$end) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_between($column_name,$start,$end);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function _not_between(string $column_name,$start,$end) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_between($column_name,$start,$end);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -337,18 +337,18 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function __replace_value(string $field_name,$search_value,$replace_value) {
+		function __replace_value(string $column_name,$search_value,$replace_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($field_name,$search_value,$replace_value);
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($column_name,$search_value,$replace_value);
 			
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function __repl(string $field_name,$search_value,$replace_value) {
+		function __repl(string $column_name,$search_value,$replace_value) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($field_name,$search_value,$replace_value);
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($column_name,$search_value,$replace_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -393,26 +393,26 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function asc(string $field_name) {
+		function asc(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return $field_name." ASC";
+			if (LQueryFunctions::usingMysqlLayer()) return c($column_name)." ASC";
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function desc(string $field_name) {
+		function desc(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return $field_name." DESC";
+			if (LQueryFunctions::usingMysqlLayer()) return c($column_name)." DESC";
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function f(string $field_name) {
+		function c(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlTableField($field_name);
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlColumnName($column_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}

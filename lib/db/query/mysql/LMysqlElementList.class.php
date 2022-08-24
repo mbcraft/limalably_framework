@@ -55,18 +55,26 @@ class LMysqlElementList {
 		}
 	}
 
+	private function asColumnNamesList() {
+		$result = [];
+
+		foreach ($this->elements as $el) $result[] = new LMysqlColumnName($el);
+
+		return $result;
+	}
+
 	public function toRawStringList() {
 		ensure_all_strings("elements in mysql element list",$this->elements);
 
 		if (empty($this->elements)) return "";
 
-		return "(".implode(',',$this->elements).")";
+		return "(".implode(',',$this->asColumnNamesList()).")";
 	}
 
 	public function toRawStringListWithoutParenthesis() {
 		ensure_all_strings_or_null("elements in mysql element list",$this->elements);
 
-		return implode(',',$this->elements);
+		return implode(',',$this->asColumnNamesList());
 	}
 
 	public function toEscapedStringList() {

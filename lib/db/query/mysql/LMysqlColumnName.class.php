@@ -12,15 +12,15 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 */
 
-class LMysqlTableField {
+class LMysqlColumnName {
 	
-	private $field_name;
+	private $column_name;
 
-	function __construct($field_name) {
-		$this->field_name = $field_name;
+	function __construct($column_name) {
+		$this->column_name = $column_name;
 	}
 
 	function __toString() {
-		return $this->field_name;
+		return $this->column_name;
 	}
 }

@@ -15,7 +15,7 @@ Thanks to www.mysqltutorial.org for its documentation.
 class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	
 	private $distinct_option = "";
-	private $field_name_list;
+	private $column_name_list;
 	private $table_name_list;
 	private $where_block = "";
 	private $join_list = [];
@@ -27,13 +27,13 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	private $limit_clause = "";
 	private $export_to_csv_def = null;
 
-	public function __construct($field_name_list,$table_name_list,$where_block=null) {
+	public function __construct($column_name_list,$table_name_list,$where_block=null) {
 
-		if (is_string($field_name_list)) $fnl = new LMysqlElementList($field_name_list);
-		if (is_array($field_name_list)) $fnl = new LMysqlElementList(... $field_name_list);
-		if ($field_name_list instanceof LMysqlElementList) $fnl = $field_name_list;
+		if (is_string($column_name_list)) $fnl = new LMysqlElementList($column_name_list);
+		if (is_array($column_name_list)) $fnl = new LMysqlElementList(... $column_name_list);
+		if ($column_name_list instanceof LMysqlElementList) $fnl = $column_name_list;
 		ensure_instance_of("field name list of mysql select statement",$fnl,[LMysqlElementList::class]);
-		$this->field_name_list = $fnl;
+		$this->column_name_list = $fnl;
 
 		if (is_string($table_name_list)) $tnl = new LMysqlElementList($table_name_list);
 		if (is_array($table_name_list)) $tnl = new LMysqlElementList(... $table_name_list);
@@ -119,20 +119,20 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		return $this;
 	}
 
-	public function group_by(... $field_name_list) {
+	public function group_by(... $column_name_list) {
 
 
 		$this->group_by_prefix = "GROUP BY";
 
-		$this->group_by_clause = new LMysqlElementList($field_name_list);
+		$this->group_by_clause = new LMysqlElementList($column_name_list);
 
 		$this->with_rollup_option = "";
 
 		return $this;
 	}
 
-	public function group_by_with_rollup(... $field_name_list) {
-		$this->group_by_clause = new LMysqlElementList($field_name_list);
+	public function group_by_with_rollup(... $column_name_list) {
+		$this->group_by_clause = new LMysqlElementList($column_name_list);
 
 		$this->with_rollup_option = " WITH ROLLUP";
 
@@ -163,7 +163,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 			$export_to_csv_trailer = $this->export_to_csv_def->__write_header()." ".$this->export_to_csv_def->__trailer();
 		}
 
-		return $this->build_query("SELECT",$this->distinct_option,$this->field_name_list->toRawStringListWithoutParenthesis(),
+		return $this->build_query("SELECT",$this->distinct_option,$this->column_name_list->toRawStringListWithoutParenthesis(),
 			"FROM",$this->table_name_list->toRawStringListWithoutParenthesis(),implode(' ',$this->join_list),$this->where_block,
 			$this->group_by_prefix,$this->group_by_clause->toRawStringListWithoutParenthesis(),$this->with_rollup_option,$this->having_clause,
 			$this->order_by_clause,$this->limit_clause,$export_to_csv_trailer);

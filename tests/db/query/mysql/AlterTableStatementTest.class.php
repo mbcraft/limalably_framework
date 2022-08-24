@@ -64,8 +64,12 @@ class AlterTableStatementTest extends LTestCase {
 
 		create_table('cliente_test')->column(col_def('id')->t_id())->column(col_def('nome')->t_text32())->go($db);
 
-		create_table('fattura_test')->column(col_def('id')->t_id())->column(col_def('importo')->t_float())
-			->column(col_def('cliente_id')->t_external_id())->foreign_key(fk_def('fk_test_cliente_id')->ref_columns('cliente_id')->ref_table('cliente_test','id')->on_delete_cascade()->on_update_restrict())->go($db);
+		$ct = create_table('fattura_test')->column(col_def('id')->t_id())->column(col_def('importo')->t_float())
+			->column(col_def('cliente_id')->t_external_id())->foreign_key(fk_def('fk_test_cliente_id')->ref_columns('cliente_id')->ref_table('cliente_test','id')->on_delete_cascade()->on_update_restrict());
+
+		//echo $ct;
+
+		$ct->go($db);
 
 
 		drop_table('cliente_test')->if_exists()->go($db);
@@ -77,7 +81,11 @@ class AlterTableStatementTest extends LTestCase {
 		create_table('fattura_test')->column(col_def('id')->t_id())->column(col_def('importo')->t_float())
 			->column(col_def('cliente_id')->t_external_id())->go($db);
 
-		alter_table('fattura_test')->add_foreign_key(fk_def('fk_test_cliente_id')->ref_columns('cliente_id')->ref_table('cliente_test','id')->on_delete_cascade()->on_update_restrict())->go($db);
+		$at = alter_table('fattura_test')->add_foreign_key(fk_def('fk_test_cliente_id')->ref_columns('cliente_id')->ref_table('cliente_test','id')->on_delete_cascade()->on_update_restrict());
+
+		//echo $at;
+
+		$at->go($db);
 
 		drop_table('cliente_test')->if_exists()->go($db);
 

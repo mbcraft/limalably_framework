@@ -1,7 +1,7 @@
 <?php
 
 
-class LMysqlAlterTableColumnsStatement extends LMysqlAbstractQuery {
+class LMysqlAlterTableStatement extends LMysqlAbstractQuery {
 	
 	private $table_name;
 	private $changes = [];
@@ -55,6 +55,13 @@ class LMysqlAlterTableColumnsStatement extends LMysqlAbstractQuery {
 		$this->changes[] = "ADD ".$column_definition;
 
 		return $this;
+	}
+
+	function add_foreign_key($fk_definition) {
+
+		if (!$fk_definition instanceof LMysqlForeignKeyConstraintDefinition) throw new \Exception("parameter is not a valid foreign key definition in mysql alter table statement");
+
+		$this->changes[] = "ADD ".$fk_definition;
 	}
 
 	function __toString() {

@@ -1,7 +1,7 @@
 <?php
 
 
-class AlterTableColumnsTest extends LTestCase {
+class AlterTableStatementTest extends LTestCase {
 	
 
 	function testDropTableColumns() {
@@ -27,7 +27,7 @@ class AlterTableColumnsTest extends LTestCase {
 
 		$this->assertTrue(array_value_exists('big_table',$l),"La tabella non è stata creata!");
 
-		alter_table_columns('big_table')->drop_column('cliente_id')->drop_column('descrizione')->go($db);
+		alter_table('big_table')->drop_column('cliente_id')->drop_column('descrizione')->go($db);
 
 		$td = table_description('big_table')->go($db);
 
@@ -36,20 +36,20 @@ class AlterTableColumnsTest extends LTestCase {
 		$this->assertFalse(array_key_exists('cliente_id',$td),"La colonna id nella tabella big_table non esiste!");
 		$this->assertFalse(array_key_exists('descrizione',$td),"La colonna id nella tabella big_table non esiste!");
 
-		alter_table_columns('big_table')->add_column(col_def('prova')->t_text()->after('conteggio_ore'))->go($db);
+		alter_table('big_table')->add_column(col_def('prova')->t_text()->after('conteggio_ore'))->go($db);
 
 		$td = table_description('big_table')->go($db);
 		
 		$this->assertTrue(array_key_exists('prova',$td),"La colonna 'prova' nella tabella big_table non esiste!");
 		
-		alter_table_columns('big_table')->change_column('prova',col_def('prova_2')->t_u_bigint()->not_null()->after('conteggio_ore'))->go($db);
+		alter_table('big_table')->change_column('prova',col_def('prova_2')->t_u_bigint()->not_null()->after('conteggio_ore'))->go($db);
 
 		$td = table_description('big_table')->go($db);
 		
 		$this->assertFalse(array_key_exists('prova',$td),"La colonna 'prova' nella tabella big_table non esiste!");
 		$this->assertTrue(array_key_exists('prova_2',$td),"La colonna 'prova_2' nella tabella big_table non esiste!");
 			
-		alter_table_columns('big_table')->modify_column(col_def('prova_2')->t_text())->go($db);
+		alter_table('big_table')->modify_column(col_def('prova_2')->t_text())->go($db);
 
 		$this->assertTrue(array_key_exists('prova_2',$td),"La colonna 'prova_2' nella tabella big_table non esiste!");
 		

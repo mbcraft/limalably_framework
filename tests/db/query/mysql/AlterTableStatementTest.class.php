@@ -4,7 +4,7 @@
 class AlterTableStatementTest extends LTestCase {
 	
 
-	function testDropTableColumns() {
+	function testBasicColumnsOperations() {
 
 		$db = db('framework_unit_tests');
 
@@ -53,6 +53,35 @@ class AlterTableStatementTest extends LTestCase {
 
 		$this->assertTrue(array_key_exists('prova_2',$td),"La colonna 'prova_2' nella tabella big_table non esiste!");
 		
+	}
+
+	function testForeignKeysOperations() {
+		$db = db('framework_unit_tests');
+
+		drop_table('cliente_test')->if_exists()->go($db);
+
+		drop_table('fattura_test')->if_exists()->go($db);
+
+		create_table('cliente_test')->column(col_def('id')->t_id())->column(col_def('nome')->t_text32())->go($db);
+
+		create_table('fattura_test')->column(col_def('id')->t_id())->column(col_def('importo')->t_float())
+			->column(col_def('cliente_id')->t_external_id())->foreign_key(fk_def('fk_test_cliente_id')->ref_columns('cliente_id')->ref_table('cliente_test','id')->on_delete_cascade()->on_update_restrict())->go($db);
+
+
+		drop_table('cliente_test')->if_exists()->go($db);
+
+		drop_table('fattura_test')->if_exists()->go($db);
+
+		create_table('cliente_test')->column(col_def('id')->t_id())->column(col_def('nome')->t_text32())->go($db);
+
+		create_table('fattura_test')->column(col_def('id')->t_id())->column(col_def('importo')->t_float())
+			->column(col_def('cliente_id')->t_external_id())->go($db);
+
+		alter_table('fattura_test')->add_foreign_key(fk_def('fk_test_cliente_id')->ref_columns('cliente_id')->ref_table('cliente_test','id')->on_delete_cascade()->on_update_restrict())->go($db);
+
+		drop_table('cliente_test')->if_exists()->go($db);
+
+		drop_table('fattura_test')->if_exists()->go($db);
 	}
 
 

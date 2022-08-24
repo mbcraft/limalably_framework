@@ -62,6 +62,8 @@ class LMysqlAlterTableStatement extends LMysqlAbstractQuery {
 		if (!$fk_definition instanceof LMysqlForeignKeyConstraintDefinition) throw new \Exception("parameter is not a valid foreign key definition in mysql alter table statement");
 
 		$this->changes[] = "ADD ".$fk_definition;
+
+		return $this;
 	}
 
 	function __toString() {

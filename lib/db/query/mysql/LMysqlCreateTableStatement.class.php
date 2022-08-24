@@ -40,6 +40,8 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 		if (!$fk_definition instanceof LMysqlForeignKeyConstraintDefinition) throw new \Exception("The parameter is not a foreign key definition in mysql create table statement");
 
 		$this->foreign_keys[] = $fk_definition;
+
+		return $this;
 	}
 
 	function engine_innodb() {

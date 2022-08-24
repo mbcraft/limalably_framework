@@ -25,7 +25,7 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 	private $with_rollup_option = "";
 	private $having_clause = "";
 	private $limit_clause = "";
-	private $import_into_csv_def = null;
+	private $export_to_csv_def = null;
 
 	public function __construct($field_name_list,$table_name_list,$where_block=null) {
 
@@ -146,33 +146,33 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		return $this;
 	}
 
-	public function import_into_csv($csv_def) {
+	public function export_to_csv($csv_def) {
 
 		if (!$csv_def instanceof LMysqlCsvDefinition) throw new \Exception("Csv definition is not valid in mysql select statement");
 
-		$this->import_into_csv_def = $csv_def;
+		$this->export_to_csv_def = $csv_def;
 
 		return $this;
 	}
 
 	protected function before_query_execution() {
-		if ($this->import_into_csv_def) {
-			$this->import_into_csv_def->__prepare_for_write();
+		if ($this->export_to_csv_def) {
+			$this->export_to_csv_def->__prepare_for_write();
 		}
 	}
 
 	public function __toString() {
 
-		$import_into_csv = "";
+		$export_to_csv = "";
 
-		if ($this->import_into_csv_def) {
-			$import_into_csv = $this->import_into_csv_def->__write_header()." ".$this->import_into_csv_def->__trailer();
+		if ($this->export_to_csv_def) {
+			$export_to_csv = $this->export_to_csv_def->__write_header()." ".$this->export_to_csv_def->__trailer();
 		}
 
 		return $this->build_query("SELECT",$this->distinct_option,$this->field_name_list->toRawStringListWithoutParenthesis(),
 			"FROM",$this->table_name_list->toRawStringListWithoutParenthesis(),implode(' ',$this->join_list),$this->where_block,
 			$this->group_by_prefix,$this->group_by_clause->toRawStringListWithoutParenthesis(),$this->with_rollup_option,$this->having_clause,
-			$this->order_by_clause,$this->limit_clause,$import_into_csv);
+			$this->order_by_clause,$this->limit_clause,$export_to_csv);
 
 	}
 }

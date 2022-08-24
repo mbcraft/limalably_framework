@@ -62,6 +62,14 @@ function ensure_all_numbers_or_strings($code_place_description,$var_list) {
     }
 }
 
+function ensure_all_numbers($code_place_description,$var_list) {
+    if (!is_array($var_list)) throw new \Exception("Invalid array of elements in ensure_all_numbers_or_strings function");
+    foreach ($var_list as $var) {
+        if (!is_numeric($var))
+            throw new \Exception("Some variable is not a simple numeric type . ".get_class($var)." was found in ".$code_place_description.".");
+    }
+}
+
 function ensure_instance_of($code_place_description,$var,$class_name_list) {
 
     if (!is_array($class_name_list)) throw new \Exception("Invalid array of class names for ensure_instance_of function");

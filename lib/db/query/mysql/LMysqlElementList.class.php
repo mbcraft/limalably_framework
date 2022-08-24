@@ -37,11 +37,19 @@ class LMysqlElementList {
 
 			$this->checkNoArrayElementsOrElInside($elements[0]);
 
+			$keys = array_keys($elements[0]);
+
+			ensure_all_numbers("mysql element list",$keys);
+
 			$this->elements = $elements[0];
 		}
 		else {
 
 			$this->checkNoArrayElementsOrElInside($elements);
+
+			$keys = array_keys($elements);
+
+			ensure_all_numbers("mysql element list",$keys);
 
 			$this->elements = $elements;
 		}

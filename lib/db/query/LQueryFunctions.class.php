@@ -433,14 +433,6 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function p() {
-			LQueryFunctions::checkLayerSelected();
-
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlValuePlaceholder();
-
-			LQueryFunctions::throwQueryLayerNotFound();
-		}
-
 		function tn($table_def,string $table_alias = null) {
 			LQueryFunctions::checkLayerSelected();
 

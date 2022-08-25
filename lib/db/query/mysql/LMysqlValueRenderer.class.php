@@ -23,7 +23,7 @@ class LMysqlValueRenderer {
 	function __toString() {
 
 		if ($this->value === null) return 'NULL';
-		if ($this->value instanceof LMysqlValuePlaceholder) return "".$this->value;
+
 		if ($this->value instanceof LMysqlReplaceValue) return "".$this->value;
 		if ($this->value instanceof LMysqlColumnName) return "".$this->value;
 		if (is_numeric($this->value)) return "".$this->value;

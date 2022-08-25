@@ -20,12 +20,25 @@ class LMysqlColumnDefinition {
 	private $not_null = "";
 	private $default_value_set = false;
 	private $default_value;
+	private $generated = "";
 	private $auto_increment = false;
 	private $column_constraint = "";
 	private $position_modifier = "";
 
 	function __construct($column_name) {
 		$this->column_name = $column_name;
+	}
+
+	function generated_stored(string $spec) {
+		$this->generated = "GENERATED ALWAYS AS ( ".$spec." ) STORED";
+
+		return $this;
+	}
+
+	function generated_virtual(string $spec) {
+		$this->generated = "GENERATED ALWAYS AS ( ".$spec." ) VIRTUAL";
+
+		return $this;
 	}
 
 	function first() {
@@ -69,6 +82,12 @@ class LMysqlColumnDefinition {
 		return $this;
 	}
 
+	function unique_key() {
+		$this->column_constraint = " UNIQUE KEY";
+
+		return $this;
+	}
+
 	function unique() {
 		$this->column_constraint = " UNIQUE";
 
@@ -80,12 +99,16 @@ class LMysqlColumnDefinition {
 
 		$result = $this->column_name;
 		$result .= " ".$this->data_type;
-		$result.= $this->not_null;
-		if ($this->default_value_set) {
-			$result .= $this->default_value;
-		}
-		if ($this->auto_increment) {
-			$result .= " AUTO_INCREMENT";
+		if ($this->generated) {
+			$result .= " ".$this->generated;
+		} else {
+			$result.= $this->not_null;
+			if ($this->default_value_set) {
+				$result .= $this->default_value;
+			}
+			if ($this->auto_increment) {
+				$result .= " AUTO_INCREMENT";
+			}
 		}
 		$result .= $this->column_constraint;
 		$result .= $this->position_modifier;

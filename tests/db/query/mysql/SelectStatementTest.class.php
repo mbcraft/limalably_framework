@@ -29,4 +29,16 @@ class SelectStatementTest extends LTestCase {
 		
 	}
 
+	function testSelectInFrom() {
+
+		$db = db("framework_unit_tests");
+
+		truncate('targhetta_albero')->go($db);
+
+		insert('targhetta_albero',['codice_targhetta'],['comune'])->go($db);
+
+		select('*',tn(select('codice_targhetta','targhetta_albero'),'mia_tabella'))->go($db);
+
+	}
+
 }

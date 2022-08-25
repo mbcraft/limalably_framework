@@ -50,24 +50,24 @@ class LMysqlDeleteStatement extends LMysqlAbstractQuery
 		return $this;
 	}
 
-	public function inner_join(bool $include,$table_name,$condition_element=null) {
+	public function inner_join(bool $include,$table_name,$condition_element_or_using=null) {
 
 		if ($include) {
 			$this->join_table_list[] = $table_name;
 		}
 
-		$this->join_list[] = LMysqlGenericJoin::inner_join($table_name,$condition_element);
+		$this->join_list[] = LMysqlGenericJoin::inner_join($table_name,$condition_element_or_using);
 
 		return $this;
 	}
 
-	public function left_join(bool $include,$table_name,$condition_element=null) {
+	public function left_join(bool $include,$table_name,$condition_element_or_using=null) {
 
 		if ($include) {
 			$this->join_table_list[] = $table_name;
 		}
 
-		$this->join_list[] = LMysqlGenericJoin::left_join($table_name,$condition_element);
+		$this->join_list[] = LMysqlGenericJoin::left_join($table_name,$condition_element_or_using);
 
 		return $this;
 	}

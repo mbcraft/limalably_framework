@@ -13,11 +13,11 @@ class ReplaceValueTest extends LTestCase {
 
 		db('framework_unit_tests');
 
-		$r1 = __repl('column_name','@search_value','@replace_value');
-		$r2 = __replace_value('column_name','@search_value','@replace_value');
+		$r1 = _repl('column_name','@search_value','@replace_value');
+		$r2 = _replace_value('column_name','@search_value','@replace_value');
 
-		$this->assertEqual($r1,"REPLACE(column_name,'@search_value','@replace_value')","Il valore atteso dalla __repl non corrisponde a quello atteso!");
-		$this->assertEqual($r2,"REPLACE(column_name,'@search_value','@replace_value')","Il valore atteso dalla __replace_value non corrisponde a quello atteso!");
+		$this->assertEqual($r1,"REPLACE(column_name,'@search_value','@replace_value')","Il valore atteso dalla _repl non corrisponde a quello atteso!");
+		$this->assertEqual($r2,"REPLACE(column_name,'@search_value','@replace_value')","Il valore atteso dalla _replace_value non corrisponde a quello atteso!");
 		
 	}
 

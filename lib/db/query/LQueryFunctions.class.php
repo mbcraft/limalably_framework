@@ -345,7 +345,7 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function __replace_value(string $column_name,$search_value,$replace_value) {
+		function _replace_value(string $column_name,$search_value,$replace_value) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($column_name,$search_value,$replace_value);
@@ -353,10 +353,18 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function __repl(string $column_name,$search_value,$replace_value) {
+		function _repl(string $column_name,$search_value,$replace_value) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlReplaceValue($column_name,$search_value,$replace_value);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function _case(string $column_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlCaseColumn($column_name);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -417,10 +425,10 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
-		function c(string $column_name) {
+		function c(string $column_name,string $column_alias=null) {
 			LQueryFunctions::checkLayerSelected();
 
-			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlColumnName($column_name);
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlColumnName($column_name,$column_alias);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -429,6 +437,14 @@ class LQueryFunctions {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlValuePlaceholder();
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function tn($table_def,string $table_alias = null) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlTableName($table_def,$table_alias);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}

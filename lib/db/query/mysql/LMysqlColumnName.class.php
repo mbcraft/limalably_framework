@@ -14,13 +14,14 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 class LMysqlColumnName {
 	
-	private $column_name;
+	private $result;
 
-	function __construct($column_name) {
-		$this->column_name = $column_name;
+	function __construct(string $column_name,string $column_alias = null) {
+		$this->result = $column_name;
+		if ($column_alias) $this->result .= " AS ".$column_alias;
 	}
 
 	function __toString() {
-		return $this->column_name;
+		return $this->result;
 	}
 }

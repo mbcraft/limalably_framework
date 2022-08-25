@@ -59,4 +59,20 @@ class LSqliteConnection implements LIDbConnection {
         }
     }
 
+    public function beginTransaction() {
+        throw new \Exception("Not implemented yet!");
+    }
+
+    public function rollback() {
+        throw new \Exception("Not implemented yet!");
+    }
+
+    public function commit() {
+        throw new \Exception("Not implemented yet!");
+    }
+
+    public function setCharset($charset_name) {
+        throw new \Exception("Not implemented yet!");   
+    }
+
 }

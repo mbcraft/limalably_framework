@@ -57,7 +57,7 @@ class CreateRenameDropTableTest extends LTestCase {
 			->column(col_def('data_fine')->t_date())
 			->column(col_def('cliente_id')->t_external_id()->not_null())
 			->column(col_def('descrizione')->t_text())
-			->column(col_def('conteggio_ore')->t_u_int()->not_null())
+			->column(col_def('conteggio_ore')->t_u_int()->not_null())->charset('utf8mb4')
 			->go($db);
 
 		$l = table_list()->go($db);

@@ -21,11 +21,19 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	private $col_defs = [];
 	private $foreign_keys = [];
 	private $engine = "MyISAM";
+	private $charset_trailer = "";
 
 	function __construct($table_name)
 	{
 		$this->table_name = $table_name;
 
+	}
+
+	function charset($charset_name) {
+
+		$this->charset_trailer = "DEFAULT CHARSET=".$charset_name;
+
+		return $this;
 	}
 
 	function temporary() {
@@ -92,7 +100,7 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 
 		$elements = array_merge($this->col_defs,$this->foreign_keys);
 
-		return $this->build_query("CREATE",$this->temporary_modifier,"TABLE",$this->if_not_exists_option,$this->table_name,"(",implode(",",$elements),")","ENGINE","=",$this->engine);
+		return $this->build_query("CREATE",$this->temporary_modifier,"TABLE",$this->if_not_exists_option,$this->table_name,"(",implode(",",$elements),")","ENGINE","=",$this->engine,$this->charset_trailer);
 
 	}
 

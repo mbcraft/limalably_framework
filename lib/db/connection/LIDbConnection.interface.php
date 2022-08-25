@@ -16,5 +16,13 @@ interface LIDbConnection {
     function close();
     
     function getHandle();
+
+    function beginTransaction();
+
+    function rollback();
+
+    function commit();
+
+    function setCharset($charset_name);
     
 }

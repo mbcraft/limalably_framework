@@ -108,4 +108,30 @@ class LMysqlConnection implements LIDbConnection {
         }
     }
 
+    private function autocommit(bool $enable) {
+        $this->my_handle->autocommit($enable);
+    }
+
+    public function beginTransaction() {
+        $this->autocommit(false);
+        $this->my_handle->begin_transaction();
+    }
+
+    public function rollback() {
+        $this->my_handle->rollback();
+        $this->autocommit(true);    
+    }
+
+    public function setCharset($charset_name) {
+
+        $q = "SET NAMES ".$charset_name.";";
+
+        mysqli_query($this->my_handle,$q);
+    }
+
+    public function commit() {
+        $this->my_handle->commit();
+        $this->autocommit(true);
+    }
+
 }

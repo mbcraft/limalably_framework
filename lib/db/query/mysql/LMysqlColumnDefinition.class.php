@@ -30,13 +30,13 @@ class LMysqlColumnDefinition {
 	}
 
 	function generated_stored(string $spec) {
-		$this->generated = "GENERATED ALWAYS AS ( ".$spec." ) STORED";
+		$this->generated = " GENERATED ALWAYS AS ( ".$spec." ) STORED";
 
 		return $this;
 	}
 
 	function generated_virtual(string $spec) {
-		$this->generated = "GENERATED ALWAYS AS ( ".$spec." ) VIRTUAL";
+		$this->generated = " GENERATED ALWAYS AS ( ".$spec." ) VIRTUAL";
 
 		return $this;
 	}
@@ -100,7 +100,7 @@ class LMysqlColumnDefinition {
 		$result = $this->column_name;
 		$result .= " ".$this->data_type;
 		if ($this->generated) {
-			$result .= " ".$this->generated;
+			$result .= $this->generated;
 		} else {
 			$result.= $this->not_null;
 			if ($this->default_value_set) {

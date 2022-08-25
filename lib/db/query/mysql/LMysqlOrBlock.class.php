@@ -22,6 +22,14 @@ class LMysqlOrBlock
 		$this->conditions = $conditions;
 	}
 
+	public function add($condition) {
+		ensure_instance_of("mysql statement with 'and' block",$condition,[LMysqlOrBlock::class,LMysqlAndBlock::class,LMysqlCondition::class]);
+
+		$this->conditions[] = $condition;
+
+		return $this;
+	}
+
 	public function __toString() {
 		return "( ".implode(' OR ',$this->conditions)." )";
 	}

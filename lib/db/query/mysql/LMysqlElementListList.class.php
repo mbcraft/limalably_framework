@@ -14,7 +14,17 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 class LMysqlElementListList {
 	
-	private $lists;
+	private $lists = [];
+
+	public function add($element_list_or_array) {
+		if (is_array($element_list_or_array)) $el = new LMysqlElementList(... $element_list_or_array); 
+		if (!$element_list instanceof LMysqlElementList) throw new \Exception("Only mysql element list are allowed inside element list list");
+		else $el = $element_list_or_array;
+
+		$this->lists[] = $el;
+
+		return $this;
+	}
 
 	private function checkNotEmptyArray($data) {
 		if (is_array($data) && empty($data)) throw new \Exception("Found empty array in element list list - in mysql statement");
@@ -58,10 +68,9 @@ class LMysqlElementListList {
 
 	public function __construct(... $lists) {
 		
-		$prepared_lists = array();
+		if (empty($lists)) return;
 
-		//0
-		if (empty($lists)) throw new \Exception("Empty element list list is not allowed in mysql insert statement");
+		$prepared_lists = array();
 
 		//1
 		if ($this->arrayContainsStringsOrNumbers($lists)) {
@@ -115,6 +124,7 @@ class LMysqlElementListList {
 
 	public function __toString() {
 
+		if (empty($this->lists)) throw new \Exception("Mysql element list list can't be empty");
 
 		$sql_pieces = [];
 		foreach ($this->lists as $l) {

@@ -29,7 +29,7 @@ class LMysqlElementList {
 
 	public function __construct(... $elements) {
 
-		if (count($elements)==0) throw new \Exception("Invalid element list : zero elements found - in mysql statement.");
+		if (count($elements)==0) return;
 
 		if (count($elements)==1 && is_array($elements[0])) {
 
@@ -55,7 +55,22 @@ class LMysqlElementList {
 		}
 	}
 
+	public function add($element) {
+		$this->checkNoArrayElementsOrElInside([$element]);
+
+		$this->elements[] = $element;
+
+		return $this;
+	}
+
+	private function checkNotEmpty() {
+		if (count($this->elements)==0) throw new \Exception("Invalid element list : zero elements found - in mysql statement.");
+	}
+
 	public function toRawStringList() {
+
+		$this->checkNotEmpty();
+
 		ensure_all_strings("elements in mysql element list",$this->elements);
 
 		if (empty($this->elements)) return "";
@@ -65,10 +80,14 @@ class LMysqlElementList {
 
 	public function toRawStringListWithoutParenthesis() {
 
+		$this->checkNotEmpty();
+
 		return implode(',',$this->elements);
 	}
 
 	public function toEscapedStringList() {
+
+		$this->checkNotEmpty();
 
 		$converted_elements = [];
 

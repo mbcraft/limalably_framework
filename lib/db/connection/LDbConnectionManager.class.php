@@ -50,10 +50,21 @@ class LDbConnectionManager {
         return self::$connections[$connection_name]->getConnectionString($params);
     }
     
-    private static function createAndOpen($connection_name) {
+    private static function checkParams(array $params) {
+        if (!isset($params['driver'])) throw new \Exception("'host' key is not defined in connection parameters!");
+        if (!isset($params['host'])) throw new \Exception("'host' key is not defined in connection parameters!");
+        if (!isset($params['username'])) throw new \Exception("'host' key is not defined in connection parameters!");
+        if (!isset($params['password'])) throw new \Exception("'host' key is not defined in connection parameters!");
+        if (!isset($params['db_name'])) throw new \Exception("'host' key is not defined in connection parameters!");
+    }
+
+    private static function createAndOpen(string $connection_name,array $params=null) {
         
-        $params = LConfigReader::simple('/database/'.$connection_name);
-        
+        if (!$params) {
+            if (class_exists('LConfigReader')) {
+                $params = LConfigReader::simple('/database/'.$connection_name);
+            } else throw \Exception("LConfigReader class is not available, 'params' parameter is required!");
+        }
         $driver = $params['driver'];
         switch ($driver) {
             case self::CONNECTION_TYPE_MYSQL : $conn = new LMysqlConnection($params);break;

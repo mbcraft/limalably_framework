@@ -27,5 +27,37 @@ class XmlDataStorageTest extends LTestCase {
         $this->assertTrue(LStringUtils::contains($ancora3, '</div>'), "L'html non è stato letto correttamente!");
         
     }
+
+    function testSaveLoadData() {
+        $storage = new LXmlDataStorage();
+        $storage->init($_SERVER['FRAMEWORK_DIR']);
+        
+        $storage->init('tests/tmp/');
+
+        $test_html = <<<EOH
+
+<span>Hello world</span>
+
+EOH;
+
+        $data = ['a' => 1,'b' => 2,'c' => 'x','d' => $test_html];
+
+        $storage->delete('prova');
+
+        $this->assertFalse($storage->isSaved('prova'),"I dati sono ancora presenti!");
+
+        $storage->save('prova',$data);
+
+        $this->assertTrue($storage->isSaved('prova'),"I dati sono ancora presenti!");
+
+        $loaded_data = $storage->load('prova');
+
+        $this->assertEqual($loaded_data['a'],1,"I dati letti non corrispondono!");
+        $this->assertEqual($loaded_data['b'],2,"I dati letti non corrispondono!");
+        $this->assertEqual($loaded_data['c'],'x',"I dati letti non corrispondono!");
+        $this->assertEqual($loaded_data['d'],$test_html,"L'html letto dall'xml non corrisponde a quello salvato!");
+
+        //$storage->delete('prova');
+    }
     
 }

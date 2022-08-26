@@ -25,6 +25,24 @@ class IniDataStorageTest extends LTestCase {
         
     }
     
+    function testSaveDataWithIniStorage() {
+        $d = new LIniDataStorage();
+        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/tmp/');
+
+        $d->delete("prova");
+
+        $data = ['a' => 1,'b' => 2,'c' => 'x'];
+
+        $d->save('prova',$data);
+
+        $this->assertTrue($d->isSaved('prova'),"I dati ini non sono stati salvati!");
+
+        $d->delete('prova');
+
+        $this->assertFalse($d->isSaved('prova'),"I dati ini non sono stati salvati!");
+
+    }
+
     function testGetDataFromRealIni() {
         $d = new LIniDataStorage();
         $d->init($_SERVER['FRAMEWORK_DIR'].'tests/');

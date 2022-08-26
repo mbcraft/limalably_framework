@@ -13,7 +13,7 @@ use Atlas\Cli\Skeleton;
 
 class LAtlasSkeletonGenerator {
 
-    static function generate($connection_name='default') {
+    static function generate(string $connection_name='default') {
 
         $db_config_atlas = LConfigReader::simple('/database/'.$connection_name.'/atlas');
         

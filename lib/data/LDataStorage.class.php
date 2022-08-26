@@ -83,6 +83,10 @@ class LDataStorage implements LIDataStorage {
         
         return $this->my_json_storage->isSaved($path) || $this->my_xml_storage->isSaved($path) || $this->my_ini_storage->isSaved($path);
     }
+
+    private function dataHasNewlines(string $value) {
+        return preg_match('/[\r\n]/',$value)!==false;
+    }
     
     function save(string $path,array $data) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
@@ -92,7 +96,19 @@ class LDataStorage implements LIDataStorage {
         $this->my_ini_storage->delete($path);
         
         //salvo sempre in json per comodità
-        $this->my_json_storage->save($path,$data);
+        $data_without_newlines = [];
+        $data_with_newlines = [];
+
+        foreach ($data as $k => $v) {
+            if ($this->dataHasNewlines($v)) {
+                $data_with_newlines[$k] = $v;
+            } else {
+                $data_without_newlines[$k] = $v;
+            }
+        }
+
+        $this->my_xml_storage->save($path,$data_with_newlines);
+        $this->my_json_storage->save($path,$data_without_newlines);
     }
     
     function delete(string $path) {

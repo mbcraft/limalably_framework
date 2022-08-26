@@ -7,45 +7,10 @@
  */
 
 
-class LXmlDataStorage implements LIDataStorage {
+class LXmlDataStorage extends LAbstractDataStorage implements LIDataStorage {
     
-    private $root_path = null;
-    
-    public function delete(string $path) {
-        if (!$this->isInitialized()) $this->initWithDefaults ();
-        
-        $my_path1 = $this->root_path.$path.'.xml';
-        $my_path1 = str_replace('//', '/', $my_path1);
-        
-        if (is_file($my_path1)) @unlink($my_path1);
-    }
-
-    public function init(string $root_path) {
-        $this->root_path = $root_path;
-    }
-
-    public function initWithDefaults() {
-        
-        $this->root_path = LEnvironmentUtils::getBaseDir().LConfigReader::simple('/misc/data_folder');
-    }
-
-    public function isInitialized() {
-        return $this->root_path!=null;
-    }
-
-    public function isValidFilename($filename) {
-        return LStringUtils::endsWith($filename, '.xml');
-    }
-    
-    public function isSaved(string $path) {
-        if (!$this->isInitialized()) $this->initWithDefaults ();
-        
-        $my_path1 = $this->root_path.$path.'.xml';
-        $my_path1 = str_replace('//', '/', $my_path1);
-        
-        //add xml support
-        
-        return is_file($my_path1);
+    protected function getFileExtension() {
+        return ".xml";
     }
     
     public function loadArray(string $path) {
@@ -97,8 +62,37 @@ class LXmlDataStorage implements LIDataStorage {
         return $result_tree->getRoot();
     }
 
+    private function recursiveFlatDataIntoTreePath(&$result,$node,$current_node_prefix) {
+
+        foreach ($node as $k => $v) {
+
+            if (is_array($v)) {
+                $this->recursiveFlatDataIntoTreePath($result,$v,$current_node_prefix."/".$k);
+            } else {
+                $result[$current_node_prefix."/".$k] = $v;
+            }
+
+        }
+
+    }
+
     public function save(string $path, array $data) {
-        throw new \Exception("Xml data storage save operation is not supported!");
+        
+        $flat_data = [];
+
+        $this->recursiveFlatDataIntoTreePath($flat_data,$data,"");
+
+        $content = '<?xml version="1.0" encoding="utf-8"?>'."\r\n";
+
+        $content .= "<data>\r\n";
+
+        foreach ($flat_data as $k => $v) {
+            $content .= '<entry path="'.$k.'">'.$v.'</entry>'."\r\n";
+        }
+
+        $content .= "</data>\r\n";
+        
+        file_put_contents($this->prepareAndGetStorageFilePath($path), $content, LOCK_EX);
     }
 
 }

@@ -7,44 +7,10 @@
  */
 
 
-class LIniDataStorage implements LIDataStorage {
+class LIniDataStorage extends LAbstractDataStorage implements LIDataStorage {
     
-    private $root_path = null;
-    
-    public function delete(string $path) {
-        if (!$this->isInitialized()) $this->initWithDefaults ();
-        
-        $my_path1 = $this->root_path.$path.'.ini';
-        $my_path1 = str_replace('//', '/', $my_path1);
-        
-        if (is_file($my_path1)) @unlink($my_path1);
-    }
-
-    public function init(string $root_path) {
-        $this->root_path = $root_path;
-    }
-
-    public function initWithDefaults() {
-        $this->root_path = LEnvironmentUtils::getBaseDir().LConfigReader::simple('/misc/data_folder');
-    }
-
-    public function isInitialized() {
-        return $this->root_path!=null;
-    }
-    
-    public function isValidFilename($filename) {
-        return LStringUtils::endsWith($filename, '.ini');
-    }
-
-    public function isSaved(string $path) {
-        if (!$this->isInitialized()) $this->initWithDefaults ();
-        
-        $my_path1 = $this->root_path.$path.'.ini';
-        $my_path1 = str_replace('//', '/', $my_path1);
-        
-        //add xml support
-        
-        return is_file($my_path1);
+    protected function getFileExtension() {
+        return ".ini";
     }
     
     public function loadArray(string $path) {
@@ -78,7 +44,15 @@ class LIniDataStorage implements LIDataStorage {
     }
 
     public function save(string $path, array $data) {
-        throw new \Exception("Ini data storage save operation is not supported!");
+        $ini_lines = [];
+
+        foreach ($data as $k => $v) {
+            $ini_lines [] = $k." = ".$v."\n";
+        }
+
+        $content = implode("",$ini_lines);
+
+        file_put_contents($this->prepareAndGetStorageFilePath($path), $content, LOCK_EX);
     }
 
 }

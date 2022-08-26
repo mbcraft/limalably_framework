@@ -103,8 +103,12 @@ class LMysqlConnection implements LIDbConnection {
                 return false;
             }
         } catch (\Exception $ex) {
-            LErrorList::saveFromException('db', $ex);
-            return false;
+            if (class_exists('LErrorList')) {
+                LErrorList::saveFromException('db', $ex);
+                return false;
+            }
+            else throw $ex;
+            
         }
     }
 

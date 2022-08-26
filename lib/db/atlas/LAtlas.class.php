@@ -9,7 +9,7 @@
 
 class LAtlas {
     
-    static function db($connection_name='default') {
+    static function db(string $connection_name='default') {
         
         $connection = LDbConnectionManager::get($connection_name);
         

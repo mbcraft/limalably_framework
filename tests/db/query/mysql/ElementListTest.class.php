@@ -21,6 +21,23 @@ class ElementListTest extends LTestCase {
 		$this->assertEqual($el->toEscapedStringList(),"('prova')","La stringa della lista di elementi non corrisponde a quello atteso!");
 	}
 
+	function testElementListWithMultipleParametersWithAdd() {
+
+		db('framework_unit_tests');
+
+		$el = el();
+
+		$el->add('elemento1');
+		$el->add('elemento2');
+		$el->add('elemento3');			
+
+		$this->assertEqual($el->toRawStringList(),"(elemento1,elemento2,elemento3)","La stringa della lista di elementi non corrisponde a quello atteso!");
+
+		$this->assertEqual($el->toRawStringListWithoutParenthesis(),"elemento1,elemento2,elemento3","La stringa della lista di elementi non corrisponde a quello atteso!");
+
+		$this->assertEqual($el->toEscapedStringList(),"('elemento1','elemento2','elemento3')","La stringa della lista di elementi non corrisponde a quello atteso!");
+	}
+
 
 	function testElementListWithMultipleParameters() {
 

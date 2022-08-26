@@ -18,9 +18,9 @@ class LMysqlElementListList {
 
 	public function add($element_list_or_array) {
 		if (is_array($element_list_or_array)) $el = new LMysqlElementList(... $element_list_or_array); 
-		if (!$element_list instanceof LMysqlElementList) throw new \Exception("Only mysql element list are allowed inside element list list");
 		else $el = $element_list_or_array;
-
+		if (!$el instanceof LMysqlElementList) throw new \Exception("Only mysql element list are allowed inside element list list");
+		
 		$this->lists[] = $el;
 
 		return $this;

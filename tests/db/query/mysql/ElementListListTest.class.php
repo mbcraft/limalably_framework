@@ -8,6 +8,19 @@
 
 class ElementListListTest extends LTestCase {
 	
+
+	function testElementListListWithAdd() {
+		db('framework_unit_tests');
+		
+		$ell4 = ell();	// ell con dentro 2 el - array di array -> array con 2 el
+
+		$ell4->add(['a','b','c']);
+		$ell4->add(['d','e']);
+
+		$this->assertEqual($ell4,"('a','b','c'),('d','e')","La lista di liste non ritorna i dati attesi!");
+		
+	}
+
 	function testElementListList() {
 		
 		db('framework_unit_tests');

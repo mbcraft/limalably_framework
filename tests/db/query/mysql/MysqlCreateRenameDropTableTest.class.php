@@ -7,7 +7,7 @@
  */
 
 
-class CreateRenameDropTableTest extends LTestCase {
+class MysqlCreateRenameDropTableTest extends LTestCase {
 	
 
 	function testCreateRenameDropTable() {

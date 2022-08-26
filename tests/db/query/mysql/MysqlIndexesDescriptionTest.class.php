@@ -6,7 +6,7 @@
  *  
  */
 
-class IndexesDescriptionTest extends LTestCase {
+class MysqlIndexesDescriptionTest extends LTestCase {
 	
 
 

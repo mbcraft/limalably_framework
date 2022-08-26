@@ -6,7 +6,7 @@
  *  
  */
 
-class ImportExportWithCsvTest extends LTestCase {
+class MysqlImportExportWithCsvTest extends LTestCase {
 	
 
 	function testImportExportWithCsv() {

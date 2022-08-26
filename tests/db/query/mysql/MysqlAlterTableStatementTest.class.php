@@ -7,7 +7,7 @@
  */
 
 
-class AlterTableStatementTest extends LTestCase {
+class MysqlAlterTableStatementTest extends LTestCase {
 	
 
 	function testBasicColumnsOperations() {

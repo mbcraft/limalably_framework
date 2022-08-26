@@ -7,7 +7,7 @@
  */
 
 
-class ForeignKeyChecksTest extends LTestCase {
+class MysqlForeignKeyChecksTest extends LTestCase {
 	
 
 	function testForeignKeyChecks() {

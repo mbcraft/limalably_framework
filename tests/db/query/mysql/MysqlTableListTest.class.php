@@ -7,7 +7,7 @@
  */
 
 
-class TableListTest extends LTestCase {
+class MysqlTableListTest extends LTestCase {
 	
 
 	function testTableList() {

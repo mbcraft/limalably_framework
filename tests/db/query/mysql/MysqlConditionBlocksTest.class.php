@@ -6,7 +6,7 @@
  *  
  */
 
-class ConditionBlocksTest extends LTestCase {
+class MysqlConditionBlocksTest extends LTestCase {
 		
 
 	function testWhereBlock() {

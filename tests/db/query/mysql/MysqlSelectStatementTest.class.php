@@ -6,7 +6,7 @@
 *
 */
 
-class SelectStatementTest extends LTestCase {
+class MysqlSelectStatementTest extends LTestCase {
 	
 	function testBasicSelect() {
 		

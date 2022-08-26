@@ -6,7 +6,7 @@
  *  
  */
 
-class ReplaceValueTest extends LTestCase {
+class MysqlReplaceValueTest extends LTestCase {
 	
 
 	function testReplaceValue() {

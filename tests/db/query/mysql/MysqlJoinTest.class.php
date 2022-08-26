@@ -6,7 +6,7 @@
  *  
  */
 
-class JoinTest extends LTestCase {
+class MysqlJoinTest extends LTestCase {
 	
 
 	function testInnerJoin() {

@@ -6,7 +6,7 @@
 *
 */
 
-class QueryListTest extends LTestCase {
+class MysqlQueryListTest extends LTestCase {
 	
 	function testQueryListFromStringWithIterator() {
 

@@ -6,7 +6,7 @@
  *  
  */
 
-class ExpressionTest extends LTestCase {
+class MysqlExpressionTest extends LTestCase {
 	
 	function testBasicExpressionUsage() {
 

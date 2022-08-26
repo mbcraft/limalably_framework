@@ -7,7 +7,7 @@
  */
 
 
-class TableDescriptionTest extends LTestCase {
+class MysqlTableDescriptionTest extends LTestCase {
 	
 
 	function testTableDescription() {

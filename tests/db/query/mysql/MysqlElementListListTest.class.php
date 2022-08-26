@@ -6,7 +6,7 @@
  *  
  */
 
-class ElementListListTest extends LTestCase {
+class MysqlElementListListTest extends LTestCase {
 	
 
 	function testElementListListWithAdd() {

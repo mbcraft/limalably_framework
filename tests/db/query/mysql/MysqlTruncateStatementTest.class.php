@@ -6,7 +6,7 @@
  *  
  */
 
-class TruncateStatementTest extends LTestCase {
+class MysqlTruncateStatementTest extends LTestCase {
 	
 
 	function testTruncate()

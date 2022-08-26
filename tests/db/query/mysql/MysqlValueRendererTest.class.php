@@ -6,7 +6,7 @@
  *  
  */
 
-class ValueRendererTest extends LTestCase {
+class MysqlValueRendererTest extends LTestCase {
 	
 
 	function testValueRenderer() {

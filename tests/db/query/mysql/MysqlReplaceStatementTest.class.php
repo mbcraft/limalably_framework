@@ -7,7 +7,7 @@
  */
 
 
-class ReplaceStatementTest extends LTestCase {
+class MysqlReplaceStatementTest extends LTestCase {
 	
 	function testReplaceStatement() {
 		$db = db('framework_unit_tests');

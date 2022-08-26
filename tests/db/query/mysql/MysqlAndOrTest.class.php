@@ -6,7 +6,7 @@
  *  
  */
 
-class AndOrTest extends LTestCase {
+class MysqlAndOrTest extends LTestCase {
 	
 
 	function testAnd() {

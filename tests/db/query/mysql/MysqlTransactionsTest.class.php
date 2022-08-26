@@ -7,7 +7,7 @@
  */
 
 
-class TransactionsTest extends LTestCase {
+class MysqlTransactionsTest extends LTestCase {
 	
 
 	function testCommit() {

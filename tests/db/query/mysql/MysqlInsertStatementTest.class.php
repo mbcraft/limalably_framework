@@ -7,7 +7,7 @@
  */
 
 
-class InsertStatementTest extends LTestCase {
+class MysqlInsertStatementTest extends LTestCase {
 	
 
 	function testInsertStatement() {

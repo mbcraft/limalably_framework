@@ -6,7 +6,7 @@
  *  
  */
 
-class MultipleQueryTest extends LTestCase {
+class MysqlMultipleQueryTest extends LTestCase {
 	
 
 	function testSomeLittleQueries() {

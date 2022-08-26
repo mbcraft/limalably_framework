@@ -6,7 +6,7 @@
  *  
  */
 
-class PrivilegesTest extends LTestCase {
+class MysqlPrivilegesTest extends LTestCase {
 	
 
 

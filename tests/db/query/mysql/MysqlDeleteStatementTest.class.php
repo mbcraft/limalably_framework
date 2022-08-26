@@ -6,7 +6,7 @@
  *  
  */
 
-class DeleteStatementTest extends LTestCase {
+class MysqlDeleteStatementTest extends LTestCase {
 	
 
 	function testDeleteStatement() {

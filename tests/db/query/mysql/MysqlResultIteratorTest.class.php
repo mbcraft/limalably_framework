@@ -6,7 +6,7 @@
 *
 */
 
-class ResultIteratorTest extends LTestCase {
+class MysqlResultIteratorTest extends LTestCase {
 
 
 	function testResultIteratorWithSomeQueries() {

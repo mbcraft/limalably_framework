@@ -6,7 +6,7 @@
  *  
  */
 
-class FunctionsTest extends LTestCase {
+class MysqlFunctionsTest extends LTestCase {
 	
 
 	function testIsNull() {

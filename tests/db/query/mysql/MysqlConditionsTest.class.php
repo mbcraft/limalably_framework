@@ -6,7 +6,7 @@
  *  
  */
 
-class ConditionsTest extends LTestCase {
+class MysqlConditionsTest extends LTestCase {
 	
 
 

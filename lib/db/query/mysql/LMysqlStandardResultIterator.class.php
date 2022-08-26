@@ -12,7 +12,7 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 */
 
-class LMysqlResultIterator implements LIResultIterator {
+class LMysqlStandardResultIterator implements LIResultIterator {
 	
 	private $result;
 	private $last_assoc_row;
@@ -29,7 +29,7 @@ class LMysqlResultIterator implements LIResultIterator {
 		return $this->last_assoc_row!=null;
 	}
 
-	function nextRow() {
+	function next() {
 		return $this->last_assoc_row;
 	}
 

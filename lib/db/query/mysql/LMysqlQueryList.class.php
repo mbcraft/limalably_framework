@@ -63,8 +63,9 @@ class LMysqlQueryList {
 		do {
 
 			while ($query_result = mysqli_store_result($connection_handle)) {
-				$res = [];
+				$res = null;
 				while ($row = mysqli_fetch_assoc($query_result)) {
+					if ($res === null) $res = array();
 					$res[] = $row;
 				}
 				$results[] = $res;
@@ -74,6 +75,20 @@ class LMysqlQueryList {
 		} while(mysqli_next_result($connection_handle));	
 		
 		return $results;
+	}
+
+	function iterator($connection) {
+
+		if (!$connection) throw new \Exception("Connection is not set!");
+
+		if (!$connection->isOpen()) $connection->open();
+
+		$connection_handle = $connection->getHandle();
+
+		mysqli_multi_query($connection_handle,$this->query_list);
+
+		return new LMysqlQueryListResultIterator($connection_handle);
+
 	}
 
 }

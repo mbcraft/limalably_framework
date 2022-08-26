@@ -11,7 +11,7 @@ interface LIResultIterator {
 	
 	function hasNext();
 
-	function nextRow();
+	function next();
 
 	function stop();
 

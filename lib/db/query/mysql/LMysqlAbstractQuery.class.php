@@ -47,7 +47,7 @@ abstract class LMysqlAbstractQuery {
 
 		$connection_handle = $connection->getHandle();
 
-		$result = mysqli_query($connection_handle,$this.";");
+		$result = mysqli_query($connection_handle,$this->end());
 
 		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($connection_handle));
 		
@@ -80,7 +80,7 @@ abstract class LMysqlAbstractQuery {
 
 		$result = mysqli_query($connection_handle,$this->end(),MYSQLI_USE_RESULT);
 
-		return new LMysqlResultIterator($result);
+		return new LMysqlStandardResultIterator($result);
 		
 	}
 

@@ -441,6 +441,25 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function query_list(string $query_list) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlQueryList($query_list);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function query_list_from_file($path_or_file) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (is_string($path_or_file)) $par = new LFile($path_or_file);
+			else $par = $path_or_file;
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlQueryList($par);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 		function table_list() {
 			LQueryFunctions::checkLayerSelected();
 

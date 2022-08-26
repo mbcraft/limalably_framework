@@ -42,15 +42,15 @@ class ResultIteratorTest extends LTestCase {
 		$it = select('*','check_up_albero')->iterator($db);
 
 		$this->assertTrue($it->hasNext(),"Non ci sono più risultati da leggere!");
-		$this->assertEqual(count($it->nextRow()),4,"La riga non è con il numero di campi attesi!");
+		$this->assertEqual(count($it->next()),4,"La riga non è con il numero di campi attesi!");
 		$this->assertTrue($it->hasNext(),"Non ci sono più risultati da leggere!");
-		$this->assertEqual(count($it->nextRow()),4,"La riga non è con il numero di campi attesi!");
+		$this->assertEqual(count($it->next()),4,"La riga non è con il numero di campi attesi!");
 		$this->assertTrue($it->hasNext(),"Non ci sono più risultati da leggere!");
-		$this->assertEqual(count($it->nextRow()),4,"La riga non è con il numero di campi attesi!");
+		$this->assertEqual(count($it->next()),4,"La riga non è con il numero di campi attesi!");
 		$this->assertTrue($it->hasNext(),"Non ci sono più risultati da leggere!");
-		$this->assertEqual(count($it->nextRow()),4,"La riga non è con il numero di campi attesi!");
+		$this->assertEqual(count($it->next()),4,"La riga non è con il numero di campi attesi!");
 		$this->assertTrue($it->hasNext(),"Non ci sono più risultati da leggere!");
-		$this->assertEqual(count($it->nextRow()),4,"La riga non è con il numero di campi attesi!");
+		$this->assertEqual(count($it->next()),4,"La riga non è con il numero di campi attesi!");
 		$this->assertFalse($it->hasNext(),"Ci sono altri risultati da leggere nell'iteratore ma non ce ne dovrebbero essere!");
 		
 	}

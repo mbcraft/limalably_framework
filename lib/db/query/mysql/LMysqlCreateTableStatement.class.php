@@ -19,6 +19,8 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	private $temporary_modifier = "";
 	private $if_not_exists_option = "";
 	private $col_defs = [];
+	private $primary_key = null;
+	private $unique_constraints = [];
 	private $foreign_keys = [];
 	private $engine = "MyISAM";
 	private $charset_trailer = "";
@@ -52,6 +54,25 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 		if (!$column_definition instanceof LMysqlColumnDefinition) throw new \Exception("The parameter is not a valid column definition! Use column_def function to create column definitions.");
 
 		$this->col_defs[] = $column_definition;
+
+		return $this;
+	}
+
+	function primary_key(... $column_names) {
+		if (count($column_names)==1 && is_array($column_names)) $cols = $column_names[0];
+		else $cols = $column_names;
+
+		$this->primary_key = " PRIMARY KEY ( ".implode(',',$cols)." )";
+
+		return $this;
+	}
+
+	function unique($constraint_name,$column_name_list) {
+
+		if (is_string($column_name_list)) $column_name_list = array($column_name_list);
+		if (empty($column_name_list)) throw new \Exception("Column name list can't be empty in unique in mysql create table statement");
+
+		$this->unique_constraints[] = " CONSTRAINT ".$constraint_name." UNIQUE ( ".implode(',',$column_name_list)." )";
 
 		return $this;
 	}
@@ -98,7 +119,12 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 
 		if (empty($this->col_defs)) throw new \Exception("At least one column definition is needed");
 
-		$elements = array_merge($this->col_defs,$this->foreign_keys);
+		$pk_and_fks = array_merge($this->unique_constraints,$this->foreign_keys);
+		if ($this->primary_key) {
+			array_unshift($pk_and_fks,$this->primary_key);
+		}
+
+		$elements = array_merge($this->col_defs,$pk_and_fks);
 
 		return $this->build_query("CREATE",$this->temporary_modifier,"TABLE",$this->if_not_exists_option,$this->table_name,"(",implode(",",$elements),")","ENGINE","=",$this->engine,$this->charset_trailer);
 

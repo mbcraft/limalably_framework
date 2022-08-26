@@ -25,10 +25,28 @@ class LMysqlAlterTableStatement extends LMysqlAbstractQuery {
 
 	}
 
+	function add_primary_key(... $column_names) {
+		if (count($column_names)==1 && is_array($column_names)) $cols = $column_names[0];
+		else $cols = $column_names;
+
+		$this->changes[] = "ADD PRIMARY KEY ( ".implode(',',$cols)." )";
+
+		return $this;
+	}
+
 	function drop_foreign_key($constraint_name) {
 		if (!is_string($constraint_name)) throw new \Exception("Constraint name to drop is not a string.");
 
 		$this->changes[] = "DROP FOREIGN KEY ".$constraint_name;
+
+		return $this;
+
+	}
+
+	function drop_unique_index($constraint_name) {
+		if (!is_string($constraint_name)) throw new \Exception("Constraint name to drop is not a string.");
+
+		$this->changes[] = "DROP INDEX ".$constraint_name;
 
 		return $this;
 
@@ -74,6 +92,16 @@ class LMysqlAlterTableStatement extends LMysqlAbstractQuery {
 		if (!$fk_definition instanceof LMysqlForeignKeyConstraintDefinition) throw new \Exception("parameter is not a valid foreign key definition in mysql alter table statement");
 
 		$this->changes[] = "ADD ".$fk_definition;
+
+		return $this;
+	}
+
+	function add_unique_index($constraint_name,$column_name_list) {
+
+		if (is_string($column_name_list)) $column_name_list = array($column_name_list);
+		if (empty($column_name_list)) throw new \Exception("Column name list can't be empty in add_unique_index in mysql alter table statement");
+
+		$this->changes[] = "ADD CONSTRAINT ".$constraint_name." UNIQUE ( ".implode($column_name_list)." ) ";
 
 		return $this;
 	}

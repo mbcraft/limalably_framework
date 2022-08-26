@@ -40,4 +40,8 @@ class LMysqlTableDescriptionStatement extends LMysqlAbstractQuery {
 		return $column_description_list;
 	}
 
+	public function iterator($connection) {
+		throw new \Exception("iterator function is not supported for this statement.Use 'go' and get the full result");
+	}
+
 }

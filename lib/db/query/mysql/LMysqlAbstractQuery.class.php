@@ -56,11 +56,13 @@ abstract class LMysqlAbstractQuery {
 			return mysqli_insert_id($connection_handle);
 			
 		}
-		if ($this instanceof LMysqlSelectStatement || $this instanceof LMysqlTableDescriptionStatement) {
+		if ($this instanceof LMysqlSelectStatement || $this instanceof LMysqlTableDescriptionStatement || $this instanceof LMysqlDescribeIndexesStatement) {
 			$full_result = [];
 
 			while ($row = mysqli_fetch_assoc($result)) $full_result[] = $row;
+
 			return $full_result;
+			
 		}
 	}
 

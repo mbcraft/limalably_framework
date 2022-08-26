@@ -489,6 +489,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function describe_indexes(string $table_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDescribeIndexesStatement($table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
 		function col_def(string $column_name) {
 			LQueryFunctions::checkLayerSelected();
 

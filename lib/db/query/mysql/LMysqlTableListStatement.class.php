@@ -44,4 +44,8 @@ class LMysqlTableListStatement extends LMysqlAbstractQuery {
 		
 	}
 
+	public function iterator($connection) {
+		throw new \Exception("iterator function is not supported for this statement.Use 'go' and get the full result");
+	}
+
 }

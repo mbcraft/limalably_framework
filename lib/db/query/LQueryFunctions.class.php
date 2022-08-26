@@ -508,10 +508,18 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
-		function describe_indexes(string $table_name) {
+		function table_indexes_list(string $table_name) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDescribeIndexesStatement($table_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();	
+		}
+
+		function privileges_list() {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlShowPrivilegesStatement();
 
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}

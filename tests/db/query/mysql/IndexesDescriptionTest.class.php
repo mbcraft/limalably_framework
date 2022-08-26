@@ -15,7 +15,7 @@ class IndexesDescriptionTest extends LTestCase {
 
 		$db = db('framework_unit_tests');
 
-		$indexes = describe_indexes('albero')->go($db);
+		$indexes = table_indexes_list('albero')->go($db);
 
 		$this->assertEqual(count($indexes),3,"Il numero di indici trovati non corrisponde!");
 

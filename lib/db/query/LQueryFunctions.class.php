@@ -369,6 +369,14 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function _expr(string $text) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlExpression($text);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 		function wh($something) {
 			LQueryFunctions::checkLayerSelected();
 

@@ -25,5 +25,5 @@ interface LIDataStorage {
     function save(string $path,array $data);
     
     function delete(string $path);
-    
+
 }

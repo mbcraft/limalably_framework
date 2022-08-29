@@ -60,6 +60,20 @@ abstract class LAbstractDataStorage {
         return $my_path1;
     }
 
+    protected function recursiveFlatDataIntoTreePath(&$result,$node,$current_node_prefix) {
+
+        foreach ($node as $k => $v) {
+
+            if (is_array($v)) {
+                $this->recursiveFlatDataIntoTreePath($result,$v,$current_node_prefix."/".$k);
+            } else {
+                $result[$current_node_prefix."/".$k] = $v;
+            }
+
+        }
+
+    }
+
     protected abstract function getFileExtension();
 
 } 

@@ -59,5 +59,66 @@ EOH;
 
         //$storage->delete('prova');
     }
+
+
+    private function hasTags(string $value) {
+        $matches = [];
+
+        preg_match_all("/(\<(?<closing>\/?)(?<tagname>\w+)\s*(?<autoclose>\/?)\>)/",$value,$matches, PREG_UNMATCHED_AS_NULL);
+
+        $match_count = count($matches[0]);
+
+        return $match_count>0;
+    }
+
+    private function hasWellFormedTags(string $value) {
+
+        $matches = [];
+
+        preg_match_all("/(\<(?<closing>\/?)(?<tagname>\w+)\s*(?<autoclose>\/?)\>)/",$value,$matches, PREG_UNMATCHED_AS_NULL);
+
+        $match_count = count($matches[0]);
+
+        $tag_stack = [];
+
+        for ($i=0;$i<$match_count;$i++) {
+            $tag_name = $matches['tagname'][$i];
+            $is_autoclose = $matches['autoclose'][$i]!=null;
+            $is_closing = $matches['closing'][$i]!=null;
+            if ($is_closing && $is_autoclose) return false;
+            $is_begin = !$is_autoclose && !$is_closing;
+
+            if ($is_autoclose) continue;
+            if ($is_begin) array_push($tag_stack,$tag_name);
+            if ($is_closing) {
+                $current_el = array_pop($tag_stack);
+                if ($current_el==$tag_name) continue;
+                else return false;
+            }
+        
+        }
+
+        if (!empty($tag_stack)) return false;
+
+        return true;
+
+    }
+
+    public function testWellFormedTags() {
+        $t1 = "fkldgjgfklj <miotag /> blkijfdkdhf";
+        $t2 = "<miotag> kdjshdfkjshdfs k </miotag>";
+        $t3 = "qualcosa bla <opentag>";
+        $t4 = "qualcosaltro </closetag> ";
+        $t5 = "bla bla e ancora bla ....";
+
+        
+        $this->assertTrue($this->hasWellFormedTags($t1),"Il controllo di correttezza dell'xml non funziona correttamente!");
+        $this->assertTrue($this->hasWellFormedTags($t2),"Il controllo di correttezza dell'xml non funziona correttamente!");
+        $this->assertFalse($this->hasWellFormedTags($t3),"Il controllo di correttezza dell'xml non funziona correttamente!");
+        $this->assertFalse($this->hasWellFormedTags($t4),"Il controllo di correttezza dell'xml non funziona correttamente!");
+        $this->assertTrue($this->hasWellFormedTags($t5),"Il controllo di correttezza dell'xml non funziona correttamente!");
+
+
+    }
     
 }

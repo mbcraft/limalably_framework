@@ -36,5 +36,28 @@ class JsonDataStorageTest extends LTestCase {
         
         
     }
+
+    private function dataHasNewlines(string $value) {
+        return preg_match("/[\r\n]/",$value,$matches)!==0;
+    }
+
+    public function testCRLF() {
+
+        $data1 = "abcd";
+
+        $data2 = "ab\r\ncd";
+
+        $data3 = "ab\rcd";
+
+        $data4 = "ab\ncd";
+
+        $this->assertFalse($this->dataHasNewlines($data1),"Il dato contiene andate a capo!!");
+        $this->assertTrue($this->dataHasNewlines($data2),"Il dato non contiene andate a capo!!");
+        $this->assertTrue($this->dataHasNewlines($data3),"Il dato non contiene andate a capo!!");
+        $this->assertTrue($this->dataHasNewlines($data4),"Il dato non contiene andate a capo!!");
+
+
+
+    }
     
 }

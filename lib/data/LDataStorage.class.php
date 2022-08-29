@@ -24,8 +24,13 @@ class LDataStorage implements LIDataStorage {
     function isInitialized() {
         return $this->my_json_storage->isInitialized();
     }
+
+    private $root_path;
     
     function init(string $root_path) {
+
+        $this->root_path = $root_path;
+
         $this->my_json_storage->init($root_path);
         $this->my_xml_storage->init($root_path);
         $this->my_ifs_storage->init($root_path);
@@ -199,4 +204,24 @@ class LDataStorage implements LIDataStorage {
         $this->my_ini_storage->delete($path);
     }
     
+    function unzipAsStorage($archive_path_or_file) {
+        $f = new LDir($this->root_path);
+        $elements = $f->listElements();
+
+        foreach ($elements as $el) {
+            if ($el instanceof LDir) $el->delete(true);
+            else $el->delete();
+        }
+
+        LZipUtils::expandArchive($archive_path_or_file,$this->root_path);
+    }
+
+    function zipStorageAs(string $path_or_file) {
+
+        if (is_string($path_or_file)) $f = new LFile($path_or_file);
+        if ($path_or_file instanceof LFile) $f = $path_or_file;
+
+        LZipUtils::createArchive($f,$this->root_path);
+    }
+
 }

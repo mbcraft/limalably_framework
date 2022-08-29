@@ -8,7 +8,7 @@
 
 /*START-PHP-CONTENT*/
 
-class FileSystemUtils
+class LFileSystemUtils
 {
     static function isCurrentDirName($name)
     {

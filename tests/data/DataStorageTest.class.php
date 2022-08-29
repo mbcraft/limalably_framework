@@ -27,4 +27,32 @@ class DataStorageTest extends LTestCase {
         $this->assertEqual($my_data['key']['mixed']['quattordici'],14,"I dati non sono stati letti correttamente!");
     }
     
+    function testZipUnzipDataStorage() {
+
+        $d = new LDataStorage();
+        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/tmp/');
+
+        $zip_file = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/storage_test.zip');
+        if ($zip_file->exists()) $zip_file->delete();
+
+        $s2 = new LDir($_SERVER['FRAMEWORK_DIR'].'tests/tmp2/');
+        $s2->delete(true);
+
+        $s2->touch();
+
+        $d->zipStorageAs($zip_file);
+
+        $this->assertTrue($zip_file->exists(),"Il file archivio non è stato creato!");
+
+        $d2 = new LDataStorage();
+        $d2->init($_SERVER['FRAMEWORK_DIR'].'tests/tmp2/');
+
+        $d2->unzipAsStorage($zip_file);
+
+        $my_data = $d2->load('prova');
+
+        $this->assertEqual($my_data['c'],'x',"Lo storage non è stato gestito correttamente!");
+
+
+    }
 }

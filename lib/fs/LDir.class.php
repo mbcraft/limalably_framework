@@ -153,6 +153,13 @@ class LDir extends LFileSystemElement
         return count($this->listFiles())===0;
     }
 
+    function listAll($myExcludes=self::DEFAULT_EXCLUDES) {
+        return $this->listElements($myExcludes,self::FILTER_ALL_ELEMENTS);
+    }
+
+    function listFiles($myExcludes=self::DEFAULT_EXCLUDES) {
+        return $this->listElements($myExcludes,self::FILTER_ALL_FILES);
+    }
  /*
  * TESTED
  */

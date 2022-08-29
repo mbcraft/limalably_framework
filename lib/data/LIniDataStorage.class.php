@@ -43,10 +43,28 @@ class LIniDataStorage extends LAbstractDataStorage implements LIDataStorage {
         return $result_tree->getRoot();
     }
 
+    private function recursiveFlatDataIntoTreePath(&$result,$node,$current_node_prefix) {
+
+        foreach ($node as $k => $v) {
+
+            if (is_array($v)) {
+                $this->recursiveFlatDataIntoTreePath($result,$v,$current_node_prefix."/".$k);
+            } else {
+                $result[$current_node_prefix."/".$k] = $v;
+            }
+
+        }
+
+    }
+
     public function save(string $path, array $data) {
         $ini_lines = [];
 
-        foreach ($data as $k => $v) {
+        $my_data = [];
+
+        $this->recursiveFlatDataIntoTreePath($my_data,$data,"");
+
+        foreach ($my_data as $k => $v) {
             $ini_lines [] = $k." = ".$v."\n";
         }
 

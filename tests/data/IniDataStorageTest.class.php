@@ -43,6 +43,23 @@ class IniDataStorageTest extends LTestCase {
 
     }
 
+    function testNestedKeys() {
+
+        $d = new LIniDataStorage();
+        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/tmp/');
+        
+        $data = array('a' => 1,'b' => array('c' => 2,'d' => 3));
+
+        $d->save('prova_chiavi_annidate',$data);
+
+        $result = $d->load('prova_chiavi_annidate');
+
+        $this->assertEqual($result['a'],1,"Il dato non è più presente nei risultati!");
+        $this->assertEqual($result['b']['c'],2,"Il dato non è più presente nei risultati!");
+        $this->assertEqual($result['b']['d'],3,"Il dato non è più presente nei risultati!");
+           
+    }
+
     function testGetDataFromRealIni() {
         $d = new LIniDataStorage();
         $d->init($_SERVER['FRAMEWORK_DIR'].'tests/');

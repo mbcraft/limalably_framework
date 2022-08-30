@@ -22,6 +22,11 @@ EOT;
 		$result = $t->render($data);
 
 		$this->assertEqual($result,"Hello world!! : Ciao!","Il risultato del rendering non corrisponde!!");
+
+		$cache_dir = $_SERVER['FRAMEWORK_DIR'].'lib/template/drivers/php/.cache/';
+
+		$d = new LDir($cache_dir);
+		$d->delete(true);
 		
 	}
 

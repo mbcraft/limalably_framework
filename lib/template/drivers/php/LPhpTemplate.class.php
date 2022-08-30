@@ -35,7 +35,7 @@ class LPhpTemplate implements LITemplate {
     		@mkdir($cache_dir,0777);
     	}	
 
-    	$cache_file = $cache_dir.sha1($php_source).'.php';
+    	$cache_file = $cache_dir.sha1($this->php_source).'.php';
 
         if (!file_exists($cache_file)) {
 

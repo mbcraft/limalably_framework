@@ -120,7 +120,7 @@ class LTemplateRendering {
                 //LResult::trace("Data is ready, now doing real rendering ...");
                 return $template->render($this->my_output->getRoot());
             } catch (\Exception $ex) {
-                throw $ex;
+                
                 LErrorList::saveFromException('template', $ex);
             }
         }

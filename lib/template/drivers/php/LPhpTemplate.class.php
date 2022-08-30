@@ -28,16 +28,19 @@ class LPhpTemplate implements LITemplate {
 
     		$cache_dir = $_SERVER['PROJECT_DIR'].'temp/cache/template/php/';
     	} else {
-    		$cache_dir = $_SERVER['FRAMEWORK_DIR'].'lib/template/drivers/php/cache/';
+    		$cache_dir = $_SERVER['FRAMEWORK_DIR'].'lib/template/drivers/php/.cache/';
     	}
 
     	if (!file_exists($cache_dir)) {
     		@mkdir($cache_dir,0777);
     	}	
 
-    	$cache_file = $cache_dir.'__current_template.php';
+    	$cache_file = $cache_dir.sha1($php_source).'.php';
 
-    	file_put_contents($cache_file,$this->php_source,LOCK_EX);
+        if (!file_exists($cache_file)) {
+
+    	   file_put_contents($cache_file,$this->php_source,LOCK_EX);
+        }
 
     	ob_start();
 
@@ -46,12 +49,6 @@ class LPhpTemplate implements LITemplate {
     	$result = ob_get_contents(); 
 
     	ob_end_clean();
-
-    	@unlink($cache_file);
-    	$current_files = scandir($cache_dir);
-    	if (count($current_files)==2) {
-    		@rmdir($cache_dir);
-    	}
 
     	return $result;
 

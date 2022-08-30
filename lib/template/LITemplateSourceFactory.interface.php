@@ -9,6 +9,8 @@
 
 interface LITemplateSourceFactory {
     
+    function getEngineName();
+
     function isTemplateSource(string $string_source);
     
     function isInitialized();

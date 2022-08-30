@@ -13,6 +13,10 @@ class LConfigReader {
     
     const NO_DEFAULT_VALUE = -16;
     
+    public static function has($config_path) {
+        return LConfig::is_set($config_path) || LConfig::is_set('/defaults/'.$config_path);
+    }
+
     public static function simple($config_path,$default_value = self::NO_DEFAULT_VALUE) {
         if (LConfig::is_set($config_path)) {
             return LConfig::mustGetOriginal($config_path);

@@ -322,9 +322,9 @@ class LUrlMapExecutor {
 
         //template rendering
 
-        if ($this->my_url_map->is_set('/template')) {
+        if ($this->my_url_map->is_set('/template/name')) {
             LResult::trace("Evaluating template ...");
-            $template_path = $this->my_url_map->get('/template');
+            $template_path = $this->my_url_map->get('/template/name');
 
             $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $this->capture, $parameters, $this->output);
 

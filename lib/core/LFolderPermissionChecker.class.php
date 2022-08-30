@@ -28,23 +28,33 @@ class LFolderPermissionChecker {
     }
 
     private function getProjectFoldersSpecList() {
-        $result = [
+        
+        $r1 = array();
+
+        $engine_list = LConfigReader::simple('/template');
+
+        foreach ($engine_list as $engine_name => $engine_specs) {
+            $r1 [] = new LFolderCheck($engine_specs['root_folder'],"?,r");
+            $r1[] = new LFolderCheck($engine_specs['root_folder'].LConfigReader::simple('/format/html/error_templates_folder'),"?,r");
+            $r1[] = new LFolderCheck($engine_specs['root_folder'].LConfigReader::simple('/format/json/error_templates_folder'),"?,r");
+            $r1 [] = new LFolderCheck($engine_specs['cache_folder'],"?,r,w,x");
+        }
+
+        $r2 = [
             new LFolderCheck(LConfigReader::simple('/urlmap/static_routes_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/urlmap/alias_db_routes_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/urlmap/private_routes_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::simple('/template/root_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::simple('/template/cache_folder'),"?,r,w,x"),
             new LFolderCheck(LConfigReader::simple('/classloader/project_folder_list'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/classloader/map_cache_file_path'),"f"),
             new LFolderCheck(LConfigReader::simple('/classloader/class_cache_folder'),"f"),
-            new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/html/error_templates_folder'),"?,r"),
-            new LFolderCheck(LConfigReader::simple('/template/root_folder').LConfigReader::simple('/format/json/error_templates_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/misc/proc_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/misc/data_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/i18n/translations_root_folder'),"?,r"),
             new LFolderCheck(LConfigReader::simple('/i18n/cache_folder'),"?,r,w,x"),
         ];
         
+        $result = array_merge($r1,$r2);
+
         $log_type = LConfigReader::executionMode('/logging/type');
                 
         if (LStringUtils::endsWith($log_type, 'file')) {

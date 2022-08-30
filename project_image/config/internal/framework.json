@@ -20,7 +20,9 @@
                     "private_routes_visible": false
                 },
                 "template": {
-                    "auto_reload": true
+                    "twig" : {
+                        "auto_reload": true
+                    }
                 },
                 "request" : {
                     "route_handler_class" : "LMaintenanceRouteExecutor"
@@ -35,7 +37,9 @@
                     "private_routes_visible": true
                 },
                 "template": {
-                    "auto_reload": true
+                    "twig" : {
+                        "auto_reload": true
+                    }
                 },
                 "misc" : {
                     "errors" : {
@@ -53,7 +57,9 @@
                     "private_routes_visible": true
                 },
                 "template": {
-                    "auto_reload": true
+                    "twig" : {
+                        "auto_reload": true
+                    }
                 },
                 "misc" : {
                     "errors" : {
@@ -70,7 +76,9 @@
                     "private_routes_visible": false
                 },
                 "template": {
-                    "auto_reload": false
+                    "twig" : {
+                        "auto_reload": false
+                    }
                 },
                 "misc" : {             
                     "errors" : {
@@ -89,7 +97,9 @@
                     "private_routes_visible": false
                 },
                 "template": {
-                    "auto_reload": false
+                    "twig" : {
+                        "auto_reload": false
+                    }
                 },
                 "misc" : {
                     "trace_enabled" : false,
@@ -111,13 +121,15 @@
             "validation_driver_class": "LRespectValidationDriver"
         },
         "template": {
-            "source_factory_class": "LTwigTemplateSourceFactory",
-            "root_folder": "template/",
-            "cache_folder": "temp/cache/template/",
-            "strict_variables": false,
-            "autoescape" : "name",
-            "import_into_variables": ["env", "env_string" , "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string","i18n","flags"],
-            "extension_search_list" : [".html",".xhtml",".json",".twig"]
+            "twig" : {
+                "source_factory_class": "LTwigTemplateSourceFactory",
+                "root_folder": "template/",
+                "cache_folder": "temp/cache/template/",
+                "strict_variables": false,
+                "autoescape" : "name",
+                "import_into_variables": ["env", "env_string" , "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string","i18n","flags"],
+                "extension_search_list" : [".html",".xhtml",".json",".twig"]
+            }
         },
         "logging": {
             "distinct-file": {
@@ -211,6 +223,7 @@
             "build" : 0
         },
         "i18n" : {
+            "template_engine_name" : "twig",
             "translations_root_folder" : "i18n/",
             "capture_lang_variable" : "lang",
             "session_lang_variable_path" : "/lang",

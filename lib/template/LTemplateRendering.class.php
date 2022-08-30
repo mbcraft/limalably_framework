@@ -17,6 +17,8 @@ class LTemplateRendering {
     private $my_parameters = null;
     private $my_output = null;
 
+    private $engine_name = null;
+
     private $template_factory = null;
     private $template_source = null;
     
@@ -30,7 +32,13 @@ class LTemplateRendering {
         
         $this->template_factory = new LUrlMapTemplateSourceFactory();
 
-        $this->template_source = $this->template_factory->createFileTemplateSource();
+        $engine = null;
+
+        if ($this->my_urlmap->is_set('/template/engine')) $engine = $this->my_urlmap->get('/template/engine');
+
+        $this->engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
+
+        $this->template_source = $this->template_factory->createFileTemplateSource($this->engine_name);
     }
 
     private function my_json_encode($name, $value) {
@@ -53,7 +61,7 @@ class LTemplateRendering {
             $template = $this->template_source->getTemplate($template_path);
 
             //inserire fra le variabili : urlmap, input, session, capture, i18n, parameters - con eventuale prefisso di path tipo 'meta'
-            $import_into_variables = LConfigReader::executionMode('/template/import_into_variables');
+            $import_into_variables = LConfigReader::executionMode('/template/'.$this->engine_name.'/import_into_variables');
             
             if (!$this->my_output) $this->my_output = new LTreeMap();
             //
@@ -108,9 +116,11 @@ class LTemplateRendering {
                         default : throw new \Exception("Unable to import into variables : " . $import_name . " .Available imports : " . var_export(self::AVAILABLE_IMPORTS, true));
                     }
                 }
+
                 //LResult::trace("Data is ready, now doing real rendering ...");
                 return $template->render($this->my_output->getRoot());
             } catch (\Exception $ex) {
+                throw $ex;
                 LErrorList::saveFromException('template', $ex);
             }
         }

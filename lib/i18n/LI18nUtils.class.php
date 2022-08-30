@@ -126,9 +126,11 @@ class LI18nUtils {
 
         $base_folder = LEnvironmentUtils::getBaseDir();
 
-        $source_factory_class = LConfigReader::simple('/template/source_factory_class');
+        $translations_template_engine = LConfigReader::simple('/i18n/template_engine_name');
 
-        $my_factory = new $source_factory_class();
+        $source_factory_class = LConfigReader::simple('/template/'.$translations_template_engine.'/source_factory_class');
+
+        $my_factory = new $source_factory_class($translations_template_engine);
 
         $root_folder = $base_folder . LConfigReader::simple('/i18n/translations_root_folder');
 

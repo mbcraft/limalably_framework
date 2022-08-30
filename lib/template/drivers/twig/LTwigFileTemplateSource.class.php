@@ -11,21 +11,26 @@ class LTwigFileTemplateSource implements LITemplateSource {
     private $loader;
     private $env;
 
-    function __construct($templates_path, $cache_path = null) {
+    private $engine_name;
+
+    function __construct(string $engine_name,$templates_path, $cache_path = null) {
+        
+        $this->engine_name = $engine_name;
+
         $this->loader = new \Twig\Loader\FilesystemLoader($templates_path);
 
         $params = [];
         if ($cache_path)
             $params['cache'] = $cache_path;
-        $params['strict_variables'] = LConfigReader::executionMode('/template/strict_variables');
-        $params['auto_reload'] = LConfigReader::executionMode('/template/auto_reload');
-        $params['autoescape'] = LConfigReader::simple('/template/autoescape');
+        $params['strict_variables'] = LConfigReader::executionMode('/template/'.$this->engine_name.'/strict_variables');
+        $params['auto_reload'] = LConfigReader::executionMode('/template/'.$this->engine_name.'/auto_reload');
+        $params['autoescape'] = LConfigReader::simple('/template/'.$this->engine_name.'/autoescape');
         
         $this->env = new \Twig\Environment($this->loader, $params);
     }
 
     function searchTemplate($path) {
-        $extension_search_list = LConfigReader::simple('/template/extension_search_list');
+        $extension_search_list = LConfigReader::simple('/template/'.$this->engine_name.'/extension_search_list');
 
         if ($this->loader->exists($path))
             return $path;

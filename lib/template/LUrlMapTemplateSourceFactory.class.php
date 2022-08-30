@@ -8,31 +8,34 @@
 
 class LUrlMapTemplateSourceFactory {
     
-    public function createFileTemplateSource() {
-        $template_factory_class = LConfigReader::simple('/template/source_factory_class');
-                
-        $factory = new $template_factory_class();
+    public function createFileTemplateSource($engine = null) {
+
+        $engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
+
+        $factory = LTemplateUtils::findTemplateSourceFactoryInstance($engine_name);
         
-        $root_folder = LConfigReader::simple('/template/root_folder');
-        $cache_path = LConfigReader::simple('/template/cache_folder');
+        $root_folder = LConfigReader::simple('/template/'.$engine_name.'/root_folder');
+        $cache_path = LConfigReader::simple('/template/'.$engine_name.'/cache_folder');
         
         return $factory->createFileTemplateSource($root_folder,$cache_path);
     }
 
-    public function createStringArrayTemplateSource(array $data_map) {
-        $template_factory_class = LConfigReader::simple('/template/source_factory_class');
-                
-        $factory = new $template_factory_class();
+    public function createStringArrayTemplateSource(array $data_map,string $engine = null) {
         
-        $cache_path = LConfigReader::simple('/template/cache_folder');
+        $engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
+
+        $factory = LTemplateUtils::findTemplateSourceFactoryInstance($engine_name);
+        
+        $cache_path = LConfigReader::simple('/template/'.$engine_name.'/cache_folder');
         
         return $factory->createStringArrayTemplateSource($data_map,$cache_path);
     }
 
-    public function createTemplateFromString(string $template_source) {
-        $template_factory_class = LConfigReader::simple('/template/source_factory_class');
-                
-        $factory = new $template_factory_class();
+    public function createTemplateFromString(string $template_source,string $engine = null) {
+            
+        $engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
+
+        $factory = LTemplateUtils::findTemplateSourceFactoryInstance($engine_name);
         
         $factory->createTemplateFromString($template_source);
     }

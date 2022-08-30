@@ -37,7 +37,13 @@ class LFolderPermissionChecker {
             $r1 [] = new LFolderCheck($engine_specs['root_folder'],"?,r");
             $r1[] = new LFolderCheck($engine_specs['root_folder'].LConfigReader::simple('/format/html/error_templates_folder'),"?,r");
             $r1[] = new LFolderCheck($engine_specs['root_folder'].LConfigReader::simple('/format/json/error_templates_folder'),"?,r");
-            $r1 [] = new LFolderCheck($engine_specs['cache_folder'],"?,r,w,x");
+
+            $template_source_factory = $engine_specs['source_factory_class'];
+
+            $factory_instance = new $template_source_factory($engine_name);
+            if ($factory_instance->supportsCache()) {
+                $r1 [] = new LFolderCheck($engine_specs['cache_folder'],"?,r,w,x");
+            }
         }
 
         $r2 = [

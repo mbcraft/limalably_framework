@@ -15,7 +15,11 @@ class LUrlMapTemplateSourceFactory {
         $factory = LTemplateUtils::findTemplateSourceFactoryInstance($engine_name);
         
         $root_folder = LConfigReader::simple('/template/'.$engine_name.'/root_folder');
-        $cache_path = LConfigReader::simple('/template/'.$engine_name.'/cache_folder');
+
+        $cache_path = null;
+        if ($factory->supportsCache()) {
+            $cache_path = LConfigReader::simple('/template/'.$engine_name.'/cache_folder');
+        }
         
         return $factory->createFileTemplateSource($root_folder,$cache_path);
     }
@@ -26,7 +30,10 @@ class LUrlMapTemplateSourceFactory {
 
         $factory = LTemplateUtils::findTemplateSourceFactoryInstance($engine_name);
         
-        $cache_path = LConfigReader::simple('/template/'.$engine_name.'/cache_folder');
+        $cache_path = null;
+        if ($factory->supportsCache()) {
+            $cache_path = LConfigReader::simple('/template/'.$engine_name.'/cache_folder');
+        }
         
         return $factory->createStringArrayTemplateSource($data_map,$cache_path);
     }

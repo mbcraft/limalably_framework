@@ -14,6 +14,10 @@ class LTwigTemplateSourceFactory implements LITemplateSourceFactory {
         $this->engine_name = $engine_name;
     }
 
+    public function supportsCache() {
+        return true;
+    }
+
     public function getEngineName() {
         return $this->engine_name;
     }

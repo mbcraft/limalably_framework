@@ -32,13 +32,35 @@ class LTemplateRendering {
         
         $this->template_factory = new LUrlMapTemplateSourceFactory();
 
-        $engine = null;
-
-        if ($this->my_urlmap->is_set('/template/engine')) $engine = $this->my_urlmap->get('/template/engine');
-
-        $this->engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
+        $this->findEngineName();
 
         $this->template_source = $this->template_factory->createFileTemplateSource($this->engine_name);
+    }
+
+    private function findEngineName() {
+        $engine = null;
+
+        if ($this->my_urlmap->is_set('/template/engine'))  
+        { 
+            $engine = $this->my_urlmap->get('/template/engine');
+
+            $this->engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
+        } else {
+            $template_name = $this->my_urlmap->get('/template/name');
+
+            $engine_list = LConfigReader::simple('/template');
+
+            foreach ($engine_list as $engine_name => $engine_specs) {
+                $extension_search_list = $engine_specs['extension_search_list'];
+
+                foreach ($extension_search_list as $ext) {
+                    if (LStringUtils::endsWith($template_name,$ext)) {
+                        $this->engine_name = $engine_name;
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     private function my_json_encode($name, $value) {

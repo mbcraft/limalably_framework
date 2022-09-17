@@ -17,6 +17,9 @@ class LDbConnectionManager {
 
 
     public static function getLastConnectionUsed() {
+
+        if (!self::$last_connection_used) self::$last_connection_used = self::get();
+
         return self::$last_connection_used;
     }
 
@@ -44,21 +47,35 @@ class LDbConnectionManager {
      * @param string $connection_name Il nome della connessione
      * @return mixed L'handle per effettuare query al database
      */
-    public static function get(string $connection_name = 'default') {
+    public static function get($connection_name = null) {
+
+        if (!$connection_name) {
+            $db_list = LConfigReader::simple('/database');
+            if (count($db_list)==1) return self::get(array_keys($db_list)[0]);
+            else throw new \Exception("Unable to uniquely determine database connection.");
+        }
         
-        if (!isset(self::$connections[$connection_name])) {
-            self::$connections[$connection_name] = self::loadFromConfig($connection_name);    
-        } 
-        
-        if (!isset(self::$connections[$connection_name])) throw new \Exception("Connection with name '".$connection_name."' is not defined!");
+        if (is_object($connection_name)) return $connection_name;
 
-        $result = self::$connections[$connection_name];
+        if (is_string($connection_name)) {
 
-        self::$last_connection_used = $result;
+            if (!isset(self::$connections[$connection_name])) {
+                self::$connections[$connection_name] = self::loadFromConfig($connection_name);    
+            } 
+            
+            if (!isset(self::$connections[$connection_name])) throw new \Exception("Connection with name '".$connection_name."' is not defined!");
 
-        if (!$result->isOpen()) $result->open();
+            $result = self::$connections[$connection_name];
 
-        return $result;
+            self::$last_connection_used = $result;
+
+            if (!$result->isOpen()) $result->open();
+
+            return $result;
+
+        }
+
+        throw new \Exception("Unable");
         
     }
     

@@ -14,11 +14,13 @@ class AutoDataObjectTest extends LTestCase {
 		
 		$db = db('framework_unit_tests');
 
+		TarghettaAlberoAutoDO::db($db)::db($db);
+
 		truncate('targhetta_albero')->go($db);
 
 		$t1 = new TarghettaAlberoAutoDO();
 
-		$t1->codice_targhetta = "abc123";
+		$t1->codice_targhetta = "abc1";
 
 		$t1->saveOrUpdate($db);
 
@@ -26,7 +28,7 @@ class AutoDataObjectTest extends LTestCase {
 
 		$t2 = new TarghettaAlberoAutoDO();
 
-		$t2->codice_targhetta = "abc123";
+		$t2->codice_targhetta = "abc2";
 
 		$t2->saveOrUpdate($db);
 
@@ -35,5 +37,18 @@ class AutoDataObjectTest extends LTestCase {
 		$result = select('count(*) as C','targhetta_albero')->go($db);
 
 		$this->assertEqual($result[0]['C'],2,"Il numero di righe ritornate non corrisponde!");
+
+		// caricamenti
+
+		$t1_load = new TarghettaAlberoAutoDO();
+
+		$t1_load->loadFromPk(1,$db);
+
+		$this->assertEqual($t1_load->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");
+
+		$t1_load_2 = new TarghettaAlberoAutoDO(1,$db);
+
+		$this->assertEqual($t1_load_2->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");
+
 	}
 }

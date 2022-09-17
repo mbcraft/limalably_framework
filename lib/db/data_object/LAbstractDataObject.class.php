@@ -13,6 +13,174 @@ abstract class LAbstractDataObject {
 	const ID_COLUMN = "id";
 	const TABLE = null;
 	
+	const MY_DB = null;
+
+	private static $__my_db = null;
+
+	private static $__distinct_option = false;
+	private static $__conditions = null;
+	private static $__order_by = null;
+	
+	private static $__page_size = null;
+	private static $__page_number = null;
+
+	private static $__search_mode = null;
+
+	function __construct($pk = null,$db = null) {
+
+		if ($pk!=null) {
+			$this->loadFromPk($pk,$db);
+		}
+	}
+
+	public static function db($db = null) {
+		if ($db) {
+			self::$__my_db = LDbConnectionManager::get($db);
+			return self::class;
+		}
+		if (static::MY_DB) {
+			self::$__my_db = LDbConnectionManager::get(static::MY_DB);
+			return self::class;
+		}
+
+		self::$_my_db = LDbConnectionManager::getLastConnectionUsed();
+		return self::class;
+
+	}
+
+	private static function resetSearch() {
+
+		self::$__search_mode = null;
+
+		self::$__distinct_option = false;
+		self::$__conditions = null;
+		self::$__order_by = null;
+		self::$__page_size = null;
+		self::$__page_number = null;
+
+	}
+
+	public static function go($db = null) {
+
+		if (!self::$__search_mode) throw new \Exception("Search not correctly specified!");
+
+		self::db($db);
+
+		$table = self::getTable();
+
+		$id_column = static::ID_COLUMN;
+
+		$s = select('*',$table);
+
+		if (self::$__distinct_option) $s = $s->with_distinct();
+
+		if (self::$__conditions) $s = $s->where(... self::$__conditions);
+
+		if (self::$__order_by) $s = $s->order_by(... self::$__order_by);
+
+		if (self::$__page_size && self::$__page_number) $s = $s->paginate(self::$__page_size,self::$__page_number);
+
+		$result = self::processSearchResults($s->go(self::$__my_db));
+
+		self::resetSearch();
+
+		return $result;
+	}
+
+	private static function processSearchResults(array $query_results) {
+
+		$count = count($query_results);
+
+		if (self::$__search_mode == 'one') {
+			if ($count!=1) throw new \Exception("Unable to find exactly one result : ".$count." results found.");
+
+			$result = new static();
+
+			$result->setAllColumnsData($query_results[0]);
+
+			return $result;
+		}
+
+		if (self::$__search_mode == 'first') {
+			if ($count == 0) throw new \Exception("Unable to find at least one row for search results.");
+
+			$result = new static();
+
+			$result->setAllColumnsData($query_results[0]);
+
+			return $result;
+		}
+
+		if (self::$__search_mode == 'all') {
+
+			$result = new LObjectCollection();
+
+			foreach ($query_results as $row) {
+				$obj = new static();
+				$obj->setAllColumnsData($row);
+				$result->add($obj);
+			}
+
+			return $result;
+		}
+
+		throw new \Exception("Unable to find valid search mode to process : ".self::$__search_mode);
+
+	}
+
+	public static function findFirst(... $conditions) {
+		
+		self::$__search_mode = "first";
+
+		self::$__conditions = $conditions;
+
+		return self;
+
+	}
+
+	public static function findOne(... $conditions) {
+
+		self::$__search_mode = "one";
+
+		self::$__conditions = $conditions;
+
+		return self;
+	}
+
+	public static function findAll(... $conditions) {
+
+		self::$__search_mode = "all";
+	
+		self::$__conditions = $conditions;
+
+		return self;
+	}
+
+	public static function distict() {
+
+		self::$__distinct_option = true;
+
+		return self;
+	}
+
+	public static function orderBy(... $order_by_elements) {
+
+		self::$__order_by = $order_by_elements;
+
+		return self;
+
+	}
+
+	public static function paginate($page_size,$page_number) {
+
+		self::$__page_size = $page_size;
+
+		self::$__page_number = $page_number;
+
+		return self;
+
+	}
+
 	private static function initializeReflectionClass() {
 		if (self::$__reflection_class == null)
 			self::$__reflection_class = new ReflectionClass(static::class);
@@ -125,7 +293,30 @@ abstract class LAbstractDataObject {
 		return true;
 	}
 
-	public function delete($db) {
+	public function loadFromPk($pk,$db=null) {
+
+		self::db($db);
+
+		$table = self::getTable();
+
+		$id_column = static::ID_COLUMN;
+
+		$result = select('*',$table)->where(_eq($id_column,$pk))->go(self::$__my_db);
+
+		if (count($result)==0) return false;
+
+		if (count($result)>1) throw new \Exception("Found more than one entry for primary key ".$pk." in data object ".static::class);
+
+		$row = $result[0];
+
+		$this->setAllColumnsData($row);
+
+		return true;
+	}
+
+	public function delete($db=null) {
+
+		self::db($db);
 
 		$table = self::getTable();
 
@@ -135,20 +326,22 @@ abstract class LAbstractDataObject {
 
 		if ($id_value == null) throw new \Exception("Can't delete a data object with no id yet. You need to save or load it before it can be deleted from database.");
 
-		delete($table,[$id_column => $id_value])->go($db);
+		delete($table,[$id_column => $id_value])->go(self::$__my_db);
 
 		return last_affected_rows()->go($db);
 	}
 
-	public function saveOrUpdate($db) {
+	public function saveOrUpdate($db=null) {
+
+		self::db($db);
 
 		$table = self::getTable();
 
 		$all_columns_data = $this->getAllColumnsData();
 
-		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($all_columns_data)->go($db);
+		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($all_columns_data)->go(self::$__my_db);
 
-		$num_rows = last_affected_rows()->go($db);
+		$num_rows = last_affected_rows()->go(self::$__my_db);
 
 		if ($num_rows == self::__LAST_AFFECTED_ROWS_IS_INSERT) {
 

@@ -14,8 +14,6 @@ class AutoDataObjectTest extends LTestCase {
 		
 		$db = db('framework_unit_tests');
 
-		TarghettaAlberoAutoDO::db($db)::db($db);
-
 		truncate('targhetta_albero')->go($db);
 
 		$t1 = new TarghettaAlberoAutoDO();
@@ -51,4 +49,6 @@ class AutoDataObjectTest extends LTestCase {
 		$this->assertEqual($t1_load_2->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");
 
 	}
+
+	
 }

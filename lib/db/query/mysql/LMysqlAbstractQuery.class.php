@@ -51,7 +51,7 @@ abstract class LMysqlAbstractQuery {
 
 		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($connection_handle));
 		
-		if ($this instanceof LMysqlInsertStatement) {
+		if ($this instanceof LMysqlInsertStatement || $this instanceof LMysqlReplaceStatement) {
 			
 			return mysqli_insert_id($connection_handle);
 			

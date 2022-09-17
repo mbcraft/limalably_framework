@@ -40,6 +40,14 @@ class LQueryFunctions {
 
 		self::$initialized = true;
 
+		function last_affected_rows() {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlLastAffectedRows();
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 		function select($column_name_list,$table_name_list,$where_block=null) {
 			 LQueryFunctions::checkLayerSelected();
 
@@ -52,6 +60,8 @@ class LQueryFunctions {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlInsertStatement($table_name,$column_list,$data);
+
+			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
 		function update(string $table_name,$name_value_pair_list,$where_block=null) {

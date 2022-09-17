@@ -24,7 +24,7 @@ class LMysqlNameValuePairList {
 
 		$values = array_values($name_value_pair_list);
 
-		ensure_all_numbers_or_strings("name value pair block of mysql update statement",$values);
+		ensure_all_numbers_or_strings_or_null("name value pair block of mysql update statement",$values);
 
 		$this->name_value_pair_list = $name_value_pair_list;
 

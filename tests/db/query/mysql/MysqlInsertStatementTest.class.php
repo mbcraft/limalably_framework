@@ -37,7 +37,15 @@ class MysqlInsertStatementTest extends LTestCase {
 
 		insert('my_test')->column_list(['testo','valore_int'])->data(['abcd2',12])->go($db);
 
+		$col_num = last_affected_rows()->go($db);
+
+		$this->assertEqual($col_num,1,"Il numero delle righe modificate non corrisponde!!");
+
 		insert('my_test')->column_list(['testo','valore_int'])->data([['abcd2',12],['abcd3',34]])->go($db);
+
+		$col_num = last_affected_rows()->go($db);
+
+		$this->assertEqual($col_num,2,"Il numero delle righe modificate non corrisponde!!");
 
 	}
 

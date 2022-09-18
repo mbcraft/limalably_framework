@@ -47,6 +47,9 @@ class ManualDataObjectTest extends LTestCase {
 
 		$this->assertTrue($first instanceof TarghettaAlberoManualDO,"L'oggetto non è della classe attesa!");
 
+		$one = TarghettaAlberoManualDO::findOne(_eq('id',1))::go();
+
+		$this->assertTrue($first instanceof TarghettaAlberoManualDO,"L'oggetto non è della classe attesa!");
 	}
 
 }

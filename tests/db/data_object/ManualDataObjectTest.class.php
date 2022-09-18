@@ -21,7 +21,7 @@ class ManualDataObjectTest extends LTestCase {
 
 		$t1 = new TarghettaAlberoManualDO();
 
-		$t1->codice_targhetta = "abc123";
+		$t1->codice_targhetta = "abc1";
 
 		$t1->saveOrUpdate($db);
 
@@ -29,7 +29,7 @@ class ManualDataObjectTest extends LTestCase {
 
 		$t2 = new TarghettaAlberoManualDO();
 
-		$t2->codice_targhetta = "abc123";
+		$t2->codice_targhetta = "abc2";
 
 		$t2->saveOrUpdate($db);
 
@@ -39,9 +39,23 @@ class ManualDataObjectTest extends LTestCase {
 
 		$this->assertEqual($result[0]['C'],2,"Il numero di righe ritornate non corrisponde!");
 
+		// caricamenti
+
+		$t1_load_2 = new TarghettaAlberoManualDO(1,$db);
+
+		$this->assertEqual($t1_load_2->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");
+
 		$result = TarghettaAlberoManualDO::findAll()::go();
 
 		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
+
+		$result = TarghettaAlberoManualDO::findAll()::orderBy(desc('id'))::go();
+
+		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
+
+		$result = TarghettaAlberoManualDO::findAll()::paginate(1,2)::go();
+
+		$this->assertEqual(count($result),1,"Il numero di elementi della classe non corrisponde!");
 
 		$first = TarghettaAlberoManualDO::findFirst()::go();
 

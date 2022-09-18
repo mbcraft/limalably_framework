@@ -33,7 +33,7 @@ abstract class LAbstractDataObject {
 		}
 	}
 
-	public static function db($db = null) {
+	private static function db($db = null) {
 		if ($db) {
 			self::$__my_db = LDbConnectionManager::get($db);
 			return self::class;
@@ -299,7 +299,7 @@ abstract class LAbstractDataObject {
 		return true;
 	}
 
-	public function loadFromPk($pk,$db=null) {
+	private function loadFromPk($pk,$db=null) {
 
 		self::db($db);
 
@@ -389,12 +389,6 @@ abstract class LAbstractDataObject {
 		} else {
 			throw new \Exception("No column with name ".$name." found in this data object.");
 		}
-	}
-
-
-
-	function getInstanceCreationStrategy() {
-		return new LSingleRowSingleClassDOCreationStrategy(static::class);
 	}
 
 }

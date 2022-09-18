@@ -38,12 +38,6 @@ class AutoDataObjectTest extends LTestCase {
 
 		// caricamenti
 
-		$t1_load = new TarghettaAlberoAutoDO();
-
-		$t1_load->loadFromPk(1,$db);
-
-		$this->assertEqual($t1_load->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");
-
 		$t1_load_2 = new TarghettaAlberoAutoDO(1,$db);
 
 		$this->assertEqual($t1_load_2->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");

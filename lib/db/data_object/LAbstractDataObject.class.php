@@ -43,8 +43,8 @@ abstract class LAbstractDataObject {
 			return self::class;
 		}
 
-		self::$_my_db = LDbConnectionManager::getLastConnectionUsed();
-		return self::class;
+		self::$__my_db = LDbConnectionManager::getLastConnectionUsed();
+		return static::class;
 
 	}
 
@@ -113,7 +113,7 @@ abstract class LAbstractDataObject {
 
 		if (self::$__search_mode == 'all') {
 
-			$result = new LObjectCollection();
+			$result = new LDataObjectCollection();
 
 			foreach ($query_results as $row) {
 				$obj = new static();
@@ -132,9 +132,11 @@ abstract class LAbstractDataObject {
 		
 		self::$__search_mode = "first";
 
-		self::$__conditions = $conditions;
+		if (!empty($conditions)) {
+			self::$__conditions = $conditions;
+		}
 
-		return self;
+		return static::class;
 
 	}
 
@@ -142,32 +144,36 @@ abstract class LAbstractDataObject {
 
 		self::$__search_mode = "one";
 
-		self::$__conditions = $conditions;
+		if (!empty($conditions)) {
+			self::$__conditions = $conditions;
+		}
 
-		return self;
+		return static::class;
 	}
 
 	public static function findAll(... $conditions) {
 
 		self::$__search_mode = "all";
 	
-		self::$__conditions = $conditions;
+		if (!empty($conditions)) {
+			self::$__conditions = $conditions;
+		}
 
-		return self;
+		return static::class;
 	}
 
 	public static function distict() {
 
 		self::$__distinct_option = true;
 
-		return self;
+		return static::class;
 	}
 
 	public static function orderBy(... $order_by_elements) {
 
 		self::$__order_by = $order_by_elements;
 
-		return self;
+		return static::class;
 
 	}
 
@@ -177,7 +183,7 @@ abstract class LAbstractDataObject {
 
 		self::$__page_number = $page_number;
 
-		return self;
+		return static::class;
 
 	}
 

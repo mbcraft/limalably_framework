@@ -39,6 +39,14 @@ class ManualDataObjectTest extends LTestCase {
 
 		$this->assertEqual($result[0]['C'],2,"Il numero di righe ritornate non corrisponde!");
 
+		$result = TarghettaAlberoManualDO::findAll()::go();
+
+		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
+
+		$first = TarghettaAlberoManualDO::findFirst()::go();
+
+		$this->assertTrue($first instanceof TarghettaAlberoManualDO,"L'oggetto non è della classe attesa!");
+
 	}
 
 }

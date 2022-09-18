@@ -1,82 +1,9 @@
 <?php
 
 
-class LDataObjectCollection implements ArrayAccess {
-
-	private $connection_name = null;
-
-	private $where_clause = null;
-
-	private $common_data_object_class = null;
-
-	private $common_changes = null;
+class LDataObjectCollection implements ArrayAccess,Countable {
 
 	private $collection = array();
-
-	private $data_objects_loaded = false;
-
-	private $bulk_mode = false;
-
-	private $executed = true;
-
-	public function __loadDataObjects() {
-		if ($this->data_objects_loaded) return;
-
-		//implement ...
-
-		$this->data_objects_loaded = true;
-	}
-
-	public function __describeUniformObjects($common_data_object_class,$where_clause,$connection_name) {
-
-		if ($this->common_data_object_class!=null) throw new \Exception("Data objects are already described, can't describe more!");
-
-		$this->common_data_object_class = $common_data_object_class;
-		$this->where_clause = $where_clause;
-		$this->connection_name = $connection_name;
-
-		if (!$common_data_object_class::getInstanceCreationStrategy() instanceof LSingleRowSingleClassDOCreationStrategy) {
-			$this->bulk_mode = true;
-		} else {
-			$this->bulk_mode = false;
-		}
-	}
-
-	private function checkNotAlreadyExecuted() {
-		if ($this->executed) throw new \Exception("Operation already executed, use a new collection for doing a new operation.");
-	}
-
-	/**
-	 * 2 tipologie di count :
-	 * 
-	 * - conteggio effettivo degli oggetti caricati
-	 * - conteggio con query usando il criterio della find
-	*/
-	public function count() {
-		$this->checkNotAlreadyExecuted();
-
-		if ($this->data_objects_loaded) {
-			$c = count($this->collection);
-
-			$this->executed = true;
-
-			return $c;
-		} else {
-			if (!$this->connection_name) throw new \Exception("Objects are not described yet!");
-
-			$db = LDbConnectionManager::get($this->connection_name);
-
-			$table = $this->common_data_object_class::TABLE;
-
-			$result = select('count(*) AS C',$table,$this->where_clause)->go($db);
-
-			$c = $result[0]['C'];
-
-			$this->executed = true;
-
-			return $c;
-		}
-	}
 
 	/**
 	Vari tipi di saveOrUpdate :
@@ -85,19 +12,10 @@ class LDataObjectCollection implements ArrayAccess {
 
 	*/
 	public function saveOrUpdateAll() {
-		$this->checkNotAlreadyExecuted();
-		//può essere fatto con una replace massiva oppure con una serie di replace singole in base alla strategia
-		if ($this->bulk_mode) {
-			$db = LDbConnectionManager::get($this->connection_name);
-
-			$table = $this->common_data_object_class::TABLE;
-
-			update($table,$this->changes,$this->where_clause)->go($db);
-
-			$this->executed = true;
+	
+		foreach ($this->collection as $element) {
+			$element->saveOrUpdate();
 		}
-
-		throw new \Exception("Not implemented yet!");
 	}
 
 	/**
@@ -107,22 +25,25 @@ class LDataObjectCollection implements ArrayAccess {
 	- delete delegata all'oggetto (in caso di oggetti complessi, implementarla)
 	*/
 	public function deleteAll() {
-		$this->checkNotAlreadyExecuted();
 
-		if ($this->bulk_mode) {
-			$db = LDbConnectionManager::get($this->connection_name);
-
-			$table = $this->common_data_object_class::TABLE;
-
-			delete($table,$this->where_clause)->go($db);
-
-			$this->executed = true;
-		} else {
-
+		foreach ($this->collection as $element) {
+			$element->delete();
 		}
+	}
+
+	public function add($object) {
+		if (is_null($object)) throw new \Exception("Unable to add null to this collection");
+
+		$this->collection[] = $object;
 		
 	}
 
+	/**
+	 * Countable interface
+	 */
+	public function count() {
+		return count($this->collection);
+	}
 
 	/**
 	 * ArrayAccess interface
@@ -139,13 +60,16 @@ class LDataObjectCollection implements ArrayAccess {
 	public function offsetGet($offset) {
 		$this->__loadDataObjects();
 
-		return isset($this->collection[$offset]) : $this->collection[$offset] : null;
+		return isset($this->collection[$offset]) ? $this->collection[$offset] : null;
 	}
 
 	/**
 	 * ArrayAccess interface
 	*/
 	public function offsetSet($offset,$value) {
+
+		if (is_null($value)) throw new \Exception("Unable to add null to this collection");
+
 		$this->where_clause = null;
 		$this->bulk_mode = false;
 

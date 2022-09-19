@@ -70,15 +70,19 @@ abstract class LAbstractDataObject {
 
 		$id_column = static::ID_COLUMN;
 
-		$s = select('*',$table);
+		$fields = self::$__search_mode == 'count' ? 'count(*) AS C' : '*';
+
+		$s = select($fields,$table);
 
 		if (self::$__distinct_option) $s = $s->with_distinct();
 
 		if (self::$__conditions) $s = $s->where(... self::$__conditions);
 
-		if (self::$__order_by) $s = $s->order_by(... self::$__order_by);
+		if (self::$__search_mode != 'count') {
+			if (self::$__order_by) $s = $s->order_by(... self::$__order_by);
 
-		if (self::$__page_size && self::$__page_number) $s = $s->paginate(self::$__page_size,self::$__page_number);
+			if (self::$__page_size && self::$__page_number) $s = $s->paginate(self::$__page_size,self::$__page_number);
+		}
 
 		$result = self::processSearchResults($s->go(self::$__my_db));
 
@@ -90,6 +94,12 @@ abstract class LAbstractDataObject {
 	private static function processSearchResults(array $query_results) {
 
 		$count = count($query_results);
+
+		if (self::$__search_mode == 'count') {
+			if ($count!=1) throw new \Exception("Unable to count rows for data object ".static::class);
+
+			return $query_results[0]['C'];
+		}
 
 		if (self::$__search_mode == 'one') {
 			if ($count!=1) throw new \Exception("Unable to find exactly one result : ".$count." results found.");
@@ -126,6 +136,16 @@ abstract class LAbstractDataObject {
 
 		throw new \Exception("Unable to find valid search mode to process : ".self::$__search_mode);
 
+	}
+
+	public static function count(... $conditions) {
+		self::$__search_mode = "count";
+
+		if (!empty($conditions)) {
+			self::$__conditions = $conditions;
+		}
+
+		return static::class;
 	}
 
 	public static function findFirst(... $conditions) {

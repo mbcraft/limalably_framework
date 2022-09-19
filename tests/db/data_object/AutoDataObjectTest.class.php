@@ -54,6 +54,10 @@ class AutoDataObjectTest extends LTestCase {
 
 		$this->assertTrue($first instanceof TarghettaAlberoAutoDO,"L'oggetto non è della classe attesa!");
 
+		$count = TarghettaAlberoAutoDO::count()::go();
+
+		$this->assertEqual($count,2,"Il numero di righe trovate nella tabella non corrisponde a quelle attese!");
+
 	}
 
 	

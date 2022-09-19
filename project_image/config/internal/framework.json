@@ -7,6 +7,13 @@
                 "username" : "db_mbcraftlab",
                 "password" : "pdx1-mysql-a7-2b!",
                 "db_name" : "db_mbcraftlab_test"
+            },
+            "hosting_dfdt" : {
+                "driver" : "mysql",
+                "host" : "51.38.33.34",
+                "username" : "m187937d1",
+                "password" : "vrjtun7o9rqzvqj3",
+                "db_name" : "m187937d1"
             }
         },
         "execution_mode": {

@@ -265,7 +265,28 @@ abstract class LAbstractDataObject {
 		}
 	}
 
+	private function normalizeData($data) {
+
+		$result = [];
+
+		foreach ($data as $key => $value) {
+			if (is_numeric($value)) {
+				if (is_real($value))
+					$result[$key] = (float) $value;
+				else
+					$result[$key] = (int) $value;
+			} else {
+				$result[$key] = $value;
+			}
+		}
+
+		return $result;
+
+	}
+
 	private function setAllColumnsData($data) {
+
+		$data = $this->normalizeData($data);
 
 		if ($this->usesAutoColumns()) $this->__columns = $data;
 		else {

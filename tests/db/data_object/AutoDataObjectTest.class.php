@@ -44,6 +44,8 @@ class AutoDataObjectTest extends LTestCase {
 
 		$result = TarghettaAlberoAutoDO::findAll()::go();
 
+		echo $result;
+
 		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
 
 		$first = TarghettaAlberoAutoDO::findFirst()::go();

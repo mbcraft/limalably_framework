@@ -90,5 +90,20 @@ class LDataObjectCollection implements ArrayAccess,Countable {
 		unset($this->collection[$offset]);
 	}
 
+	function __toString() {
+
+		$result = "[\n";
+
+		$obj_list = [];
+
+		foreach ($this->collection as $obj) {
+			$obj_list []= "\t".$obj;
+		}
+
+		$result .= implode(" ,\n",$obj_list);
+		$result .= "\n]";
+
+		return $result;
+	}
 
 }

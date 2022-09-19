@@ -411,4 +411,20 @@ abstract class LAbstractDataObject {
 		}
 	}
 
+	public function __toString() {
+
+		$columns_data = $this->getAllColumnsData();
+
+		$fields_list = [];
+		foreach ($columns_data as $col_key => $col_data) {
+
+			$col_string = is_string($col_data) ? "'".$col_data."'" : $col_data;
+
+			$fields_list[] = "'".$col_key."' = ".$col_string;
+		}
+		
+
+		return '[ '.implode(' , ',$fields_list).' ]';
+	}
+
 }

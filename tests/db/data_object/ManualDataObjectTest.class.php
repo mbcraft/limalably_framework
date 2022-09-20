@@ -47,7 +47,7 @@ class ManualDataObjectTest extends LTestCase {
 
 		$result = TarghettaAlberoManualDO::findAll()::go();
 
-		echo $result;
+		//echo $result;
 
 		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
 

@@ -91,6 +91,26 @@ abstract class LAbstractDataObject {
 		return $result;
 	}
 
+	public function navigateFromColumn($column_name,$class) {
+
+		$column_value = $this->getColumnValue($column_name);
+
+		$result = new $class($column_value);
+
+		return $result;
+
+	}
+
+	public function navigateFromOtherTableColumn($column_name,$class) {
+
+		$id_value = $this->getColumnValue(self::ID_COLUMN);
+
+		$result = $class::findAll(_eq($column_name,$id_value))::go();
+
+		return $result;
+
+	}
+
 	private static function processSearchResults(array $query_results) {
 
 		$count = count($query_results);

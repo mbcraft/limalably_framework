@@ -22,7 +22,7 @@ class LIniDatFileDataStorage extends LAbstractDataStorage {
         }
         $my_path1 = str_replace('//', '/', $my_path1);
         
-        $result = parse_ini_file($my_path1, false, INI_SCANNER_RAW);
+        $result = parse_ini_string(file_get_contents($my_path1), false, INI_SCANNER_RAW);
         
         if ($result===false) LErrorList::saveFromErrors ('ifs', "Error parsing ifs file : ".$my_path1.". The data is not valid. Use \" to delimit strings.");
 

@@ -30,11 +30,13 @@ class LConditionTest extends LTestCase {
     
     function testCondition3() {
         
-        $cond = array("request_method" => [2,"cli"],"environment" => ["a","script"]);
+        if (LEnvironmentUtils::getRequestMethod()=='CLI') {
+            $cond = array("request_method" => [2,"cli"],"environment" => ["a","script"]);
         
-        $c = new LCondition();
+            $c = new LCondition();
         
-        $this->assertTrue($c->evaluate('test',$cond),"La condizione non funziona!");
+            $this->assertTrue($c->evaluate('test',$cond),"La condizione non funziona!");
+        }
         
     }
     

@@ -6,6 +6,8 @@
  *  
  */
 
+define('DS','/');
+
 abstract class LFileSystemElement
 {
     protected $__full_path;
@@ -124,6 +126,11 @@ abstract class LFileSystemElement
             $base_folder = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
             $this->__full_path = $base_folder.$path;
         }
+
+        if (LFileSystemUtils::isDir($this->__full_path) && !LStringUtils::endsWith($this->__full_path,'/')) {
+            $this->__path .= '/';
+            $this->__full_path .= '/';
+        }
     }
 
     function equals($file_or_dir)
@@ -229,15 +236,24 @@ abstract class LFileSystemElement
         echo "DUMP LFileSystemElement : ".$this->__full_path;
     }
 
+    function getPath() {
+        return $this->__path;
+    }
+
     function getFullPath()
     {
         return $this->__full_path;
     }
 
-    function getOriginalPath($relative_to=null)
+    private function prepareRelativePath($path) {
+        if (strpos($path,'/')===0) return substr($path,1);
+        else return $path;
+    } 
+
+    function getRelativePath($relative_to=null)
     {
         if ($relative_to==null)
-            return $this->__path;
+            return $this->prepareRelativePath($this->__path);
         else
         {
             if ($relative_to instanceof LDir)
@@ -246,7 +262,7 @@ abstract class LFileSystemElement
                 $path = $relative_to;
             if (strpos($this->__path,$path)===0)
             {
-                return substr($this->__path,strlen($path));
+                return $this->prepareRelativePath(substr($this->__path,strlen($path)));
             }
             else throw new \LIOException("The path does not begin with the specified path : ".$this->__path." does not begin with ".$path);
         }

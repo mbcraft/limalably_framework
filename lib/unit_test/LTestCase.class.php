@@ -64,16 +64,30 @@ class LTestCase extends \LAssert {
             //echo "Eseguo metodo ".$method_name."\n";
             $this->{$method_name}();
         } catch (\Exception $ex) {
-            self::$total_failures++;
-            
-            if (!($ex instanceof LTestFailure)) {
-                LResult::message('E',false);
-                
+
+            if ($this->expectedException!=null) {
+                if (get_class($ex)==$this->expectedException) {
+                    //all is ok
+                    $this->expectedException = null;
+                } else {
+                    self::$total_failures++;
+
+                    LResult::message('F',false);
+
+                    self::$failures_and_exceptions[] = new LUnitTestException("Raised exception does not match with expected. Found : ".get_class($ex)." - Expected : ".$this->expectedException);
+                }
             } else {
-                LResult::message('F',false);
+
+                self::$total_failures++;
+                
+                if (!($ex instanceof LTestFailure)) {
+                    LResult::message('E',false);
+                    
+                } else {
+                    LResult::message('F',false);
+                }
+                self::$failures_and_exceptions[] = $ex;
             }
-            self::$failures_and_exceptions[] = $ex;
-            
         }
         try {
             $this->tearDown();

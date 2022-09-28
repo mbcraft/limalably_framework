@@ -57,6 +57,12 @@ class LAssert {
             self::success();
         }
     }
+
+    protected $expectedException = null;
+
+    public function expectException(string $class_name) {
+        $this->expectedException = $class_name;
+    }
     
     public function assertNotSame($actual,$expected,$message) {
         if ($actual===$expected) {

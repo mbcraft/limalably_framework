@@ -13,7 +13,7 @@ class LFileWriter extends LFileReader
 
     static function newTmpFile()
     {
-        return new FileWriter(tmpfile());
+        return new LFileWriter(tmpfile());
     }
 
     /*

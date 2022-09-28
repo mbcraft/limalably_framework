@@ -36,7 +36,7 @@ class LFile extends LFileSystemElement
 
         $target_path = $this_dir->getPath()."/".$new_name;
 
-        $target_file = new File($target_path);
+        $target_file = new LFile($target_path);
         if ($target_file->exists()) return false;
 
         return rename($this->__full_path,$target_file->getFullPath());
@@ -141,7 +141,7 @@ class LFile extends LFileSystemElement
 
         if (flock($handle, LOCK_SH))
         {
-            return new FileReader($handle);
+            return new LFileReader($handle);
         }
         else 
         {
@@ -158,7 +158,7 @@ class LFile extends LFileSystemElement
 
         if (flock($handle,LOCK_EX))
         {
-            return new FileWriter($handle);
+            return new LFileWriter($handle);
         }
         else 
         {
@@ -169,38 +169,30 @@ class LFile extends LFileSystemElement
 
     public function getIncludePath()
     {
-        $my_path = $this->getPath();
+        $my_path = $this->getFullPath();
 
-        $included_file_path = substr($my_path,1);
-
-        return $included_file_path;
+        return $my_path;
     }
 
     public function includeFile()
     {
-        $my_path = $this->getPath();
+        $my_path = $this->getFullPath();
 
-        $included_file_path = substr($my_path,1);
-
-        include($included_file_path);
+        include($my_path);
     }
     
     public function includeFileOnce()
     {
-        $my_path = $this->getPath();
+        $my_path = $this->getFullPath();
 
-        $included_file_path = substr($my_path,1);
-
-        include_once($included_file_path);
+        include_once($my_path);
     }
     
     public function requireFileOnce()
     {
-        $my_path = $this->getPath();
+        $my_path = $this->getFullPath();
 
-        $included_file_path = substr($my_path,1);
-
-        require_once($included_file_path);
+        require_once($my_path);
     }
 
     public static function newTempFile()

@@ -87,7 +87,7 @@ class LDir extends LFileSystemElement
 
         $parent_dir = $this->getParentDir();
 
-        $target_path = $parent_dir->getPath()."/".$new_name;
+        $target_path = $parent_dir->getFullPath()."/".$new_name;
 
         $target_dir = new LDir($target_path);
         if ($target_dir->exists()) return false;
@@ -157,6 +157,10 @@ class LDir extends LFileSystemElement
         return $this->listElements($myExcludes,self::FILTER_ALL_ELEMENTS);
     }
 
+    function listFolders($myExcludes=self::DEFAULT_EXCLUDES) {
+        return $this->listElements($myExcludes,self::FILTER_ALL_DIRECTORIES);
+    }
+
     function listFiles($myExcludes=self::DEFAULT_EXCLUDES) {
         return $this->listElements($myExcludes,self::FILTER_ALL_FILES);
     }
@@ -200,15 +204,15 @@ class LDir extends LFileSystemElement
             //è da saltare?
             if (!$skip)
             {
-                if ($this->isDir())
-                    $partial_path = $this->__path.$element;
+                $final_path = $this->__full_path.$element;
+                
                 if (($filter & self::FILTER_ALL_DIRECTORIES) == self::FILTER_ALL_DIRECTORIES) {
-                    if (LFileSystemUtils::isDir($this->__path.$element))
-                        $all_dirs[] = new LDir($partial_path);
+                    if (LFileSystemUtils::isDir($final_path))
+                        $all_dirs[] = new LDir($final_path.'/');
                 }
                 if (($filter & self::FILTER_ALL_FILES) == self::FILTER_ALL_FILES) {
-                    if (LFileSystemUtils::isFile($this->__path.'/'.$element))
-                        $all_files[] = new LFile($partial_path);
+                    if (LFileSystemUtils::isFile($final_path))
+                        $all_files[] = new LFile($final_path);
                 }
             }                
 
@@ -224,11 +228,30 @@ class LDir extends LFileSystemElement
         return $this->findElements("/\A".$dot_escaped."/",$filter);
     }
     
+    function findFilesStartingWith($string)
+    {
+        $dot_escaped = str_replace(".", "[\.]", $string);
+        return $this->findElements("/\A".$dot_escaped."/",self::FILTER_ALL_FILES);
+    }
+    
+
     function findElementsEndingWith($string,$filter = self::FILTER_ALL_ELEMENTS)
     {
         $dot_escaped = str_replace(".", "[\.]", $string);
         return $this->findElements("/".$dot_escaped."\Z/",$filter);
     }
+
+    function findFilesEndingWith($string)
+    {
+        $dot_escaped = str_replace(".", "[\.]", $string);
+        return $this->findElements("/".$dot_escaped."\Z/",self::FILTER_ALL_FILES);
+    }
+
+    function findFiles($myIncludes) {
+        return $this->findElements($myIncludes,self::FILTER_ALL_FILES);
+    }
+
+
     
     function findElements($myIncludes,$filter = self::FILTER_ALL_ELEMENTS)
     {
@@ -288,7 +311,7 @@ class LDir extends LFileSystemElement
     {
         if ($recursive)
         {
-            $dir_content = $this->listFiles(LDir::SHOW_HIDDEN_FILES);
+            $dir_content = $this->listElements(LDir::SHOW_HIDDEN_FILES);
             foreach ($dir_content as $elem)
             {
                 if ($elem instanceof LDir)
@@ -384,6 +407,38 @@ class LDir extends LFileSystemElement
         $result["empty"] = $this->isEmpty();
 
         return $result;
+    }
+
+    function randomFromHere($autocache=true,$include_sub_dirs=false)
+    {
+        if (!$this->exists())
+            Log::error ("FileUtils::randomFromFolder", "La cartella $path non esiste!!");
+        
+        if (!$this->isDir())
+            Log::error ("FileUtils::randomFromFolder", "Il percorso $path non rappresenta una cartella!!");
+            
+        $results = $this->listFiles();
+               
+        $valid_results = array();
+        
+        foreach ($results as $dir_elem)
+        {
+            if ($dir_elem->isDir() && $include_sub_dirs)
+                $valid_results[] = $dir_elem;
+            if ($dir_elem->isFile())
+                $valid_results[] = $dir_elem;
+        }
+        
+        if (count($valid_results)==0)
+            LLog::error("FileUtils::randomFromFolder","Non sono stati trovati risultati validi!!");
+        
+        $selected = $valid_results[rand(0,count($valid_results)-1)];
+        
+        $final_result = $selected->getFullPath();
+        if ($autocache)
+            $final_result.= "?mtime=".$selected->getModificationTime();
+        
+        return $final_result;
     }
 
 }

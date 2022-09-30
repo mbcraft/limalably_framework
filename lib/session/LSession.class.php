@@ -9,7 +9,8 @@
 class LSession {
     
     use LStaticTreeMapRead;
-    
+    use LStaticTreeMapWrite;
+
     protected static $tree_map = null;
     
     protected static $my_view = null;

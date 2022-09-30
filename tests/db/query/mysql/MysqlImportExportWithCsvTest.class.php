@@ -14,7 +14,7 @@ class MysqlImportExportWithCsvTest extends LTestCase {
 		try {
 			$this->executeTests();
 		} catch (\Exception $ex) {
-			echo "\n\nSkipping mysql csv tests due to database server filesystem not in sync ...\n\n";
+			echo "\n\nSkipping mysql csv tests due to database server filesystem not writable ...\n\n";
 		}
 
 	}

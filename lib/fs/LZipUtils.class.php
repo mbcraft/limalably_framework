@@ -48,7 +48,7 @@ class LZipUtils
     
     private static function recursiveZipFolder($zip_archive,$current_folder,$local_dir)
     {        
-        foreach ($current_folder->listFiles() as $dir_entry)
+        foreach ($current_folder->listAll() as $dir_entry)
         {
             if ($dir_entry->isFile())
             {

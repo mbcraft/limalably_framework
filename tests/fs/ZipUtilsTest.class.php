@@ -71,7 +71,7 @@ class ZipUtilsTest extends LTestCase
         
         LZipUtils::expandArchive($target_file, $extract_root);
         
-        $this->assertEqual(count($extract_dir->listFiles()),3,"Il numero dei file estratti non corrisponde!!");
+        $this->assertEqual(count($extract_dir->listAll()),3,"Il numero dei file estratti non corrisponde!!");
         $f1 = new LFile($extract_root."my_file_01.php");
         $this->assertTrue($f1->exists(),"Il file my_file_01.php non e' stato estratto!!");
         $this->assertTrue(!$f1->isEmpty(),"Il file my_file_01.php e' vuoto!!");
@@ -88,7 +88,7 @@ class ZipUtilsTest extends LTestCase
             $f->delete(true);
         }
         
-        $extracted_files = $extract_dir->listFiles();
+        $extracted_files = $extract_dir->listAll();
         foreach ($extracted_files as $f)
         {
             $f->delete(true);

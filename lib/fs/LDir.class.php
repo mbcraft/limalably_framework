@@ -150,7 +150,7 @@ class LDir extends LFileSystemElement
  */
     function isEmpty()
     {
-        return count($this->listFiles())===0;
+        return count($this->listAll())===0;
     }
 
     function listAll($myExcludes=self::DEFAULT_EXCLUDES) {
@@ -311,7 +311,7 @@ class LDir extends LFileSystemElement
     {
         if ($recursive)
         {
-            $dir_content = $this->listElements(LDir::SHOW_HIDDEN_FILES);
+            $dir_content = $this->listAll(LDir::SHOW_HIDDEN_FILES);
             foreach ($dir_content as $elem)
             {
                 if ($elem instanceof LDir)
@@ -374,7 +374,7 @@ class LDir extends LFileSystemElement
             
             $copy_dir = $target_dir->newSubdir($new_name);
             
-            $all_files = $this->listFiles();
+            $all_files = $this->listAll();
             foreach ($all_files as $elem)
             {
                 $elem->copy($copy_dir);

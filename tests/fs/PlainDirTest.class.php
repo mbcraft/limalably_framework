@@ -137,7 +137,7 @@ class PlainDirTest extends LTestCase
 
         $this->assertTrue($d1->isDir(),"L'elemento non è una directory!");
 
-        $content = $d1->listFiles();
+        $content = $d1->listAll();
 
         $this->assertEqual(3,count($content),"Il conteggio delle cartelle non corrisponde!"); //.svn ???
 
@@ -159,7 +159,7 @@ class PlainDirTest extends LTestCase
         
         $dir2 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/");
         
-        $this->assertFalse($dir2->hasSingleSubdir(),"La cartella ha un'unica sottocartella ma non dovrebbe avercela!");
+        $this->assertTrue($dir2->hasSingleSubdir(),"La cartella non ha un'unica sottocartella!");
         
         $dir3 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/single_subdir/blablablax/");
         
@@ -210,10 +210,10 @@ class PlainDirTest extends LTestCase
         $target_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_target/");
         
         //pulisco la cartella di destinazione
-        foreach ($target_dir->listFiles() as $f)
+        foreach ($target_dir->listAll() as $f)
             $f->delete(true);
         
-        $source_dir_elems = $source_dir->listFiles();
+        $source_dir_elems = $source_dir->listAll();
         foreach ($source_dir_elems as $elem)
         {
             $elem->copy($target_dir);
@@ -237,7 +237,7 @@ class PlainDirTest extends LTestCase
 
     function testTouch()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/touch_test/my_new_dir/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/touch_test2/my_new_dir/");
         $this->assertFalse($d->exists(),"La directory esiste già!");
         $d->touch();
         $this->assertTrue($d->exists(),"La directory non è stata creata!");
@@ -310,7 +310,7 @@ class PlainDirTest extends LTestCase
         $this->assertFalse($d2->isEmpty(),"La directory non spostata non contiene piu' il suo file!!");
         $this->assertTrue($d3->isEmpty(),"La directory gia' esistente e' stata riempita con pattume!!");
 
-        $this->expectException("InvalidParameterException");
+        $this->expectException("LIOException");
         $d4 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/another_target/buh/");
         $this->assertFalse($d2->rename("another_target/buh"),"Rename con spostamento andato a buon fine!!");
 
@@ -341,22 +341,22 @@ class PlainDirTest extends LTestCase
     {
         $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/list_files_test/");
                 
-        $this->assertEqual(count($d->listFiles()),2,"Il numero di file col list di default non corrisponde!!");
-        $this->assertEqual(count($d->listFiles(LDir::DEFAULT_EXCLUDES)),2,"Il numero di file col list di default non corrisponde!!");
+        $this->assertEqual(count($d->listFiles()),1,"Il numero di file col list di default non corrisponde!!");
+        $this->assertEqual(count($d->listFiles(LDir::DEFAULT_EXCLUDES)),1,"Il numero di file col list di default non corrisponde!!");
         
-        $this->assertEqual(count($d->listFiles(LDir::NO_HIDDEN_FILES)),2,"Il numero di file col list di default non corrisponde!!");
+        $this->assertEqual(count($d->listFiles(LDir::NO_HIDDEN_FILES)),1,"Il numero di file col list di default non corrisponde!!");
         
-        $this->assertTrue(count($d->listFiles(LDir::SHOW_HIDDEN_FILES))>=3,"Il numero di file col list dei file nascosti non corrisponde!!");
+        $this->assertTrue(count($d->listFiles(LDir::SHOW_HIDDEN_FILES))==2,"Il numero di file col list dei file nascosti non corrisponde!!");
            
-        $expected_names = array(".htaccess",".svn","plain.txt","a_dir");
+        $expected_names = array(".htaccess","plain.txt","a_dir");
         $files = $d->listFiles(LDir::SHOW_HIDDEN_FILES);
 
         foreach ($files as $f)
         {
             if ($f->isDir())
-                $this->assertTrue(ArrayUtils::has_value($expected_names, $f->getName()));
+                $this->assertTrue(in_array($f->getName(),$expected_names),"Il nome della cartella non è stata trovata!!");
             else
-                $this->assertTrue(ArrayUtils::has_value($expected_names, $f->getFilename()));
+                $this->assertTrue(in_array($f->getFilename(),$expected_names),"Il nome del file non è stato trovato!");
         }
     }
      

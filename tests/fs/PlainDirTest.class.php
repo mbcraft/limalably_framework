@@ -407,6 +407,9 @@ class PlainDirTest extends LTestCase
     function testDeleteRecursive()
     {
         $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/delete_test_dir/");
+
+        $d->touch();
+
         $this->assertTrue($d->exists(),"La cartella dal eliminare non esiste!!");
         $this->assertTrue($d->isEmpty(),"La cartella da popolare non e' vuota!!");
 

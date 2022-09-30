@@ -15,6 +15,7 @@ class ZipUtilsTest extends LTestCase
         $this->assertTrue($create_dir->exists(),"La directory create non esiste!!");
         
         $save_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/saved/");
+        $save_dir->touch();
         $this->assertTrue($save_dir->exists(),"La directory save non esiste!!");
         
         
@@ -44,6 +45,7 @@ class ZipUtilsTest extends LTestCase
         $this->assertTrue($create_dir->exists(),"La directory create non esiste!!");
         
         $save_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/saved/");
+        $save_dir->touch();
         $this->assertTrue($save_dir->exists(),"La directory save non esiste!!");
         
         $extract_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/extract/");

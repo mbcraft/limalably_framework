@@ -49,6 +49,7 @@ class ZipUtilsTest extends LTestCase
         $this->assertTrue($save_dir->exists(),"La directory save non esiste!!");
         
         $extract_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/extract/");
+        $extract_dir->touch();
         $this->assertTrue($extract_dir->exists(),"La directory extract non esiste!!");
         
         $extract_dir_files = $extract_dir->listFiles();

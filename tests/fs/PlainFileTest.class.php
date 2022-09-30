@@ -230,6 +230,8 @@ class PlainFileTest extends LTestCase
 
     function testRenameFiles()
     {
+        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/a/");
+        $d->touch();
 
         $f1 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/a/my_file.txt");
         $this->assertFalse($f1->exists(),"Il file f1 esiste!!");

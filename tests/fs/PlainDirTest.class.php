@@ -307,6 +307,7 @@ class PlainDirTest extends LTestCase
         $this->assertTrue($f2->exists(),"Il file non e' stato spostato insieme alla directory!!");
 
         $d3 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/existing_dir/");
+        $d3->touch();
         $this->assertFalse($d2->rename("existing_dir"),"Il rename e' stato effettuato su una directory che gia' esiste!!");
 
         $this->assertFalse($d2->isEmpty(),"La directory non spostata non contiene piu' il suo file!!");

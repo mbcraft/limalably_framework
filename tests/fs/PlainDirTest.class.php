@@ -97,6 +97,8 @@ class PlainDirTest extends LTestCase
     {
         $d2 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/empty_dir");
 
+        $d2->touch();
+
         $this->assertTrue($d2->exists(),"La cartella non esiste!");
         $this->assertTrue($d2->isDir(),"L'elemento non è una cartella!");
         $this->assertFalse($d2->isFile(),"L'elemento è un file ma non dovrebbe esserlo!");

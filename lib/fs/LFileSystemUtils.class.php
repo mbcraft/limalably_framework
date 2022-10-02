@@ -10,17 +10,17 @@
 
 class LFileSystemUtils
 {
-    static function isCurrentDirName($name)
+    static function isCurrentDirName(string $name)
     {
         return $name==".";
     }
 
-    static function isParentDirName($name)
+    static function isParentDirName(string $name)
     {
         return $name=="..";
     }
 
-    static function isFile($path)
+    static function isFile(string $path)
     {
         $base_folder = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
         
@@ -33,7 +33,7 @@ class LFileSystemUtils
         return is_file($path);
     }
 
-    static function isDir($path)
+    static function isDir(string $path)
     {
         $base_folder = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
         

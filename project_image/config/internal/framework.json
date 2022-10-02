@@ -206,6 +206,7 @@
         },
 
         "misc" : {
+            "temp_dir" : "temp/",
             "errors" : {
                 "log" : true,
                 "display" : false,

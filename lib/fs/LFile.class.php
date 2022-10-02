@@ -13,6 +13,8 @@ class LFile extends LFileSystemElement
 {
     const TMP_DIR = "temp/";
 
+    static $content_hash_cache = [];
+
     function getDirectory()
     {
         return new LDir(dirname($this->__full_path));
@@ -82,7 +84,13 @@ class LFile extends LFileSystemElement
 
     function getContentHash()
     {
-        return sha1_file($this->__full_path);
+        if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
+
+        $result = sha1_file($this->__full_path);
+
+        self::$content_hash_cache[$this->__path] = $result;
+
+        return $result;
     }
 /*
  * TESTED

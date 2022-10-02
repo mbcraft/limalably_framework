@@ -19,6 +19,14 @@ class PlainDirTest extends LTestCase
         
     }
 
+    function testContentHash() {
+        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+
+        $content_hash = $d->getContentHash();
+
+        $this->assertEqual($content_hash,"dcae4ca026b25ecf9485a425c99b8bfb0fc828e6","L'hash della directory non corrisponde!!");
+    }
+
     function testFindFilesBasic()
     {
         $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/advances_dir_list/");

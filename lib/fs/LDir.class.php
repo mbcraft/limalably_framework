@@ -22,6 +22,8 @@ class LDir extends LFileSystemElement
     const SHOW_HIDDEN_FILES = "SHOW_HIDDEN_FILES";
     static $showHiddenFiles = array("/\A[\.][\.]?\Z/");
 
+    static $content_hash_cache = [];
+
     function __construct($path)
     {
         if ($path!="") {
@@ -68,6 +70,34 @@ class LDir extends LFileSystemElement
             touch($this->__full_path);
     }
 
+    static function getTempDir() {
+        if (class_exists(LConfigReader::class)) {
+            $temp_dir = LConfigReader::simple("/misc/temp_dir");
+        } else {
+            $temp_dir = "temp/";
+        }
+
+        return new LDir($temp_dir);
+    }
+
+    function getContentHash() {
+
+        if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
+
+        $elements = $this->listAll();
+
+        $all_hashes = "";
+
+        foreach ($elements as $elem) {
+            $all_hashes .= $elem->getContentHash();
+        }
+
+        $result = sha1($all_hashes);
+
+        self::$content_hash_cache[$this->__path] = $result;
+
+        return $result;
+    }
 
 
     function getParentDir()

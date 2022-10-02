@@ -27,6 +27,13 @@ class PlainDirTest extends LTestCase
         $this->assertEqual($content_hash,"dcae4ca026b25ecf9485a425c99b8bfb0fc828e6","L'hash della directory non corrisponde!!");
     }
 
+    function testPathRecognizedFromFullPath() {
+        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+
+        $this->assertEqual($d->getFullPath(),$_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/","Il percorso completo della cartella non coincide!");
+        $this->assertEqual($d->getPath(),"tests/fs/test_dir/","Il percorso parziale della cartella non coincide!");
+    }
+
     function testTempFile() {
 
         $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/temp_file/");

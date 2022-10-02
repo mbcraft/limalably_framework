@@ -122,6 +122,10 @@ abstract class LFileSystemElement
         
         if (strpos($path,'/')===0) {
             $this->__full_path = $path;
+
+            $base_folder = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
+
+            if (strpos($this->__full_path,$base_folder)===0) $this->__path = substr($this->__full_path,strlen($base_folder));
         } else {
             $base_folder = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['FRAMEWORK_DIR'];
             $this->__full_path = $base_folder.$path;

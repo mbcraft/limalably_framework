@@ -11,6 +11,8 @@
  */
 class LDir extends LFileSystemElement
 {
+    const TMP_DIR = "temp/";
+
     const FILTER_ALL_DIRECTORIES = 1;
     const FILTER_ALL_FILES = 2;
     const FILTER_ALL_ELEMENTS = 3;
@@ -71,13 +73,14 @@ class LDir extends LFileSystemElement
     }
 
     static function getTempDir() {
-        if (class_exists(LConfigReader::class)) {
-            $temp_dir = LConfigReader::simple("/misc/temp_dir");
-        } else {
-            $temp_dir = "temp/";
-        }
+       
+        return new LDir(self::TMP_DIR);
+    }
 
-        return new LDir($temp_dir);
+    function newTempFile($prefix='tmp_') {
+        $result = tempnam($this->getFullPath(),$prefix);
+        if ($result) return new LFile($result);
+        else return false;
     }
 
     function getContentHash() {

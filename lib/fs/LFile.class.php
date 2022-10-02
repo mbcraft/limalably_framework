@@ -11,8 +11,6 @@
  */
 class LFile extends LFileSystemElement
 {
-    const TMP_DIR = "temp/";
-
     static $content_hash_cache = [];
 
     function getDirectory()
@@ -201,14 +199,6 @@ class LFile extends LFileSystemElement
         $my_path = $this->getFullPath();
 
         require_once($my_path);
-    }
-
-    public static function newTempFile()
-    {
-        $dir = new LDir(self::TMP_DIR);
-        $result = tempnam($dir->getFullPath(),"tmp_");
-        if ($result) return new LFile($result);
-        else return false;
     }
 
     public function toArray()

@@ -27,6 +27,25 @@ class PlainDirTest extends LTestCase
         $this->assertEqual($content_hash,"dcae4ca026b25ecf9485a425c99b8bfb0fc828e6","L'hash della directory non corrisponde!!");
     }
 
+    function testTempFile() {
+
+        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/temp_file/");
+
+        $this->assertTrue($d->isEmpty(),"La directory dei file temporanei non è vuota inizialmente!");
+
+        $f = $d->newTempFile();
+
+        $this->assertFalse($d->isEmpty(),"La directory dei file temporanei non è vuota inizialmente!");
+
+        $this->assertTrue($f->exists(),"Il file temporaneo viene già creato appena viene cercato!");
+        $this->assertTrue($f->isReadable(),"Il file temporaneo non è leggibile!");
+        $this->assertTrue($f->isWritable(),"Il file temporaneo non è scrivibile!");
+
+        $f->delete();
+
+        $this->assertTrue($d->isEmpty(),"La directory dei file temporanei non è vuota alla fine del test!");
+    }
+
     function testFindFilesBasic()
     {
         $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/advances_dir_list/");

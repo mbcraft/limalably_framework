@@ -1098,8 +1098,128 @@ class DeployerController {
 		$this->password = $password;
 	}
 
+	private $visit_result = [];
+
+	private $excluded_paths = [];
+
+	public function visit($dir) {
+
+		if (!in_array($dir->getPath(),$this->excluded_paths)) {
+			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
+
+			$files = $dir->listFiles();
+
+			foreach ($files as $f) {
+				if (!in_array($f->getPath(),$this->excluded_paths)) {
+					$this->visit_result[$f->getPath()] = $f->getContentHash();
+				}
+			}
+		}
+
+	}
+
+	public function listHashes($password,$excluded_paths) {
+		if ($this->accessGranted($password)) {
+			$this->excluded_paths = $excluded_paths;
+
+			$this->root_dir->visit($this);
+
+			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
+
+		} else return $this->failure("Wrong password.");
+	}
+
+	public function deleteFile($password,$path) {
+		if ($this->accessGranted($password)) {
+
+			$f = new LFile($this->root_dir->getFullPath().$path);
+
+			if ($f->exists()) {
+				$f->delete();
+
+				return ["result" => self::SUCCESS_RESULT];
+			} else return $this->failure("File to delete does not exist.");
+
+
+		} else return $this->failure("Wrong password.");
+	}
+
+	public function makeDir($password,$path) {
+		if ($this->accessGranted($password)) {
+
+			$dest = new LDir($this->root_dir->getFullPath().$path);
+
+			$dest->touch();
+
+			if ($dest->exists()) return ["result" => self::SUCCESS_RESULT];
+			else return $this->failure("Unable to create directory.");
+
+		} else return $this->failure("Wrong password.");
+	}
+
+	public function deleteDir($password,$path,$recursive) {
+		if ($this->accessGranted($password)) {
+
+			$dest = new LDir($this->root_dir->getFullPath().$path);
+
+			if (!$dest->exists()) return $this->failure("Directory to delete does not exist.");
+
+			$dest->delete($recursive);
+
+			if (!$this->exists()) return ["result" => self::SUCCESS_RESULT];
+			else return $this->failure("Unable to delete directory.");
+
+		} else return $this->failure("Wrong password.");
+	}
+
+	public function copyFile($password,$path) {
+		if ($this->accessGranted($password)) {
+			if (isset($_FILES['f']) && $_FILES['f']['error'] == UPLOAD_ERR_OK) {
+
+				$content = file_get_contents($_FILES['f']['tmp_name']);
+
+				$dest = new LFile($this->root_dir->getFullPath().$path);
+
+				$dir = $dest->getDirectory();
+
+				if (!$dir->exists()) return $this->failure("Parent directory does not exist.");
+
+				$dest->setContent($content);
+
+				if ($dest->getSize()!=$_FILES['f']['size']) {
+					$dest->delete();
+					return $this->failure("Size of file is wrong after write.");
+				}
+
+				return ["result" => self::SUCCESS_RESULT];
+
+			} else return $this->failure("File 'f' is not present or upload failure.");
+		} 
+		else return $this->failure("Wrong password.");
+	}
+
+	public function downloadDir($password,$path) {
+		if ($this->accessGranted($password)) {
+
+			$source = new LDir($this->root_dir->getFullPath().$path);
+
+			if (!$source->exists()) return $this->failure("Directory to zip and get does not exist.");
+
+			$zip_file = $this->root_dir->newFile("my_dir.zip");
+
+			if ($zip_file->exists()) $zip_file->delete(); //...
+
+			LZipUtils::createArchive($zip_file,$source);
+
+			if (!$zip_file->exists()) return $this->failure("Unable to create zip file.");
+
+			return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
+
+		} else $this->failure("Wrong password.");
+	}
+
 	public function changePassword($old_password,$new_password) {
-		if ($this->accessGranted()) {
+		if ($this->accessGranted($password)) {
 			$deployer_content = $this->deployer_file->getContent();
 
 			$tokens = explode('\/*!PWD!*/',$deployer_content);
@@ -1111,13 +1231,13 @@ class DeployerController {
 			$this->deployer_file->setContent($deployer_content);
 
 			return ["result" => self::SUCCESS_RESULT];
-		} else return $this->failure();
+		} else return $this->failure("Wrong password.");
 	}
 
 	public function hello($password=null) {
-		if ($this->accessGranted()) {
+		if ($this->accessGranted($password)) {
 			return ["result" => self::SUCCESS_RESULT];
-		} else return $this->failure();
+		} else return $this->failure("Wrong password.");
 	}
 
 	private function accessGranted($password) {
@@ -1125,8 +1245,8 @@ class DeployerController {
 		else return false;
 	}
 
-	private function failure() {
-		return ["result" => self::FAILURE_RESULT];
+	private function failure(string $message) {
+		return ["result" => self::FAILURE_RESULT,"message" => $message];
 	}
 
 	private function hasPassword() {
@@ -1138,5 +1258,110 @@ class DeployerController {
         else return 'CLI';
     }
 
+    public function processRequest() {
+    	if (isset($_POST['METHOD'])) {
+    		$method = $_POST['METHOD'];
 
+    		switch ($method) {
+    			case 'HELLO' : {
+					if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in HELLO request."));
+
+					echo json_encode($this->hello($password));
+    				break;
+    			}
+    			case 'CHANGE_PASSWORD' : {
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
+
+					if (isset($_POST['NEW_PASSWORD'])) $new_password = $_POST['NEW_PASSWORD'];
+					else echo json_encode($this->failure("NEW_PASSWORD field missing in CHANGE_PASSWORD request."));
+
+					$this->changePassword($password,$new_password);
+
+					break;
+    			}
+    			case 'LIST_HASHES' : {
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in LIST_HASHES request."));
+
+					if (isset($_POST['EXCLUDED_PATHS'])) $excluded_paths = explode(',',$_POST['EXCLUDED_PATHS']);
+					else echo json_encode($this->failure("EXCLUDED_PATHS field missing in LIST_HASHES request."));
+
+					echo json_encode($this->listHashes($password,$excluded_paths));
+
+					break;
+    			}
+    			case 'COPY_FILE' : {
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in COPY_FILE request."));
+
+					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					else echo json_encode($this->failure("PATH field missing in COPY_FILE request."));
+
+					echo json_encode($this->copyFile($password,$path));
+
+					break;
+    			}
+    			case 'DELETE_DIR' : {
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in DELETE_DIR request."));
+
+					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					else echo json_encode($this->failure("PATH field missing in DELETE_DIR request."));
+
+					if (isset($_POST['RECURSIVE'])) $recursive = $_POST['RECURSIVE'] == 'true' ? true : false;
+					else echo json_encode($this->failure("RECURSIVE field missing in DELETE_DIR request."));
+
+					echo json_encode($this->deleteDir($password,$path));
+
+					break;
+    			}
+    			case 'DELETE_FILE' : {
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in DELETE_FILE request."));
+
+					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					else echo json_encode($this->failure("PATH field missing in DELETE_FILE request."));
+
+					echo json_encode($this->deleteFile($password,$path));
+
+					break;
+    			}
+    			case 'DOWNLOAD_DIR' : {
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in DOWNLOAD_DIR request."));
+
+					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					else echo json_encode($this->failure("PATH field missing in DOWNLOAD_DIR request."));
+
+					$result = $this->downloadDir($password,$path);
+
+					if ($result['result']==self::SUCCESS_RESULT) {
+						$f = $result['data'];
+
+				        header('Content-Description: File Transfer');
+				        header('Content-Type: '.mime_content_type ($f->getFullPath()));
+				        
+				        $content_disposition = 'inline';
+				        
+				        header('Content-Disposition: '.$content_disposition.'; filename="my_dir.zip"');
+				        header('Expires: 0');
+				        header('Cache-Control: must-revalidate');
+				        header('Pragma: public');
+				        header('Content-Length: ' . filesize($f->getFullPath());
+				        header('Connection: close');
+				        flush(); // Flush system output buffer
+				        readfile($f->getFullPath());
+				        exit();
+					}
+
+					break;
+    			}
+    			default : echo json_encode($this->failure("Unknown method : ".$method));
+    		}
+    	} else {
+    		echo json_encode($this->failure("METHOD parameter not set in POST."));
+    	}
+    }
 }

@@ -78,6 +78,9 @@ class LDir extends LFileSystemElement
     }
 
     function newTempFile($prefix='tmp_') {
+
+        if (!$this->exists()) $this->touch();
+
         $result = tempnam($this->getFullPath(),$prefix);
         if ($result) return new LFile($result);
         else return false;

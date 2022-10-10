@@ -64,6 +64,7 @@ class LStringUtils {
             return $result;
         }
         else {
+            if (strlen($needle)>strlen($string)) return false;
             return strpos($string,$needle,strlen($string)-strlen($needle))===(strlen($string)-strlen($needle));
         }
     }

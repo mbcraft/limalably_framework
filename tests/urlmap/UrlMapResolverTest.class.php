@@ -37,7 +37,7 @@ class UrlMapResolverTest extends LTestCase {
         $this->assertTrue($urlmap->mustGet("/exec/%"),"stop_qualcosa","L'exec do non è impostato nell'urlmap!");
         
     }
-
+    
     function testResolveProva() {
         
         $resolver = $this->newUrlMapResolver();
@@ -84,4 +84,5 @@ class UrlMapResolverTest extends LTestCase {
         $this->assertNotNull($resolver->resolveUrlMap("something", LUrlMapResolver::FLAGS_SEARCH_PRIVATE),"Non riesco a trovare la route privata something");
         
     }
+    
 }

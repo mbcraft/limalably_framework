@@ -120,6 +120,7 @@
             "alias_db_routes_folder" : "urlmap/public/alias_db/",
             "private_routes_folder" : "urlmap/private/",
             "search_order": "alias_db,static",
+            "special_matchall_route" : "_else",
             "special_folder_route": "_folder",
             "special_inherited_route": "_default",
             "special_truncate_route": "_stop",

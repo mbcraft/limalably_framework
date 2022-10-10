@@ -23,6 +23,7 @@ class LUrlMapResolver {
     private $alias_db_folder;
     private $private_folder;
     
+    private $matchall_route;
     private $folder_route;
     private $inherited_route;
     private $truncate_route;
@@ -43,6 +44,7 @@ class LUrlMapResolver {
         if (!is_dir($this->root_folder.$this->alias_db_folder)) throw new \Exception("La cartella per gli urlmap pubblici alias non esiste : ".$this->alias_db_folder);
         if (!is_dir($this->root_folder.$this->private_folder)) throw new \Exception("La cartella per gli urlmap privati non esiste : ".$this->private_folder);
         
+        $this->matchall_route = LConfigReader::simple('/urlmap/special_matchall_route');
         $this->folder_route = LConfigReader::simple('/urlmap/special_folder_route');
         $this->inherited_route = LConfigReader::simple('/urlmap/special_inherited_route');
         $this->truncate_route = LConfigReader::simple('/urlmap/special_truncate_route');
@@ -71,11 +73,52 @@ class LUrlMapResolver {
         $this->finalizeInit();
     }
 
-    
-    private function getPrivateUrlMapAsArray($route) {
+    private function getRealPrivateOrStaticRoute($routes_folder,$route) {
+
+        $route_parts = explode('/',$route);
+
+        $real_route_parts = [];
+
+        foreach ($route_parts as $rp) {
+            if ($rp) $real_route_parts[] = $rp;
+        }
+
+        $final_route = "";
+
+        foreach ($real_route_parts as $ix => $rrp) {
+            $current_path = $routes_folder.$final_route.'/'.$rrp;
+            $current_path_ma = $routes_folder.$final_route.'/'.$this->matchall_route;
+
+            if (count($real_route_parts)===($ix+1)) {
+                $current_path .= self::URLMAP_EXTENSION;
+                $current_path_ma .= self::URLMAP_EXTENSION;
+
+                if (is_readable($current_path)) return str_replace('//', '/', ($final_route.'/'.$rrp));
+                if (is_readable($current_path_ma)) return str_replace('//', '/', ($final_route.'/'.$this->matchall_route));
+            }
+            
+            if (is_dir($current_path)) $final_route .= '/'.$rrp;
+            else if (is_dir($current_path_ma)) $final_route .= '/'.$this->matchall_route;
+        }
+
+        return $route;
+
+    }
+
+    private function isPrivateRouteAvailable($route) {
         $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
-        $path = str_replace('//', '/', $path);
-        return $this->readUrlMapAsArray($path);
+
+        return file_exists($path); 
+    }
+
+    private function getPrivateUrlMapAsArray($route) {
+                
+        $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
+
+        if (file_exists($path)) 
+            return $this->readUrlMapAsArray($path);
+        else 
+            return null;
     }
     /**
      * Controlla se una route è valida come url map privata.
@@ -83,19 +126,37 @@ class LUrlMapResolver {
      * @param string $route
      * @return boolean true se la route è valida e punta a una url map privata, false altrimenti.
      */
-    public function isPrivateRoute($route) {
+    public function getPrivateRoute($route) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        $path = $this->root_folder.$this->private_folder.$route.self::URLMAP_EXTENSION;
+        $real_route = $this->getRealPrivateOrStaticRoute($this->root_folder.$this->private_folder,$route);
+            
+        $path = $this->root_folder.$this->private_folder.$real_route.self::URLMAP_EXTENSION;
+
+        LResult::trace('Cerco private route : '.$route.' - found : '.$real_route);
+        
+        if(is_readable($path)) 
+            return $real_route;
+        else 
+            return null;
+    }
+
+    private function isAliasRouteAvailable($route) {
+        $path = $this->root_folder.$this->alias_db_folder.sha1($route).self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
-        LResult::trace('Cerco private route : '.$route);
-        return is_readable($path);
+        
+        return file_exists($path);
     }
     
     private function getAliasUrlMapAsArray($route) {
         $path = $this->root_folder.$this->alias_db_folder.sha1($route).self::URLMAP_EXTENSION;
         $path = str_replace('//', '/', $path);
-        return $this->readUrlMapAsArray($path);
+        
+
+        if (file_exists($path))
+            return $this->readUrlMapAsArray($path);
+        else 
+            return null;
     }
     
     public function getAliasDbFilename($route) {
@@ -114,7 +175,11 @@ class LUrlMapResolver {
         $path = $this->root_folder.$this->alias_db_folder.$this->getAliasDbFilename($route);
         $path = str_replace('//', '/', $path);
         LResult::trace('Cerco url alias route : '.$route);
-        return is_readable($path);
+        
+        if (is_readable($path)) 
+            return $route;
+        else 
+            return null;
     }
         
     private function replaceUrlMapVariables($urlmap_content,$variables) {
@@ -159,11 +224,23 @@ class LUrlMapResolver {
         else return false;
     }
       
-    private function getStaticUrlMapAsArray($route) {
+
+    private function isStaticRouteAvailable($route) {
         $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
-        $path = str_replace('//', '/', $path);
+
+        return file_exists($path);
+    }
+
+    private function getStaticUrlMapAsArray($route) {
+        
+        $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
+
         LResult::trace("Ritorno l'urlmap pubblica alla route ".$route);
-        return $this->readUrlMapAsArray($path);
+        
+        if (file_exists($path))
+            return $this->readUrlMapAsArray($path);
+        else 
+            return null;
     }
     
     /**
@@ -172,13 +249,18 @@ class LUrlMapResolver {
      * @param string $route La route
      * @return boolean True se è una route pubblica, false altrimenti
      */
-    public function isStaticRoute($route) {
+    public function getStaticRoute($route) {
         if (!$this->isInitialized()) $this->initWithDefaults ();
         
-        $path = $this->root_folder.$this->static_folder.$route.self::URLMAP_EXTENSION;
-        $path = str_replace('//', '/', $path);
-        LResult::trace('Cerco static route : '.$route);
-        return is_readable($path);
+        $real_route = $this->getRealPrivateOrStaticRoute($this->root_folder.$this->static_folder,$route);
+
+        $path = $this->root_folder.$this->static_folder.$real_route.self::URLMAP_EXTENSION;
+        LResult::trace('Cerco static route : '.$route.' - found : '.$real_route);
+        
+        if (is_readable($path)) 
+            return $real_route;
+        else 
+            return null;
     }
     
     public function normalizeUrlMapWithIncludes($array_map,$includes_search_flags) {
@@ -224,8 +306,10 @@ class LUrlMapResolver {
     private function resolveStaticUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
+            
             LResult::trace("Risolvo la route pubblica : ".$route);
-            if ($this->isStaticRoute($route)) {
+            
+            if ($this->isStaticRouteAvailable($route)) {
                 
                 $array_map = $this->getStaticUrlMapAsArray($route);
                 if ($this->isUrlMapWithIncludes($array_map)) {
@@ -241,7 +325,8 @@ class LUrlMapResolver {
     private function resolvePrivateUrlMap($route) {
         $calculator = new LUrlMapCalculator();
         do {
-            if ($this->isPrivateRoute($route)) {
+
+            if ($this->isPrivateRouteAvailable($route)) {
                 $array_map = $this->getPrivateUrlMapAsArray($route);
                 if ($this->isUrlMapWithIncludes($array_map)) {
                     $array_map = $this->normalizeUrlMapWithIncludes($array_map,self::FLAGS_SEARCH_PRIVATE);
@@ -321,15 +406,19 @@ class LUrlMapResolver {
             foreach ($route_checks as $route_check) {
                 switch ($route_check) {
                     case 'static' : {
-                        if ($this->isStaticRoute($route)) {
-                            if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and public");
-                            return $this->resolveStaticUrlMap($route);
+                        $r = $this->getStaticRoute($route);
+
+                        if ($r) {
+                            $r2 = $this->getPrivateRoute($route);
+                            if ($r2) throw new \Exception("Route ".$route." is both private and public");
+                            return $this->resolveStaticUrlMap($r);
                         }
                         break;
                     }
                     case 'alias_db' : {
                         if ($this->isAliasRoute($route)) {
-                            if ($this->isPrivateRoute($route)) throw new \Exception("Route ".$route." is both private and alias");
+                            $r = $this->getPrivateRoute($route);
+                            if ($r) throw new \Exception("Route ".$route." is both private and alias");
                             return $this->resolveAliasUrlMap($route);
                         }
                         break;
@@ -339,9 +428,13 @@ class LUrlMapResolver {
             }
         }
         if (($search_flags & self::FLAGS_SEARCH_PRIVATE) == self::FLAGS_SEARCH_PRIVATE) {
-            LResult::trace("Cerco la route in private : ".$route);
-            if ($this->isPrivateRoute($route)) {
-                return $this->resolvePrivateUrlMap($route);
+            
+            $r = $this->getPrivateRoute($route);
+
+            LResult::trace("Cerco la route in private : ".$route.' - found : '.$r);
+
+            if ($r) {
+                return $this->resolvePrivateUrlMap($r);
             }
         }
         return null;

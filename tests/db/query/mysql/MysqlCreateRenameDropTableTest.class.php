@@ -10,6 +10,16 @@
 class MysqlCreateRenameDropTableTest extends LTestCase {
 	
 
+	function testShowCreateTable() {
+
+		$db = db('framework_unit_tests');
+
+		$result = create_table('regione')->show()->go($db);
+
+		$this->assertTrue(strlen($result)>10,"La create table non è stata ritornata correttamente!");	
+		
+	}
+
 	function testCreateRenameDropTable() {
 
 		$db = db('framework_unit_tests');

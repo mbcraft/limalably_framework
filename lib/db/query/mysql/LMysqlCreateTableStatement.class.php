@@ -15,6 +15,7 @@ Thanks to www.mysqltutorial.org for its documentation.
 
 class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	
+	private $show_option = "";
 	private $table_name;
 	private $temporary_modifier = "";
 	private $if_not_exists_option = "";
@@ -29,6 +30,18 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	{
 		$this->table_name = $table_name;
 
+	}
+
+	function show() {
+
+		$this->show_option = "SHOW ";
+
+		return $this;
+
+	}
+
+	function isShow() {
+		return $this->show_option!=null;
 	}
 
 	function charset($charset_name) {
@@ -117,7 +130,9 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 
 	function __toString() {
 
-		if (empty($this->col_defs)) throw new \Exception("At least one column definition is needed");
+		if (!$this->isShow() && empty($this->col_defs)) throw new \Exception("At least one column definition is needed");
+
+		if ($this->isShow()) return $this->build_query($this->show_option,"CREATE","TABLE",$this->table_name);
 
 		$pk_and_fks = array_merge($this->unique_constraints,$this->foreign_keys);
 		if ($this->primary_key) {

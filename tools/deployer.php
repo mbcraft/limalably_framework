@@ -7,8 +7,6 @@
 */
 
 
-$deployer_password = /*!PWD!*/""/*!PWD!*/;
-
 if (!class_exists("LIOException")) {
 
 	//begin--
@@ -1079,23 +1077,85 @@ if (!class_exists("LFile")) {
 
 }
 
-$deployer_root = new LDir(__DIR__);
-$deployer_self = new LFile(__FILE__);
+if (!class_exists('LZipUtils')) {
 
+	//begin--
+	class LZipUtils
+	{
+	    public static function expandArchive($zip_file,$target_folder)
+	    {
+	        $zip_archive = new ZipArchive();
+	     
+	        if ($zip_file instanceof LFile)
+	            $real_zip_file = $zip_file;
+	        else
+	            $real_zip_file = new LFile($zip_file);
+	        
+	        
+	        if ($target_folder instanceof LDir)
+	            $target_dir = $target_folder;
+	        else
+	            $target_dir = new LDir($target_folder);
+	        
+	        $zip_archive->open($real_zip_file->getFullPath());
+	        
+	        $zip_archive->extractTo($target_dir->getFullPath());
+	        
+	        $zip_archive->close();
+	    }
+	    
+	    public static function createArchive($save_file,$folder_to_zip,$local_dir="/")
+	    {
+	        if ($folder_to_zip instanceof LDir)
+	            $dir_to_zip = $folder_to_zip;
+	        else
+	            $dir_to_zip = new LDir($folder_to_zip);
+	        
+	        $zip_archive = new ZipArchive();
+
+	        $zip_archive->open($save_file->getFullPath(),  ZipArchive::CREATE);
+
+	        LZipUtils::recursiveZipFolder($zip_archive, $dir_to_zip,$local_dir);
+
+	        $zip_archive->close();
+	    }
+	    
+	    private static function recursiveZipFolder($zip_archive,$current_folder,$local_dir)
+	    {        
+	        foreach ($current_folder->listAll() as $dir_entry)
+	        {
+	            if ($dir_entry->isFile())
+	            {
+	                $zip_archive->addFile($dir_entry->getFullPath(),$local_dir.$dir_entry->getFilename());
+	            }
+	            else
+	            {
+	                $zip_archive->addEmptyDir($local_dir.$dir_entry->getName().'/');
+	                LZipUtils::recursiveZipFolder($zip_archive, $dir_entry,$local_dir.$dir_entry->getName().'/');
+	            }
+	        }
+	    }
+	}
+	//end--
+
+
+}
+
+//starting deployer controller ---
 
 class DeployerController {
 
 	private $deployer_file;
 	private $root_dir;
-	private $password;
+
+	const PASSWORD = /*!PWD!*/""/*!PWD!*/;
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
 
-	function __construct($deployer_file,$root_dir,$password) {
-		$this->deployer_file = $deployer_file;
-		$this->root_dir = $root_dir;
-		$this->password = $password;
+	function __construct() {
+		$this->deployer_file = new LFile(__FILE__);
+		$this->root_dir = new LDir(__DIR__);
 	}
 
 	private $visit_result = [];
@@ -1241,7 +1301,7 @@ class DeployerController {
 	}
 
 	private function accessGranted($password) {
-		if (($this->hasPassword() && $this->password==$password) || !$password) return true;
+		if (($this->hasPassword() && self::PASSWORD==$password) || !$password) return true;
 		else return false;
 	}
 
@@ -1250,7 +1310,7 @@ class DeployerController {
 	}
 
 	private function hasPassword() {
-		return $this->password!=null;
+		return self::PASSWORD!=null;
 	}
 
     private function getRequestMethod() {
@@ -1364,4 +1424,13 @@ class DeployerController {
     		echo json_encode($this->failure("METHOD parameter not set in POST."));
     	}
     }
+}
+
+//--launch
+
+if (isset($_POST['METHOD'])) {
+
+	$controller = new DeployerController();
+	$controller->processRequest();
+
 }

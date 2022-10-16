@@ -137,6 +137,13 @@ class LDeployerClient {
 		return $random_token;
 	}
 
+	private function failure(string $msg) {
+
+		echo $msg;
+
+		return false;
+	}
+
 	public function help() {
 
 	}
@@ -149,26 +156,26 @@ class LDeployerClient {
 			$result = $this->current_driver->changePassword("",$this->current_password);
 
 			if ($this->isSuccess($result)) return true;
-			else return false;
+			else return $this->failure("Unable to correctly change password on deployer installation.");
 
 		} else {
 			$this->deleteKey($key_name);
-			return false;
+			return $this->failure("Unable to find saved key ".$key_name);
 		}
 	}
 
 	public function detach(string $key_name) {
 
-		if (!$this->loadKey($key_name)) return false;
+		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
 
 		$result = $this->current_driver->changePassword($this->current_password,"");
 
 		if ($this->isSuccess($result)) return true;
-			else return false;
+			else return $this->failure("Unable to change password on deployer instance.");
 	}
 
 	public function deployer_update(string $key_name) {
-		if (!$this->loadKey($key_name)) return $this->loadKeyError($key_name);
+		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
 	}
 
 	public function framework_update(string $key_name) {
@@ -180,15 +187,67 @@ class LDeployerClient {
 	}
 
 	public function disappear(string $key_name) {
+		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
 
+		$uri_parts = explode('/',$this->current_uri);
+		$deployer_filename = end($uri_parts);
+
+		$r = $this->current_driver->deleteFile($this->current_password,'/'.$deployer_filename);
+
+		if ($this->isSuccess($r)) return true;
+		else return $this->failure("Unable to make deployer installation disappear.");
 	}
 
 	public function reset(string $key_name) {
+		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
 
+		$uri_parts = explode('/',$this->current_uri);
+		$deployer_filename = end($uri_parts);
+
+		$r = $this->current_driver->listElements($this->current_password,'/');
+
+		if ($this->isSuccess($r)) {
+			$elements = $r['data'];
+
+			foreach ($elements as $el) {
+				if (LStringUtils::endsWith($el,'/')) {
+					$r2 = $this->current_driver->deleteDir($this->current_password,$el,true);
+
+					if (!$this->isSuccess($r2)) return $this->failure("Unable to delete directory : ".$el);
+				} else {
+					if (!LStringUtils::endsWith($el,$deployer_filename)) {
+						$r3 = $this->current_driver->deleteFile($this->current_password,$el);
+
+						if (!$this->isSuccess($r2)) return $this->failure("Unable to delete file : ".$el);
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	public function temp_clean(string $key_name) {
+		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
 
+		$result = $this->current_driver->listElements($this->current_password,'/');
+
+		if ($this->isSuccess($result)) {
+			$elements = $result['data'];
+
+			$temp_found = false;
+			foreach ($elements as $el) {
+				if ($el=='temp/') $temp_found = true;
+			}
+
+			if (!$temp_found) return $this->failure("Unable to find temp folder to clean.");
+
+			$r1 = $this->current_driver->deleteDir($this->current_password,'temp/',true);
+			$r2 = $this->current_driver->makeDir($this->current_password,'temp/');
+
+			if ($this->isSuccess($r1) && $this->isSuccess($r2)) return true;
+			else return $this->failure("Unable to delete and recreate temp folder on deployer installation.");
+		} else $this->failure("Unable to list files on deployer installation.");
 	}
 
 	public function framework_check(string $key_name) {

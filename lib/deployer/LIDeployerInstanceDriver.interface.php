@@ -8,6 +8,7 @@
 
 interface LIDeployerInstanceDriver {
 	
+	public function listElements($password,$folder);
 
 	public function listHashes($password,$excluded_paths);
 

@@ -8,10 +8,14 @@
 
 class LDeployerClient {
 	
+	const SUCCESS_RESULT = ':)';
+	const FAILURE_RESULT = ':(';
+
 	const STANDARD_DEPLOYER_FILENAME = 'deployer.php';
 	const DEPLOYER_KEY_EXTENSION = '.key';
 
 	private $current_driver = null;
+	private $current_uri = null;
 	private $current_password = "";
 
 	private $deployer_keys_folder = null;
@@ -37,7 +41,11 @@ class LDeployerClient {
 		$this->deployer_keys_folder->touch();
 	}
 
-	private function loadKey(string $name) {
+	private function isSuccess($result) {
+		return $result['result'] == self::SUCCESS_RESULT;
+	}
+
+	private function loadKey(string $name,bool $use_password) {
 
 		$this->initDeployerClientKeysFolder();
 
@@ -46,24 +54,51 @@ class LDeployerClient {
 		if ($deployer_key->exists() && $deployer_key->isReadable()) {
 			$lr = $deployer_key->openReader();
 
-			$deployer_uri = $lr->readLine();
-			$deployer_token = $lr->readLine();
+			$this->current_uri = $lr->readLine();
+			$this->current_password = $lr->readLine();
 
 			$lr->close();
 
-			if (LStringUtils::startsWith($deployer_uri,'http')) {
-				$this->current_driver = new LRemoteDeployerInstanceDriver($deployer_uri);
+			if (LStringUtils::startsWith($this->current_uri,'http')) {
+				$this->current_driver = new LRemoteDeployerInstanceDriver($this->current_uri);
 			} else {
 
-				$deployer_file = new LFile($deployer_uri);
+				$deployer_file = new LFile($this->current_uri);
 				if (!$deployer_file->exists()) throw new \Exception("Unable to locate deployer file!");
 
 				$this->current_driver = new LLocalDeployerInstanceDriver($deployer_file);
 			}
 
-			$this->current_password = $deployer_token;
+			if ($use_password) {
+				$hello_result = $this->current_driver->hello($this->current_password);
+			} else {
+				$hello_result = $this->current_driver->hello("");
+			}
+
+			if ($this->isSuccess($hello_result)) return true;
+			else return $this->unreachableDeployerServer($deployer_uri);
 		}
 
+		return $this->loadKeyError($name);
+
+	}
+
+	private function unreachableDeployerServer(string $deployer_uri) {
+
+		return false;
+	}
+
+	private function loadKeyError(string $name) {
+
+		return false;
+	}
+
+	private function deleteKey(string $name) {
+		$this->initDeployerClientKeysFolder();
+
+		$deployer_key_file = $this->deployer_keys_folder->newFile($name.self::DEPLOYER_KEY_EXTENSION);
+
+		$deployer_key_file->delete();
 	}
 
 	private function saveKey(string $name,string $deployer_uri) {
@@ -102,5 +137,78 @@ class LDeployerClient {
 		return $random_token;
 	}
 
+	public function help() {
+
+	}
+
+	public function attach(string $key_name,string $deployer_uri) {
+
+		$this->saveKey($key_name,$deployer_uri);
+		if ($this->loadKey($key_name,false)) {
+
+			$result = $this->current_driver->changePassword("",$this->current_password);
+
+			if ($this->isSuccess($result)) return true;
+			else return false;
+
+		} else {
+			$this->deleteKey($key_name);
+			return false;
+		}
+	}
+
+	public function detach(string $key_name) {
+
+		if (!$this->loadKey($key_name)) return false;
+
+		$result = $this->current_driver->changePassword($this->current_password,"");
+
+		if ($this->isSuccess($result)) return true;
+			else return false;
+	}
+
+	public function deployer_update(string $key_name) {
+		if (!$this->loadKey($key_name)) return $this->loadKeyError($key_name);
+	}
+
+	public function framework_update(string $key_name) {
+
+	}
+
+	public function project_update(string $key_name) {
+
+	}
+
+	public function disappear(string $key_name) {
+
+	}
+
+	public function reset(string $key_name) {
+
+	}
+
+	public function temp_clean(string $key_name) {
+
+	}
+
+	public function framework_check(string $key_name) {
+
+	}
+
+	public function project_check(string $key_name) {
+
+	}
+
+	public function backup(string $key_name) {
+
+	}
+
+	public function auto_config(string $key_name) {
+
+	}
+
+	public function manual_config(string $key_name,string $config_folder) {
+
+	}
 
 }

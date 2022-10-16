@@ -1178,6 +1178,27 @@ class DeployerController {
 
 	}
 
+	public function listElements($password,$folder) {
+		if ($this->accessGranted($password)) {
+
+			$dir = new LDir($folder);
+
+			if ($dir->exists() && $dir->isReadable()) {
+
+				$folder_list = $dir->listFolders();
+				$file_list = $dir->listFiles();
+
+				$data = [];
+				foreach ($folder_list as $f) $data[] = $f->getName().'/';
+				foreach ($file_list as $f) $data[] = $f->getName();
+
+				return ["result" => self::SUCCESS_RESULT,"data" => $data];
+
+			} else return $this->failure("Unable to find folder : ".$folder);
+
+		} else return $this->failure("Wrong password.");
+	}
+
 	public function listHashes($password,$excluded_paths) {
 		if ($this->accessGranted($password)) {
 			$this->excluded_paths = $excluded_paths;
@@ -1340,6 +1361,18 @@ class DeployerController {
 					$this->changePassword($password,$new_password);
 
 					break;
+    			}
+    			case 'LIST_ELEMENTS' : {
+
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in LIST_ELEMENTS request."));
+
+					if (isset($_POST['FOLDER'])) $folder = $_POST['FOLDER'];
+					else echo json_encode($this->failure("FOLDER field missing in LIST_ELEMENTS request."));
+
+					echo json_encode($this->listElements($password,$folder));
+
+    				break;
     			}
     			case 'LIST_HASHES' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];

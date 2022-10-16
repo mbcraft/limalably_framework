@@ -20,6 +20,19 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
+	public function listElements($password,$folder) {
+
+		$params = [];
+		$params['METHOD'] = 'LIST_ELEMENTS';
+		$params['PASSWORD'] = $password;
+		$params['FOLDER'] = $folder;
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+
+	}
+
 	public function listHashes($password,$excluded_paths) {
 
 		$params = [];

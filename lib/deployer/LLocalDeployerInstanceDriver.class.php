@@ -21,6 +21,12 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$this->controller = new DeployerController();
 	}
 
+	public function listElements($password,$folder) {
+
+		return $this->controller->listElements($password,$folder);
+		
+	}
+
 	public function listHashes($password,$excluded_paths) {
 
 		return $this->controller->listHashes($password,$excluded_paths);

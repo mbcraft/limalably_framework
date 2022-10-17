@@ -1161,6 +1161,7 @@ class DeployerController {
 	private $visit_result = [];
 
 	private $excluded_paths = [];
+	private $included_paths = [];
 
 	public function visit($dir) {
 
@@ -1199,11 +1200,20 @@ class DeployerController {
 		} else return $this->failure("Wrong password.");
 	}
 
-	public function listHashes($password,$excluded_paths) {
+	public function listHashes($password,$excluded_paths,$included_paths) {
 		if ($this->accessGranted($password)) {
 			$this->excluded_paths = $excluded_paths;
+			$this->included_paths = $included_paths;
 
-			$this->root_dir->visit($this);
+			if (count($this->included_paths)>0) {
+				foreach ($this->included_paths as $dp) {
+					$my_dir = new LDir($dp);
+
+					$my_dir->visit($this);
+				}
+			} else {
+				$this->root_dir->visit($this);
+			}
 
 			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
 
@@ -1381,7 +1391,10 @@ class DeployerController {
 					if (isset($_POST['EXCLUDED_PATHS'])) $excluded_paths = explode(',',$_POST['EXCLUDED_PATHS']);
 					else echo json_encode($this->failure("EXCLUDED_PATHS field missing in LIST_HASHES request."));
 
-					echo json_encode($this->listHashes($password,$excluded_paths));
+					if (isset($_POST['INCLUDED_PATHS'])) $included_paths = explode(',',$_POST['INCLUDED_PATHS']);
+					else echo json_encode($this->failure("INCLUDED_PATHS field missing in LIST_HASHES request."));					
+
+					echo json_encode($this->listHashes($password,$excluded_paths,$included_paths));
 
 					break;
     			}

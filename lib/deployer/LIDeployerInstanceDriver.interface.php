@@ -10,7 +10,7 @@ interface LIDeployerInstanceDriver {
 	
 	public function listElements($password,$folder);
 
-	public function listHashes($password,$excluded_paths);
+	public function listHashes($password,$excluded_paths,$included_paths);
 
 	public function deleteFile($password,$path);
 

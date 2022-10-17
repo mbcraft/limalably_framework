@@ -20,6 +20,89 @@ class LDeployerClient {
 
 	private $deployer_keys_folder = null;
 
+	private $visit_result = [];
+
+	private $excluded_paths = [];
+	private $included_paths = [];
+
+	private $files_to_add = [];
+	private $files_to_update = [];
+	private $files_to_delete = [];
+
+	private function setupChangesList($client_hash_list,$server_hash_list) {
+
+		$this->files_to_add = [];
+		$this->files_to_update = [];
+		$this->files_to_delete = [];
+
+		foreach ($client_hash_list as $path => $hash) {
+			if (!isset($server_hash_list[$path])) {
+				$this->files_to_add[] = $path;
+			}
+			if (isset($server_hash_list[$path]) && $server_hash_list[$path]!=$hash) {
+				$this->files_to_update[] = $path;
+			}
+		}
+
+		foreach ($server_hash_list as $path => $hash) {
+			if (!isset($client_hash_list[$path])) {
+				$this->files_to_delete[] = $path;
+			}
+		}
+
+	}
+
+	private function previewChangesList() {
+
+		echo "Changes list :\n\n";
+
+		echo count($this->files_to_add)." files to add.\n";
+		echo count($this->files_to_update)." files to update.\n";
+		echo count($this->files_to_delete)." files to delete.\n";
+
+	}
+
+	private function executeChangesList() {
+
+	}
+
+	public function visit($dir) {
+
+		if (!in_array($dir->getPath(),$this->excluded_paths)) {
+			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
+
+			$files = $dir->listFiles();
+
+			foreach ($files as $f) {
+				if (!in_array($f->getPath(),$this->excluded_paths)) {
+					$this->visit_result[$f->getPath()] = $f->getContentHash();
+				}
+			}
+		}
+
+	}
+
+	private function clientListHashes($excluded_paths,$included_paths) {
+			
+			$this->visit_result = [];
+
+			$this->excluded_paths = $excluded_paths;
+			$this->included_paths = $included_paths;
+
+			if (count($this->included_paths)>0) {
+				foreach ($this->included_paths as $dp) {
+					$my_dir = new LDir($dp);
+
+					$my_dir->visit($this);
+				}
+
+				return $this->visit_result;
+			} else {
+				return [];
+			}
+		
+	}
+
 	public function setDeployerClientKeysFolder($dir_or_path) {
 		if (is_string($dir_or_path)) {
 			$dir_or_path = new LDir();
@@ -85,10 +168,14 @@ class LDeployerClient {
 
 	private function unreachableDeployerServer(string $deployer_uri) {
 
+		echo "Deployer server is unreachable at : ".$deployer_uri;
+
 		return false;
 	}
 
 	private function loadKeyError(string $name) {
+
+		echo "Unable to load key with name : ".$name;
 
 		return false;
 	}
@@ -166,108 +253,267 @@ class LDeployerClient {
 
 	public function detach(string $key_name) {
 
-		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
+		if ($this->loadKey($key_name)) {
 
-		$result = $this->current_driver->changePassword($this->current_password,"");
+			$result = $this->current_driver->changePassword($this->current_password,"");
 
-		if ($this->isSuccess($result)) return true;
-			else return $this->failure("Unable to change password on deployer instance.");
+			if ($this->isSuccess($result)) return true;
+				else return $this->failure("Unable to change password on deployer instance.");
+
+		} else return false;
 	}
 
 	public function deployer_update(string $key_name) {
-		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
+		if ($this->loadKey($key_name)) {
+
+			$uri_parts = explode('/',$this->current_uri);
+			$deployer_filename = end($uri_parts);
+
+			$updated_deployer = new LFile($_SERVER['FRAMEWORK_DIR'].'/tools/deployer.php');
+
+			$r = $this->current_driver->copyFile($this->current_password,'/'.$deployer_filename,$updated_deployer);
+
+			if ($this->isSuccess($r)) return true;
+			else $this->failure("Unable to update deployer on server.");
+
+		} else return false;
 	}
 
 	public function framework_update(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
+
+			if ($framework_dir->isParentOf($project_dir)) {
+				$dir_name = $framework_dir->getName();
+
+				$r = $this->current_driver->listHashes($this->current_password,[],[$dir_name.'/']);
+
+				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+
+				$this->clientListHashes([],[$dir_name.'/']);
+
+				$this->setupChangesList();
+
+				$this->executeChangesList();
+
+				return true;
+
+			} else return $this->failure("Unable to determine framework dir.");
+		} else return false;
 
 	}
 
 	public function project_update(string $key_name) {
+		if ($this->loadKey($key_name)) {
 
+			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
+
+			if ($framework_dir->isParentOf($project_dir)) {
+				$dir_name = $framework_dir->getName();
+
+				$r = $this->current_driver->listHashes($this->current_password,[$dir_name.'/'],[]);
+
+				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+
+				$this->clientListHashes([$dir_name.'/'],[]);
+
+				$this->setupChangesList();
+
+				$this->executeChangesList();
+
+				return true;
+
+			} else return $this->failure("Unable to determine framework dir.");
+		} else return false;
 	}
 
 	public function disappear(string $key_name) {
-		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
+		if ($this->loadKey($key_name)) {
 
-		$uri_parts = explode('/',$this->current_uri);
-		$deployer_filename = end($uri_parts);
+			$uri_parts = explode('/',$this->current_uri);
+			$deployer_filename = end($uri_parts);
 
-		$r = $this->current_driver->deleteFile($this->current_password,'/'.$deployer_filename);
+			$r = $this->current_driver->deleteFile($this->current_password,'/'.$deployer_filename);
 
-		if ($this->isSuccess($r)) return true;
-		else return $this->failure("Unable to make deployer installation disappear.");
+			if ($this->isSuccess($r)) return true;
+			else return $this->failure("Unable to make deployer installation disappear.");
+		} else return false;	
 	}
 
 	public function reset(string $key_name) {
-		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
+		if ($this->loadKey($key_name)) {
 
-		$uri_parts = explode('/',$this->current_uri);
-		$deployer_filename = end($uri_parts);
+			$uri_parts = explode('/',$this->current_uri);
+			$deployer_filename = end($uri_parts);
 
-		$r = $this->current_driver->listElements($this->current_password,'/');
+			$r = $this->current_driver->listElements($this->current_password,'/');
 
-		if ($this->isSuccess($r)) {
-			$elements = $r['data'];
+			if ($this->isSuccess($r)) {
+				$elements = $r['data'];
 
-			foreach ($elements as $el) {
-				if (LStringUtils::endsWith($el,'/')) {
-					$r2 = $this->current_driver->deleteDir($this->current_password,$el,true);
+				foreach ($elements as $el) {
+					if (LStringUtils::endsWith($el,'/')) {
+						$r2 = $this->current_driver->deleteDir($this->current_password,$el,true);
 
-					if (!$this->isSuccess($r2)) return $this->failure("Unable to delete directory : ".$el);
-				} else {
-					if (!LStringUtils::endsWith($el,$deployer_filename)) {
-						$r3 = $this->current_driver->deleteFile($this->current_password,$el);
+						if (!$this->isSuccess($r2)) return $this->failure("Unable to delete directory : ".$el);
+					} else {
+						if (!LStringUtils::endsWith($el,$deployer_filename)) {
+							$r3 = $this->current_driver->deleteFile($this->current_password,$el);
 
-						if (!$this->isSuccess($r2)) return $this->failure("Unable to delete file : ".$el);
+							if (!$this->isSuccess($r2)) return $this->failure("Unable to delete file : ".$el);
+						}
 					}
 				}
 			}
-		}
 
-		return true;
+			return true;
+
+		} else return false;
 	}
 
 	public function temp_clean(string $key_name) {
-		if (!$this->loadKey($key_name)) return $this->failure("Unable to load key ".$key_name);
+		if ($this->loadKey($key_name)) {
 
-		$result = $this->current_driver->listElements($this->current_password,'/');
+			$result = $this->current_driver->listElements($this->current_password,'/');
 
-		if ($this->isSuccess($result)) {
-			$elements = $result['data'];
+			if ($this->isSuccess($result)) {
+				$elements = $result['data'];
 
-			$temp_found = false;
-			foreach ($elements as $el) {
-				if ($el=='temp/') $temp_found = true;
-			}
+				$temp_found = false;
+				foreach ($elements as $el) {
+					if ($el=='temp/') $temp_found = true;
+				}
 
-			if (!$temp_found) return $this->failure("Unable to find temp folder to clean.");
+				if (!$temp_found) return $this->failure("Unable to find temp folder to clean.");
 
-			$r1 = $this->current_driver->deleteDir($this->current_password,'temp/',true);
-			$r2 = $this->current_driver->makeDir($this->current_password,'temp/');
+				$r1 = $this->current_driver->deleteDir($this->current_password,'temp/',true);
+				$r2 = $this->current_driver->makeDir($this->current_password,'temp/');
 
-			if ($this->isSuccess($r1) && $this->isSuccess($r2)) return true;
-			else return $this->failure("Unable to delete and recreate temp folder on deployer installation.");
-		} else $this->failure("Unable to list files on deployer installation.");
+				if ($this->isSuccess($r1) && $this->isSuccess($r2)) return true;
+				else return $this->failure("Unable to delete and recreate temp folder on deployer installation.");
+			} else return $this->failure("Unable to list files on deployer installation.");
+		} else return false;
 	}
 
 	public function framework_check(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
+
+			if ($framework_dir->isParentOf($project_dir)) {
+				$dir_name = $framework_dir->getName();
+
+				$r = $this->current_driver->listHashes($this->current_password,[],[$dir_name.'/']);
+
+				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+
+				$this->clientListHashes([],[$dir_name.'/']);
+
+				$this->setupChangesList();
+
+				$this->previewChangesList();
+
+				return true;
+
+			} else return $this->failure("Unable to determine framework dir.");
+		} else return false;
 
 	}
 
 	public function project_check(string $key_name) {
+		if ($this->loadKey($key_name)) {
 
+			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
+
+			if ($framework_dir->isParentOf($project_dir)) {
+				$dir_name = $framework_dir->getName();
+
+				$r = $this->current_driver->listHashes($this->current_password,[$dir_name.'/'],[]);
+
+				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+
+				$this->clientListHashes([$dir_name.'/'],[]);
+
+				$this->setupChangesList();
+
+				$this->previewChangesList();
+
+				return true;
+
+			} else return $this->failure("Unable to determine framework dir.");
+		} else return false;
 	}
 
 	public function backup(string $key_name) {
+		if ($this->loadKey($key_name)) {
 
+			$backup_filename = "backup_".$key_name."_".date('Y_M_D_h_i').".zip";
+
+			$backup_file = new LFile('/'.$backup_filename);
+
+			$r = $this->current_driver->downloadDir($this->current_password,'/',$backup_file);
+		
+			if ($this->isSuccess($r)) return true;
+			else return $this->failure("Unable to backup remote installation into zip file.");
+		} else return false;
+	}
+
+	private function executeConfigSync($config_folder) {
+		$cf = new LDir('/config/hostnames/'.$config_folder);
+
+		if (!$cf->exists()) return $this->failure("Speciefied hostname not found in config folder : ".$config_folder);
+
+		$r1 = $this->current_driver->deleteDir($this->current_password,'/config/hostnames/'.$config_folder,true);
+		if (!$this->isSuccess($r1)) return $this->failure("Unable to delete remote config directory.");
+		$r2 = $this->current_driver->makeDir($this->current_password,'/config/hostnames/'.$config_folder);
+		if (!$this->isSuccess($r2)) return $this->failure("Unable to recreate remote config folder.");
+
+		$files = $cf->listFiles();
+
+		$ok = true;
+		foreach ($files as $f) {
+			$r = $this->current_driver->copyFile($this->current_password,'/config/hostnames/'.$config_folder.'/'.$f->getName(),$f);
+		
+			$ok &= $this->isSuccess($r);
+		}
+
+		if (!$ok) return $this->failure("Error during copy of config files to remote deployer instance.");
+
+		return true;
 	}
 
 	public function auto_config(string $key_name) {
+		if ($this->loadKey($key_name)) {
 
+			if (LStringUtils::beginWith($this->current_uri,'http')) {
+				$ok = false;
+				if (LStringUtils::beginWith($this->current_uri,'http://')) {
+					$ok = true;
+					$uri_from_hostname = substr($this->current_uri,strlen('http://'));
+				}
+				if (LStringUtils::beginWith($this->current_uri,'https://')) {
+					$ok = true;
+					$uri_from_hostname = substr($this->current_uri,strlen('https://'));
+				}
+				if (!$ok) return $this->failure("Unable to probe correct hostname from deployer key config.");
+				$parts = explode('/',$uri_from_hostname);
+				$hostname = $parts[0];
+
+				$this->executeConfigSync($hostname);
+			} else return $this->failure("Unable to probe the host name from deployer configuration. Use manual_config.");
+
+		} else return false;
 	}
 
 	public function manual_config(string $key_name,string $config_folder) {
-
+		if ($this->loadKey($key_name)) {
+			return $this->executeConfigSync($config_folder);
+		} else return false;
 	}
 
 }

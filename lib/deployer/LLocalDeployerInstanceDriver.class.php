@@ -27,9 +27,9 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		
 	}
 
-	public function listHashes($password,$excluded_paths) {
+	public function listHashes($password,$excluded_paths,$included_paths) {
 
-		return $this->controller->listHashes($password,$excluded_paths);
+		return $this->controller->listHashes($password,$excluded_paths,$included_paths);
 
 	}
 

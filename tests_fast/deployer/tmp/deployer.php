@@ -1292,6 +1292,8 @@ class DeployerController {
 	public function makeDir($password,$path) {
 		if ($this->accessGranted($password)) {
 
+			if (!DStringUtils::endsWith($path,'/')) return $this->failure("Directory name to create does not end with /.");
+
 			$dest = new DDir($this->root_dir->getFullPath().$path);
 
 			$dest->touch();
@@ -1305,13 +1307,15 @@ class DeployerController {
 	public function deleteDir($password,$path,$recursive) {
 		if ($this->accessGranted($password)) {
 
+			if (!DStringUtils::endsWith($path,'/')) return $this->failure("The directory name does not ends with /.");
+
 			$dest = new DDir($this->root_dir->getFullPath().$path);
 
 			if (!$dest->exists()) return $this->failure("Directory to delete does not exist.");
 
 			$dest->delete($recursive);
 
-			if (!$this->exists()) return ["result" => self::SUCCESS_RESULT];
+			if (!$dest->exists()) return ["result" => self::SUCCESS_RESULT];
 			else return $this->failure("Unable to delete directory.");
 
 		} else return $this->failure("Wrong password.");
@@ -1321,7 +1325,7 @@ class DeployerController {
 		if ($this->accessGranted($password)) {
 			if (isset($_FILES['f']) && $_FILES['f']['error'] == UPLOAD_ERR_OK) {
 
-				if (LStringUtils::endsWith($path,'/')) return $this->failure("File name should not end with a directory separator.");
+				if (DStringUtils::endsWith($path,'/')) return $this->failure("File name should not end with a directory separator.");
 
 				$content = file_get_contents($_FILES['f']['tmp_name']);
 
@@ -1334,8 +1338,6 @@ class DeployerController {
 				$dest->setContent($content);
 
 				if ($dest->getSize()!=$_FILES['f']['size']) {
-					echo "DEST GET SIZE : ".$dest->getSize();
-					echo "[f][size] : ".$_FILES['f']['size'];
 					$dest->delete();
 					return $this->failure("Size of file is wrong after write.");
 				}

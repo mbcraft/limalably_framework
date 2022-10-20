@@ -685,7 +685,7 @@ class DDir extends DFileSystemElement
 
     function newFile($name)
     {
-        return new DFile($this->__path.'/'.$name);
+        return new DFile($this->__full_path.'/'.$name);
     }
 
     /*
@@ -1263,12 +1263,19 @@ class DeployerController {
 
 			if (count($this->included_paths)>0) {
 				foreach ($this->included_paths as $dp) {
-					$my_dir = new DDir($dp);
+					$my_dir = new DDir($_SERVER['DEPLOYER_DIR'].$dp);
 
 					$my_dir->visit($this);
 				}
 			} else {
 				$this->root_dir->visit($this);
+			}
+
+			foreach ($this->excluded_paths as $excluded) {
+				foreach ($this->visit_result as $path => $hash)
+					if (DStringUtils::startsWith($path,$excluded)) {
+						unset($this->visit_result[$path]);
+				}
 			}
 
 			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
@@ -1353,6 +1360,8 @@ class DeployerController {
 
 	public function downloadDir($password,$path) {
 		if ($this->accessGranted($password)) {
+
+			if (!DStringUtils::endsWith($path,'/')) return $this->failure("Folder to zip does not ends with /.");
 
 			$source = new DDir($this->root_dir->getFullPath().$path);
 

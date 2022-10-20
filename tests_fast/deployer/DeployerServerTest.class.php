@@ -251,6 +251,96 @@ class DeployerServerTest extends LTestCase {
 		$this->assertEqual($data[2],"deployer.php","Il file non è stato ritornato correttamente!");
 	}
 
+	function testInArray() {
+
+		$element = '/prova/';
+
+		$data = ['/deployer.php','/prova/','/a.txt'];
+
+		$this->assertTrue(in_array($element,$data),"L'elemento non è stato trovato nell'array!");
+
+
+	}
+
+	function testDeployerListHashes() {
+
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+
+		$d_dir->touch();
+
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+
+		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/a.txt');
+
+		$f_source->copy($f_dest);
+
+		$f_source->copy($f_dest2);
+
+		$result = $deployer_controller->listHashes("",[],['/']);
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
+
+		$this->assertEqual(count($result['data']),5,"Il numero di elementi ritornati non corrisponde!");
+
+		$result = $deployer_controller->listHashes("",[],[]);
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
+
+		$this->assertEqual(count($result['data']),5,"Il numero di elementi ritornati non corrisponde!");
+
+		$result = $deployer_controller->listHashes("",['/prova/'],[]);
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
+
+		$this->assertEqual(count($result['data']),3,"Il numero di elementi ritornati non corrisponde!");
+
+	}
+
+	function testDeployerDownloadDir() {
+
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+
+		$d_dir->touch();
+
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+
+		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/a.txt');
+
+		$f_source->copy($f_dest);
+
+		$f_source->copy($f_dest2);
+
+		$result = $deployer_controller->downloadDir("","/prova");
+
+		$this->assertFalse($this->isSuccess($result),"La chiamata è andata a buon fine senza lo slash finale!");
+
+		$result = $deployer_controller->downloadDir("","/prova/");
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
+
+		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
+	}
+
 
 
 }

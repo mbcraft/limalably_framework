@@ -336,7 +336,7 @@ class LDir extends LFileSystemElement
 
     function newFile($name)
     {
-        return new LFile($this->__path.'/'.$name);
+        return new LFile($this->__full_path.'/'.$name);
     }
 
     /*

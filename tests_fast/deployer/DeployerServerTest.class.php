@@ -219,6 +219,38 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	function testDeployerListElements() {
+
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+
+		$d_dir->touch();
+
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+
+		$r = $f_source->copy($f_dest);
+
+		$result = $deployer_controller->listElements("","/");
+
+		$this->assertTrue($this->isSuccess($result),"L'elenco non viene restituito correttamente!");
+
+		$data = $result['data'];
+
+		$this->assertEqual(count($data),3,"Il numero di elementi ritornati non corrisponde!");
+		$this->assertEqual($data[0],"prova/","La cartella non è stata ritornata correttamente!");
+		$this->assertEqual($data[1],"a.txt","Il file non è stato ritornato correttamente!");
+		$this->assertEqual($data[2],"deployer.php","Il file non è stato ritornato correttamente!");
+	}
+
 
 
 }

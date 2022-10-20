@@ -1236,7 +1236,9 @@ class DeployerController {
 	public function listElements($password,$folder) {
 		if ($this->accessGranted($password)) {
 
-			$dir = new DDir($folder);
+			if (!DStringUtils::endsWith($folder,'/')) return $this->failure("Folder name to list does not end with /.");
+
+			$dir = new DDir($_SERVER['DEPLOYER_DIR'].$folder);
 
 			if ($dir->exists() && $dir->isReadable()) {
 
@@ -1245,7 +1247,7 @@ class DeployerController {
 
 				$data = [];
 				foreach ($folder_list as $f) $data[] = $f->getName().'/';
-				foreach ($file_list as $f) $data[] = $f->getName();
+				foreach ($file_list as $f) $data[] = $f->getFilename();
 
 				return ["result" => self::SUCCESS_RESULT,"data" => $data];
 

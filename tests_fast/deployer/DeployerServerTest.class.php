@@ -3,10 +3,11 @@
 
 class DeployerServerTest extends LTestCase {
 	
+	const TEST_DIR = "tests_fast";
 	
 	function reinit() {
 
-		$d = new LDir($_SERVER['FRAMEWORK_DIR']."tests_fast/deployer/tmp/");
+		$d = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR."/deployer/tmp/");
 
 		if ($d->exists()) $d->delete(true);
 
@@ -16,7 +17,7 @@ class DeployerServerTest extends LTestCase {
 
 		$deployer->copy($d);
 
-		$f_deployer = new LFile($_SERVER['FRAMEWORK_DIR']."tests_fast/deployer/tmp/deployer.php");
+		$f_deployer = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR."/deployer/tmp/deployer.php");
 
 		return $f_deployer->includeFileOnce();
 
@@ -93,9 +94,9 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/data/a.txt');
 
-		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/a.txt');
 
 		$this->assertFalse($f_dest->exists(),"Il file è già dove non dovrebbe essere!");
 
@@ -105,7 +106,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/a.txt');
 
 		$this->assertTrue($f_dest->exists(),"Il file non è stato copiato!");
 
@@ -121,7 +122,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$dest_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova1/');
+		$dest_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova1/');
 
 		$this->assertFalse($dest_dir->exists(),"La directory da creare esiste già!");
 
@@ -139,7 +140,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La directory con sottodirectory non è stata creata!");
 
-		$dest_dir2 = new LDir($_SERVER['FRAMEWORK_DIR'],'tests_fast/deployer/tmp/nested_dir/prova/');
+		$dest_dir2 = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/nested_dir/prova/');
 
 		$this->assertTrue($dest_dir2->exists(),"La directory con sottodirectory non è stata creata!");
 
@@ -155,9 +156,9 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/data/a.txt');
 
-		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/a.txt');
 
 		$r = $f_source->copy($f_dest);
 
@@ -177,11 +178,11 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"Il file non è stato eliminato correttamente!");
 
-		$dir_dest = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+		$dir_dest = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/');
 
 		$dir_dest->touch();
 
-		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/a.txt');
+		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/a.txt');
 
 		$f_source->copy($f_dest2);
 
@@ -203,7 +204,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/');
 
 		$d_dir->touch();
 
@@ -229,13 +230,13 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/');
 
 		$d_dir->touch();
 
-		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/data/a.txt');
 
-		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/a.txt');
 
 		$r = $f_source->copy($f_dest);
 
@@ -272,15 +273,15 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/');
 
 		$d_dir->touch();
 
-		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/data/a.txt');
 
-		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/a.txt');
 
-		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/a.txt');
+		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/a.txt');
 
 		$f_source->copy($f_dest);
 
@@ -316,15 +317,15 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/');
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/');
 
 		$d_dir->touch();
 
-		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/data/a.txt');
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/data/a.txt');
 
-		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/a.txt');
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/a.txt');
 
-		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].'tests_fast/deployer/tmp/prova/a.txt');
+		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/a.txt');
 
 		$f_source->copy($f_dest);
 

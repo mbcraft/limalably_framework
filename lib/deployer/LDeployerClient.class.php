@@ -64,6 +64,32 @@ class LDeployerClient {
 
 	private function executeChangesList() {
 
+		foreach ($this->files_to_add as $path => $hash) {
+			if (LStringUtils::endsWith($path,'/')) {
+				$this->current_driver->makeDir($this->current_password,$path);
+			} else {
+				$source_file = new LFile($path);
+				$this->current_driver->copyFile($this->current_password,$path,$source_file);
+			}
+		}
+
+		foreach ($this->files_to_update as $path => $hash) {
+			if (LStringUtils::endsWith($path,'/')) {
+				//nothing to do
+			} else {
+				$source_file = new LFile($path);
+				$this->current_driver->copyFile($this->current_password,$path,$source_file);
+			}
+		}
+
+		foreach ($this->files_to_delete as $path => $hash) {
+			if (LStringUtils::endsWith($path,'/')) {
+				$this->current_driver->deleteDir($this->current_password,$path,true);
+			} else {
+				$this->current_driver->deleteFile($this->current_password,$path);
+			}
+		}
+
 	}
 
 	public function visit($dir) {

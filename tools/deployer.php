@@ -1483,6 +1483,17 @@ class DeployerController {
 
 					break;
     			}
+    			case 'MAKE_DIR' : {
+    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					else echo json_encode($this->failure("PASSWORD field missing in MAKE_DIR request."));
+
+					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					else echo json_encode($this->failure("PATH field missing in MAKE_DIR request."));
+
+					echo json_encode($this->makeDir($password,$path));
+
+					break;
+    			}
     			case 'DELETE_DIR' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
 					else echo json_encode($this->failure("PASSWORD field missing in DELETE_DIR request."));

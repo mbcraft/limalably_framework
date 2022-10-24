@@ -114,7 +114,7 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 		$params = [];
 		$params['METHOD'] = 'CHANGE_PASSWORD';
-		$params['OLD_PASSWORD'] = $old_password;
+		$params['PASSWORD'] = $old_password;
 		$params['NEW_PASSWORD'] = $new_password;
 
 		$result = LHttp::post($this->full_deployer_url,$params);

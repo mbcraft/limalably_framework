@@ -122,6 +122,48 @@ class DeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
+
+	function testTempClean() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$temp_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/temp/');
+
+		$temp_dir->touch();
+
+		$enemy_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/temp/enemy.txt');
+
+		$this->assertFalse($enemy_file->exists(),"Il file intruso esiste già!");
+
+		$enemy_file->touch();
+
+		$this->assertTrue($enemy_file->exists(),"Il file intruso non esiste ma dovrebbe!");
+
+		$r = $dc->temp_clean('default_key');
+
+		$this->assertTrue($r,"La procedura di reset non funziona correttamente!");
+
+		$this->assertFalse($enemy_file->exists(),"Il file intruso non è stato ripulito!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+	}
 	
 
 }

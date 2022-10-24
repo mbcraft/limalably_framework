@@ -26,7 +26,7 @@ class LRandomUtils {
 		$result = "";
 
 		for ($i=0;$i<$size;$i++) {
-			$result.= self::ALL_DIGITS[rand(0,$all_digits_size)];
+			$result.= self::ALL_DIGITS[rand(0,$all_digits_size-1)];
 		}
 
 		return $result;
@@ -38,7 +38,7 @@ class LRandomUtils {
 		$result = "";
 
 		for ($i=0;$i<$size;$i++) {
-			$result.= self::ALL_LETTERS[rand(0,$all_letters_size)];
+			$result.= self::ALL_LETTERS[rand(0,$all_letters_size-1)];
 		}
 
 		return $result;

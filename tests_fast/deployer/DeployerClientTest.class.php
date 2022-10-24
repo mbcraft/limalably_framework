@@ -137,6 +137,10 @@ class DeployerClientTest extends LTestCase {
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
+		$other_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/other/');
+
+		$other_dir->touch();
+
 		$temp_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/temp/');
 
 		$temp_dir->touch();
@@ -154,6 +158,8 @@ class DeployerClientTest extends LTestCase {
 		$this->assertTrue($r,"La procedura di reset non funziona correttamente!");
 
 		$this->assertFalse($enemy_file->exists(),"Il file intruso non è stato ripulito!");
+
+		$this->assertTrue($other_dir->exists(),"L'altra directory è stata cancellata senza motivo!");
 
 		$r = $dc->detach('default_key');
 

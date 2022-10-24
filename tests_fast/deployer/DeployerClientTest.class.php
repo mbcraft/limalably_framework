@@ -54,42 +54,62 @@ class DeployerClientTest extends LTestCase {
 		unset($_SERVER['PROJECT_DIR']);
 	}
 
+	
+	function testAttach() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"Impossibile effettuare l'attach con successo!");
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('default_key');
+
+		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+
+	}
+	
+	
 	function testReset() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/fake_project/config/deployer/default_key.key');
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
 		$dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
-		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato!");
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
-		$f = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/my_enemy.txt');
+		$r = $dc->detach('default_key');
 
-		$this->assertFalse($f->exists(),"Il file che dovrà essere cancellato esiste già!");
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 
-		$f->touch();
-
-		$this->assertTrue($f->exists(),"Il file da cancellare non è stato creato con successo!");
-
-		$depl_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
-		
-		$this->assertTrue($depl_file->exists(),"Il deployer non è dove dovrebbe essere!");
-
-		$dc->reset('default_key');
-
-		$this->assertFalse($f->exists(),"Il file che doveva essere cancellato esiste ancora!");
-
-		$depl_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
-		$this->assertTrue($depl_file->exists(),"Il deployer è stato cancellato per sbaglio!");
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
 
 		$this->disposeAll();
 
-
 	}
+	
 
 }

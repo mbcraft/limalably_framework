@@ -19,7 +19,7 @@ class DeployerServerTest extends LTestCase {
 
 		$f_deployer = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR."/deployer/tmp/deployer.php");
 
-		return $f_deployer->includeFileOnce();
+		$f_deployer->requireFileOnce();
 
 	}
 
@@ -54,7 +54,7 @@ class DeployerServerTest extends LTestCase {
 		$this->assertFalse($this->isSuccess($result),"La chiamata non è fallita ma doveva!");
 	
 	}
-
+	
 	function testDeployerChangePassword() {
 
 		$this->reinit();
@@ -342,6 +342,7 @@ class DeployerServerTest extends LTestCase {
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 	}
 
+	
 
 
 }

@@ -1202,7 +1202,7 @@ class DeployerController {
 	private $deployer_file;
 	private $root_dir;
 
-	private $PASSWORD = /*!PWD!*/""/*!PWD!*/;
+	private static $PASSWORD = /*!PWD!*/""/*!PWD!*/;
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
@@ -1393,7 +1393,7 @@ class DeployerController {
 			$this->deployer_file->setContent($deployer_content);
 
 			//using a variable instead of a constant is necessary to be able to make unit test on it ... it's still ok :)
-			$this->PASSWORD = $new_password;
+			self::$PASSWORD = $new_password;
 
 			return ["result" => self::SUCCESS_RESULT];
 		} else return $this->failure("Wrong password.");
@@ -1406,8 +1406,17 @@ class DeployerController {
 	}
 
 	private function accessGranted($password) {
-		if (($this->hasPassword() && $this->PASSWORD==$password) || !$password) return true;
-		else return false;
+	   if (($this->hasPassword() && self::$PASSWORD==$password) || (!$this->hasPassword() && !$password)) 
+            return true;
+	   else {
+
+            //echo "HAS PASSWORD  : ".$this->hasPassword()."\n";
+            //echo "SELF PWD : ".self::$PASSWORD."\n";
+            //echo "INCOMING PASSWORD : ".$password."\n";
+
+            return false;
+       }
+        
 	}
 
 	private function failure(string $message) {
@@ -1415,7 +1424,7 @@ class DeployerController {
 	}
 
 	private function hasPassword() {
-		return $this->PASSWORD!=null;
+		return self::$PASSWORD!=null;
 	}
 
     private function getRequestMethod() {

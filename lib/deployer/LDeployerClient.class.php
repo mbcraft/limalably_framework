@@ -154,7 +154,7 @@ class LDeployerClient {
 		return $result['result'] == self::SUCCESS_RESULT;
 	}
 
-	private function loadKey(string $name,bool $use_password) {
+	private function loadKey(string $name,bool $use_password=true) {
 
 		$this->initDeployerClientKeysFolder();
 
@@ -179,13 +179,17 @@ class LDeployerClient {
 			}
 
 			if ($use_password) {
+				//echo "Using hello with password ...\n";
 				$hello_result = $this->current_driver->hello($this->current_password);
 			} else {
-				$hello_result = $this->current_driver->hello("");
+				//echo "Using hello without password ...\n";
+				$hello_result = $this->current_driver->hello();
 			}
 
 			if ($this->isSuccess($hello_result)) return true;
-			else return $this->unreachableDeployerServer($deployer_uri);
+			else {
+				return $this->unreachableDeployerServer($this->current_uri);
+			}
 		}
 
 		return $this->loadKeyError($name);
@@ -216,6 +220,8 @@ class LDeployerClient {
 
 	private function saveKey(string $name,string $deployer_uri) {
 
+		$this->initDeployerClientKeysFolder();
+
 		if (LStringUtils::startsWith($deployer_uri,'http')) {
 			if (LStringUtils::endsWith($deployer_uri,'/')) {
 			$deployer_uri .= self::STANDARD_DEPLOYER_FILENAME;
@@ -230,9 +236,6 @@ class LDeployerClient {
 				else throw new \Exception("Unable to locate deployer file path on local file system.");
 			}
 		}		
-
-
-		$this->initDeployerClientKeysFolder();
 
 		$deployer_key_file = $this->deployer_keys_folder->newFile($name.self::DEPLOYER_KEY_EXTENSION);
 
@@ -262,14 +265,30 @@ class LDeployerClient {
 
 	}
 
+	public function hello(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$result = $this->current_driver->hello($this->current_password);
+
+			if ($this->isSuccess($result)) return true;
+			else return $this->failure("Unable to verify token with deployer instance.");
+		} else return $this->failure("Unable to load key ".$key_name);
+	}
+
 	public function attach(string $key_name,string $deployer_uri) {
 
-		$this->saveKey($key_name,$deployer_uri);
+		$random_token = $this->saveKey($key_name,$deployer_uri);
 		if ($this->loadKey($key_name,false)) {
+
+			$this->current_password = $random_token;
 
 			$result = $this->current_driver->changePassword("",$this->current_password);
 
-			if ($this->isSuccess($result)) return true;
+			$result2 = $this->current_driver->hello($this->current_password);
+
+			if ($this->isSuccess($result) && $this->isSuccess($result2)) {
+				return true;
+			}
 			else return $this->failure("Unable to correctly change password on deployer installation.");
 
 		} else {
@@ -284,10 +303,12 @@ class LDeployerClient {
 
 			$result = $this->current_driver->changePassword($this->current_password,"");
 
+			$this->deleteKey($key_name);
+
 			if ($this->isSuccess($result)) return true;
 				else return $this->failure("Unable to change password on deployer instance.");
 
-		} else return false;
+		} else return $this->failure("Unable to find key to load for detach : ".$key_name);
 	}
 
 	public function deployer_update(string $key_name) {

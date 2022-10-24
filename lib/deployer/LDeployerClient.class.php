@@ -219,6 +219,7 @@ class LDeployerClient {
 		if (LStringUtils::startsWith($deployer_uri,'http')) {
 			if (LStringUtils::endsWith($deployer_uri,'/')) {
 			$deployer_uri .= self::STANDARD_DEPLOYER_FILENAME;
+			}
 		} else {
 			if (LFileSystemUtils::isFile($deployer_uri));
 			else {
@@ -257,7 +258,7 @@ class LDeployerClient {
 		return false;
 	}
 
-	public function help() {
+	function help() {
 
 	}
 
@@ -489,7 +490,7 @@ class LDeployerClient {
 		} else return false;
 	}
 
-	private function executeConfigSync($config_folder) {
+	function executeConfigSync($config_folder) {
 		$cf = new LDir('/config/hostnames/'.$config_folder);
 
 		if (!$cf->exists()) return $this->failure("Speciefied hostname not found in config folder : ".$config_folder);

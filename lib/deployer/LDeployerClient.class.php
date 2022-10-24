@@ -411,7 +411,7 @@ class LDeployerClient {
 						if (!LStringUtils::endsWith($el,$deployer_filename)) {
 							$r3 = $this->current_driver->deleteFile($this->current_password,$el);
 
-							if (!$this->isSuccess($r2)) return $this->failure("Unable to delete file : ".$el);
+							if (!$this->isSuccess($r3)) return $this->failure("Unable to delete file : ".$el);
 						}
 					}
 				}

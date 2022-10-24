@@ -101,6 +101,18 @@ class DeployerClientTest extends LTestCase {
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
+		$enemy_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/enemy.txt');
+
+		$this->assertFalse($enemy_file->exists(),"Il file intruso esiste già!");
+
+		$enemy_file->touch();
+
+		$this->assertTrue($enemy_file->exists(),"Il file intruso non esiste ma dovrebbe!");
+
+		$r = $dc->reset('default_key');
+
+		$this->assertTrue($r,"La procedura di reset non funziona correttamente!");
+
 		$r = $dc->detach('default_key');
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");

@@ -19,37 +19,6 @@ class DeployerClientTest extends LTestCase {
 
 	private function initEmptyFakeProject() {
 
-		$fake_project_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/');
-		$fake_project_dir->delete(true);
-		$fake_project_dir->touch();
-
-		$fp_config = new LDir($fake_project_dir->getFullPath().'config/');
-		$fp_config->touch();
-
-		$fp_config_hostnames = new LDir($fp_config->getFullPath().'hostnames/');
-		$fp_config_hostnames->touch();
-
-		$fp_config_mode = new LDir($fp_config->getFullPath().'mode/');
-		$fp_config_mode->touch();
-
-		$fp_config_hostnames_my_host = new LDir($fp_config_hostnames->getFullPath().'my_host/');
-		$fp_config_hostnames_my_host->touch();
-
-		$cfg = $fp_config_hostnames_my_host->newFile('config.json');
-		$cfg->setContent('{}');
-
-		$fp_config_deployer = new LDir($fp_config->getFullPath().'deployer/');
-		$fp_config_deployer->touch();
-
-		$fp_project_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/project_file.txt');
-		$fp_project_file->touch();
-
-		$fp_project_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/project_dir/');
-		$fp_project_dir->touch();
-
-		$fp_project_dir_file = $fp_project_dir->newFile('my_file.txt');
-		$fp_project_dir_file->touch();
-
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
 	}

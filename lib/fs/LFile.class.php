@@ -98,6 +98,10 @@ class LFile extends LFileSystemElement
         file_put_contents($this->__full_path, $content, LOCK_EX);
     }
 
+    function getLastModificationTime() {
+        return filemtime($this->__full_path);
+    }
+
     function getSize()
     {
         return filesize($this->__full_path);

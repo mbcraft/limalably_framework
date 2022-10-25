@@ -55,7 +55,7 @@ class DeployerClientTest extends LTestCase {
 	}
 
 	
-	function testAttach() {
+	function testAttachDetach() {
 
 		$this->initAll();
 
@@ -169,6 +169,37 @@ class DeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 
+	}
+
+	function testDeployerUpdate() {
+
+		$this->initAll();
+
+		$df = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($df->exists(),"Il deployer non è stato trovato al suo posto!");
+
+		$time1 = $df->getLastModificationTime();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		sleep(1);
+
+		$r = $dc->deployer_update('default_key');
+
+		$time2 = $df->getLastModificationTime();
+
+		$this->assertTrue($time2>$time1,"Il deployer non è stato aggiornato con l'ultima versione!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
 	}
 	
 

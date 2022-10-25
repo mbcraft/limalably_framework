@@ -322,7 +322,7 @@ class LDeployerClient {
 			$r = $this->current_driver->copyFile($this->current_password,'/'.$deployer_filename,$updated_deployer);
 
 			if ($this->isSuccess($r)) return true;
-			else $this->failure("Unable to update deployer on server.");
+			else $this->failure("Unable to update deployer on server : ".$r['message']);
 
 		} else return false;
 	}

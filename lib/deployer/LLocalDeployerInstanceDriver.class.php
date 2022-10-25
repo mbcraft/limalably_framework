@@ -21,6 +21,18 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$this->controller = new DeployerController();
 	}
 
+	private function pushFile($file) {
+
+		if (!$file instanceof LFile) throw new \Exception("Parameter is not actually an LFile instance");
+
+		if (isset($_FILES['f'])) unset($_FILES['f']);
+
+		$_FILES['f'] = array();
+		$_FILES['f']['error'] = UPLOAD_ERR_OK;
+		$_FILES['f']['size'] = $file->getSize();
+		$_FILES['f']['tmp_name'] = $file->getFullPath();
+	}
+
 	public function listElements($password,$folder) {
 
 		return $this->controller->listElements($password,$folder);
@@ -53,13 +65,17 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	public function copyFile($password,$path,$source_file) {
 
+		$this->pushFile($source_file);
+
 		return $this->controller->copyFile($password,$path);
 
 	}
 
 	public function downloadDir($password,$path,$save_file) {
 
-		return $this->controller->downloadDir($password,$path);
+		$result = $this->controller->downloadDir($password,$path);
+
+		if ($this->isSuccess($result)) $result['data']->rename($save_file);
 
 	}
 

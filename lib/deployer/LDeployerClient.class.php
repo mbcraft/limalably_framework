@@ -426,6 +426,14 @@ class LDeployerClient {
 		} else return false;
 	}
 
+	private function getFrameworkIncludeList() {
+		return ["/lymz_framework/"];
+	}
+
+	private function getFrameworkExcludeList() {
+		return ["/lymz_framework/bin/","/lymz_framework/tools/","/lymz_framework/tests/","/lymz_framework/tests_fast/","/lymz_framework/doc/","/lymz_framework/init.php"];
+	}
+
 	public function framework_check(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
@@ -435,13 +443,13 @@ class LDeployerClient {
 			if ($project_dir->isParentOf($framework_dir)) {
 				$dir_name = $framework_dir->getName();
 
-				$r = $this->current_driver->listHashes($this->current_password,[],[$dir_name.'/']);
+				$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
 				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
 				$server_list = $r['data'];
 
-				$client_list = $this->clientListHashes([],[$dir_name.'/']);
+				$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
 				$this->setupChangesList($client_list,$server_list);
 
@@ -463,13 +471,13 @@ class LDeployerClient {
 			if ($project_dir->isParentOf($framework_dir)) {
 				$dir_name = $framework_dir->getName();
 
-				$r = $this->current_driver->listHashes($this->current_password,[],[$dir_name.'/']);
+				$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
 				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
 				$server_list = $r['data'];
 
-				$client_list = $this->clientListHashes([],[$dir_name.'/']);
+				$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
 				$this->setupChangesList($client_list,$server_list);
 

@@ -54,11 +54,27 @@ class LDeployerClient {
 
 	private function previewChangesList() {
 
-		echo "Changes list :\n\n";
+		echo "\nChanges list :\n\n";
 
 		echo count($this->files_to_add)." files to add.\n";
+
+		foreach ($this->files_to_add as $f) {
+			echo ">> ".$f."\n";
+		}
+		echo "\n";
 		echo count($this->files_to_update)." files to update.\n";
+
+		foreach ($this->files_to_update as $f) {
+			echo ">> ".$f."\n";
+		}
+		echo "\n";
+
 		echo count($this->files_to_delete)." files to delete.\n";
+
+		foreach ($this->files_to_delete as $f) {
+			echo ">> ".$f."\n";
+		}
+		echo "\n\n";
 
 	}
 
@@ -131,9 +147,6 @@ class LDeployerClient {
 		}
 
 		unset($this->visit_result['/']);
-
-		echo "VISIT RESULT : \n";
-        var_dump($this->visit_result);
 
 		foreach ($this->excluded_paths as $excluded) {
 			foreach ($this->visit_result as $path => $hash)

@@ -41,6 +41,15 @@ class DeployerClientTest extends LTestCase {
 		$fp_config_deployer = new LDir($fp_config->getFullPath().'deployer/');
 		$fp_config_deployer->touch();
 
+		$fp_project_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/project_file.txt');
+		$fp_project_file->touch();
+
+		$fp_project_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/project_dir/');
+		$fp_project_dir->touch();
+
+		$fp_project_dir_file = $fp_project_dir->newFile('my_file.txt');
+		$fp_project_dir_file->touch();
+
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
 	}
@@ -194,6 +203,25 @@ class DeployerClientTest extends LTestCase {
 		$time2 = $df->getLastModificationTime();
 
 		$this->assertTrue($time2>$time1,"Il deployer non è stato aggiornato con l'ultima versione!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
+	}
+
+	function testProjectCheck() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$r = $dc->project_check('default_key');
 
 		$r = $dc->detach('default_key');
 

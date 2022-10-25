@@ -1278,6 +1278,8 @@ class DeployerController {
 				}
 			}
 
+            unset($this->visit_result['/']);
+
 			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
 
 		} else return $this->failure("Wrong password.");

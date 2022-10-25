@@ -327,57 +327,6 @@ class LDeployerClient {
 		} else return false;
 	}
 
-	public function framework_update(string $key_name) {
-		if ($this->loadKey($key_name)) {
-
-			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
-			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
-
-			if ($framework_dir->isParentOf($project_dir)) {
-				$dir_name = $framework_dir->getName();
-
-				$r = $this->current_driver->listHashes($this->current_password,[],[$dir_name.'/']);
-
-				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
-
-				$this->clientListHashes([],[$dir_name.'/']);
-
-				$this->setupChangesList();
-
-				$this->executeChangesList();
-
-				return true;
-
-			} else return $this->failure("Unable to determine framework dir.");
-		} else return false;
-
-	}
-
-	public function project_update(string $key_name) {
-		if ($this->loadKey($key_name)) {
-
-			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
-			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
-
-			if ($framework_dir->isParentOf($project_dir)) {
-				$dir_name = $framework_dir->getName();
-
-				$r = $this->current_driver->listHashes($this->current_password,[$dir_name.'/'],[]);
-
-				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
-
-				$this->clientListHashes([$dir_name.'/'],[]);
-
-				$this->setupChangesList();
-
-				$this->executeChangesList();
-
-				return true;
-
-			} else return $this->failure("Unable to determine framework dir.");
-		} else return false;
-	}
-
 	public function disappear(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
@@ -452,7 +401,7 @@ class LDeployerClient {
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
-			if ($framework_dir->isParentOf($project_dir)) {
+			if ($project_dir->isParentOf($framework_dir)) {
 				$dir_name = $framework_dir->getName();
 
 				$r = $this->current_driver->listHashes($this->current_password,[],[$dir_name.'/']);
@@ -472,7 +421,64 @@ class LDeployerClient {
 
 	}
 
+	public function framework_update(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
+
+			if ($project_dir->isParentOf($framework_dir)) {
+				$dir_name = $framework_dir->getName();
+
+				$r = $this->current_driver->listHashes($this->current_password,[],[$dir_name.'/']);
+
+				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+
+				$this->clientListHashes([],[$dir_name.'/']);
+
+				$this->setupChangesList();
+
+				//$this->executeChangesList();
+
+				return true;
+
+			} else return $this->failure("Unable to determine framework dir.");
+		} else return false;
+
+	}
+
+	private function getProjectExcludeList() {
+		return ['/','/deployer.php','/config/','/lymz_framework/'];
+	}
+
 	public function project_check(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
+
+			if ($framework_dir->isParentOf($project_dir)) {
+				$dir_name = $framework_dir->getName();
+
+				$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
+
+				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+
+				$this->clientListHashes($this->getProjectExcludeList(),[]);
+
+				$this->setupChangesList();
+
+				$this->previewChangesList();
+
+				return true;
+
+			} else return $this->failure("Unable to determine framework dir.");
+		} else return false;
+	}
+
+
+
+	public function project_update(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
@@ -489,7 +495,7 @@ class LDeployerClient {
 
 				$this->setupChangesList();
 
-				$this->previewChangesList();
+				//$this->executeChangesList();
 
 				return true;
 

@@ -133,7 +133,9 @@ class LDeployerClient {
 
 		if (count($this->included_paths)>0) {
 			foreach ($this->included_paths as $dp) {
-				$my_dir = new LDir($dp);
+				$my_dir = new LDir($_SERVER['PROJECT_DIR'].$dp);
+
+				if (!$my_dir->exists()) continue;
 
 				$my_dir->visit($this);
 			}
@@ -440,24 +442,31 @@ class LDeployerClient {
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
-			if ($project_dir->isParentOf($framework_dir)) {
-				$dir_name = $framework_dir->getName();
+			if ($framework_dir->isParentOf($project_dir)) {
+				$old_framework_dir = $_SERVER['FRAMEWORK_DIR'];
+				$testing = true;
+				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].'lymz_framework/';
+			}
 
-				$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
+			$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
-				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
-				$server_list = $r['data'];
+			$server_list = $r['data'];
 
-				$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
+			$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
-				$this->setupChangesList($client_list,$server_list);
+			$this->setupChangesList($client_list,$server_list);
 
-				$this->previewChangesList();
+			$this->previewChangesList();
 
-				return true;
+			if ($testing) {
+				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
+			}
 
-			} else return $this->failure("Unable to determine framework dir.");
+			return true;
+
+			
 		} else return false;
 
 	}
@@ -468,24 +477,30 @@ class LDeployerClient {
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
-			if ($project_dir->isParentOf($framework_dir)) {
-				$dir_name = $framework_dir->getName();
+			if ($framework_dir->isParentOf($project_dir)) {
+				$old_framework_dir = $_SERVER['FRAMEWORK_DIR'];
+				$testing = true;
+				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].'lymz_framework/';
+			}
 
-				$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
+			$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
-				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
-				$server_list = $r['data'];
+			$server_list = $r['data'];
 
-				$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
+			$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
-				$this->setupChangesList($client_list,$server_list);
+			$this->setupChangesList($client_list,$server_list);
 
-				//$this->executeChangesList();
+			//$this->executeChangesList();
 
-				return true;
+			if ($testing) {
+				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
+			}
 
-			} else return $this->failure("Unable to determine framework dir.");
+			return true;
+
 		} else return false;
 
 	}

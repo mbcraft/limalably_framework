@@ -389,6 +389,8 @@ class DDir extends DFileSystemElement
     {
         $visitor->visit($this);
         
+        if (!$this->exists()) return;
+
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
@@ -569,6 +571,8 @@ class DDir extends DFileSystemElement
         }
         if (!$excludesSet)
             $excludes = $myExcludes;
+
+        if (!$this->exists()) throw new \DIOException("Directory does not exist, can't list elements.");
 
         $all_results = scandir($this->__full_path);
 
@@ -1219,7 +1223,7 @@ class DeployerController {
 
 	public function visit($dir) {
 
-		if (!in_array($dir->getPath(),$this->excluded_paths)) {
+		if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
 			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
 
 			$files = $dir->listFiles();

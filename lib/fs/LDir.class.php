@@ -40,6 +40,8 @@ class LDir extends LFileSystemElement
     {
         $visitor->visit($this);
         
+        if (!$this->exists()) return;
+
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
@@ -220,6 +222,8 @@ class LDir extends LFileSystemElement
         }
         if (!$excludesSet)
             $excludes = $myExcludes;
+
+        if (!$this->exists()) throw new \LIOException("Directory does not exists, can't list elements.");
 
         $all_results = scandir($this->__full_path);
 

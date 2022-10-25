@@ -426,8 +426,8 @@ class LDir extends LFileSystemElement
         else
             $d = new LDir($folder);
 
-        $path_a = $this->getPath();
-        $path_b = $d->getPath();
+        $path_a = $this->getFullPath();
+        $path_b = $d->getFullPath();
 
         return strpos($path_b,$path_a)===0;
     }

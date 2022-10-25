@@ -408,9 +408,11 @@ class LDeployerClient {
 
 				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
-				$this->clientListHashes([],[$dir_name.'/']);
+				$server_list = $r['data'];
 
-				$this->setupChangesList();
+				$client_list = $this->clientListHashes([],[$dir_name.'/']);
+
+				$this->setupChangesList($client_list,$server_list);
 
 				$this->previewChangesList();
 
@@ -434,9 +436,11 @@ class LDeployerClient {
 
 				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
-				$this->clientListHashes([],[$dir_name.'/']);
+				$server_list = $r['data'];
 
-				$this->setupChangesList();
+				$client_list = $this->clientListHashes([],[$dir_name.'/']);
+
+				$this->setupChangesList($client_list,$server_list);
 
 				//$this->executeChangesList();
 
@@ -457,22 +461,20 @@ class LDeployerClient {
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
-			if ($framework_dir->isParentOf($project_dir)) {
-				$dir_name = $framework_dir->getName();
+			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
 
-				$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
-				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+			$server_list = $r['data'];
 
-				$this->clientListHashes($this->getProjectExcludeList(),[]);
+			$client_list = $this->clientListHashes($this->getProjectExcludeList(),[]);
 
-				$this->setupChangesList();
+			$this->setupChangesList($client_list,$server_list);
 
-				$this->previewChangesList();
+			$this->previewChangesList();
 
-				return true;
+			return true;
 
-			} else return $this->failure("Unable to determine framework dir.");
 		} else return false;
 	}
 
@@ -484,16 +486,18 @@ class LDeployerClient {
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
-			if ($framework_dir->isParentOf($project_dir)) {
+			if ($project_dir->isParentOf($framework_dir)) {
 				$dir_name = $framework_dir->getName();
 
 				$r = $this->current_driver->listHashes($this->current_password,[$dir_name.'/'],[]);
 
 				if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
-				$this->clientListHashes([$dir_name.'/'],[]);
+				$server_list = $r['data'];
 
-				$this->setupChangesList();
+				$client_list = $this->clientListHashes([$dir_name.'/'],[]);
+
+				$this->setupChangesList($client_list,$server_list);
 
 				//$this->executeChangesList();
 

@@ -95,13 +95,13 @@ class LDeployerClient {
 	public function visit($dir) {
 
 		if (!in_array($dir->getPath(),$this->excluded_paths)) {
-			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
+			$this->visit_result['/'.$dir->getPath()] = $dir->getContentHash();
 
 			$files = $dir->listFiles();
 
 			foreach ($files as $f) {
 				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$this->visit_result[$f->getPath()] = $f->getContentHash();
+					$this->visit_result['/'.$f->getPath()] = $f->getContentHash();
 				}
 			}
 		}
@@ -110,23 +110,38 @@ class LDeployerClient {
 
 	private function clientListHashes($excluded_paths,$included_paths) {
 			
-			$this->visit_result = [];
+		$this->visit_result = [];
 
-			$this->excluded_paths = $excluded_paths;
-			$this->included_paths = $included_paths;
+		$this->excluded_paths = $excluded_paths;
+		$this->included_paths = $included_paths;
 
-			if (count($this->included_paths)>0) {
-				foreach ($this->included_paths as $dp) {
-					$my_dir = new LDir($dp);
+		if (count($this->included_paths)>0) {
+			foreach ($this->included_paths as $dp) {
+				$my_dir = new LDir($dp);
 
-					$my_dir->visit($this);
-				}
-
-				return $this->visit_result;
-			} else {
-				return [];
+				$my_dir->visit($this);
 			}
+
+			return $this->visit_result;
+		} else {
+
+			$root_dir = new LDir($_SERVER['PROJECT_DIR']);
+
+			$root_dir->visit($this);
+		}
+
+		unset($this->visit_result['/']);
+
+		foreach ($this->excluded_paths as $excluded) {
+			foreach ($this->visit_result as $path => $hash)
+				if (DStringUtils::startsWith($path,$excluded)) {
+					unset($this->visit_result[$path]);
+			}
+		}
+
+        
 		
+		return $this->visit_result;
 	}
 
 	public function setDeployerClientKeysFolder($dir_or_path) {
@@ -467,7 +482,13 @@ class LDeployerClient {
 
 			$server_list = $r['data'];
 
+			echo "SERVER LIST : \n";
+			var_dump($server_list);
+
 			$client_list = $this->clientListHashes($this->getProjectExcludeList(),[]);
+
+			echo "CLIENT LIST : \n";
+			var_dump($client_list);
 
 			$this->setupChangesList($client_list,$server_list);
 

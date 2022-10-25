@@ -1271,14 +1271,14 @@ class DeployerController {
 				$this->root_dir->visit($this);
 			}
 
+            unset($this->visit_result['/']);
+
 			foreach ($this->excluded_paths as $excluded) {
 				foreach ($this->visit_result as $path => $hash)
 					if (DStringUtils::startsWith($path,$excluded)) {
 						unset($this->visit_result[$path]);
 				}
 			}
-
-            unset($this->visit_result['/']);
 
 			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
 

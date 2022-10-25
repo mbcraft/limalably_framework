@@ -132,6 +132,9 @@ class LDeployerClient {
 
 		unset($this->visit_result['/']);
 
+		echo "VISIT RESULT : \n";
+        var_dump($this->visit_result);
+
 		foreach ($this->excluded_paths as $excluded) {
 			foreach ($this->visit_result as $path => $hash)
 				if (DStringUtils::startsWith($path,$excluded)) {
@@ -139,7 +142,7 @@ class LDeployerClient {
 			}
 		}
 
-        
+
 		
 		return $this->visit_result;
 	}
@@ -467,7 +470,7 @@ class LDeployerClient {
 	}
 
 	private function getProjectExcludeList() {
-		return ['/','/deployer.php','/config/','/lymz_framework/'];
+		return ['/deployer.php','/config/','/lymz_framework/'];
 	}
 
 	public function project_check(string $key_name) {

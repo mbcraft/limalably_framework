@@ -297,6 +297,9 @@ class LClassLoader {
     }
     
     private static function recursiveParseFolder($full_folder_path) {
+
+        if (!is_dir($full_folder_path)) return;
+
         $dir_elements = scandir($full_folder_path);
         
         foreach ($dir_elements as $element) {

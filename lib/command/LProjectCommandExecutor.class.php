@@ -117,6 +117,85 @@ class LProjectCommandExecutor implements LICommandExecutor {
         
         echo $result."\n";
     }
+
+    private function handleDeployer() {
+        $this->setCommandAsExecuted();
+
+        $dc = new LDeployerClient();
+
+        $parameter_map = [
+            'help' => 1,
+            'attach' => 3,
+            'detach' => 2,
+            'deployer_version' => 2,
+            'deployer_update' => 2,
+            'framework_check' => 2,
+            'framework_update' => 2,
+            'project_check' => 2,
+            'project_update' => 2,
+            'auto_config' => 2,
+            'manual_config' => 3,
+            'backup' => 3,
+            'disappear' => 2,
+            'reset' => 2,
+            'temp_clean' => 2
+        ];
+
+        if (LParameters::count()<1) {
+            $dc->help();
+            return;
+        }
+
+        if (LParameters::count()==1) {
+            if (LParameters::getByIndex(0)=='help') {
+                $dc->help();
+                return;
+            } else {
+                echo "Unknown command '".LParameters::getByIndex(0)."'.";
+                $dc->help();
+                return;
+            }
+        }
+
+        $command = LParameters::getByIndex(0);
+
+        if (isset($parameter_map[$command]) && $parameter_map[$command]==LParameters::count()) {
+
+        } else {
+            echo "Parameter number mismatch.";
+            $dc->help();
+            return;
+        }
+
+        $deploy_key_name = LParameters::getByIndex(1);
+
+        if (LParameters::count()>2) {
+            $path_host_or_uri = LParameters::getByIndex(2);
+        }
+
+        switch ($command) {
+            case 'help' : $dc->help();break;
+            case 'attach': $dc->attach($deploy_key_name,$path_host_or_uri);break;
+            case 'detach' : $dc->detach($deploy_key_name);break;
+            case 'deployer_version' : $dc->deployer_version($deploy_key_name);break;
+            case 'deployer_update' : $dc->deployer_update($deploy_key_name);break;
+            case 'framework_check' : $dc->framework_check($deploy_key_name);break;
+            case 'framework_update' : $dc->framework_update($deploy_key_name);break;
+            case 'project_check' : $dc->project_check($deploy_key_name);break;
+            case 'project_update' : $dc->project_update($deploy_key_name);break;
+            case 'auto_config' : $dc->auto_config($deploy_key_name);break;
+            case 'manual_config' : $dc->manual_config($deploy_key_name,$path_host_or_uri);break;
+            case 'backup' : $dc->backup($deploy_key_name,$path_host_or_uri);break;
+            case 'disappear' : $dc->disappear($deploy_key_name);break;
+            case 'reset' : $dc->reset($deploy_key_name);break;
+            case 'temp_clean': $dc->temp_clean($deploy_key_name);break;
+
+            default : throw new \Exception("Command handler not implemented : ".$command);
+
+        }
+
+        return;
+    }
     
     public function tryExecuteCommand() {
         $route = $_SERVER['ROUTE'];
@@ -129,6 +208,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'internal/url_alias_db_list' : $this->handleUrlAliasDbList();break;
             case 'internal/url_alias_db_add' : $this->handleUrlAliasDbAdd();break;
             case 'internal/url_alias_db_remove' : $this->handleUrlAliasDbRemove();break;
+            case 'internal/deployer' : $this->handleDeployer();break;
         }
         
         if ($this->hasExecutedCommand()) Lymz::finish ();

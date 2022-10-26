@@ -345,6 +345,8 @@ class LDeployerClient {
 		echo "./bin/deployer.sh disappear <deploy_key_name> --> deletes the remote deployer\n\n";
 		echo "./bin/deployer.sh reset <deploy_key_name> --> deletes all the remote files but not the deployer one\n\n";
 		echo "./bin/deployer.sh temp_clean <deploy_key_name> --> cleans up the remote temporary files folder\n\n";
+
+		return true;
 	}
 
 	public function hello(string $key_name) {

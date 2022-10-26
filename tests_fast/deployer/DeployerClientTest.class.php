@@ -410,5 +410,15 @@ class DeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 
+	function testHelp() {
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->help();
+
+		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
+	}
+
 
 }

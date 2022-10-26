@@ -327,7 +327,24 @@ class LDeployerClient {
 	}
 
 	function help() {
-
+		echo "Generic usage : ./bin/deployer.sh <command> <parameter1> <parameter2> <parameter...>";
+		echo "\n\n";
+		echo "Command List : \n\n";
+		echo "./bin/deployer.sh help --> prints this help\n\n";
+		echo "./bin/deployer.sh attach <deploy_key_name> <deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
+		echo "./bin/deployer.sh detach <deploy_key_name> --> detaches the deployer removing the server token and deleting the local key\n\n";
+		echo "./bin/deployer.sh deployer_version <deploy_key_name> --> prints the deployer version\n\n";
+		echo "./bin/deployer.sh deployer_update <deploy_key_name> --> updates the remote deployer using the local version\n\n";
+		echo "./bin/deployer.sh framework_check <deploy_key_name> --> check and lists which framework files needs an update\n\n";
+		echo "./bin/deployer.sh framework_update <deploy_key_name> --> updates the remote framework files and prints a report of the operations done\n\n";
+		echo "./bin/deployer.sh project_check <deploy_key_name> --> check and lists which remote project files needs an update\n\n";
+		echo "./bin/deployer.sh project_update <deploy_key_name> --> updates the remote project files and prints a report of the operations done\n\n";
+		echo "./bin/deployer.sh auto_config <deploy_key_name> --> updates the remote project config files probing the right config to use if possible\n\n";
+		echo "./bin/deployer.sh manual_config <deploy_key_name> <host_name> --> updates the remote project config files using the selected host name configs\n\n";
+		echo "./bin/deployer.sh backup <deploy_key_name> <backup_dir_path> --> makes a full backup of a remote project and saves it in the backup dir specified\n\n";
+		echo "./bin/deployer.sh disappear <deploy_key_name> --> deletes the remote deployer\n\n";
+		echo "./bin/deployer.sh reset <deploy_key_name> --> deletes all the remote files but not the deployer one\n\n";
+		echo "./bin/deployer.sh temp_clean <deploy_key_name> --> cleans up the remote temporary files folder\n\n";
 	}
 
 	public function hello(string $key_name) {

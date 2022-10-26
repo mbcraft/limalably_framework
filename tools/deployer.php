@@ -1436,10 +1436,6 @@ class DeployerController {
             return true;
 	   else {
 
-            //echo "HAS PASSWORD  : ".$this->hasPassword()."\n";
-            //echo "SELF PWD : ".self::$PASSWORD."\n";
-            //echo "INCOMING PASSWORD : ".$password."\n";
-
             return false;
        }
         

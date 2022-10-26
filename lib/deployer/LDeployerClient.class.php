@@ -372,14 +372,18 @@ class LDeployerClient {
 
 			$result = $this->current_driver->changePassword("",$this->current_password);
 
-			echo "RESULT : ".$result;
-
 			if ($this->isSuccess($result)) echo "Password changed to secure token.\n";
 			else $this->failure("Unable to change deployer secure token : ".$result['message']);
 
+			echo "Waiting 5 seconds to let the server file cache update itself ...\n";
+			sleep(5);
+
 			$result2 = $this->current_driver->hello($this->current_password);
 
-			if ($this->isSuccess($result2)) echo "Hello with secure token successful.\n";
+			if ($this->isSuccess($result2)) {
+				echo "Hello with secure token successful.\n";
+				return true;
+			}
 			else return $this->failure("Unable to correctly change password on deployer installation : ".$result2['message']);
 
 		} else {

@@ -325,5 +325,33 @@ class DeployerClientTest extends LTestCase {
 
 	}
 
+	function testManualConfig() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$host_config = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/config/hostnames/my_host/config.json');
+
+		$this->assertFalse($host_config->exists(),"Il file di configurazione esiste già nella destinazione e non dovrebbe!");
+
+		$r = $dc->manual_config('default_key','my_host');
+
+		$this->assertTrue($r,"La procedura di manual_config ha dato esito negativo!");
+
+		$this->assertTrue($host_config->exists(),"Il file di configurazione non è stato copiato con successo!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
+
+	}
+
 
 }

@@ -1255,7 +1255,7 @@ class DeployerController {
 
 				return ["result" => self::SUCCESS_RESULT,"data" => $data];
 
-			} else return $this->failure("Unable to find folder : ".$folder);
+			} else return ["result" => self::SUCCESS_RESULT,"data" => []];
 
 		} else return $this->failure("Wrong password.");
 	}

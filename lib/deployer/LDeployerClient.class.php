@@ -569,20 +569,29 @@ class LDeployerClient {
 	}
 
 	private function executeConfigSync($config_folder) {
-		$cf = new LDir('/config/hostnames/'.$config_folder);
+		$cf = new LDir($_SERVER['PROJECT_DIR'].'/config/hostnames/'.$config_folder);
 
 		if (!$cf->exists()) return $this->failure("Speciefied hostname not found in config folder : ".$config_folder);
 
-		$r1 = $this->current_driver->deleteDir($this->current_password,'/config/hostnames/'.$config_folder,true);
-		if (!$this->isSuccess($r1)) return $this->failure("Unable to delete remote config directory.");
-		$r2 = $this->current_driver->makeDir($this->current_password,'/config/hostnames/'.$config_folder);
+		$r0 = $this->current_driver->listElements($this->current_password,'/config/hostnames/');
+
+		if (!$this->isSuccess($r0)) return $this->failure("Unable to list remote configs directories.");
+
+		$cfgs = $r0['data'];
+
+		if (isset($cfgs[$config_folder])) {
+			$r1 = $this->current_driver->deleteDir($this->current_password,'/config/hostnames/'.$config_folder,true);
+			if (!$this->isSuccess($r1)) return $this->failure("Unable to delete remote config directory.");
+		}
+
+		$r2 = $this->current_driver->makeDir($this->current_password,'/config/hostnames/'.$config_folder.'/');
 		if (!$this->isSuccess($r2)) return $this->failure("Unable to recreate remote config folder.");
 
 		$files = $cf->listFiles();
 
 		$ok = true;
 		foreach ($files as $f) {
-			$r = $this->current_driver->copyFile($this->current_password,'/config/hostnames/'.$config_folder.'/'.$f->getName(),$f);
+			$r = $this->current_driver->copyFile($this->current_password,'/config/hostnames/'.$config_folder.'/'.$f->getFilename(),$f);
 		
 			$ok &= $this->isSuccess($r);
 		}

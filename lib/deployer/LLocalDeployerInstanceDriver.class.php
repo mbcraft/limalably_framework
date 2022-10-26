@@ -21,6 +21,10 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$this->controller = new DeployerController();
 	}
 
+	private function isSuccess($result) {
+		return $result['result']==self::SUCCESS_RESULT;
+	}
+
 	private function pushFile($file) {
 
 		if (!$file instanceof LFile) throw new \Exception("Parameter is not actually an LFile instance");
@@ -81,7 +85,17 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 		$result = $this->controller->downloadDir($password,$path);
 
-		if ($this->isSuccess($result)) $result['data']->rename($save_file);
+		if ($this->isSuccess($result)) {
+
+			$downloaded_file_orig = $result['data'];
+
+			$downloaded_file_ok = new LFile($downloaded_file_orig->getFullPath());
+
+			$r = $downloaded_file_ok->move_to($save_file);
+			if (!$r) return ['result' => self::FAILURE_RESULT,'message' => "Unable to copy backup file to final destination ..."];
+
+			return ['result' => self::SUCCESS_RESULT];
+		} else $this->failure("Unable to download directory from server : ".$r['message']);
 
 	}
 

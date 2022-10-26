@@ -212,23 +212,29 @@ abstract class LFileSystemElement
     /*
      * Sposta nella posizione di target, se target esiste viene sovrascritto.
      * */
-    function move_to($target_dir,$new_name=null)
+    function move_to($target_dir_or_file,$new_name=null)
     {
-        if ($new_name!=null)
-            $name = $new_name;
-        else
-            $name = $this->getName();
 
         if ($this->isDir())
         {
-            $dest = new LDir($target_dir->getPath()."/".$name);
+            if ($new_name!=null) {
+                $dest = new LDir($target_dir_or_file->getFullPath());
+
+                $dest->touch();
+            }
+            else {
+                $name = $this->getName();
+
+                $target_dir_or_file->touch();
+
+                $dest = new LDir($target_dir_or_file->getFullPath().'/'.$name.'/');
+            }
+
         }
         else
         {
-            $dest = new LFile($target_dir->getPath()."/".$name);
+            $dest = $target_dir_or_file;
         }
-
-        $target_dir->touch();
 
         return rename($this->getFullPath(),$dest->getFullPath());
     }

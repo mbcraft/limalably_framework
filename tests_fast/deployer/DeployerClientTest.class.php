@@ -375,5 +375,40 @@ class DeployerClientTest extends LTestCase {
 
 	}
 
+	function testBackup() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$backup_save_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/backup_save/');
+
+		$backup_save_dir->touch();
+
+		$backup_save_dir->delete(true);
+
+		$backup_save_dir->touch();
+
+		$r = $dc->backup('default_key',$backup_save_dir->getFullPath());
+
+		$this->assertTrue($r,"La procedura di backup ha dato esito negativo!");
+
+		$file_list = $backup_save_dir->listFiles();
+
+		$this->assertTrue(count($file_list)==1,"The backup save dir does not contain any saved file");
+
+		$this->assertTrue(LStringUtils::endsWith($file_list[0]->getFilename(),'zip'),"The backup saved file is not a zip file");
+
+		$this->assertTrue($file_list[0]->getSize()>0,"The backup file is empty!");
+
+		$r = $dc->detach('default_key');
+
+		$this->disposeAll();
+	}
+
 
 }

@@ -214,7 +214,9 @@ class LDeployerClient {
 	}
 
 	private function isSuccess($result) {
-		return $result['result'] == self::SUCCESS_RESULT;
+		if ($result)
+			return $result['result'] == self::SUCCESS_RESULT;
+		else return false;
 	}
 
 	private function loadKey(string $name,bool $use_password=true) {
@@ -616,12 +618,22 @@ class LDeployerClient {
 		} else return false;
 	}
 
-	public function backup(string $key_name) {
+	public function backup(string $key_name,string $save_dir_path) {
 		if ($this->loadKey($key_name)) {
 
-			$backup_filename = "backup_".$key_name."_".date('Y_M_D_h_i').".zip";
+			$current_dir = new LDir('');
 
-			$backup_file = new LFile('/'.$backup_filename);
+			$current_dir_name = $current_dir->getName();
+
+			$fixed_key_name = str_replace('.','_',$key_name);
+
+			$backup_filename = "backup_".$current_dir_name.'_'.$fixed_key_name."_".date('Y_m_d__h_i').".zip";
+
+			$save_dir = new LDir($save_dir_path);
+
+			$save_dir->touch();
+
+			$backup_file = $save_dir->newFile($backup_filename);
 
 			$r = $this->current_driver->downloadDir($this->current_password,'/',$backup_file);
 		
@@ -664,7 +676,7 @@ class LDeployerClient {
 
 			$r = $this->current_driver->makeDir($this->current_password,'/config/internal/');
 			$ok &= $this->isSuccess($r);
-			
+
 			$files = $cf_int->listFiles();
 			foreach ($files as $f) {
 				$r = $this->current_driver->copyFile($this->current_password,'/config/internal/'.$f->getFilename(),$f);

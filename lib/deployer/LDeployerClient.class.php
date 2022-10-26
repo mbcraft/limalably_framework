@@ -79,32 +79,62 @@ class LDeployerClient {
 	}
 
 	private function executeChangesList() {
+		$count_dir_to_add = 0;
+		$count_dir_to_add_ok = 0;
+		$count_files_to_add = 0;
+		$count_files_to_add_ok = 0;
 
 		foreach ($this->files_to_add as $path) {
 			if (LStringUtils::endsWith($path,'/')) {
-				$this->current_driver->makeDir($this->current_password,$path);
+				$count_dir_to_add++;
+				$r = $this->current_driver->makeDir($this->current_password,$path);
+				if ($this->isSuccess($r)) $count_dir_to_add_ok++;
 			} else {
+				$count_files_to_add++;
 				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
-				$this->current_driver->copyFile($this->current_password,$path,$source_file);
+				$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
+				if ($this->isSuccess($r)) $count_files_to_add_ok++;
 			}
 		}
+
+		$count_files_to_update = 0;
+		$count_files_to_update_ok = 0;
 
 		foreach ($this->files_to_update as $path) {
 			if (LStringUtils::endsWith($path,'/')) {
 				//nothing to do
 			} else {
+				$count_files_to_update++;
 				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
-				$this->current_driver->copyFile($this->current_password,$path,$source_file);
+				$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
+				if ($this->isSuccess($r)) $count_files_to_update_ok++;
 			}
 		}
 
+		$count_dir_to_delete = 0;
+		$count_dir_to_delete_ok = 0;
+		$count_files_to_delete = 0;
+		$count_files_to_delete_ok = 0;
+
 		foreach ($this->files_to_delete as $path) {
 			if (LStringUtils::endsWith($path,'/')) {
-				$this->current_driver->deleteDir($this->current_password,$path,true);
+				$count_dir_to_delete++;
+				$r = $this->current_driver->deleteDir($this->current_password,$path,true);
+				if ($this->isSuccess($r)) $count_dir_to_delete_ok++;
 			} else {
-				$this->current_driver->deleteFile($this->current_password,$path);
+				$count_files_to_delete++;
+				$r = $this->current_driver->deleteFile($this->current_password,$path);
+				if ($this->isSuccess($r)) $count_files_to_delete_ok++;
 			}
 		}
+
+		echo "\n\nOperations summary :\n\n";
+		echo "Dir added : ".$count_dir_to_add_ok." of ".$count_dir_to_add." -> ".($count_dir_to_add_ok==$count_dir_to_add ? 'OK' : 'FAILURE')."\n";
+		echo "Files added : ".$count_files_to_add_ok." of ".$count_files_to_add." -> ".($count_files_to_add_ok==$count_files_to_add ? 'OK' : 'FAILURE')."\n";
+		echo "Files updated : ".$count_files_to_update_ok." of ".$count_files_to_update." -> ".($count_files_to_update_ok==$count_files_to_update ? 'OK' : 'FAILURE')."\n";
+		echo "Dir deleted : ".$count_dir_to_delete_ok." of ".$count_dir_to_delete." -> ".($count_dir_to_delete_ok==$count_dir_to_delete ? 'OK' : 'FAILURE')."\n";
+		echo "Files deleted : ".$count_files_to_delete_ok." of ".$count_files_to_delete." -> ".($count_files_to_delete_ok==$count_files_to_delete ? 'OK' : 'FAILURE')."\n";
+		echo "\n";
 
 	}
 

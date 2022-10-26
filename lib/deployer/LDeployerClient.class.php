@@ -344,6 +344,31 @@ class LDeployerClient {
 		} else return $this->failure("Unable to find key to load for detach : ".$key_name);
 	}
 
+	public function deployer_version(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if ($this->isSuccess($r)) {
+				
+				$version = $r['version'];
+				$features = $r['features'];
+
+				echo "\n\nDeployer Version : ".$version;
+				echo "\n\nDeployer Features : \n";
+
+				foreach ($features as $f) {
+					echo "- ".$f."\n";
+				}
+				echo "\n";
+
+				return true;
+			}
+			else $this->failure("Unable to update deployer on server : ".$r['message']);
+
+		} else return false;
+	}
+
 	public function deployer_update(string $key_name) {
 		if ($this->loadKey($key_name)) {
 

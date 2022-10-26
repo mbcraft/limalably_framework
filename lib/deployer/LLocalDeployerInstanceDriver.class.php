@@ -33,6 +33,12 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$_FILES['f']['tmp_name'] = $file->getFullPath();
 	}
 
+	public function version($password) {
+
+		return $this->controller->version($password);
+		
+	}
+
 	public function listElements($password,$folder) {
 
 		return $this->controller->listElements($password,$folder);

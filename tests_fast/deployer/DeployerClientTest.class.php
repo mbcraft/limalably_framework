@@ -353,5 +353,27 @@ class DeployerClientTest extends LTestCase {
 
 	}
 
+	function testVersion() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$r = $dc->deployer_version('default_key');
+
+		$this->assertTrue($r,"La procedura di version ha dato esito negativo!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
+
+	}
+
 
 }

@@ -1203,6 +1203,10 @@ $_SERVER['DEPLOYER_DIR'] = __DIR__;
 
 class DeployerController {
 
+    const DEPLOYER_VERSION = "1.0";
+
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','changePassword','hello'];
+
 	private $deployer_file;
 	private $root_dir;
 
@@ -1236,6 +1240,12 @@ class DeployerController {
 		}
 
 	}
+
+    public function version($password) {
+        if ($this->accessGranted($password)) {
+            return ['result' => self::SUCCESS_RESULT,'version' => self::DEPLOYER_VERSION,'features' => self::DEPLOYER_FEATURES];
+        } else return $this->failure("Wrong password");
+    }
 
 	public function listElements($password,$folder) {
 		if ($this->accessGranted($password)) {
@@ -1448,6 +1458,13 @@ class DeployerController {
     		$method = $_POST['METHOD'];
 
     		switch ($method) {
+                case 'VERSION' : {
+                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    else echo json_encode($this->failure("PASSWORD field missing in VERSION request."));
+
+                    echo json_encode($this->version($password));
+                    break;
+                }
     			case 'HELLO' : {
 					if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
 					else echo json_encode($this->failure("PASSWORD field missing in HELLO request."));

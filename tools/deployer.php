@@ -1484,7 +1484,7 @@ class DeployerController {
 					if (isset($_POST['NEW_PASSWORD'])) $new_password = $_POST['NEW_PASSWORD'];
 					else echo json_encode($this->failure("NEW_PASSWORD field missing in CHANGE_PASSWORD request."));
 
-					$this->changePassword($password,$new_password);
+					echo json_encode($this->changePassword($password,$new_password));
 
 					break;
     			}

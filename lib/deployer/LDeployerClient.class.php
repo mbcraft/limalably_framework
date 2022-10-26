@@ -214,7 +214,6 @@ class LDeployerClient {
 	}
 
 	private function isSuccess($result) {
-		if ($result===true) return true;
 		if (is_array($result))
 			return $result['result'] == self::SUCCESS_RESULT;
 		else return false;
@@ -266,7 +265,7 @@ class LDeployerClient {
 
 	private function unreachableDeployerServer(string $deployer_uri) {
 
-		echo "Deployer server is unreachable at : ".$deployer_uri;
+		echo "Deployer server is unreachable at : ".$deployer_uri."\n\n";
 
 		return false;
 	}
@@ -373,12 +372,15 @@ class LDeployerClient {
 
 			$result = $this->current_driver->changePassword("",$this->current_password);
 
+			echo "RESULT : ".$result;
+
+			if ($this->isSuccess($result)) echo "Password changed to secure token.\n";
+			else $this->failure("Unable to change deployer secure token : ".$result['message']);
+
 			$result2 = $this->current_driver->hello($this->current_password);
 
-			if ($this->isSuccess($result) && $this->isSuccess($result2)) {
-				return true;
-			}
-			else return $this->failure("Unable to correctly change password on deployer installation.");
+			if ($this->isSuccess($result2)) echo "Hello with secure token successful.\n";
+			else return $this->failure("Unable to correctly change password on deployer installation : ".$result2['message']);
 
 		} else {
 			echo "Unable to succesfully reach deployer instance, deleting generated key ...\n";

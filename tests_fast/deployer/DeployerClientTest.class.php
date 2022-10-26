@@ -192,12 +192,45 @@ class DeployerClientTest extends LTestCase {
 
 		$r = $dc->project_check('default_key');
 
+		$this->assertTrue($r,"Il check non è stato eseguito con successo!");
+
 		$r = $dc->detach('default_key');
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 
 		$this->disposeAll();
 	}
+
+
+	function testProjectUpdate() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$r = $dc->project_update('default_key');
+
+		$this->assertTrue($r,"L'update non è andato a buon fine!");
+
+		//$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_file.txt');
+
+		//$this->assertTrue($f1->exists(),"Il file di progetto non è stato copiato con successo!");
+
+		//$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/my_file.txt');
+
+		//$this->assertTrue($f2->exists(),"Il file di progetto nella sottodirectory non è stato copiato con successo!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
+	}
+
 
 	function testFrameworkCheck() {
 

@@ -80,25 +80,25 @@ class LDeployerClient {
 
 	private function executeChangesList() {
 
-		foreach ($this->files_to_add as $path => $hash) {
+		foreach ($this->files_to_add as $path) {
 			if (LStringUtils::endsWith($path,'/')) {
 				$this->current_driver->makeDir($this->current_password,$path);
 			} else {
-				$source_file = new LFile($path);
+				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
 				$this->current_driver->copyFile($this->current_password,$path,$source_file);
 			}
 		}
 
-		foreach ($this->files_to_update as $path => $hash) {
+		foreach ($this->files_to_update as $path) {
 			if (LStringUtils::endsWith($path,'/')) {
 				//nothing to do
 			} else {
-				$source_file = new LFile($path);
+				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
 				$this->current_driver->copyFile($this->current_password,$path,$source_file);
 			}
 		}
 
-		foreach ($this->files_to_delete as $path => $hash) {
+		foreach ($this->files_to_delete as $path) {
 			if (LStringUtils::endsWith($path,'/')) {
 				$this->current_driver->deleteDir($this->current_password,$path,true);
 			} else {
@@ -544,7 +544,7 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
-			//$this->executeChangesList();
+			$this->executeChangesList();
 
 			return true;
 

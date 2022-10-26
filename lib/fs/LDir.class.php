@@ -38,15 +38,15 @@ class LDir extends LFileSystemElement
     
     function visit($visitor)
     {
-        $visitor->visit($this);
-        
         if (!$this->exists()) return;
 
+        $visitor->visit($this);
+        
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $visitor->visit($fold);
+            $fold->visit($visitor);
         }
     }
     

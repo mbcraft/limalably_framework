@@ -392,15 +392,15 @@ class DDir extends DFileSystemElement
     
     function visit($visitor)
     {
-        $visitor->visit($this);
-        
         if (!$this->exists()) return;
 
+        $visitor->visit($this);
+        
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $visitor->visit($fold);
+            $fold->visit($visitor);
         }
     }
     
@@ -1346,7 +1346,7 @@ class DeployerController {
 
 			$dest = new DDir($this->root_dir->getFullPath().$path);
 
-			if (!$dest->exists()) return $this->failure("Directory to delete does not exist.");
+			if (!$dest->exists()) return $this->failure("Directory to delete does not exist : ".$dest->getFullPath());
 
 			$dest->delete($recursive);
 
@@ -1542,7 +1542,7 @@ class DeployerController {
 					if (isset($_POST['RECURSIVE'])) $recursive = $_POST['RECURSIVE'] == 'true' ? true : false;
 					else echo json_encode($this->failure("RECURSIVE field missing in DELETE_DIR request."));
 
-					echo json_encode($this->deleteDir($password,$path));
+					echo json_encode($this->deleteDir($password,$path,$recursive));
 
 					break;
     			}

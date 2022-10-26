@@ -180,6 +180,8 @@ class LDeployerClient {
 
 		unset($this->visit_result['/']);
 
+		var_dump($this->visit_result);
+
 		foreach ($this->excluded_paths as $excluded) {
 			foreach ($this->visit_result as $path => $hash)
 				if (DStringUtils::startsWith($path,$excluded)) {
@@ -465,7 +467,12 @@ class LDeployerClient {
 
 			$this->deleteKey($key_name);
 
-			if ($this->isSuccess($r)) return true;
+			if ($this->isSuccess($r)) {
+				
+				echo "Deployer instance successfully disappeared.\n";
+
+				return true;
+			}
 			else return $this->failure("Unable to make deployer installation disappear.");
 		} else return false;	
 	}
@@ -485,16 +492,18 @@ class LDeployerClient {
 					if (LStringUtils::endsWith($el,'/')) {
 						$r2 = $this->current_driver->deleteDir($this->current_password,$el,true);
 
-						if (!$this->isSuccess($r2)) return $this->failure("Unable to delete directory : ".$el);
+						if (!$this->isSuccess($r2)) return $this->failure("Unable to delete directory : ".$el." : ".$r2['message']);
 					} else {
 						if (!LStringUtils::endsWith($el,$deployer_filename)) {
 							$r3 = $this->current_driver->deleteFile($this->current_password,$el);
 
-							if (!$this->isSuccess($r3)) return $this->failure("Unable to delete file : ".$el);
+							if (!$this->isSuccess($r3)) return $this->failure("Unable to delete file : ".$el." : ".$r3['message']);
 						}
 					}
 				}
 			}
+
+			echo "Deployer instance reset executed successfully.\n";
 
 			return true;
 
@@ -519,7 +528,12 @@ class LDeployerClient {
 				$r1 = $this->current_driver->deleteDir($this->current_password,'temp/',true);
 				$r2 = $this->current_driver->makeDir($this->current_password,'temp/');
 
-				if ($this->isSuccess($r1) && $this->isSuccess($r2)) return true;
+				if ($this->isSuccess($r1) && $this->isSuccess($r2)) {
+					
+					echo "Deployer instance templ clean executed successfully.\n";
+
+					return true;
+				}
 				else return $this->failure("Unable to delete and recreate temp folder on deployer installation.");
 			} else return $this->failure("Unable to list files on deployer installation.");
 		} else return false;
@@ -543,6 +557,8 @@ class LDeployerClient {
 				$old_framework_dir = $_SERVER['FRAMEWORK_DIR'];
 				$testing = true;
 				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].'lymz_framework/';
+			} else {
+				$testing = false;
 			}
 
 			$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
@@ -551,6 +567,12 @@ class LDeployerClient {
 
 			$server_list = $r['data'];
 
+			if (!$testing) {
+				$temp_project_dir_path = $_SERVER['PROJECT_DIR'];
+				$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+				$framework_parent_dir = $framework_dir->getParentDir();
+				$_SERVER['PROJECT_DIR'] = $framework_parent_dir->getFullPath();
+			}
 			$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
 			$this->setupChangesList($client_list,$server_list);
@@ -559,6 +581,8 @@ class LDeployerClient {
 
 			if ($testing) {
 				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
+			} else {
+				$_SERVER['PROJECT_DIR'] = $temp_project_dir_path;
 			}
 
 			return true;
@@ -578,13 +602,23 @@ class LDeployerClient {
 				$old_framework_dir = $_SERVER['FRAMEWORK_DIR'];
 				$testing = true;
 				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].'lymz_framework/';
+			} else {
+				$testing = false;
 			}
+
 
 			$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
 			$server_list = $r['data'];
+
+			if (!$testing) {
+				$temp_project_dir_path = $_SERVER['PROJECT_DIR'];
+				$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+				$framework_parent_dir = $framework_dir->getParentDir();
+				$_SERVER['PROJECT_DIR'] = $framework_parent_dir->getFullPath();
+			}
 
 			$client_list = $this->clientListHashes($this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
@@ -594,6 +628,8 @@ class LDeployerClient {
 
 			if ($testing) {
 				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
+			} else {
+				$_SERVER['PROJECT_DIR'] = $temp_project_dir_path;
 			}
 
 			return true;

@@ -135,6 +135,8 @@ abstract class LFileSystemElement
             $this->__path .= '/';
             $this->__full_path .= '/';
         }
+
+        if (strpos($this->__path,'/')===0) $this->__path = substr($this->__path,1);
     }
 
     function equals($file_or_dir)

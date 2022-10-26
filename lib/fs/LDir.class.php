@@ -59,7 +59,7 @@ class LDir extends LFileSystemElement
     function getLevel()
     {
         $matches = [];
-        preg_match_all("/\//", $this->__path,$matches);
+        preg_match_all("/\//", $this->__full_path,$matches);
         return count($matches[0])-1;
     }
     
@@ -188,6 +188,8 @@ class LDir extends LFileSystemElement
  */
     function isEmpty()
     {
+        if (!$this->exists()) return true;
+
         return count($this->listAll())===0;
     }
 
@@ -207,6 +209,8 @@ class LDir extends LFileSystemElement
  */
     function listElements($myExcludes=self::DEFAULT_EXCLUDES,$filter = self::FILTER_ALL_FILES)
     {     
+        if (!$this->exists()) throw new \LIOException("Directory does not exists, can't list elements.");
+
         $excludesSet = false;
         
         if (!$excludesSet && $myExcludes === self::NO_HIDDEN_FILES) 
@@ -222,8 +226,6 @@ class LDir extends LFileSystemElement
         }
         if (!$excludesSet)
             $excludes = $myExcludes;
-
-        if (!$this->exists()) throw new \LIOException("Directory does not exists, can't list elements.");
 
         $all_results = scandir($this->__full_path);
 

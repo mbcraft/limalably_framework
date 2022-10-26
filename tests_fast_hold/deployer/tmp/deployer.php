@@ -143,6 +143,8 @@ abstract class DFileSystemElement
             $this->__path .= '/';
             $this->__full_path .= '/';
         }
+
+        if (strpos($this->__path,'/')==0) $this->__path = substr($this->__path,1);
     }
 
     function equals($file_or_dir)
@@ -392,15 +394,15 @@ class DDir extends DFileSystemElement
     
     function visit($visitor)
     {
-        $visitor->visit($this);
-        
         if (!$this->exists()) return;
 
+        $visitor->visit($this);
+        
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $visitor->visit($fold);
+            $fold->visit($visitor);
         }
     }
     
@@ -560,7 +562,9 @@ class DDir extends DFileSystemElement
  * TESTED
  */
     function listElements($myExcludes=self::DEFAULT_EXCLUDES,$filter = self::FILTER_ALL_FILES)
-    {     
+    {   
+        if (!$this->exists()) throw new \DIOException("Directory does not exist, can't list elements.");
+        
         $excludesSet = false;
         
         if (!$excludesSet && $myExcludes === self::NO_HIDDEN_FILES) 
@@ -576,8 +580,6 @@ class DDir extends DFileSystemElement
         }
         if (!$excludesSet)
             $excludes = $myExcludes;
-
-        if (!$this->exists()) throw new \DIOException("Directory does not exist, can't list elements.");
 
         $all_results = scandir($this->__full_path);
 
@@ -1346,7 +1348,7 @@ class DeployerController {
 
 			$dest = new DDir($this->root_dir->getFullPath().$path);
 
-			if (!$dest->exists()) return $this->failure("Directory to delete does not exist.");
+			if (!$dest->exists()) return $this->failure("Directory to delete does not exist : ".$dest->getFullPath());
 
 			$dest->delete($recursive);
 
@@ -1436,10 +1438,6 @@ class DeployerController {
             return true;
 	   else {
 
-            //echo "HAS PASSWORD  : ".$this->hasPassword()."\n";
-            //echo "SELF PWD : ".self::$PASSWORD."\n";
-            //echo "INCOMING PASSWORD : ".$password."\n";
-
             return false;
        }
         
@@ -1484,7 +1482,7 @@ class DeployerController {
 					if (isset($_POST['NEW_PASSWORD'])) $new_password = $_POST['NEW_PASSWORD'];
 					else echo json_encode($this->failure("NEW_PASSWORD field missing in CHANGE_PASSWORD request."));
 
-					$this->changePassword($password,$new_password);
+					echo json_encode($this->changePassword($password,$new_password));
 
 					break;
     			}
@@ -1546,7 +1544,7 @@ class DeployerController {
 					if (isset($_POST['RECURSIVE'])) $recursive = $_POST['RECURSIVE'] == 'true' ? true : false;
 					else echo json_encode($this->failure("RECURSIVE field missing in DELETE_DIR request."));
 
-					echo json_encode($this->deleteDir($password,$path));
+					echo json_encode($this->deleteDir($password,$path,$recursive));
 
 					break;
     			}
@@ -1606,4 +1604,4 @@ if (isset($_POST['METHOD'])) {
 	$controller = new DeployerController();
 	$controller->processRequest();
 
-}
+} else echo "Hello :)";

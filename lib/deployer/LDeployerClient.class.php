@@ -368,6 +368,8 @@ class LDeployerClient {
 
 			$r = $this->current_driver->deleteFile($this->current_password,'/'.$deployer_filename);
 
+			$this->deleteKey($key_name);
+
 			if ($this->isSuccess($r)) return true;
 			else return $this->failure("Unable to make deployer installation disappear.");
 		} else return false;	

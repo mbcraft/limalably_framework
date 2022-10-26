@@ -30,6 +30,10 @@ class DeployerClientTest extends LTestCase {
 
 	private function disposeAll() {
 		unset($_SERVER['PROJECT_DIR']);
+
+		$deployer_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/');
+		$deployer_dir->delete(true);
+		$deployer_dir->touch();
 	}
 
 	
@@ -277,6 +281,26 @@ class DeployerClientTest extends LTestCase {
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 
 		$this->disposeAll();
+	}
+
+	function testDisappear() {
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$fd = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($fd->exists(),"Il deployer non è al suo posto!");
+
+		$r = $dc->disappear('default_key');
+
+		$this->assertTrue($r,"Il comando di disappear non è andato a buon fine!");
+
+		$this->assertFalse($fd->exists(),"Il deployer non è stato cancellato!");
 	}
 	
 

@@ -34,6 +34,10 @@ class DeployerClientTest extends LTestCase {
 		$deployer_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/');
 		$deployer_dir->delete(true);
 		$deployer_dir->touch();
+
+		$backup_save_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/backup_save/');
+		$backup_save_dir->delete(true);
+		$backup_save_dir->touch();
 	}
 
 	

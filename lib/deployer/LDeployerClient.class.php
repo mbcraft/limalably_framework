@@ -658,6 +658,24 @@ class LDeployerClient {
 			$ok &= $this->isSuccess($r);
 		}
 
+		$cf_int = new LDir($_SERVER['PROJECT_DIR'].'/config/internal/');
+
+		if ($cf_int->exists()) {
+
+			$r = $this->current_driver->makeDir($this->current_password,'/config/internal/');
+			$ok &= $this->isSuccess($r);
+			
+			$files = $cf_int->listFiles();
+			foreach ($files as $f) {
+				$r = $this->current_driver->copyFile($this->current_password,'/config/internal/'.$f->getFilename(),$f);
+			
+				$ok &= $this->isSuccess($r);
+			}
+
+		}
+
+		$ok &= $this->isSuccess($r);
+
 		if (!$ok) return $this->failure("Error during copy of config files to remote deployer instance.");
 
 		return true;

@@ -353,7 +353,7 @@ class DeployerClientTest extends LTestCase {
 
 	}
 
-	function testVersion() {
+	function testDeployerVersion() {
 
 		$this->initAll();
 

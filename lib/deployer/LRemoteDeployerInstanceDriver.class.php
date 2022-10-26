@@ -16,7 +16,7 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	private function asResult($data) {
 
-		return json_decode($data);
+		return json_decode($data,true,512,JSON_OBJECT_AS_ARRAY | JSON_THROW_ON_ERROR);
 
 	}
 

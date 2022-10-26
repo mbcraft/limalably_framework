@@ -1606,4 +1606,4 @@ if (isset($_POST['METHOD'])) {
 	$controller = new DeployerController();
 	$controller->processRequest();
 
-}
+} else echo "Hello :)";

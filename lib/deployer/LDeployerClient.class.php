@@ -214,7 +214,8 @@ class LDeployerClient {
 	}
 
 	private function isSuccess($result) {
-		if ($result)
+		if ($result===true) return true;
+		if (is_array($result))
 			return $result['result'] == self::SUCCESS_RESULT;
 		else return false;
 	}
@@ -235,12 +236,14 @@ class LDeployerClient {
 
 			if (LStringUtils::startsWith($this->current_uri,'http')) {
 				$this->current_driver = new LRemoteDeployerInstanceDriver($this->current_uri);
+				echo "Using remote deployer driver ...\n";
 			} else {
 
 				$deployer_file = new LFile($this->current_uri);
 				if (!$deployer_file->exists()) throw new \Exception("Unable to locate deployer file!");
 
 				$this->current_driver = new LLocalDeployerInstanceDriver($deployer_file);
+				echo "Using local deployer driver ...\n";
 			}
 
 			if ($use_password) {
@@ -376,6 +379,7 @@ class LDeployerClient {
 			else return $this->failure("Unable to correctly change password on deployer installation.");
 
 		} else {
+			echo "Unable to succesfully reach deployer instance, deleting generated key ...\n";
 			$this->deleteKey($key_name);
 			return $this->failure("Unable to find saved key ".$key_name);
 		}

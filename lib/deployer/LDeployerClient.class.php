@@ -326,6 +326,8 @@ class LDeployerClient {
 
 		echo $msg;
 
+		echo "\n\n";
+
 		return false;
 	}
 

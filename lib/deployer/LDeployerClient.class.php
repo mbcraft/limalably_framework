@@ -377,10 +377,17 @@ class LDeployerClient {
 
 			$updated_deployer = new LFile($_SERVER['FRAMEWORK_DIR'].'/tools/deployer.php');
 
-			$r = $this->current_driver->copyFile($this->current_password,'/'.$deployer_filename,$updated_deployer);
+			$r = $this->current_driver->changePassword($this->current_password,"");
 
-			if ($this->isSuccess($r)) return true;
-			else $this->failure("Unable to update deployer on server : ".$r['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to complete deployer update procedure.");
+
+			$r1 = $this->current_driver->copyFile("",'/'.$deployer_filename,$updated_deployer);
+
+			$r2 = $this->current_driver->changePassword("",$this->current_password);
+
+			if (!$this->isSuccess($r1) || !$this->isSuccess($r2)) return $this->failure("Unable to complete deployer update procedure.");
+
+			return true;
 
 		} else return false;
 	}

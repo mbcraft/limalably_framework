@@ -151,7 +151,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
                 $dc->help();
                 return;
             } else {
-                echo "Unknown command '".LParameters::getByIndex(0)."'.";
+                echo "Unknown command '".LParameters::getByIndex(0)."'.\n";
                 $dc->help();
                 return;
             }
@@ -159,10 +159,14 @@ class LProjectCommandExecutor implements LICommandExecutor {
 
         $command = LParameters::getByIndex(0);
 
-        if (isset($parameter_map[$command]) && $parameter_map[$command]==LParameters::count()) {
+        if (!isset($parameter_map[$command])) {
+            echo "Unknown command.\n";
+            $dc->help();
+            return;
+        }
 
-        } else {
-            echo "Parameter number mismatch.";
+        if (isset($parameter_map[$command]) && $parameter_map[$command]!=LParameters::count()) {
+            echo "Parameter number mismatch.\n";
             $dc->help();
             return;
         }

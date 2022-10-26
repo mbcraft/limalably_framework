@@ -302,6 +302,28 @@ class DeployerClientTest extends LTestCase {
 
 		$this->assertFalse($fd->exists(),"Il deployer non è stato cancellato!");
 	}
-	
+
+	function testAutoConfig() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$r = $dc->auto_config('default_key');
+
+		$this->assertFalse($r,"La procedura di auto_config ha dato esito positivo!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
+
+	}
+
 
 }

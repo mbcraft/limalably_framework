@@ -1295,7 +1295,12 @@ class DeployerController {
 			$f = new DFile($this->root_dir->getFullPath().$path);
 
 			if ($f->exists()) {
-				$f->delete();
+
+				$result = $f->delete();
+
+                if ($f->getPath()==$this->deployer_file->getPath() && $result) {
+                    self::$PASSWORD = "";
+                }
 
 				return ["result" => self::SUCCESS_RESULT];
 			} else return $this->failure("File to delete does not exist.");

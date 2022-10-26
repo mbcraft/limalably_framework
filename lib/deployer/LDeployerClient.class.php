@@ -568,7 +568,7 @@ class LDeployerClient {
 		} else return false;
 	}
 
-	function executeConfigSync($config_folder) {
+	private function executeConfigSync($config_folder) {
 		$cf = new LDir('/config/hostnames/'.$config_folder);
 
 		if (!$cf->exists()) return $this->failure("Speciefied hostname not found in config folder : ".$config_folder);
@@ -595,13 +595,13 @@ class LDeployerClient {
 	public function auto_config(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
-			if (LStringUtils::beginWith($this->current_uri,'http')) {
+			if (LStringUtils::startsWith($this->current_uri,'http')) {
 				$ok = false;
-				if (LStringUtils::beginWith($this->current_uri,'http://')) {
+				if (LStringUtils::startsWith($this->current_uri,'http://')) {
 					$ok = true;
 					$uri_from_hostname = substr($this->current_uri,strlen('http://'));
 				}
-				if (LStringUtils::beginWith($this->current_uri,'https://')) {
+				if (LStringUtils::startsWith($this->current_uri,'https://')) {
 					$ok = true;
 					$uri_from_hostname = substr($this->current_uri,strlen('https://'));
 				}

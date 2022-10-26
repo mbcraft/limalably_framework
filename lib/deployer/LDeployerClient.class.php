@@ -493,7 +493,7 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
-			//$this->executeChangesList();
+			$this->executeChangesList();
 
 			if ($testing) {
 				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;

@@ -216,13 +216,13 @@ class DeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'update non è andato a buon fine!");
 
-		//$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_file.txt');
+		$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_file.txt');
 
-		//$this->assertTrue($f1->exists(),"Il file di progetto non è stato copiato con successo!");
+		$this->assertTrue($f1->exists(),"Il file di progetto non è stato copiato con successo!");
 
-		//$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/my_file.txt');
+		$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/my_file.txt');
 
-		//$this->assertTrue($f2->exists(),"Il file di progetto nella sottodirectory non è stato copiato con successo!");
+		$this->assertTrue($f2->exists(),"Il file di progetto nella sottodirectory non è stato copiato con successo!");
 
 		$r = $dc->detach('default_key');
 
@@ -244,7 +244,33 @@ class DeployerClientTest extends LTestCase {
 
 		$r = $dc->framework_check('default_key');
 
-		echo "FRAMEWORK CHECK";
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
+	}
+
+	function testFrameworkUpdate() {
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$r = $dc->framework_update('default_key');
+
+		$this->assertTrue($r,"L'update non è andato a buon fine!");
+
+		$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/SampleClass.class.php');
+
+		$this->assertTrue($f1->exists(),"Il file del framework non è stato copiato con successo!");
+
+		$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/bin/sample_command.sh');
+
+		$this->assertTrue($f2->exists(),"Il file nella sottodirectory del framework non è stato copiato con successo!");
 
 		$r = $dc->detach('default_key');
 

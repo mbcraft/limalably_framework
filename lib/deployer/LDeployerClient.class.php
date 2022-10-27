@@ -31,6 +31,11 @@ class LDeployerClient {
 
 	private function setupChangesList($client_hash_list,$server_hash_list) {
 
+		echo "CLIENT HASH LIST : \n";
+		var_dump($client_hash_list);
+		echo "SERVER HASH LIST : \n";
+		var_dump($server_hash_list);
+
 		$this->files_to_add = [];
 		$this->files_to_update = [];
 		$this->files_to_delete = [];
@@ -89,11 +94,13 @@ class LDeployerClient {
 				$count_dir_to_add++;
 				$r = $this->current_driver->makeDir($this->current_password,$path);
 				if ($this->isSuccess($r)) $count_dir_to_add_ok++;
+				else echo "Unable to make dir : ".$path."\n";
 			} else {
 				$count_files_to_add++;
 				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
 				$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
 				if ($this->isSuccess($r)) $count_files_to_add_ok++;
+				else echo "Unable to copy file : '".$path."'\n";
 			}
 		}
 
@@ -108,6 +115,7 @@ class LDeployerClient {
 				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
 				$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
 				if ($this->isSuccess($r)) $count_files_to_update_ok++;
+				else echo "Unable to copy file : '".$path."'\n";
 			}
 		}
 
@@ -121,10 +129,12 @@ class LDeployerClient {
 				$count_dir_to_delete++;
 				$r = $this->current_driver->deleteDir($this->current_password,$path,true);
 				if ($this->isSuccess($r)) $count_dir_to_delete_ok++;
+				else echo "Unable to delete dir : '".$path."'\n";
 			} else {
 				$count_files_to_delete++;
 				$r = $this->current_driver->deleteFile($this->current_password,$path);
 				if ($this->isSuccess($r)) $count_files_to_delete_ok++;
+				else echo "Unable to delete file : '".$path."'\n";
 			}
 		}
 
@@ -141,13 +151,13 @@ class LDeployerClient {
 	public function visit($dir) {
 
 		if (!in_array($dir->getPath(),$this->excluded_paths)) {
-			$this->visit_result['/'.$dir->getPath()] = $dir->getContentHash();
+			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
 
 			$files = $dir->listFiles();
 
 			foreach ($files as $f) {
 				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$this->visit_result['/'.$f->getPath()] = $f->getContentHash();
+					$this->visit_result[$f->getPath()] = $f->getContentHash();
 				}
 			}
 		}
@@ -178,9 +188,7 @@ class LDeployerClient {
 			$root_dir->visit($this);
 		}
 
-		unset($this->visit_result['/']);
-
-		var_dump($this->visit_result);
+		unset($this->visit_result['']);
 
 		foreach ($this->excluded_paths as $excluded) {
 			foreach ($this->visit_result as $path => $hash)
@@ -188,8 +196,6 @@ class LDeployerClient {
 					unset($this->visit_result[$path]);
 			}
 		}
-
-
 		
 		return $this->visit_result;
 	}
@@ -624,6 +630,8 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
+			$this->previewChangesList();
+
 			$this->executeChangesList();
 
 			if ($testing) {
@@ -676,6 +684,8 @@ class LDeployerClient {
 			$client_list = $this->clientListHashes($this->getProjectExcludeList(),[]);
 
 			$this->setupChangesList($client_list,$server_list);
+
+			$this->previewChangesList();
 
 			$this->executeChangesList();
 

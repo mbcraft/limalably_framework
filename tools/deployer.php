@@ -908,6 +908,8 @@ class DFile extends DFileSystemElement
  */
     function delete()
     {
+        if (DFileSystemUtils::isDir($this->__full_path)) throw new \DIOException("This is a directory and it should not be!");
+
         return @unlink($this->__full_path);
     }
 
@@ -1294,7 +1296,7 @@ class DeployerController {
 				$this->root_dir->visit($this);
 			}
 
-            unset($this->visit_result['/']);
+            unset($this->visit_result['']);
 
 			foreach ($this->excluded_paths as $excluded) {
 				foreach ($this->visit_result as $path => $hash)
@@ -1310,6 +1312,12 @@ class DeployerController {
 
 	public function deleteFile($password,$path) {
 		if ($this->accessGranted($password)) {
+
+            if (DStringUtils::endsWith($path,'/')) return $this->failure("Use deleteDir to delete directories. Actual path found is : ".$path);
+
+            $full_path = $this->root_dir->getFullPath().$path;
+
+            if (DFileSystemUtils::isDir($full_path)) return $this->failure("Actual path is a directory and should be deleted using deleteDir. Path is : ".$path);
 
 			$f = new DFile($this->root_dir->getFullPath().$path);
 

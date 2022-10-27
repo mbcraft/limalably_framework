@@ -289,23 +289,23 @@ class DeployerServerTest extends LTestCase {
 
 		$f_source->copy($f_dest2);
 
-		$result = $deployer_controller->listHashes("",[],['/']);
+		$result = $deployer_controller->listHashes("",[],[]);
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
 
-		$this->assertEqual(count($result['data']),5,"Il numero di elementi ritornati non corrisponde!");
+		$this->assertEqual(count($result['data']),4,"Il numero di elementi ritornati non corrisponde!");
 
 		$result = $deployer_controller->listHashes("",[],[]);
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
 
-		$this->assertEqual(count($result['data']),5,"Il numero di elementi ritornati non corrisponde!");
+		$this->assertEqual(count($result['data']),4,"Il numero di elementi ritornati non corrisponde!");
 
-		$result = $deployer_controller->listHashes("",['/prova/'],[]);
+		$result = $deployer_controller->listHashes("",['prova/'],[]);
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
 
-		$this->assertEqual(count($result['data']),3,"Il numero di elementi ritornati non corrisponde!");
+		$this->assertEqual(count($result['data']),2,"Il numero di elementi ritornati non corrisponde!");
 
 	}
 
@@ -345,6 +345,5 @@ class DeployerServerTest extends LTestCase {
 	}
 
 	*/
-
 
 }

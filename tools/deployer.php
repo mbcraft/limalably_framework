@@ -1317,7 +1317,7 @@ class DeployerController {
 		$this->deployer_file = new DFile(__FILE__);
 		$this->root_dir = new DDir(__DIR__);
 
-        if (DEPLOYER_MOVE_FROM_ROOT_DIR=='..') $this->root_dir = $this->root_dir->getParentDir();
+        $this->root_dir = new DDir($this->root_dir->getFullPath().DEPLOYER_MOVE_FROM_ROOT_DIR);
 	}
 
 	private $visit_result = [];

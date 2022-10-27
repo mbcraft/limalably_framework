@@ -6,6 +6,8 @@
 *
 */
 
+define ('DEPLOYER_MOVE_FROM_ROOT_DIR','..');
+
 function lymz_deployer_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
@@ -1314,6 +1316,8 @@ class DeployerController {
 	function __construct() {
 		$this->deployer_file = new DFile(__FILE__);
 		$this->root_dir = new DDir(__DIR__);
+
+        if (DEPLOYER_MOVE_FROM_ROOT_DIR=='..') $this->root_dir = $this->root_dir->getParentDir();
 	}
 
 	private $visit_result = [];

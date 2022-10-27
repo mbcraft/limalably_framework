@@ -8,7 +8,7 @@
 
 class LHttp
 {
-    static function get_to_file($url,$target)
+    public static function get_to_file($url,$target)
     {
         if (!($target instanceof LFile))
             $target_file = new LFile($target);
@@ -26,7 +26,7 @@ class LHttp
         curl_close($ch);
     }
     
-    static function get($url)
+    public static function get($url)
     {
         $ch = curl_init($url);
         
@@ -37,17 +37,22 @@ class LHttp
         return $response;
     }
 
-    static function post_to_file($url,$params,$target) {
+    public static function post_to_file($url,$params,$target) {
         $ch = curl_init($url);
         
         curl_setopt($ch,CURLOPT_POST,true);
         $post_fields = array();
         foreach ($params as $k => $v)
         {
-            if ($v instanceof LFile)
-                $post_fields[$k] = "@".$v->getPath();
-            else
+            if ($v instanceof LFile) {
+                $post_fields[$k] = curl_file_create($v->getFullPath());
+                continue;
+            }
+            if (is_string($v) || is_numeric($v)) {
                 $post_fields[$k] = $v;
+                continue;
+            }
+            throw new \Exception("Invalid parameter of class : ".get_class($v));
         }
         
         curl_setopt($ch,CURLOPT_POSTFIELDS,$post_fields);
@@ -60,7 +65,7 @@ class LHttp
         
     }
     
-    static function post($url,$params)
+    public static function post($url,$params)
     {
         $ch = curl_init($url);
         
@@ -69,10 +74,15 @@ class LHttp
         $post_fields = array();
         foreach ($params as $k => $v)
         {
-            if ($v instanceof LFile)
-                $post_fields[$k] = "@".$v->getPath();
-            else
+            if ($v instanceof LFile) {                
+                $post_fields[$k] = curl_file_create($v->getFullPath());
+                continue;
+            }
+            if (is_string($v) || is_numeric($v)) {
                 $post_fields[$k] = $v;
+                continue;
+            }
+            throw new \Exception("Invalid parameter of class : ".get_class($v));
         }
         
         curl_setopt($ch,CURLOPT_POSTFIELDS,$post_fields);

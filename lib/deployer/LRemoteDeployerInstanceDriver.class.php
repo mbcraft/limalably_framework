@@ -99,6 +99,8 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	public function copyFile($password,$path,$source_file) {
 
+		if (!$source_file instanceof LFile) throw new \Exception("source_file is actually not an LFile instance.");
+
 		$params = [];
 		$params['METHOD'] = 'COPY_FILE';
 		$params['PASSWORD'] = $password;

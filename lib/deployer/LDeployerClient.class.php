@@ -25,28 +25,43 @@ class LDeployerClient {
 	private $excluded_paths = [];
 	private $included_paths = [];
 
+	private $dir_to_add = [];
 	private $files_to_add = [];
+	private $dir_to_update = [];
 	private $files_to_update = [];
+	private $dir_to_delete = [];
 	private $files_to_delete = [];
 
 	private function setupChangesList($client_hash_list,$server_hash_list) {
 
+		$this->dir_to_add = [];
 		$this->files_to_add = [];
+		$this->dir_to_update = [];
 		$this->files_to_update = [];
+		$this->dir_to_delete = [];
 		$this->files_to_delete = [];
 
 		foreach ($client_hash_list as $path => $hash) {
 			if (!isset($server_hash_list[$path])) {
-				$this->files_to_add[] = $path;
+				if (LStringUtils::endsWith($path,'/'))
+					$this->dir_to_add[] = $path;
+				else
+					$this->files_to_add[] = $path;
 			}
 			if (isset($server_hash_list[$path]) && $server_hash_list[$path]!=$hash) {
-				$this->files_to_update[] = $path;
+				if (LStringUtils::endsWith($path,'/'))
+					$this->dir_to_update[] = $path;
+				else
+					$this->files_to_update[] = $path;
 			}
 		}
 
 		foreach ($server_hash_list as $path => $hash) {
 			if (!isset($client_hash_list[$path])) {
-				$this->files_to_delete[] = $path;
+				if (LStringUtils::endsWith($path,'/'))
+					$this->dir_to_delete[] = $path;
+				else
+					$this->files_to_delete[] = $path;
 			}
 		}
 
@@ -56,10 +71,22 @@ class LDeployerClient {
 
 		echo "\nChanges list :\n\n";
 
+		echo count($this->dir_to_add)." dir to add.\n";
+
+		foreach ($this->dir_to_add as $d) {
+			echo ">> ".$d."\n";
+		}
+		echo "\n";
 		echo count($this->files_to_add)." files to add.\n";
 
 		foreach ($this->files_to_add as $f) {
 			echo ">> ".$f."\n";
+		}
+		echo "\n";
+		echo count($this->dir_to_update)." dir to update.\n";
+
+		foreach ($this->dir_to_update as $d) {
+			echo ">> ".$d."\n";
 		}
 		echo "\n";
 		echo count($this->files_to_update)." files to update.\n";
@@ -69,6 +96,12 @@ class LDeployerClient {
 		}
 		echo "\n";
 
+		echo count($this->dir_to_delete)." dir to delete.\n";
+
+		foreach ($this->dir_to_delete as $d) {
+			echo ">> ".$d."\n";
+		}
+		echo "\n";
 		echo count($this->files_to_delete)." files to delete.\n";
 
 		foreach ($this->files_to_delete as $f) {
@@ -88,14 +121,22 @@ class LDeployerClient {
 			if (LStringUtils::endsWith($path,'/')) {
 				$count_dir_to_add++;
 				$r = $this->current_driver->makeDir($this->current_password,$path);
-				if ($this->isSuccess($r)) $count_dir_to_add_ok++;
-				else echo "Unable to make dir : ".$path."\n";
+				if ($this->isSuccess($r)) 
+					{
+						echo "(a)";
+						$count_dir_to_add_ok++;
+					}
+				else echo "\nUnable to make dir : ".$path."\n";
 			} else {
 				$count_files_to_add++;
 				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
 				$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
-				if ($this->isSuccess($r)) $count_files_to_add_ok++;
-				else echo "Unable to copy file : '".$path."'\n";
+				if ($this->isSuccess($r)) 
+					{
+						echo "(a)";
+						$count_files_to_add_ok++;
+					}
+				else echo "\nUnable to copy file : '".$path." - ".$r['message']."'\n";
 			}
 		}
 
@@ -109,8 +150,12 @@ class LDeployerClient {
 				$count_files_to_update++;
 				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
 				$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
-				if ($this->isSuccess($r)) $count_files_to_update_ok++;
-				else echo "Unable to copy file : '".$path."'\n";
+				if ($this->isSuccess($r)) 
+					{
+						echo "(u)";
+						$count_files_to_update_ok++;
+					}
+				else echo "\nUnable to copy file : '".$path."'\n";
 			}
 		}
 
@@ -123,13 +168,20 @@ class LDeployerClient {
 			if (LStringUtils::endsWith($path,'/')) {
 				$count_dir_to_delete++;
 				$r = $this->current_driver->deleteDir($this->current_password,$path,true);
-				if ($this->isSuccess($r)) $count_dir_to_delete_ok++;
-				else echo "Unable to delete dir : '".$path."'\n";
+				if ($this->isSuccess($r)) {
+					echo "(d)";
+					$count_dir_to_delete_ok++;
+				}
+				else echo "\nUnable to delete dir : '".$path."'\n";
 			} else {
 				$count_files_to_delete++;
 				$r = $this->current_driver->deleteFile($this->current_password,$path);
-				if ($this->isSuccess($r)) $count_files_to_delete_ok++;
-				else echo "Unable to delete file : '".$path."'\n";
+				if ($this->isSuccess($r)) 
+					{
+						echo "(d)";
+						$count_files_to_delete_ok++;
+					}
+				else echo "\nUnable to delete file : '".$path."'\n";
 			}
 		}
 

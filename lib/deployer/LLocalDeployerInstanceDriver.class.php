@@ -27,8 +27,6 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	private function pushFile($file) {
 
-		if (!$file instanceof LFile) throw new \Exception("Parameter is not actually an LFile instance");
-
 		if (isset($_FILES['f'])) unset($_FILES['f']);
 
 		$_FILES['f'] = array();
@@ -74,6 +72,8 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 	}
 
 	public function copyFile($password,$path,$source_file) {
+
+		if (!$source_file instanceof LFile) throw new \Exception("source_file is actually not an LFile instance.");
 
 		$this->pushFile($source_file);
 

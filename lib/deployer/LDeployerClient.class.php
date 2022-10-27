@@ -31,11 +31,6 @@ class LDeployerClient {
 
 	private function setupChangesList($client_hash_list,$server_hash_list) {
 
-		echo "CLIENT HASH LIST : \n";
-		var_dump($client_hash_list);
-		echo "SERVER HASH LIST : \n";
-		var_dump($server_hash_list);
-
 		$this->files_to_add = [];
 		$this->files_to_update = [];
 		$this->files_to_delete = [];
@@ -192,7 +187,7 @@ class LDeployerClient {
 
 		foreach ($this->excluded_paths as $excluded) {
 			foreach ($this->visit_result as $path => $hash)
-				if (DStringUtils::startsWith($path,$excluded)) {
+				if (LStringUtils::startsWith($path,$excluded)) {
 					unset($this->visit_result[$path]);
 			}
 		}

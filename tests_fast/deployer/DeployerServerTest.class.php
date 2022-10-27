@@ -39,8 +39,6 @@ class DeployerServerTest extends LTestCase {
 		$_FILES['f']['tmp_name'] = $file->getFullPath();
 	}
 
-	/*
-
 	function testDeployerHello() {
 
 		$this->reinit();
@@ -343,7 +341,5 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 	}
-
-	*/
 
 }

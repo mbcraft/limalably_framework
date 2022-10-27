@@ -40,7 +40,6 @@ class LocalDeployerClientTest extends LTestCase {
 		$backup_save_dir->touch();
 	}
 
-	/*
 
 	function testAttachDetach() {
 
@@ -189,7 +188,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
 	function testProjectCheck() {
 
 		$this->initAll();
@@ -234,6 +233,10 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($f2->exists(),"Il file di progetto nella sottodirectory non è stato copiato con successo!");
 
+		$f3 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/subdir/my_subdir_file.txt');
+
+		$this->assertTrue($f3->exists(),"Il file di progetto nella sotto sotto directory non è stato copiato con successo!");
+
 		$r = $dc->detach('default_key');
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
@@ -241,7 +244,6 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	*/
 	
 	function testFrameworkCheck() {
 
@@ -263,7 +265,6 @@ class LocalDeployerClientTest extends LTestCase {
 	}
 
 	
-	
 	function testFrameworkUpdate() {
 		$this->initAll();
 
@@ -283,7 +284,11 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/bin/sample_command.sh');
 
-		$this->assertTrue($f2->exists(),"Il file nella sottodirectory del framework non è stato copiato con successo!");
+		$this->assertFalse($f2->exists(),"Il file nella sottodirectory del framework è stato copiato ma non doveva esserci!");
+
+		$f3 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/lib/subdir/SampleLib.class.php');
+
+		$this->assertTrue($f3->exists(),"Il file nella sotto sotto directory del framework non è stato copiato con successo!");
 
 		$r = $dc->detach('default_key');
 
@@ -292,7 +297,6 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	/*
 
 	function testDisappear() {
 		$this->initAll();
@@ -430,7 +434,5 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
-
-	*/
 	
 }

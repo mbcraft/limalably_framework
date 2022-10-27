@@ -1221,7 +1221,7 @@ class DeployerController {
 	private $deployer_file;
 	private $root_dir;
 
-	private static $PASSWORD = /*!PWD!*/"wpfatdthbdfcmpyiamcjozzoirnrxabmlatx"/*!PWD!*/;
+	private static $PASSWORD = /*!PWD!*/""/*!PWD!*/;
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";

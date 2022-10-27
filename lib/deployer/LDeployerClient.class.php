@@ -116,7 +116,7 @@ class LDeployerClient {
 			return $result['message'];
 		else {
 			if ($result===null)
-				return "Hard server failure!!! Probably the server host firewall needs to be fixed!!!";
+				return "Hard server failure!!! Probably the server host firewall or setup needs to be fixed!!!";
 			else 
 				return $result;
 		}

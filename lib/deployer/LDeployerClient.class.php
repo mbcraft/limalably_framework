@@ -642,7 +642,7 @@ class LDeployerClient {
 	}
 
 	private function getProjectExcludeList() {
-		return ['deployer.php','config/','lymz_framework/'];
+		return ['deployer.php','config/','lymz_framework/','bin/','logs/','temp/','composer.json'];
 	}
 
 	public function project_check(string $key_name) {

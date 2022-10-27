@@ -297,6 +297,10 @@ class LDeployerClient {
 
 			$lr->close();
 
+			echo "Deployer uri found in key : ".$this->current_uri."\n";
+			echo "Waiting 3 seconds to let you block if the uri is wrong ...\n";
+			sleep(3);
+
 			if (LStringUtils::startsWith($this->current_uri,'http')) {
 				$this->current_driver = new LRemoteDeployerInstanceDriver($this->current_uri);
 				echo "Using remote deployer driver ...\n";

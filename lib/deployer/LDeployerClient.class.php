@@ -598,11 +598,11 @@ class LDeployerClient {
 	}
 
 	private function getFrameworkIncludeList() {
-		return ["lymz_framework/"];
+		return [FRAMEWORK_DIR_NAME."/"];
 	}
 
 	private function getFrameworkExcludeList() {
-		return ["lymz_framework/project_image/","lymz_framework/bin/","lymz_framework/tools/","lymz_framework/tests/","lymz_framework/tests_fast/","lymz_framework/docs/","lymz_framework/init.php"];
+		return [FRAMEWORK_DIR_NAME."/project_image/",FRAMEWORK_DIR_NAME."/bin/",FRAMEWORK_DIR_NAME."/tools/",FRAMEWORK_DIR_NAME."/tests/",FRAMEWORK_DIR_NAME."/tests_fast/",FRAMEWORK_DIR_NAME."/docs/",FRAMEWORK_DIR_NAME."/init.php",FRAMEWORK_DIR_NAME."/lib/deployer/"];
 	}
 
 	public function framework_check(string $key_name) {
@@ -615,7 +615,7 @@ class LDeployerClient {
 			if ($framework_dir->isParentOf($project_dir)) {
 				$old_framework_dir = $_SERVER['FRAMEWORK_DIR'];
 				$testing = true;
-				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].'lymz_framework/';
+				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].FRAMEWORK_DIR_NAME.'/';
 			} else {
 				$testing = false;
 			}
@@ -660,7 +660,7 @@ class LDeployerClient {
 			if ($framework_dir->isParentOf($project_dir)) {
 				$old_framework_dir = $_SERVER['FRAMEWORK_DIR'];
 				$testing = true;
-				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].'lymz_framework/';
+				$_SERVER['FRAMEWORK_DIR'] = $_SERVER['PROJECT_DIR'].FRAMEWORK_DIR_NAME.'/';
 			} else {
 				$testing = false;
 			}
@@ -700,7 +700,7 @@ class LDeployerClient {
 	}
 
 	private function getProjectExcludeList() {
-		return ['deployer.php','config/','lymz_framework/','bin/','logs/','temp/','composer.json'];
+		return ['deployer.php','config/',FRAMEWORK_DIR_NAME.'/','bin/','logs/','temp/','composer.json'];
 	}
 
 	public function project_check(string $key_name) {

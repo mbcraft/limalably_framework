@@ -6,6 +6,9 @@
 *
 */
 
+define ('FRAMEWORK_NAME','lymz');
+define ('FRAMEWORK_DIR_NAME','lymz_framework');
+
 //hashmap
 require_once ('lib/treemap/LTreeMap.class.php');
 require_once ('lib/treemap/LTreeMapView.class.php');

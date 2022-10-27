@@ -6,6 +6,87 @@
 *
 */
 
+function lymz_deployer_fatal_handler() {
+
+    if (isset($_SERVER['EXIT'])) {
+        exit();
+    } else {
+
+        $errfile = "unknown file";
+        $errstr = "shutdown";
+        $errno = E_CORE_ERROR;
+        $errline = 0;
+
+        $error = error_get_last();
+
+        if ($error !== NULL) {
+            $errno = $error["type"];
+            $errfile = $error["file"];
+            $errline = $error["line"];
+            $errstr = $error["message"];
+
+            lymz_deployer_report($errno, $errstr, $errfile, $errline, []);
+        }
+    }
+}
+
+function lymz_deployer_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
+
+    $available_constants = [E_COMPILE_ERROR, E_COMPILE_WARNING, E_CORE_ERROR, E_CORE_WARNING, E_ERROR, E_PARSE, E_NOTICE, E_WARNING, E_RECOVERABLE_ERROR, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE];
+
+    foreach ($available_constants as $constant) {
+        if (($errno & $constant) == $constant)
+            break;
+    }
+
+    $warning = false;
+
+    switch ($constant) {
+        case E_COMPILE_ERROR : $type = 'compile';
+            break;
+        case E_COMPILE_WARNING : $type = 'compile';
+            $warning = true;
+            break;
+        case E_CORE_ERROR : $type = 'core';
+            break;
+        case E_CORE_WARNING : $type = 'core';
+            $warning = true;
+            break;
+        case E_ERROR : $type = 'error';
+            break;
+        case E_PARSE : $type = 'parse';
+            break;
+        case E_NOTICE: $type = 'notice';
+            $warning = true;
+            break;
+        case E_WARNING: $type = 'warning';
+            $warning = true;
+            break;
+        case E_RECOVERABLE_ERROR : $type = 'recoverable_error';
+            break;
+        case E_USER_ERROR : $type = 'user_error';
+            break;
+        case E_USER_WARNING : $type = 'user_warning';
+            $warning = true;
+            break;
+        case E_USER_NOTICE : $type = 'user_notice';
+            $warning = true;
+            break;
+        default : $type = 'unknown_error_type';
+            break;
+    }
+
+    $msg = "Error type: " . $type . " - ";
+    $msg .= "Error : " . $errstr . " - ";
+    $msg .= "File : " . $errfile . " - ";
+    $msg .= "Line number : " . $errline;
+
+    echo json_encode(['result' => DeployController::FAILURE_RESULT,'message' => $msg]);
+
+    exit(0);
+}
+
+set_error_handler('lymz_deployer_report', E_ERROR | E_WARNING | E_PARSE | E_NOTICE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR | E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE);
 
 class DIOException extends \Exception
 {
@@ -1374,8 +1455,6 @@ class DeployerController {
 
 	public function copyFile($password,$path) {
 
-        return $this->failure("It must fail of course!");
-
 		if ($this->accessGranted($password)) {
 			if (isset($_FILES['f']) && $_FILES['f']['error'] == UPLOAD_ERR_OK) {
 
@@ -1545,6 +1624,9 @@ class DeployerController {
 					break;
     			}
     			case 'COPY_FILE' : {
+
+                    echo $this->preparePostResponse($this->failure("This is a failure created for a purpose ..."));
+
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in COPY_FILE request."));
 
@@ -1633,9 +1715,9 @@ class DeployerController {
 
 if (isset($_POST['METHOD'])) {
 
-	$controller = new DeployerController();
-
     try {
+       $controller = new DeployerController();
+
 	   $controller->processRequest();
 
     } catch (\Exception $ex) {

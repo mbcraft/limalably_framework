@@ -1225,7 +1225,7 @@ class DeployerController {
 	private $deployer_file;
 	private $root_dir;
 
-	private static $PASSWORD = /*!PWD!*/"wpfatdthbdfcmpyiamcjozzoirnrxabmlatx"/*!PWD!*/;
+	private static $PASSWORD = /*!PWD!*/""/*!PWD!*/;
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
@@ -1374,8 +1374,6 @@ class DeployerController {
 
 	public function copyFile($password,$path) {
 
-        return $this->failure("It must fail of course!");
-
 		if ($this->accessGranted($password)) {
 			if (isset($_FILES['f']) && $_FILES['f']['error'] == UPLOAD_ERR_OK) {
 
@@ -1463,7 +1461,7 @@ class DeployerController {
 	}
 
 	public function failure(string $message) {
-		return $this->preparePostResponse(["result" => self::FAILURE_RESULT,"message" => $message]);
+		return ["result" => self::FAILURE_RESULT,"message" => $message];
 	}
 
 	private function hasPassword() {

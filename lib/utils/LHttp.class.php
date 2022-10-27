@@ -48,11 +48,9 @@ class LHttp
                 $post_fields[$k] = curl_file_create($v->getFullPath());
                 continue;
             }
-            if (is_string($v) || is_numeric($v)) {
-                $post_fields[$k] = $v;
-                continue;
-            }
-            throw new \Exception("Invalid parameter of class : ".get_class($v));
+            
+            $post_fields[$k] = $v;
+                
         }
         
         curl_setopt($ch,CURLOPT_POSTFIELDS,$post_fields);
@@ -78,11 +76,9 @@ class LHttp
                 $post_fields[$k] = curl_file_create($v->getFullPath());
                 continue;
             }
-            if (is_string($v) || is_numeric($v)) {
-                $post_fields[$k] = $v;
-                continue;
-            }
-            throw new \Exception("Invalid parameter of class : ".get_class($v));
+            
+            $post_fields[$k] = $v;
+                
         }
         
         curl_setopt($ch,CURLOPT_POSTFIELDS,$post_fields);

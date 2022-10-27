@@ -30,4 +30,10 @@ class MoreFileAndDirTest extends LTestCase {
 		$this->assertEqual($f2->getPath(),'my_file.txt',"Il path del file non corrisponde!");
 		$this->assertEqual($f2->getFullPath(),$_SERVER['FRAMEWORK_DIR'].'my_file.txt',"Il full path del file non corrisponde!");
 	}
+
+	function testDirFromPhp() {
+		$current_dir = __DIR__;
+
+		$this->assertFalse(LStringUtils::endsWith($current_dir,'/'),"La directory corrente da __DIR__ non finisce con lo slash!");
+	}
 }

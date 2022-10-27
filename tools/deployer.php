@@ -1208,7 +1208,11 @@ class DStringUtils {
 
 //misc important variables ---
 
-$_SERVER['DEPLOYER_DIR'] = __DIR__;
+$current_dir = __DIR__;
+
+if (!DStringUtils::endsWith($current_dir,'/')) $current_dir.='/';
+
+$_SERVER['DEPLOYER_DIR'] = $current_dir;
 
 //starting deployer controller ---
 
@@ -1263,7 +1267,7 @@ class DeployerController {
 
 			if (!DStringUtils::endsWith($folder,'/')) return $this->failure("Folder name to list does not end with /.");
 
-			$dir = new DDir($_SERVER['DEPLOYER_DIR'].$folder);
+			$dir = new DDir($this->root_dir->getFullPath().$folder);
 
 			if ($dir->exists() && $dir->isReadable()) {
 
@@ -1287,8 +1291,8 @@ class DeployerController {
 			$this->included_paths = $included_paths;
 
 			if (count($this->included_paths)>0) {
-				foreach ($this->included_paths as $dp) {
-					$my_dir = new DDir($_SERVER['DEPLOYER_DIR'].$dp);
+				foreach ($this->included_paths as $path) {
+					$my_dir = new DDir($this->root_dir->getFullPath().$path);
 
 					$my_dir->visit($this);
 				}

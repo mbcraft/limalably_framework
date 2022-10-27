@@ -25,32 +25,32 @@ class LDeployerClient {
 	private $excluded_paths = [];
 	private $included_paths = [];
 
-	private $dir_to_add = [];
+	private $dirs_to_add = [];
 	private $files_to_add = [];
-	private $dir_to_update = [];
+	private $dirs_to_update = [];
 	private $files_to_update = [];
-	private $dir_to_delete = [];
+	private $dirs_to_delete = [];
 	private $files_to_delete = [];
 
 	private function setupChangesList($client_hash_list,$server_hash_list) {
 
-		$this->dir_to_add = [];
+		$this->dirs_to_add = [];
 		$this->files_to_add = [];
-		$this->dir_to_update = [];
+		$this->dirs_to_update = [];
 		$this->files_to_update = [];
-		$this->dir_to_delete = [];
+		$this->dirs_to_delete = [];
 		$this->files_to_delete = [];
 
 		foreach ($client_hash_list as $path => $hash) {
 			if (!isset($server_hash_list[$path])) {
 				if (LStringUtils::endsWith($path,'/'))
-					$this->dir_to_add[] = $path;
+					$this->dirs_to_add[] = $path;
 				else
 					$this->files_to_add[] = $path;
 			}
 			if (isset($server_hash_list[$path]) && $server_hash_list[$path]!=$hash) {
 				if (LStringUtils::endsWith($path,'/'))
-					$this->dir_to_update[] = $path;
+					$this->dirs_to_update[] = $path;
 				else
 					$this->files_to_update[] = $path;
 			}
@@ -59,7 +59,7 @@ class LDeployerClient {
 		foreach ($server_hash_list as $path => $hash) {
 			if (!isset($client_hash_list[$path])) {
 				if (LStringUtils::endsWith($path,'/'))
-					$this->dir_to_delete[] = $path;
+					$this->dirs_to_delete[] = $path;
 				else
 					$this->files_to_delete[] = $path;
 			}
@@ -71,9 +71,9 @@ class LDeployerClient {
 
 		echo "\nChanges list :\n\n";
 
-		echo count($this->dir_to_add)." dir to add.\n";
+		echo count($this->dirs_to_add)." dir to add.\n";
 
-		foreach ($this->dir_to_add as $d) {
+		foreach ($this->dirs_to_add as $d) {
 			echo ">> ".$d."\n";
 		}
 		echo "\n";
@@ -83,9 +83,9 @@ class LDeployerClient {
 			echo ">> ".$f."\n";
 		}
 		echo "\n";
-		echo count($this->dir_to_update)." dir to update.\n";
+		echo count($this->dirs_to_update)." dir to update.\n";
 
-		foreach ($this->dir_to_update as $d) {
+		foreach ($this->dirs_to_update as $d) {
 			echo ">> ".$d."\n";
 		}
 		echo "\n";
@@ -96,9 +96,9 @@ class LDeployerClient {
 		}
 		echo "\n";
 
-		echo count($this->dir_to_delete)." dir to delete.\n";
+		echo count($this->dirs_to_delete)." dir to delete.\n";
 
-		foreach ($this->dir_to_delete as $d) {
+		foreach ($this->dirs_to_delete as $d) {
 			echo ">> ".$d."\n";
 		}
 		echo "\n";
@@ -112,34 +112,33 @@ class LDeployerClient {
 	}
 
 	private function executeChangesList() {
-		$count_dir_to_add = 0;
-		$count_dir_to_add_ok = 0;
+		$count_dirs_to_add = 0;
+		$count_dirs_to_add_ok = 0;
 		$count_files_to_add = 0;
 		$count_files_to_add_ok = 0;
 
-		foreach ($this->files_to_add as $path) {
-			if (LStringUtils::endsWith($path,'/')) {
-				$count_dir_to_add++;
-				$r = $this->current_driver->makeDir($this->current_password,$path);
-				if ($this->isSuccess($r)) 
-					{
-						echo "(a)";
-						$count_dir_to_add_ok++;
-					}
-				else echo "\nUnable to make dir : ".$path."\n";
-			} else {
-				$count_files_to_add++;
-				$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
-				$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
-				if ($this->isSuccess($r)) 
-					{
-						echo "(a)";
-						$count_files_to_add_ok++;
-					}
-				else echo "\nUnable to copy file : '".$path." - ".$r['message']."'\n";
-			}
+		foreach ($this->dirs_to_add as $path) {
+			$count_dirs_to_add++;
+			$r = $this->current_driver->makeDir($this->current_password,$path);
+			if ($this->isSuccess($r)) 
+				{
+					echo "(a)";
+					$count_dirs_to_add_ok++;
+				}
+			else echo "\nUnable to make dir : ".$path."\n";
 		}
-
+		foreach ($this->files_to_add as $path) {
+			$count_files_to_add++;
+			$source_file = new LFile($_SERVER['PROJECT_DIR'].$path);
+			$r = $this->current_driver->copyFile($this->current_password,$path,$source_file);
+			if ($this->isSuccess($r)) 
+				{
+					echo "(a)";
+					$count_files_to_add_ok++;
+				}
+			else echo "\nUnable to copy file : '".$path." - ".$r['message']."'\n";
+		}
+		
 		$count_files_to_update = 0;
 		$count_files_to_update_ok = 0;
 
@@ -159,37 +158,37 @@ class LDeployerClient {
 			}
 		}
 
-		$count_dir_to_delete = 0;
-		$count_dir_to_delete_ok = 0;
+		$count_dirs_to_delete = 0;
+		$count_dirs_to_delete_ok = 0;
 		$count_files_to_delete = 0;
 		$count_files_to_delete_ok = 0;
 
-		foreach ($this->files_to_delete as $path) {
-			if (LStringUtils::endsWith($path,'/')) {
-				$count_dir_to_delete++;
-				$r = $this->current_driver->deleteDir($this->current_password,$path,true);
-				if ($this->isSuccess($r)) {
-					echo "(d)";
-					$count_dir_to_delete_ok++;
-				}
-				else echo "\nUnable to delete dir : '".$path."'\n";
-			} else {
-				$count_files_to_delete++;
-				$r = $this->current_driver->deleteFile($this->current_password,$path);
-				if ($this->isSuccess($r)) 
-					{
-						echo "(d)";
-						$count_files_to_delete_ok++;
-					}
-				else echo "\nUnable to delete file : '".$path."'\n";
+		foreach ($this->dirs_to_delete as $path) {
+			$count_dirs_to_delete++;
+			$r = $this->current_driver->deleteDir($this->current_password,$path,true);
+			if ($this->isSuccess($r)) {
+				echo "(d)";
+				$count_dirs_to_delete_ok++;
 			}
+			else echo "\nUnable to delete dir : '".$path."'\n";
+		} 
+		foreach ($this->files_to_delete as $path) {
+			$count_files_to_delete++;
+			$r = $this->current_driver->deleteFile($this->current_password,$path);
+			if ($this->isSuccess($r)) 
+				{
+					echo "(d)";
+					$count_files_to_delete_ok++;
+				}
+			else echo "\nUnable to delete file : '".$path."'\n";
 		}
+		
 
 		echo "\n\nOperations summary :\n\n";
-		echo "Dir added : ".$count_dir_to_add_ok." of ".$count_dir_to_add." -> ".($count_dir_to_add_ok==$count_dir_to_add ? 'OK' : 'FAILURE')."\n";
+		echo "Dir added : ".$count_dirs_to_add_ok." of ".$count_dirs_to_add." -> ".($count_dirs_to_add_ok==$count_dirs_to_add ? 'OK' : 'FAILURE')."\n";
 		echo "Files added : ".$count_files_to_add_ok." of ".$count_files_to_add." -> ".($count_files_to_add_ok==$count_files_to_add ? 'OK' : 'FAILURE')."\n";
 		echo "Files updated : ".$count_files_to_update_ok." of ".$count_files_to_update." -> ".($count_files_to_update_ok==$count_files_to_update ? 'OK' : 'FAILURE')."\n";
-		echo "Dir deleted : ".$count_dir_to_delete_ok." of ".$count_dir_to_delete." -> ".($count_dir_to_delete_ok==$count_dir_to_delete ? 'OK' : 'FAILURE')."\n";
+		echo "Dir deleted : ".$count_dirs_to_delete_ok." of ".$count_dirs_to_delete." -> ".($count_dirs_to_delete_ok==$count_dirs_to_delete ? 'OK' : 'FAILURE')."\n";
 		echo "Files deleted : ".$count_files_to_delete_ok." of ".$count_files_to_delete." -> ".($count_files_to_delete_ok==$count_files_to_delete ? 'OK' : 'FAILURE')."\n";
 		echo "\n";
 
@@ -630,7 +629,14 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
-			$this->previewChangesList();
+			var_dump($server_list);
+
+			var_dump($client_list);
+
+			//$this->previewChangesList();
+
+			echo "Hello!!";
+			exit(1);
 
 			if ($testing) {
 				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
@@ -710,7 +716,12 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
-			$this->previewChangesList();
+			var_dump($server_list);
+
+			//$this->previewChangesList();
+
+			echo "Hello!!";
+			exit(1);
 
 			return true;
 

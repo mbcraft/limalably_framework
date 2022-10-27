@@ -596,7 +596,7 @@ class LDeployerClient {
 	}
 
 	private function getFrameworkExcludeList() {
-		return ["lymz_framework/project_image/","lymz_framework/bin/","lymz_framework/tools/","lymz_framework/tests/","lymz_framework/tests_fast/","lymz_framework/doc/","lymz_framework/init.php"];
+		return ["lymz_framework/project_image/","lymz_framework/bin/","lymz_framework/tools/","lymz_framework/tests/","lymz_framework/tests_fast/","lymz_framework/docs/","lymz_framework/init.php"];
 	}
 
 	public function framework_check(string $key_name) {

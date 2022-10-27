@@ -227,7 +227,6 @@ class LDeployerClient {
 				$my_dir->visit($this);
 			}
 
-			return $this->visit_result;
 		} else {
 
 			$root_dir = new LDir($_SERVER['PROJECT_DIR']);
@@ -601,6 +600,7 @@ class LDeployerClient {
 	}
 
 	public function framework_check(string $key_name) {
+
 		if ($this->loadKey($key_name)) {
 
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);

@@ -18,5 +18,4 @@ class LMysqlHavingBlock extends LMysqlAbstractConditionsBlock {
 		parent::__construct('having',$element);
 	}
 
-
 }

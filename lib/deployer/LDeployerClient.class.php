@@ -111,6 +111,13 @@ class LDeployerClient {
 
 	}
 
+	private function getResultMessage($result) {
+		if ($result && is_array($result) && isset($result['message']))
+			return $result['message'];
+		else 
+			return "Hard server failure!!!";
+	}
+
 	private function executeChangesList() {
 		$count_dirs_to_add = 0;
 		$count_dirs_to_add_ok = 0;
@@ -136,7 +143,7 @@ class LDeployerClient {
 					echo "(a)";
 					$count_files_to_add_ok++;
 				}
-			else echo "\nUnable to copy file : '".$path." - ".$r['message']."'\n";
+			else echo "\nUnable to copy file : '".$path." - ".$this->getResultMessage($r)."'\n";
 		}
 		
 		$count_files_to_update = 0;
@@ -426,7 +433,7 @@ class LDeployerClient {
 			$result = $this->current_driver->changePassword("",$this->current_password);
 
 			if ($this->isSuccess($result)) echo "Password changed to secure token.\n";
-			else $this->failure("Unable to change deployer secure token : ".$result['message']);
+			else $this->failure("Unable to change deployer secure token : ".$this->getResultMessage($result));
 
 			echo "Waiting 5 seconds to let the server file cache update itself ...\n";
 			sleep(5);
@@ -437,7 +444,7 @@ class LDeployerClient {
 				echo "Hello with secure token successful.\n";
 				return true;
 			}
-			else return $this->failure("Unable to correctly change password on deployer installation : ".$result2['message']);
+			else return $this->failure("Unable to correctly change password on deployer installation : ".$this->getResultMessage($result2));
 
 		} else {
 			echo "Unable to succesfully reach deployer instance, deleting generated key ...\n";
@@ -480,7 +487,7 @@ class LDeployerClient {
 
 				return true;
 			}
-			else $this->failure("Unable to update deployer on server : ".$r['message']);
+			else $this->failure("Unable to update deployer on server : ".$this->getResultMessage($r));
 
 		} else return false;
 	}
@@ -543,12 +550,12 @@ class LDeployerClient {
 					if (LStringUtils::endsWith($el,'/')) {
 						$r2 = $this->current_driver->deleteDir($this->current_password,$el,true);
 
-						if (!$this->isSuccess($r2)) return $this->failure("Unable to delete directory : ".$el." : ".$r2['message']);
+						if (!$this->isSuccess($r2)) return $this->failure("Unable to delete directory : ".$el." : ".$this->getResultMessage($r2));
 					} else {
 						if (!LStringUtils::endsWith($el,$deployer_filename)) {
 							$r3 = $this->current_driver->deleteFile($this->current_password,$el);
 
-							if (!$this->isSuccess($r3)) return $this->failure("Unable to delete file : ".$el." : ".$r3['message']);
+							if (!$this->isSuccess($r3)) return $this->failure("Unable to delete file : ".$el." : ".$this->getResultMessage($r3));
 						}
 					}
 				}
@@ -629,14 +636,7 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
-			var_dump($server_list);
-
-			var_dump($client_list);
-
-			//$this->previewChangesList();
-
-			echo "Hello!!";
-			exit(1);
+			$this->previewChangesList();
 
 			if ($testing) {
 				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
@@ -716,12 +716,7 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
-			var_dump($server_list);
-
-			//$this->previewChangesList();
-
-			echo "Hello!!";
-			exit(1);
+			$this->previewChangesList();
 
 			return true;
 

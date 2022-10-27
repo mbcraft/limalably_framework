@@ -1373,12 +1373,17 @@ class DeployerController {
 	}
 
 	public function copyFile($password,$path) {
+
+        return $this->failure("It must fail of course!");
+
 		if ($this->accessGranted($password)) {
 			if (isset($_FILES['f']) && $_FILES['f']['error'] == UPLOAD_ERR_OK) {
 
 				if (DStringUtils::endsWith($path,'/')) return $this->failure("File name should not end with a directory separator.");
 
 				$content = file_get_contents($_FILES['f']['tmp_name']);
+
+                if ($content===null) return $this->failure("Unable to read content of uploaded file!");
 
 				$dest = new DFile($this->root_dir->getFullPath().$path);
 
@@ -1457,7 +1462,7 @@ class DeployerController {
         
 	}
 
-	private function failure(string $message) {
+	public function failure(string $message) {
 		return ["result" => self::FAILURE_RESULT,"message" => $message];
 	}
 
@@ -1470,6 +1475,19 @@ class DeployerController {
         else return 'CLI';
     }
 
+    private function preparePostResponse($data) {
+        if (is_array($data)) {
+            try {
+                $final_result = json_encode($data);
+                return $final_result;
+            } catch (\Exception $ex) {
+                return var_export($data);
+            }
+        }
+
+        return "".$data;
+    }
+
     public function processRequest() {
     	if (isset($_POST['METHOD'])) {
     		$method = $_POST['METHOD'];
@@ -1477,108 +1495,108 @@ class DeployerController {
     		switch ($method) {
                 case 'VERSION' : {
                     if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-                    else echo json_encode($this->failure("PASSWORD field missing in VERSION request."));
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in VERSION request."));
 
-                    echo json_encode($this->version($password));
+                    echo $this->preparePostResponse($this->version($password));
                     break;
                 }
     			case 'HELLO' : {
 					if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in HELLO request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in HELLO request."));
 
-					echo json_encode($this->hello($password));
+					echo $this->preparePostResponse($this->hello($password));
     				break;
     			}
     			case 'CHANGE_PASSWORD' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
 
 					if (isset($_POST['NEW_PASSWORD'])) $new_password = $_POST['NEW_PASSWORD'];
-					else echo json_encode($this->failure("NEW_PASSWORD field missing in CHANGE_PASSWORD request."));
+					else echo $this->preparePostResponse($this->failure("NEW_PASSWORD field missing in CHANGE_PASSWORD request."));
 
-					echo json_encode($this->changePassword($password,$new_password));
+					echo $this->preparePostResponse($this->changePassword($password,$new_password));
 
 					break;
     			}
     			case 'LIST_ELEMENTS' : {
 
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in LIST_ELEMENTS request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_ELEMENTS request."));
 
 					if (isset($_POST['FOLDER'])) $folder = $_POST['FOLDER'];
-					else echo json_encode($this->failure("FOLDER field missing in LIST_ELEMENTS request."));
+					else echo $this->preparePostResponse($this->failure("FOLDER field missing in LIST_ELEMENTS request."));
 
-					echo json_encode($this->listElements($password,$folder));
+					echo $this->preparePostResponse($this->listElements($password,$folder));
 
     				break;
     			}
     			case 'LIST_HASHES' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in LIST_HASHES request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_HASHES request."));
 
 					if (isset($_POST['EXCLUDED_PATHS'])) $excluded_paths = explode(',',$_POST['EXCLUDED_PATHS']);
-					else echo json_encode($this->failure("EXCLUDED_PATHS field missing in LIST_HASHES request."));
+					else echo $this->preparePostResponse($this->failure("EXCLUDED_PATHS field missing in LIST_HASHES request."));
 
 					if (isset($_POST['INCLUDED_PATHS'])) $included_paths = explode(',',$_POST['INCLUDED_PATHS']);
-					else echo json_encode($this->failure("INCLUDED_PATHS field missing in LIST_HASHES request."));					
+					else echo $this->preparePostResponse($this->failure("INCLUDED_PATHS field missing in LIST_HASHES request."));					
 
-					echo json_encode($this->listHashes($password,$excluded_paths,$included_paths));
+					echo $this->preparePostResponse($this->listHashes($password,$excluded_paths,$included_paths));
 
 					break;
     			}
     			case 'COPY_FILE' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in COPY_FILE request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in COPY_FILE request."));
 
 					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
-					else echo json_encode($this->failure("PATH field missing in COPY_FILE request."));
+					else echo $this->preparePostResponse($this->failure("PATH field missing in COPY_FILE request."));
 
-					echo json_encode($this->copyFile($password,$path));
+					echo $this->preparePostResponse($this->copyFile($password,$path));
 
 					break;
     			}
     			case 'MAKE_DIR' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in MAKE_DIR request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in MAKE_DIR request."));
 
 					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
-					else echo json_encode($this->failure("PATH field missing in MAKE_DIR request."));
+					else echo $this->preparePostResponse($this->failure("PATH field missing in MAKE_DIR request."));
 
-					echo json_encode($this->makeDir($password,$path));
+					echo $this->preparePostResponse($this->makeDir($password,$path));
 
 					break;
     			}
     			case 'DELETE_DIR' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in DELETE_DIR request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DELETE_DIR request."));
 
 					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
-					else echo json_encode($this->failure("PATH field missing in DELETE_DIR request."));
+					else echo $this->preparePostResponse($this->failure("PATH field missing in DELETE_DIR request."));
 
 					if (isset($_POST['RECURSIVE'])) $recursive = $_POST['RECURSIVE'] == 'true' ? true : false;
-					else echo json_encode($this->failure("RECURSIVE field missing in DELETE_DIR request."));
+					else echo $this->preparePostResponse($this->failure("RECURSIVE field missing in DELETE_DIR request."));
 
-					echo json_encode($this->deleteDir($password,$path,$recursive));
+					echo $this->preparePostResponse($this->deleteDir($password,$path,$recursive));
 
 					break;
     			}
     			case 'DELETE_FILE' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in DELETE_FILE request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DELETE_FILE request."));
 
 					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
-					else echo json_encode($this->failure("PATH field missing in DELETE_FILE request."));
+					else echo $this->preparePostResponse($this->failure("PATH field missing in DELETE_FILE request."));
 
-					echo json_encode($this->deleteFile($password,$path));
+					echo $this->preparePostResponse($this->deleteFile($password,$path));
 
 					break;
     			}
     			case 'DOWNLOAD_DIR' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo json_encode($this->failure("PASSWORD field missing in DOWNLOAD_DIR request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DOWNLOAD_DIR request."));
 
 					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
-					else echo json_encode($this->failure("PATH field missing in DOWNLOAD_DIR request."));
+					else echo $this->preparePostResponse($this->failure("PATH field missing in DOWNLOAD_DIR request."));
 
 					$result = $this->downloadDir($password,$path);
 
@@ -1603,10 +1621,10 @@ class DeployerController {
 
 					break;
     			}
-    			default : echo json_encode($this->failure("Unknown method : ".$method));
+    			default : echo $this->preparePostResponse($this->failure("Unknown method : ".$method));
     		}
     	} else {
-    		echo json_encode($this->failure("METHOD parameter not set in POST."));
+    		echo $this->preparePostResponse($this->failure("METHOD parameter not set in POST."));
     	}
     }
 }
@@ -1616,6 +1634,11 @@ class DeployerController {
 if (isset($_POST['METHOD'])) {
 
 	$controller = new DeployerController();
-	$controller->processRequest();
 
+    try {
+	   $controller->processRequest();
+
+    } catch (\Exception $ex) {
+        return $controller->failure("Server got an exception : ".$ex->getMessage());
+    }
 } else echo "Hello :)";

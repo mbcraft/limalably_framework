@@ -114,8 +114,12 @@ class LDeployerClient {
 	private function getResultMessage($result) {
 		if ($result && is_array($result) && isset($result['message']))
 			return $result['message'];
-		else 
-			return "Hard server failure!!!";
+		else {
+			if ($result===null)
+				return "Hard server failure!!!";
+			else 
+				return $result;
+		}
 	}
 
 	private function executeChangesList() {

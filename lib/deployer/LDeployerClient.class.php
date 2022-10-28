@@ -439,6 +439,7 @@ class LDeployerClient {
 	public function attach(string $key_name,string $deployer_uri) {
 
 		$random_token = $this->saveKey($key_name,$deployer_uri);
+		echo "Key generated, starts with : [".substr($random_token,0,5)."...]\n";
 		if ($this->loadKey($key_name,false)) {
 
 			$this->current_password = $random_token;
@@ -446,7 +447,7 @@ class LDeployerClient {
 			$result = $this->current_driver->changePassword("",$this->current_password);
 
 			if ($this->isSuccess($result)) echo "Password changed to secure token.\n";
-			else $this->failure("Unable to change deployer secure token : ".$this->getResultMessage($result));
+			else return $this->failure("Unable to change deployer secure token : ".$this->getResultMessage($result));
 
 			echo "Waiting 5 seconds to let the server file cache update itself ...\n";
 			sleep(5);

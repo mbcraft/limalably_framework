@@ -15,7 +15,7 @@ class LRandomUtils {
 
 
 	public static function seed(int $seed=0) {
-		if (!$seed) srand(0);
+		if (!$seed) srand(time());
 		else srand($seed);
 	}
 

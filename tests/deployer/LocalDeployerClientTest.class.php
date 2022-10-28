@@ -3,7 +3,7 @@
 
 class LocalDeployerClientTest extends LTestCase {
 	
-	const TEST_DIR = "tests_fast";
+	const TEST_DIR = "tests";
 
 	private function initEmptyServer() {
 		$deployer_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/');

@@ -84,7 +84,7 @@ class LHttp
         curl_setopt($ch,CURLOPT_POSTFIELDS,$post_fields);
         
         $response = curl_exec($ch);
-        var_dump($response);
+
         curl_close($ch);
         
         return $response;

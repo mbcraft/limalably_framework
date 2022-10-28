@@ -1625,8 +1625,6 @@ class DeployerController {
     			}
     			case 'COPY_FILE' : {
 
-                    echo $this->preparePostResponse($this->failure("This is a failure created for a purpose ..."));
-
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in COPY_FILE request."));
 

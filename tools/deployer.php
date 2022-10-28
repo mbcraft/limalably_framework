@@ -6,8 +6,6 @@
 *
 */
 
-define ('DEPLOYER_MOVE_FROM_ROOT_DIR','..');
-
 function lymz_deployer_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
@@ -27,12 +25,12 @@ function lymz_deployer_fatal_handler() {
             $errline = $error["line"];
             $errstr = $error["message"];
 
-            lymz_deployer_report($errno, $errstr, $errfile, $errline, []);
+            lymz_deployer_report($errno, $errstr, $errfile, $errline);
         }
     }
 }
 
-function lymz_deployer_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
+function lymz_deployer_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=[]) {
 
     $available_constants = [E_COMPILE_ERROR, E_COMPILE_WARNING, E_CORE_ERROR, E_CORE_WARNING, E_ERROR, E_PARSE, E_NOTICE, E_WARNING, E_RECOVERABLE_ERROR, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE];
 
@@ -1316,8 +1314,6 @@ class DeployerController {
 	function __construct() {
 		$this->deployer_file = new DFile(__FILE__);
 		$this->root_dir = new DDir(__DIR__);
-
-        $this->root_dir = new DDir($this->root_dir->getFullPath().DEPLOYER_MOVE_FROM_ROOT_DIR);
 	}
 
 	private $visit_result = [];

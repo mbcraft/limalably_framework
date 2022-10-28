@@ -323,7 +323,7 @@ class LDeployerClient {
 
 			if ($this->isSuccess($hello_result)) return true;
 			else {
-				return $this->unreachableDeployerServer($this->current_uri);
+				return $this->unreachableDeployerServer($hello_result);
 			}
 		}
 
@@ -331,9 +331,14 @@ class LDeployerClient {
 
 	}
 
-	private function unreachableDeployerServer(string $deployer_uri) {
+	private function unreachableDeployerServer($result) {
 
-		echo "Deployer server is unreachable at : ".$deployer_uri."\n\n";
+		$msg = "Deployer server is unreachable at : ".$this->current_uri." - ";
+		if (isset($result['message'])) $msg.=$result['message'];
+
+		$msg.= "\n\n";
+
+		echo $msg;
 
 		return false;
 	}

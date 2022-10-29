@@ -89,7 +89,7 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$params['METHOD'] = 'DELETE_DIR';
 		$params['PASSWORD'] = $password;
 		$params['PATH'] = $path;
-		$params['RECURSIVE'] = "".$recursive;
+		$params['RECURSIVE'] = $recursive ? 'true' : 'false';
 
 		$result = LHttp::post($this->full_deployer_url,$params);
 

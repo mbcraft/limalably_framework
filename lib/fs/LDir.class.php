@@ -351,19 +351,23 @@ class LDir extends LFileSystemElement
      */
     function delete($recursive = false)
     {
+        $result = true;
+
         if ($recursive)
         {
-            $dir_content = $this->listAll(LDir::SHOW_HIDDEN_FILES);
+            $dir_content = $this->listAll(DDir::SHOW_HIDDEN_FILES);
             foreach ($dir_content as $elem)
             {
-                if ($elem instanceof LDir)
-                    $elem->delete(true);
+                if ($elem instanceof DDir)
+                    $result &= $elem->delete(true);
                 else
-                    $elem->delete();
+                    $result &= $elem->delete();
             }
         }
 
-        return @rmdir($this->__full_path);
+        $result &= @rmdir($this->__full_path);
+
+        return $result;
     }
     
     function hasSingleSubdir()

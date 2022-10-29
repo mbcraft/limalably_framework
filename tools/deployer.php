@@ -788,19 +788,25 @@ class DDir extends DFileSystemElement
      */
     function delete($recursive = false)
     {
+        $result = true;
+
         if ($recursive)
         {
             $dir_content = $this->listAll(DDir::SHOW_HIDDEN_FILES);
             foreach ($dir_content as $elem)
             {
                 if ($elem instanceof DDir)
-                    $elem->delete(true);
+                    $result &= $elem->delete(true);
                 else
-                    $elem->delete();
+                    $result &= $elem->delete();
             }
+        } else {
+            throw new \Exception("Not actually recursive!!");
         }
 
-        return @rmdir($this->__full_path);
+        $result &= @rmdir($this->__full_path);
+
+        return $result;
     }
     
     function hasSingleSubdir()
@@ -1554,7 +1560,7 @@ class DeployerController {
         else return 'CLI';
     }
 
-    private function preparePostResponse($data) {
+    public function preparePostResponse($data) {
         if (is_array($data)) {
             try {
                 $final_result = json_encode($data);
@@ -1719,6 +1725,6 @@ if (isset($_POST['METHOD'])) {
 	   $controller->processRequest();
 
     } catch (\Exception $ex) {
-        return $controller->failure("Server got an exception : ".$ex->getMessage());
+        echo $controller->preparePostResponse($controller->failure("Server got an exception : ".$ex->getMessage()));
     }
 } else echo "Hello :)";

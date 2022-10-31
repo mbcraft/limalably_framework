@@ -24,7 +24,11 @@ interface LIDeployerInstanceDriver {
 
 	public function downloadDir($password,$path,$save_file);
 
-	public function changePassword($old_password,$new_password);
+	public function listEnv($password);
+
+	public function getEnv($password,$env_var_name);
+
+	public function setEnv($password,$env_var_name,$env_var_value);
 
 	public function hello($password=null);
 

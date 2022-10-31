@@ -103,7 +103,18 @@ class DStringUtils {
         }
         return $message;
     }
-    
+
+    static function getCommentDelimitedReplacementsStringSeparator($var_name) {
+        $i = 0;
+
+        $result = $var_name[0];
+
+        for ($i=1;$i<strlen($var_name);$i++) {
+            $result .= '_'.$var_name[$i];
+        }
+
+        return $result;
+    }
     private static function internalGetExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {
         $NL = $use_newline ? "\n" : '<br>';
         $message = $ex->getMessage().$NL;

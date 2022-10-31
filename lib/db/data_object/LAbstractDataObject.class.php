@@ -295,7 +295,7 @@ abstract class LAbstractDataObject {
 
 		foreach ($data as $key => $value) {
 			if (is_numeric($value)) {
-				if (is_real($value))
+				if (is_float($value))
 					$result[$key] = (float) $value;
 				else
 					$result[$key] = (int) $value;

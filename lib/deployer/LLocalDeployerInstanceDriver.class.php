@@ -99,9 +99,21 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
-	public function changePassword($old_password,$new_password) {
+	public function listEnv($password) {
 
-		return $this->controller->changePassword($old_password,$new_password);
+		return $this->controller->listEnv($password);
+
+	}
+
+	public function getEnv($password,$env_var_name) {
+
+		return $this->controller->getEnv($password,$env_var_name);
+
+	}
+
+	public function setEnv($password,$env_var_name,$env_var_value) {
+
+		return $this->controller->setEnv($password,$env_var_name,$env_var_value);
 
 	}
 	

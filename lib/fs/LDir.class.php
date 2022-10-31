@@ -355,10 +355,10 @@ class LDir extends LFileSystemElement
 
         if ($recursive)
         {
-            $dir_content = $this->listAll(DDir::SHOW_HIDDEN_FILES);
+            $dir_content = $this->listAll(LDir::SHOW_HIDDEN_FILES);
             foreach ($dir_content as $elem)
             {
-                if ($elem instanceof DDir)
+                if ($elem instanceof LDir)
                     $result &= $elem->delete(true);
                 else
                     $result &= $elem->delete();

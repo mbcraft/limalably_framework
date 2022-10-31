@@ -123,12 +123,35 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
-	public function changePassword($old_password,$new_password) {
+	public function listEnv($password) {
+		$params = [];
+		$params['METHOD'] = 'LIST_ENV';
+		$params['PASSWORD'] = $password;
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+	}
+
+	public function getEnv($password,$env_var_name) {
+		$params = [];
+		$params['METHOD'] = 'GET_ENV';
+		$params['PASSWORD'] = $password;
+		$params['ENV_VAR_NAME'] = $env_var_name;
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+		
+	}
+
+	public function setEnv($password,$env_var_name,$env_var_value) {
 
 		$params = [];
-		$params['METHOD'] = 'CHANGE_PASSWORD';
-		$params['PASSWORD'] = $old_password;
-		$params['NEW_PASSWORD'] = $new_password;
+		$params['METHOD'] = 'SET_ENV';
+		$params['PASSWORD'] = $password;
+		$params['ENV_VAR_NAME'] = $env_var_name;
+		$params['ENV_VAR_VALUE'] = $env_var_value;
 
 		$result = LHttp::post($this->full_deployer_url,$params);
 

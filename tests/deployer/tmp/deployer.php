@@ -788,19 +788,25 @@ class DDir extends DFileSystemElement
      */
     function delete($recursive = false)
     {
+        $result = true;
+
         if ($recursive)
         {
             $dir_content = $this->listAll(DDir::SHOW_HIDDEN_FILES);
             foreach ($dir_content as $elem)
             {
                 if ($elem instanceof DDir)
-                    $elem->delete(true);
+                    $result &= $elem->delete(true);
                 else
-                    $elem->delete();
+                    $result &= $elem->delete();
             }
+        } else {
+            throw new \Exception("Not actually recursive!!");
         }
 
-        return @rmdir($this->__full_path);
+        $result &= @rmdir($this->__full_path);
+
+        return $result;
     }
     
     function hasSingleSubdir()
@@ -1267,6 +1273,18 @@ class DStringUtils {
         }
         return $message;
     }
+
+    static function getCommentDelimitedReplacementsStringSeparator($var_name) {
+        $i = 0;
+
+        $result = $var_name[0];
+
+        for ($i=1;$i<strlen($var_name);$i++) {
+            $result .= '_'.$var_name[$i];
+        }
+
+        return $result;
+    }
     
     private static function internalGetExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {
         $NL = $use_newline ? "\n" : '<br>';
@@ -1299,14 +1317,18 @@ $_SERVER['DEPLOYER_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const DEPLOYER_VERSION = "1.0";
+    const DEPLOYER_VERSION = "1.1";
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','changePassword','hello'];
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello'];
 
 	private $deployer_file;
 	private $root_dir;
 
-	private static $PASSWORD = /*!PWD!*/""/*!PWD!*/;
+	private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; //password
+
+    private static $RMP = /*!R_M_P!*/"."/*!R_M_P!*/; //root mangle dir from deployer dir
+
+    private static $WWWRD = /*!W_W_W_R_D!*/"wwwroot/"/*!W_W_W_R_D!*/; //www root dir path from root dir
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
@@ -1411,7 +1433,7 @@ class DeployerController {
 				$result = $f->delete();
 
                 if ($f->getPath()==$this->deployer_file->getPath() && $result) {
-                    self::$PASSWORD = "";
+                    self::$PWD = "";
                 }
 
 				return ["result" => self::SUCCESS_RESULT];
@@ -1506,20 +1528,52 @@ class DeployerController {
 		} else $this->failure("Wrong password.");
 	}
 
-	public function changePassword($old_password,$new_password) {
-		if ($this->accessGranted($old_password)) {
+    //using a trick to avoid replacement
+
+    const ENV_VAR_NAME_MAP = ['PWD' => 'Deployer Password','RMP' => 'Root mangle dir from deployer dir','WWWRD' => 'Wwwroot dir path from root dir'];
+
+    public function listEnv($password) {
+        if ($this->accessGranted($password)) {
+            return ['result' => self::SUCCESS_RESULT,'data' => self::ENV_VAR_NAME_MAP];
+        } return $this->failure("Wrong password.");
+    }
+
+    public function getEnv($password,$env_var_name) {
+        if ($this->accessGranted($password)) {
+            if (!isset(self::ENV_VAR_NAME_MAP[$env_var_name])) return $this->failure("Unavailable environment variable to get : ".$env_var_name);
+
+            return ["result" => self::SUCCESS_RESULT,'data' => self::$$env_var_name];
+        } else return $this->failure("Wrong password.");
+    }
+
+	public function setEnv($password,$env_var_name,$env_var_value) {
+		if ($this->accessGranted($password)) {
 			$deployer_content = $this->deployer_file->getContent();
 
-			$tokens = explode("/*!"."PWD"."!*/",$deployer_content);
+            if (!isset(self::ENV_VAR_NAME_MAP[$env_var_name])) return $this->failure("Unavailable environment variable to set : ".$env_var_name);
 
-			$tokens[1] = '"'.$new_password.'"';
+            if (strpos($env_var_value,',')!==false) {
 
-			$deployer_content = implode("/*!"."PWD"."!*/",$tokens);
+                $var_value_array = explode(',',$env_var_value);
+
+                $final_string = var_export($var_value_array,true);
+
+            } else {
+                $final_string = var_export($env_var_value,true);
+            }
+
+            $env_var_delimiter = DStringUtils::getCommentDelimitedReplacementsStringSeparator($env_var_name);
+
+			$tokens = explode("/*!".$env_var_delimiter."!*/",$deployer_content);
+
+			$tokens[1] = $final_string;
+
+			$deployer_content = implode("/*!".$env_var_delimiter."!*/",$tokens);
 
 			$this->deployer_file->setContent($deployer_content);
 
 			//using a variable instead of a constant is necessary to be able to make unit test on it ... it's still ok :)
-			self::$PASSWORD = $new_password;
+			self::$$env_var_name = $env_var_value;
 
 			return ["result" => self::SUCCESS_RESULT];
 		} else return $this->failure("Wrong password.");
@@ -1532,7 +1586,7 @@ class DeployerController {
 	}
 
 	private function accessGranted($password) {
-	   if (($this->hasPassword() && self::$PASSWORD==$password) || (!$this->hasPassword() && !$password)) 
+	   if (($this->hasPassword() && self::$PWD==$password) || (!$this->hasPassword() && !$password)) 
             return true;
 	   else {
 
@@ -1546,7 +1600,7 @@ class DeployerController {
 	}
 
 	private function hasPassword() {
-		return self::$PASSWORD!=null;
+		return self::$PWD!=null;
 	}
 
     private function getRequestMethod() {
@@ -1554,7 +1608,7 @@ class DeployerController {
         else return 'CLI';
     }
 
-    private function preparePostResponse($data) {
+    public function preparePostResponse($data) {
         if (is_array($data)) {
             try {
                 $final_result = json_encode($data);
@@ -1586,17 +1640,39 @@ class DeployerController {
 					echo $this->preparePostResponse($this->hello($password));
     				break;
     			}
-    			case 'CHANGE_PASSWORD' : {
+                case 'SET_ENV' : {
+                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
+
+                    if (isset($_POST['ENV_VAR_NAME'])) $env_var_name = $_POST['ENV_VAR_NAME'];
+                    else echo $this->preparePostResponse($this->failure("ENV_VAR_NAME field missing in SET_ENV request."));
+
+                    if (isset($_POST['ENV_VAR_VALUE'])) $env_var_value = $_POST['ENV_VAR_VALUE'];
+                    else echo $this->preparePostResponse($this->failure("ENV_VAR_VALUE field missing in SET_ENV request."));
+
+                    echo $this->preparePostResponse($this->setEnv($password,$env_var_name,$env_var_value));
+
+                    break;
+                }
+    			case 'GET_ENV' : {
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
+					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in GET_ENV request."));
 
-					if (isset($_POST['NEW_PASSWORD'])) $new_password = $_POST['NEW_PASSWORD'];
-					else echo $this->preparePostResponse($this->failure("NEW_PASSWORD field missing in CHANGE_PASSWORD request."));
+					if (isset($_POST['ENV_VAR_NAME'])) $env_var_name = $_POST['ENV_VAR_NAME'];
+					else echo $this->preparePostResponse($this->failure("ENV_VAR_NAME field missing in GET_ENV request."));
 
-					echo $this->preparePostResponse($this->changePassword($password,$new_password));
+					echo $this->preparePostResponse($this->getEnv($password,$env_var_name));
 
 					break;
     			}
+                case 'LIST_ENV' : {
+                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_ENV request."));
+
+                    echo $this->preparePostResponse($this->listEnv($password));
+
+                    break;
+                }
     			case 'LIST_ELEMENTS' : {
 
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
@@ -1624,8 +1700,6 @@ class DeployerController {
 					break;
     			}
     			case 'COPY_FILE' : {
-
-                    echo $this->preparePostResponse($this->failure("This is a failure created for a purpose ..."));
 
     				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in COPY_FILE request."));
@@ -1721,6 +1795,6 @@ if (isset($_POST['METHOD'])) {
 	   $controller->processRequest();
 
     } catch (\Exception $ex) {
-        return $controller->failure("Server got an exception : ".$ex->getMessage());
+        echo $controller->preparePostResponse($controller->failure("Server got an exception : ".$ex->getMessage()));
     }
 } else echo "Hello :)";

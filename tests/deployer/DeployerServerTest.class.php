@@ -65,7 +65,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$result = $deployer_controller->changePassword("","123prova123");
+		$result = $deployer_controller->setEnv("","PWD","123prova123");
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
@@ -73,7 +73,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
-		$result = $deployer_controller->changePassword("123prova123","");
+		$result = $deployer_controller->setEnv("123prova123","PWD","");
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 

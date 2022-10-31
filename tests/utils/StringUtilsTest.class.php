@@ -105,5 +105,15 @@ class StringUtilsTest extends LTestCase {
             //ok
         }
     }
+
+    function testReplacementStringCalculations() {
+
+        $var_name = "THISISAVAR";
+
+        $result = LStringUtils::getCommentDelimitedReplacementsStringSeparator($var_name);
+
+        $this->assertEqual('T_H_I_S_I_S_A_V_A_R',$result,"Il risultato dell'elaborazione non coincide col valore atteso!");
+
+    }
     
 }

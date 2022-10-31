@@ -3,7 +3,7 @@
 
 class LocalDeployerClientTest extends LTestCase {
 	
-	const TEST_DIR = "tests_fast";
+	const TEST_DIR = "tests";
 
 	private function initEmptyServer() {
 		$deployer_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/');
@@ -217,17 +217,11 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$deployer_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
-
-		$r = $dc->attach('default_key',$deployer_file);
+		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
-		$this->assertTrue($deployer_file->exists(),"Il deployer è sparito misteriosamente!!");
-
 		$r = $dc->project_update('default_key');
-
-		$this->assertTrue($deployer_file->exists(),"Il deployer è sparito misteriosamente (cancellato da project_update -_-)!!");		
 
 		$this->assertTrue($r,"L'update non è andato a buon fine!");
 

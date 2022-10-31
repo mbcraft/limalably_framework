@@ -605,7 +605,7 @@ class DDir extends DFileSystemElement
         {
             throw new \DIOException("A file with this name already exists");
         }
-        
+
         if (!file_exists($this->__full_path)) {
             $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
         
@@ -800,9 +800,7 @@ class DDir extends DFileSystemElement
                 else
                     $result &= $elem->delete();
             }
-        } else {
-            throw new \Exception("Not actually recursive!!");
-        }
+        } 
 
         $result &= @rmdir($this->__full_path);
 
@@ -1324,18 +1322,27 @@ class DeployerController {
 	private $deployer_file;
 	private $root_dir;
 
-	private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; //password
+    //password
+	private static $PWD = /*!P_W_D!*/'okbnqdkrjoenqxxcwlwrbrhpljynclskfcab'/*!P_W_D!*/; 
 
-    private static $RMP = /*!R_M_P!*/"."/*!R_M_P!*/; //root mangle dir from deployer dir
-
-    private static $WWWRD = /*!W_W_W_R_D!*/"wwwroot/"/*!W_W_W_R_D!*/; //www root dir path from root dir
+    //deployer path from root
+    private static $DPFR = /*!D_P_F_R!*/"wwwroot/deployer.php"/*!D_P_F_R!*/; 
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
 
 	function __construct() {
+
 		$this->deployer_file = new DFile(__FILE__);
-		$this->root_dir = new DDir(__DIR__);
+
+        $path_parts = explode('/',self::$DPFR);
+
+        $current_dir = new DDir(__DIR__);
+
+        for ($i=0;$i<count($path_parts)-1;$i++) $current_dir = $current_dir->getParentDir();
+
+		$this->root_dir = $current_dir;
+
 	}
 
 	private $visit_result = [];
@@ -1365,6 +1372,23 @@ class DeployerController {
         } else return $this->failure("Wrong password");
     }
 
+    private function getFinalPathList($path_list) {
+
+        $result = [];
+
+        foreach ($path_list as $p) {
+            if ($p==='@') $result[] = self::$DPFR;
+                else $result[] = $p;
+        }
+
+        return $result;
+
+    }
+
+    private function containsDeployerPath($path_list) {
+        return in_array('@',$path_list);
+    }
+
 	public function listElements($password,$folder) {
 		if ($this->accessGranted($password)) {
 
@@ -1390,8 +1414,21 @@ class DeployerController {
 
 	public function listHashes($password,$excluded_paths,$included_paths) {
 		if ($this->accessGranted($password)) {
-			$this->excluded_paths = $excluded_paths;
-			$this->included_paths = $included_paths;
+
+            if ($this->containsDeployerPath($excluded_paths)) {
+                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::DPFR);
+
+                if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
+            }
+
+            if ($this->containsDeployerPath($included_paths)) {
+                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::DPFR);
+
+                if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
+            }
+
+			$this->excluded_paths = $this->getFinalPathList($excluded_paths);
+			$this->included_paths = $this->getFinalPathList($included_paths);
 
 			if (count($this->included_paths)>0) {
 				foreach ($this->included_paths as $path) {

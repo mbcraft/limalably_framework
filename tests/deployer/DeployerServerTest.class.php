@@ -55,7 +55,7 @@ class DeployerServerTest extends LTestCase {
 	
 	}
 	
-	function testDeployerChangePassword() {
+	function testDeployerChangePasswordWithSetEnv() {
 
 		$this->reinit();
 
@@ -81,6 +81,38 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
 
+
+	}
+
+	function testDeployerSetEnvDPFR() {
+
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$r = $deployer_controller->listHashes("",[],['@']);
+
+		$this->assertFalse($this->isSuccess($r),"La chiamata a listHashes ha dato esito positivo!");
+
+		$r = $deployer_controller->setEnv("","DPFR",'.');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata a setEnv non ha dato esito positivo!");
+
+		$r = $deployer_controller->listHashes("",[],['@']);
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata a listHashes non ha dato esito positivo!");
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata a setEnv non è andata a buon fine!");
+
+		$r = $deployer_controller->getEnv("","DPFR");
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata a getEnv non è andata a buon fine!");
+
+		$this->assertEqual($r['data'],'.',"La variabile non si è salvata correttamente!!");
 
 	}
 

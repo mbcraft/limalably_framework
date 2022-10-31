@@ -14,6 +14,8 @@ class LDeployerClient {
 	const STANDARD_DEPLOYER_FILENAME = 'deployer.php';
 	const DEPLOYER_KEY_EXTENSION = '.key';
 
+	const DEPLOYER_PATH_FROM_ROOT = 'DPFR';
+
 	private $current_driver = null;
 	private $current_uri = null;
 	private $current_password = "";
@@ -410,9 +412,8 @@ class LDeployerClient {
 		echo "./bin/deployer.sh help --> prints this help\n\n";
 		echo "./bin/deployer.sh attach <deploy_key_name> <deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
 		echo "./bin/deployer.sh detach <deploy_key_name> --> detaches the deployer removing the server token and deleting the local key\n\n";
-		echo "./bin/deployer.sh list_env <deploy_key_name> --> prints the list of environment variables with their description\n\n";
-		echo "./bin/deployer.sh get_env <deploy_key_name> <env_var_name> --> prints the value of an environment variable\n\n";
-		echo "./bin/deployer.sh set_env <deploy_key_name> <env_var_name> <env_var_value> --> changes the value of an environment variable\n\n";
+		echo "./bin/deployer.sh get_deployer_path_from_root <deploy_key_name> --> gets the deployer path from root dir\n\n";
+		echo "./bin/deployer.sh set_deployer_path_from_root <deploy_key_name> <deployer_path> --> set the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh deployer_version <deploy_key_name> --> prints the deployer version\n\n";
 		echo "./bin/deployer.sh deployer_update <deploy_key_name> --> updates the remote deployer using the local version\n\n";
 		echo "./bin/deployer.sh framework_check <deploy_key_name> --> check and lists which framework files needs an update\n\n";
@@ -484,56 +485,28 @@ class LDeployerClient {
 		} else return $this->failure("Unable to find key to load for detach : ".$key_name);
 	}
 
-	public function get_env(string $key_name,string $env_var_name) {
+	public function get_deployer_path_from_root(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
-			$result = $this->current_driver->get_env($this->current_password,$env_var_name);
+			$r = $this->current_driver->get_env($this->current_password,self::DEPLOYER_PATH_FROM_ROOT);
 
-			if (!$this->isSuccess($result)) return $this->failure("Unable to get environment variable from deployer instance : ".$result['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get environment variable from deployer instance : ".$result['message']);
 
-			echo "Deployer instance variable [".$env_var_name."] : ".var_export($result['data'],true)."\n\n";
+			echo "Deployer path from root is : ".var_export($result['data'],true)."\n\n";
 
 			return true;
 
 		} else return false;
 	}
 
-	public function set_env(string $key_name,string $env_var_name,string $env_var_value) {
+	public function set_deployer_path_from_root(string $key_name,string $deployer_path) {
 		if ($this->loadKey($key_name)) {
 
-			$result = $this->current_driver->set_env($this->current_password,$env_var_name,$env_var_value);
+			$r = $this->current_driver->set_env($this->current_password,self::DEPLOYER_PATH_FROM_ROOT,$deployer_path);
 
-			if (!$this->isSuccess($result)) return $this->failure("Unable to set environment variable from deployer instance : ".$result['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to set environment variable from deployer instance : ".$result['message']);
 
-            if (strpos($env_var_value,',')!==false) {
-
-                $var_value_array = explode(',',$env_var_value);
-
-                $final_string = var_export($var_value_array,true);
-
-            } else {
-                $final_string = var_export($env_var_value,true);
-            }
-
-			echo "Deployer instance variable [".$env_var_name."] now is : ".$final_string."\n\n";
-
-			return true;
-
-		} else return false;
-	}
-
-	public function list_env(string $key_name) {
-		if ($this->loadKey($key_name)) {
-
-			$result = $this->current_driver->list_env($this->current_password);
-
-			if (!$this->isSuccess($result)) return $this->failure("Unable to list environment variables from deployer instance : ".$result['message']);
-
-			echo "Deployer instance environment variable list :\n\n";
-
-			foreach ($result['data'] as $name => $desc) {
-				echo "\n[".$name."] = ".var_export($desc,true)."\n";
-			}
+			echo "Deployer path from root now is : ".$deployer_path."\n\n";
 
 			return true;
 

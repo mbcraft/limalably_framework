@@ -605,7 +605,7 @@ class DDir extends DFileSystemElement
         {
             throw new \DIOException("A file with this name already exists");
         }
-
+        
         if (!file_exists($this->__full_path)) {
             $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
         
@@ -800,7 +800,9 @@ class DDir extends DFileSystemElement
                 else
                     $result &= $elem->delete();
             }
-        } 
+        } else {
+            throw new \Exception("Not actually recursive!!");
+        }
 
         $result &= @rmdir($this->__full_path);
 

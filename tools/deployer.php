@@ -1326,7 +1326,7 @@ class DeployerController {
 	private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; 
 
     //deployer path from root
-    private static $DPFR = /*!D_P_F_R!*/"wwwroot/deployer.php"/*!D_P_F_R!*/; 
+    private static $DPFR = /*!D_P_F_R!*/"."/*!D_P_F_R!*/; 
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
@@ -1416,13 +1416,13 @@ class DeployerController {
 		if ($this->accessGranted($password)) {
 
             if ($this->containsDeployerPath($excluded_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::DPFR);
+                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
             if ($this->containsDeployerPath($included_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::DPFR);
+                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }

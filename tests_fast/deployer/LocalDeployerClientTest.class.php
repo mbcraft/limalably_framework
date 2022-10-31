@@ -367,7 +367,7 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
+	*/
 	function testDeployerVersion() {
 
 		$this->initAll();
@@ -424,7 +424,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
 	function testHelp() {
 		$this->initAll();
 
@@ -434,5 +434,5 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
-	*/
+	
 }

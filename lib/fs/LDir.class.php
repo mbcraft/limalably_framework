@@ -168,14 +168,14 @@ class LDir extends LFileSystemElement
         {
             throw new \LIOException("A file with this name already exists");
         }
-        //directory or files do not exists
         
-        $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
+        if (!file_exists($this->__full_path)) {
+            $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
         
-        
-        if ($result==true) {
-            chmod($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal());
-            return new LDir($this->__path.$name);
+            if ($result==true) {
+                chmod($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal());
+                return new LDir($this->__path.$name);
+            }
         }
         else
         {

@@ -10,6 +10,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	const LOCAL_WEB_TEST_ADDRESS = "http:://local__deployer_test/1/deployer.php";
 
+	/*
 	function testChangePassword() {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project_d/';
@@ -25,6 +26,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->assertTrue($r,"La procedura di detach non è andata a buon fine!");
 
 	}
+	*/
 
 
 }

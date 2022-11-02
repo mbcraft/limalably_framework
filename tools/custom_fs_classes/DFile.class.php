@@ -115,13 +115,14 @@ class DFile extends DFileSystemElement
         return $this->getSize()==0;
     }
 
-    function copy($target_dir,$new_name=null)
+    function copy($dest_dir_or_file)
     {      
-        if ($target_dir instanceof DDir)
+        if ($dest_dir_or_file instanceof DDir)
         {
-            if ($new_name==null)
-                $new_name = $this->getFilename();
-            return copy($this->__full_path,$target_dir->__full_path.'/'.$new_name);
+            return copy($this->__full_path,$dest_dir_or_file->__full_path.$this->getFilename());
+        }
+        if ($dest_dir_or_file instanceof DFile) {
+            return copy($this->__full_path,$dest_dir_or_file->__full_path);
         }
     }
 

@@ -396,28 +396,36 @@ class DDir extends DFileSystemElement
     }
     
     /*
-     * Copia una cartella all'interno di un'altra sottocartella
+     * Copia una cartella all'interno di un'altra cartella
      */
-    function copy($path,$new_name=null)
+    function copy($dest_dir)
     {
-        if ($path instanceof DDir)
-            $target_dir = $path;
-        else
-            $target_dir = new DDir($path);
+        $dest_dir_ok = null;
 
-        if ($target_dir instanceof DDir)
-        {          
-            if ($new_name==null)
-                $new_name = $this->getName();
-            
-            $copy_dir = $target_dir->newSubdir($new_name);
-            
-            $all_files = $this->listAll();
-            foreach ($all_files as $elem)
+        if (is_string($dest_dir))
+            $dest_dir_ok = new DDir($dest_dir);
+        if ($dest_dir instanceof DDir)
+            $dest_dir_ok = $dest_dir;
+
+        if ($dest_dir_ok)
+        {                      
+            $all_elems = $this->listAll();
+
+            foreach ($all_elems as $elem)
             {
-                $elem->copy($copy_dir);
+                if ($elem instanceof DFile) {
+                    $elem->copy($dest_dir_ok);
+                    continue;
+                }
+                if ($elem instanceof DDir)
+                {
+                    $subdir = $dest_dir_ok->newSubdir($elem->getName());
+                    $elem->copy($subdir);
+                    continue;
+                }
+                throw new \DIOException("Unable to copy element of class : ".get_class($elem));
             }
-        }
+        } else throw new \DIOException("dest_dir is not a valid path or DDir instance!");
 
     }
 

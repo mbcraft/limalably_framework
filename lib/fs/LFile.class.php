@@ -119,16 +119,14 @@ class LFile extends LFileSystemElement
         return $this->getSize()==0;
     }
 
-    function copy($target_dir_or_file,$new_name=null)
+    function copy($dest_dir_or_file)
     {      
-        if ($target_dir_or_file instanceof LDir)
+        if ($dest_dir_or_file instanceof LDir)
         {
-            if ($new_name==null)
-                $new_name = $this->getFilename();
-            return copy($this->__full_path,$target_dir_or_file->__full_path.'/'.$new_name);
+            return copy($this->__full_path,$dest_dir_or_file->__full_path.$this->getFilename());
         }
-        if ($target_dir_or_file instanceof LFile) {
-            return copy($this->__full_path,$target_dir_or_file->__full_path);
+        if ($dest_dir_or_file instanceof LFile) {
+            return copy($this->__full_path,$dest_dir_or_file->__full_path);
         }
     }
 

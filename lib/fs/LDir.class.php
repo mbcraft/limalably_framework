@@ -169,7 +169,7 @@ class LDir extends LFileSystemElement
             throw new \LIOException("A file with this name already exists");
         }
         
-        if (!file_exists($this->__full_path)) {
+        if (!file_exists($this->__full_path.$name)) {
             $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
         
             if ($result==true) {
@@ -177,7 +177,7 @@ class LDir extends LFileSystemElement
                 return new LDir($this->__path.$name);
             }
         }
-        else return new LDir($this->__full_path);
+        else return new LDir($this->__full_path.$name);
 
     }
 /*
@@ -401,32 +401,34 @@ class LDir extends LFileSystemElement
     }
     
     /*
-     * Copia una cartella all'interno di un'altra sottocartella
+     * Copia una cartella all'interno di un'altra cartella
      */
-    function copy($dest_dir,$new_name=null)
+    function copy($dest_dir)
     {
         $dest_dir_ok = null;
 
         if (is_string($dest_dir))
-            $dest_dir_ok = new LDir($path);
+            $dest_dir_ok = new LDir($dest_dir);
         if ($dest_dir instanceof LDir)
             $dest_dir_ok = $dest_dir;
 
         if ($dest_dir_ok)
-        {          
-            if ($new_name==null) {
-                $new_name = $this->getName();
-
-                $target_dir = $dest_dir_ok->newSubdir($new_name);
-            } else {
-                $target_dir = $dest_dir_ok;
-            }
-            
+        {                      
             $all_elems = $this->listAll();
-            
+
             foreach ($all_elems as $elem)
             {
-                $elem->copy($target_dir);
+                if ($elem instanceof LFile) {
+                    $elem->copy($dest_dir_ok);
+                    continue;
+                }
+                if ($elem instanceof LDir)
+                {
+                    $subdir = $dest_dir_ok->newSubdir($elem->getName());
+                    $elem->copy($subdir);
+                    continue;
+                }
+                throw new \LIOException("Unable to copy element of class : ".get_class($elem));
             }
         } else throw new \LIOException("dest_dir is not a valid path or LDir instance!");
 

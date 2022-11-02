@@ -244,22 +244,24 @@ class PlainDirTest extends LTestCase
         {
         } 
     }
+
+    function testIsDirFunction() {
+
+        $this->assertFalse(is_dir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR.'/a_dir_that_does_not_exist/'),"Se la directory non esiste la funzione is_dir ritorna true anche solo se è un percorso valido!");
+
+    }
     
     function testCopy()
     {
         $source_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_source/");
     
-        $target_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/");
+        $dest_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/");
         
         //pulisco la cartella di destinazione
-        foreach ($target_dir->listAll() as $f)
+        foreach ($dest_dir->listAll() as $f)
             $f->delete(true);
         
-        $source_dir_elems = $source_dir->listAll();
-        foreach ($source_dir_elems as $elem)
-        {
-            $elem->copy($target_dir);
-        }
+        $source_dir->copy($dest_dir);
         
         $tiny_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/my_tiny_file.txt");
         $this->assertTrue($tiny_file->exists(),"Il file non è stato copiato!!");
@@ -272,7 +274,7 @@ class PlainDirTest extends LTestCase
         $this->assertTrue($another_file->exists(),"Il file non è stato copiato!!");
         $this->assertEqual($another_file->getContent(),"BLA BLA BLA","Il contenuto del file non corrisponde!!");
     
-        foreach ($target_dir->listAll() as $f)
+        foreach ($dest_dir->listAll() as $f)
             $f->delete(true);
     }
 

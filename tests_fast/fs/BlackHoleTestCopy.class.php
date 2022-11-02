@@ -10,7 +10,7 @@ class BlackHoleTest extends LTestCase
 {
     function testBlackHole()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/BlackHoleTest.class.php");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/BlackHoleTest.class.php");
 
         $this->assertTrue($f->exists(),"Il file del test non esiste!!");
 

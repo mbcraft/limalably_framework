@@ -10,7 +10,7 @@ class FileWriterTest extends LTestCase
 {
     function testWriterOpenButDontChange()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/myfile_01.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/myfile_01.txt");
 
         $this->assertEqual(24,$f->getSize(),"La dimensione del file non corrisponde!! : ".$f->getSize());
 
@@ -32,7 +32,7 @@ class FileWriterTest extends LTestCase
 
     function testWriterCreateIfNotExists()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/blablabla.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/blablabla.txt");
         $this->assertFalse($f->exists(),"Il file esiste gia'!!");
         try
         {
@@ -55,7 +55,7 @@ class FileWriterTest extends LTestCase
 
     function testBasicWritelnThenReadln()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/readwrite.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/readwrite.txt");
         $this->assertFalse($f->exists(),"Il file esiste gia'!!");
         try
         {
@@ -90,7 +90,7 @@ class FileWriterTest extends LTestCase
 
     function testAdvancedPrintfWriteThenRead()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/readwrite2.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/readwrite2.txt");
         $this->assertFalse($f->exists(),"Il file esiste gia'!!");
         try
         {

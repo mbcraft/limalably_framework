@@ -807,7 +807,7 @@ class DDir extends DFileSystemElement
         return $result;
     }
     
-    function hasSingleSubdir()
+    function hasOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)
@@ -818,7 +818,7 @@ class DDir extends DFileSystemElement
         return false;
     }
     
-    function getSingleSubdir()
+    function getOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)

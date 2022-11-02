@@ -177,10 +177,7 @@ class LDir extends LFileSystemElement
                 return new LDir($this->__path.$name);
             }
         }
-        else
-        {
-            throw new \LIOException("Unable to create dir : ".$this->__full_path.$name);
-        }
+        else return new LDir($this->__full_path);
 
     }
 /*
@@ -370,7 +367,7 @@ class LDir extends LFileSystemElement
         return $result;
     }
     
-    function hasSingleSubdir()
+    function hasOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)
@@ -381,7 +378,7 @@ class LDir extends LFileSystemElement
         return false;
     }
     
-    function getSingleSubdir()
+    function getOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)
@@ -406,26 +403,32 @@ class LDir extends LFileSystemElement
     /*
      * Copia una cartella all'interno di un'altra sottocartella
      */
-    function copy($path,$new_name=null)
+    function copy($dest_dir,$new_name=null)
     {
-        if ($path instanceof LDir)
-            $target_dir = $path;
-        else
-            $target_dir = new LDir($path);
+        $dest_dir_ok = null;
 
-        if ($target_dir instanceof LDir)
+        if (is_string($dest_dir))
+            $dest_dir_ok = new LDir($path);
+        if ($dest_dir instanceof LDir)
+            $dest_dir_ok = $dest_dir;
+
+        if ($dest_dir_ok)
         {          
-            if ($new_name==null)
+            if ($new_name==null) {
                 $new_name = $this->getName();
-            
-            $copy_dir = $target_dir->newSubdir($new_name);
-            
-            $all_files = $this->listAll();
-            foreach ($all_files as $elem)
-            {
-                $elem->copy($copy_dir);
+
+                $target_dir = $dest_dir_ok->newSubdir($new_name);
+            } else {
+                $target_dir = $dest_dir_ok;
             }
-        }
+            
+            $all_elems = $this->listAll();
+            
+            foreach ($all_elems as $elem)
+            {
+                $elem->copy($target_dir);
+            }
+        } else throw new \LIOException("dest_dir is not a valid path or LDir instance!");
 
     }
 

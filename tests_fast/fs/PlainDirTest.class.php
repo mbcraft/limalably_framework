@@ -11,32 +11,32 @@ class PlainDirTest extends LTestCase
 
     function testHasSubdirs()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/advances_dir_list/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/advances_dir_list/");
         $this->assertFalse($d->hasSubdirs(),"Sono state trovate sottocartelle in una cartella che non ne ha!!");
     
-        $d2 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_source/");
+        $d2 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_source/");
         $this->assertTrue($d2->hasSubdirs(),"Non sono state trovate sottocartelle in una cartella che ne ha!!");
         
     }
 
     function testContentHash() {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/content_hash_test/");
 
         $content_hash = $d->getContentHash();
 
-        $this->assertEqual($content_hash,"dcae4ca026b25ecf9485a425c99b8bfb0fc828e6","L'hash della directory non corrisponde!!");
+        $this->assertEqual($content_hash,"cb12ee4a150285824429af525ed92fbcd4b367b3","L'hash della directory non corrisponde!!");
     }
 
     function testPathRecognizedFromFullPath() {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/");
 
-        $this->assertEqual($d->getFullPath(),$_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/","Il percorso completo della cartella non coincide!");
-        $this->assertEqual($d->getPath(),"tests/fs/test_dir/","Il percorso parziale della cartella non coincide!");
+        $this->assertEqual($d->getFullPath(),$_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/","Il percorso completo della cartella non coincide!");
+        $this->assertEqual($d->getPath(),FsTestLib::TEST_DIR."/fs/test_dir/","Il percorso parziale della cartella non coincide!");
     }
 
     function testTempFile() {
 
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/temp_file/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/temp_file/");
 
         $this->assertTrue($d->isEmpty(),"La directory dei file temporanei non è vuota inizialmente!");
 
@@ -55,7 +55,7 @@ class PlainDirTest extends LTestCase
 
     function testFindFilesBasic()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/advances_dir_list/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/advances_dir_list/");
         
         $only_menu_ini = $d->findFiles("/[_]*menu[\.]ini/");
         $this->assertTrue(count($only_menu_ini)==1,"Il numero dei file trovati non corrisponde!!");       
@@ -64,7 +64,7 @@ class PlainDirTest extends LTestCase
     
     function testFindFilesStartingWithBasic()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/advances_dir_list/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/advances_dir_list/");
         
         $only_the_starting = $d->findFilesStartingWith("the");
         $this->assertTrue(count($only_the_starting)==1,"Il numero dei file trovati non corrisponde!!");       
@@ -73,7 +73,7 @@ class PlainDirTest extends LTestCase
 
     function testFindFilesEndingWithBasic()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/advances_dir_list/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/advances_dir_list/");
         
         $only_image_png = $d->findFilesEndingWith("image.png");
         
@@ -83,9 +83,9 @@ class PlainDirTest extends LTestCase
     
     function testSubdirs()
     {
-        $root = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+        $root = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/");
         
-        $subfolder = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir");
+        $subfolder = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir");
         
         $this->assertTrue($root->hasSubdirOrSame($subfolder),"La directory non ha la subdirectory attesa!");
         $this->assertFalse($subfolder->hasSubdirOrSame($root),"La sottodirectory è sobfolder di root!");
@@ -109,16 +109,16 @@ class PlainDirTest extends LTestCase
     
     function testEquals()
     {
-        $dir1= new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+        $dir1= new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/");
         
-        $dir2 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir");
+        $dir2 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir");
         
         $this->assertTrue($dir1->equals($dir2),"Le directory non coincidono!!");
     }
 
     function testRootTestDirectory()
     {
-        $d1 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+        $d1 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/");
 
         $this->assertTrue($d1->exists(),"La directory di test non esiste!!!");
         $this->assertTrue($d1->isDir(),"La directory di test non è una directory!!!");
@@ -129,14 +129,18 @@ class PlainDirTest extends LTestCase
 
     function testEmptyDirectory()
     {
-        $d2 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/empty_dir");
+        $d2 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/empty_dir");
+
+        if ($d2->exists()) $d2->delete();
+
+        $this->assertFalse($d2->exists(),"La directory vuota esiste e non dovrebbe!");
 
         $d2->touch();
 
         $this->assertTrue($d2->exists(),"La cartella non esiste!");
         $this->assertTrue($d2->isDir(),"L'elemento non è una cartella!");
         $this->assertFalse($d2->isFile(),"L'elemento è un file ma non dovrebbe esserlo!");
-        //$this->assertTrue($d2->isEmpty()); //.svn ???
+        
     }
 
     function verifyContentDir($content_dir)
@@ -151,6 +155,8 @@ class PlainDirTest extends LTestCase
 
         $subdir = $empty_dir->newSubdir("test");
         
+        $this->assertTrue($subdir->exists(),"La sottodirectory non esiste!");
+
         $this->assertTrue($subdir->isEmpty(),"La subdirectory non risulta vuota!");
 
         $this->assertTrue($subdir->delete(),"Impossibile cancellare una cartella vuota.");
@@ -160,22 +166,22 @@ class PlainDirTest extends LTestCase
 
     function testGetParentDir()
     {
-        $d1 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/empty_dir");
+        $d1 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/empty_dir");
         
         $parent = $d1->getParentDir();
         
-        $this->assertEqual($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/",$parent->getFullPath(),"Le directory non corrispondono!");
+        $this->assertEqual($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/",$parent->getFullPath(),"Le directory non corrispondono!");
     }
 
     function testDirectoryContent()
     {
-        $d1 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/");
+        $d1 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/");
 
         $this->assertTrue($d1->isDir(),"L'elemento non è una directory!");
 
         $content = $d1->listAll();
 
-        $this->assertEqual(3,count($content),"Il conteggio delle cartelle non corrisponde!"); //.svn ???
+        $this->assertEqual(2,count($content),"Il conteggio delle cartelle non corrisponde!"); 
 
         foreach ($content as $dir)
         {
@@ -187,52 +193,52 @@ class PlainDirTest extends LTestCase
     }
 
 
-    function testHasSingleSubdir()
-    {
-        $dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/single_subdir/");
+    function testHasOnlyOneSubdir() {
+
+        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/");
         
-        $this->assertTrue($dir->hasSingleSubdir(),"La cartella non ha un'unica sottocartella!");
+        $this->assertTrue($dir->hasOnlyOneSubdir(),"La cartella non ha un'unica sottocartella!");
         
-        $dir2 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/");
+        $dir2 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/");
         
-        $this->assertTrue($dir2->hasSingleSubdir(),"La cartella non ha un'unica sottocartella!");
+        $this->assertTrue($dir2->hasOnlyOneSubdir(),"La cartella non ha un'unica sottocartella!");
         
-        $dir3 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/single_subdir/blablablax/");
+        $dir3 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/blablablax/");
         
-        $this->assertFalse($dir3->hasSingleSubdir(),"La cartella ha un'unica sottocartella ma non dovrebbe avercela!");
+        $this->assertFalse($dir3->hasOnlyOneSubdir(),"La cartella ha un'unica sottocartella ma non dovrebbe avercela!");
     }
 
-    function testGetSingleSubdir()
+    function testGetOnlyOneSubdir()
     {
-        $dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/single_subdir/");
+        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/");
         
-        $sub_dir = $dir->getSingleSubdir();
+        $sub_dir = $dir->getOnlyOneSubdir();
         
-        $this->assertEqual($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/single_subdir/blablablax/",$sub_dir->getFullPath(),"I percorsi delle cartelle non coincidono!");
+        $this->assertEqual($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/blablablax/",$sub_dir->getFullPath(),"I percorsi delle cartelle non coincidono!");
     }
 
-    function testGetSingleSubdirFailManyElements()
+    function testGetOnlyOneSubdirFailManyElements()
     {
-        $dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/");
+        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/");
         
         try
         {
-            $sub_dir = $dir->getSingleSubdir();
-            $this->fail("Il metodo getSingleSubdir non ha lanciato l'eccezione prevista.");
+            $sub_dir = $dir->getOnlyOneSubdir();
+            $this->fail("Il metodo getOnlyOneSubdir non ha lanciato l'eccezione prevista.");
         }
         catch (Exception $ex)
         {
         } 
     }
 
-    function testGetSingleSubdirFailSingleFile()
+    function testGetOnlyOneSubdirFailSingleFile()
     {
-        $dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/single_subdir/blablablax/");
+        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/single_subdir/blablablax/");
         
         try
         {
-            $sub_dir = $dir->getSingleSubdir();
-            $this->fail("Il metodo getSingleSubdir non ha lanciato l'eccezione prevista.");
+            $sub_dir = $dir->getOnlyOneSubdir();
+            $this->fail("Il metodo getOnlyOneSubdir non ha lanciato l'eccezione prevista.");
         }
         catch (Exception $ex)
         {
@@ -241,9 +247,9 @@ class PlainDirTest extends LTestCase
     
     function testCopy()
     {
-        $source_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_source/");
+        $source_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_source/");
     
-        $target_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_target/");
+        $target_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/");
         
         //pulisco la cartella di destinazione
         foreach ($target_dir->listAll() as $f)
@@ -255,25 +261,25 @@ class PlainDirTest extends LTestCase
             $elem->copy($target_dir);
         }
         
-        $tiny_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_target/my_tiny_file.txt");
+        $tiny_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/my_tiny_file.txt");
         $this->assertTrue($tiny_file->exists(),"Il file non è stato copiato!!");
         $this->assertEqual($tiny_file->getContent(),"TINY TINY TINY","Il contenuto del file non corrisponde!!");
     
-        $my_subdir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_target/my_subdir");
+        $my_subdir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/my_subdir");
         $this->assertTrue($my_subdir->exists(),"La sottocartella non è stata copiata!!");
         
-        $another_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_target/my_subdir/another_file.txt");
+        $another_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/my_subdir/another_file.txt");
         $this->assertTrue($another_file->exists(),"Il file non è stato copiato!!");
         $this->assertEqual($another_file->getContent(),"BLA BLA BLA","Il contenuto del file non corrisponde!!");
     
-        foreach ($target_dir->listFiles() as $f)
+        foreach ($target_dir->listAll() as $f)
             $f->delete(true);
     }
 
 
     function testTouch()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/touch_test2/my_new_dir/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/touch_test2/my_new_dir/");
         $this->assertFalse($d->exists(),"La directory esiste già!");
         $d->touch();
         $this->assertTrue($d->exists(),"La directory non è stata creata!");
@@ -295,7 +301,7 @@ class PlainDirTest extends LTestCase
 
     function testTouchSubdirs()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/touch_test/my_new_dir/another_dir/again/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/touch_test/my_new_dir/another_dir/again/");
         $this->assertFalse($d->exists(),"La directory esiste già!");
         $d->touch();
         $this->assertTrue($d->exists(),"La directory non è stata creata!");
@@ -312,7 +318,7 @@ class PlainDirTest extends LTestCase
         $d->delete();
         $this->assertFalse($d->exists(),"La directory non è stata cancellata!");
 
-        $d_root = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/touch_test/my_new_dir/");
+        $d_root = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/touch_test/my_new_dir/");
         $d_root->delete(true);
         $this->assertFalse($d_root->exists(),"La directory root dell'albero esiste ancora!!");
 
@@ -320,7 +326,7 @@ class PlainDirTest extends LTestCase
 
     function testRenameDirs()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/dir/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/dir/");
         $d->touch();
 
         $this->assertTrue($d->exists(),"La directory non e' stata creata!!");
@@ -330,17 +336,17 @@ class PlainDirTest extends LTestCase
 
         $this->assertTrue($f1->exists(),"Il file non e' stato creato nella cartella!!");
 
-        $d2 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/target/");
+        $d2 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/target/");
         $d2->delete(true);
         $this->assertFalse($d2->exists(),"La directory esiste gia'!!");
         $this->assertTrue($d->rename("target"),"Il rename non è andato a buon fine!");
 
         $this->assertFalse($d->exists(),"La directory non e' stata rinominata con successo!!");
         $this->assertTrue($d2->exists(),"La directory non e' stata rinominata con successo!!");
-        $f2 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/target/my_file.txt");
+        $f2 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/target/my_file.txt");
         $this->assertTrue($f2->exists(),"Il file non e' stato spostato insieme alla directory!!");
 
-        $d3 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/existing_dir/");
+        $d3 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/existing_dir/");
         $d3->touch();
         $this->assertFalse($d2->rename("existing_dir"),"Il rename e' stato effettuato su una directory che gia' esiste!!");
 
@@ -348,7 +354,7 @@ class PlainDirTest extends LTestCase
         $this->assertTrue($d3->isEmpty(),"La directory gia' esistente e' stata riempita con pattume!!");
 
         $this->expectException("LIOException");
-        $d4 = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/another_target/buh/");
+        $d4 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/another_target/buh/");
         $this->assertFalse($d2->rename("another_target/buh"),"Rename con spostamento andato a buon fine!!");
 
         $d2->delete(true);
@@ -376,7 +382,7 @@ class PlainDirTest extends LTestCase
 
     function testListFiles()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/list_files_test/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/list_files_test/");
                 
         $this->assertEqual(count($d->listFiles()),1,"Il numero di file col list di default non corrisponde!!");
         $this->assertEqual(count($d->listFiles(LDir::DEFAULT_EXCLUDES)),1,"Il numero di file col list di default non corrisponde!!");
@@ -406,7 +412,7 @@ class PlainDirTest extends LTestCase
 
             if ($is_local)
             {
-                $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/delete_test_dir_empty/the_dir/");
+                $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/delete_test_dir_empty/the_dir/");
                 $this->assertTrue($d->exists(),"La cartella dal eliminare non esiste!!");
 
                 
@@ -428,7 +434,7 @@ class PlainDirTest extends LTestCase
 
     function testDeleteRealEmpty()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/delete_test_dir_empty/real_empty_dir/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/delete_test_dir_empty/real_empty_dir/");
         $this->assertFalse($d->exists(),"La cartella dal eliminare non esiste!!");
 
         $d->touch();
@@ -441,7 +447,7 @@ class PlainDirTest extends LTestCase
 
     function testDeleteRecursive()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/delete_test_dir/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/delete_test_dir/");
 
         $d->touch();
 
@@ -467,12 +473,12 @@ class PlainDirTest extends LTestCase
 
     function testGetPathRelative()
     {
-        $my_included_file = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/include_teiop/");
+        $my_included_file = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/include_teiop/");
 
-        $rel_path = $my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR']."tests"));
+        $rel_path = $my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR));
         $this->assertEqual("fs/include_teiop/",$rel_path,"Il percorso relativo non viene elaborato correttamente!! : ".$rel_path);
 
-        $rel_path = $my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/"));
+        $rel_path = $my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/"));
         $this->assertEqual("include_teiop/",$rel_path,"Il percorso relativo non viene elaborato correttamente!! : ".$rel_path);
 
         $this->expectException("LIOException");

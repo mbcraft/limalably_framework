@@ -15,8 +15,8 @@ class PlainFileTest extends LTestCase
 {
     function testLastAccessTime()
     {
-        $f1 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_1.dat");
-        $f2 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_2.dat");
+        $f1 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_1.dat");
+        $f2 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_2.dat");
 
         //$this->assertEqual("1306482979",$f1->getLastAccessTime());
         //$this->assertEqual("1306482979",$f2->getLastAccessTime());
@@ -24,15 +24,15 @@ class PlainFileTest extends LTestCase
 
     function testContentHash()
     {
-        $f1 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/test_file.txt");
+        $f1 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/test_file.txt");
 
         $this->assertEqual("bca20547e94049e1ffea27223581c567022a5774",$f1->getContentHash(),"L'hash del file non corrisponde!!");
     }
 
     function testModificationTime()
     {
-        $f1 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_1.dat");
-        $f2 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_2.dat");
+        $f1 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_1.dat");
+        $f2 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_2.dat");
 
         //$this->assertEqual("1306338653",$f1->getModificationTime());
         //$this->assertEqual("1306338653",$f2->getModificationTime());
@@ -40,8 +40,8 @@ class PlainFileTest extends LTestCase
 
     function testAccessLessThanOrEqualModificationTime()
     {
-        $f1 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_1.dat");
-        $f2 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_2.dat");
+        $f1 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_1.dat");
+        $f2 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/another_dir/dont_touch_me_or_tests_will_fail_2.dat");
 
         //$this->assertTrue($f1->getLastAccessTime()<$f1->getModificationTime());
         //$this->assertTrue($f1->getLastAccessTime()>$f2->getModificationTime());
@@ -49,7 +49,7 @@ class PlainFileTest extends LTestCase
 
     function testSetGetContent()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/test_file.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/test_file.txt");
 
         $current_content = $f->getContent();
 
@@ -71,29 +71,29 @@ class PlainFileTest extends LTestCase
 
     function testFilename()
     {
-        $f_txt = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/test_file.txt");
+        $f_txt = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/test_file.txt");
         $this->assertEqual("test_file.txt", $f_txt->getFilename(),"Il nome del file non corrisponde!");
 
-        $f_css = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/css_test.css");
+        $f_css = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/css_test.css");
         $this->assertEqual("css_test.css", $f_css->getFilename(),"Il nome del file non corrisponde!");
 
-        $f_plug_txt = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/ext_test.plug.txt");
+        $f_plug_txt = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/ext_test.plug.txt");
         $this->assertEqual("ext_test.plug.txt", $f_plug_txt->getFilename(),"Il nome del file non corrisponde!");
     }
 
     function testExtensionFullAndLast()
     {
-        $f_txt = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/test_file.txt");
+        $f_txt = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/test_file.txt");
         $this->assertEqual("txt", $f_txt->getFullExtension(),"L'estensione completa non corrisponde!");
 
         $this->assertEqual("txt", $f_txt->getExtension(),"L'estensione non corrisponde!");
 
-        $f_css = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/css_test.css");
+        $f_css = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/css_test.css");
         $this->assertEqual("css", $f_css->getFullExtension(),"L'estensione completa non corrisponde!");
 
         $this->assertEqual("css", $f_css->getExtension(),"L'estensione non corrisponde!");
 
-        $f_plug_txt = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/ext_test.plug.txt");
+        $f_plug_txt = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/ext_test.plug.txt");
         $this->assertEqual("plug.txt", $f_plug_txt->getFullExtension(),"L'estensione completa non corrisponde!");
    
         $this->assertEqual("txt", $f_plug_txt->getExtension(),"L'estensione non corrisponde!");
@@ -103,8 +103,8 @@ class PlainFileTest extends LTestCase
 
     function testGetSize()
     {
-        $f_test_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/test_file.txt");
-        $f_ext_test = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/ext_test.plug.txt");
+        $f_test_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/test_file.txt");
+        $f_ext_test = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/ext_test.plug.txt");
 
         $this->assertEqual(12,$f_test_file->getSize(),"La dimensione del file non corrisponde!");
         $this->assertEqual(0,$f_ext_test->getSize(),"La dimensione del file non corrisponde!");
@@ -112,7 +112,7 @@ class PlainFileTest extends LTestCase
 
     function testCreateNewFile()
     {
-        $f_new = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/test_dir/content_dir/new_file.txt");
+        $f_new = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/test_dir/content_dir/new_file.txt");
 
         $this->assertNotEqual("", $f_new->getFullPath(),"Il percorso completo è nullo!");
         $this->assertNotNull($f_new->getFullPath(),"Il percorso completo è nullo!");
@@ -135,10 +135,13 @@ class PlainFileTest extends LTestCase
     
     function testCopy()
     {
-        $source_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_source/my_tiny_file.txt");
-        $target_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_target/");
+        $source_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_source/my_tiny_file.txt");
+        $target_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/");
         
-        $target_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/copy_target/my_tiny_file.txt");
+        $target_dir->delete(true);
+        $target_dir->touch();
+
+        $target_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/my_tiny_file.txt");
         $this->assertFalse($target_file->exists(),"Il file esiste già prima di essere copiato!");
         $source_file->copy($target_dir);
         $this->assertTrue($target_file->exists(),"Il file non è stato copiato!!");
@@ -151,7 +154,7 @@ class PlainFileTest extends LTestCase
     {
         $my_var = 1;
 
-        $my_included_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/include_test/include_me_once.php.inc");
+        $my_included_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/include_test/include_me_once.php.inc");
 
         $this->assertTrue($my_included_file->exists(),"Il file non esiste!");
         $this->assertEqual($my_var,1,"La variabile e' stata modificata!!");
@@ -169,7 +172,7 @@ class PlainFileTest extends LTestCase
 
     function testIncludeFile()
     {
-        $my_included_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/include_test/include_me.php.inc");
+        $my_included_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/include_test/include_me.php.inc");
 
         $this->assertEqual(StaticTestDumpRegistry::$my_var,1,"La variabile e' stata modificata!!");
 
@@ -184,11 +187,11 @@ class PlainFileTest extends LTestCase
 
     function testGetPathRelative()
     {
-        $my_included_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/include_test/include_me.php.inc");
+        $my_included_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/include_test/include_me.php.inc");
 
-        $this->assertEqual("fs/include_test/include_me.php.inc",$my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR']."tests")),"Il percorso relativo non viene elaborato correttamente!!");
+        $this->assertEqual("fs/include_test/include_me.php.inc",$my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR)),"Il percorso relativo non viene elaborato correttamente!!");
 
-        $this->assertEqual("include_me.php.inc",$my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/include_test")),"Il percorso relativo non viene elaborato correttamente!!");
+        $this->assertEqual("include_me.php.inc",$my_included_file->getRelativePath(new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/include_test")),"Il percorso relativo non viene elaborato correttamente!!");
 
         $this->expectException("LIOException");
         $this->assertEqual("include_me.php.inc",$my_included_file->getRelativePath(new LDir("/pluto/tests/fs/include_test")),"Il percorso relativo non viene elaborato correttamente!!");
@@ -197,7 +200,7 @@ class PlainFileTest extends LTestCase
 
     function testIncludeAndDelete()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/files_to_include/include_and_delete_me.php.inc");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/files_to_include/include_and_delete_me.php.inc");
 
         $this->assertTrue($f->exists(),"Il file da includere e cancellare non esiste!!");
 
@@ -223,24 +226,24 @@ class PlainFileTest extends LTestCase
 
     function testBlackHoleExists()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/BlackHoleTest.class.php");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/BlackHoleTest.class.php");
 
         $this->assertTrue($f->exists(),"Il test black hole e' stato eliminato!!");
     }
 
     function testRenameFiles()
     {
-        $d = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/a/");
+        $d = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/a/");
         $d->touch();
 
-        $f1 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/a/my_file.txt");
+        $f1 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/a/my_file.txt");
         $this->assertFalse($f1->exists(),"Il file f1 esiste!!");
 
         $f1->setContent("Ciao!!");
 
         $this->assertTrue($f1->exists(),"Il file f1 non esiste!!");
 
-        $f3 = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/rename_test/a/another_name_again.txt");
+        $f3 = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/rename_test/a/another_name_again.txt");
         $this->assertFalse($f3->exists(),"Il file f3 esiste gia'!!");
         $f1->rename("another_name_again.txt");
 

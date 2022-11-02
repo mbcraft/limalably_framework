@@ -23,6 +23,10 @@ class LTestRunner {
             {    
                 $full_path = $root_dir.$folder.$elem;
                 
+                if (is_file($full_path) && strpos($elem,'TestLib.class.php')===(strlen($elem)-strlen('TestLib.class.php'))) {
+                    require_once ($full_path);
+                }
+
                 if (is_file($full_path) && strpos($elem,'Test.class.php')===(strlen($elem)-strlen('Test.class.php'))) {
                     self::$test_classes[] = $root_dir.$folder.$elem;
                 }

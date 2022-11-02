@@ -209,7 +209,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
 	
 	function testProjectUpdate() {
 

@@ -11,18 +11,18 @@ class ZipUtilsTest extends LTestCase
     function testCreateArchive()
     {
         //controllo l'esistenza delle cartelle di test da utilizzare
-        $create_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/create/");
+        $create_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/create/");
         $this->assertTrue($create_dir->exists(),"La directory create non esiste!!");
         
-        $save_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/saved/");
+        $save_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/saved/");
         $save_dir->touch();
         $this->assertTrue($save_dir->exists(),"La directory save non esiste!!");
         
         
-        $target_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/saved/test_archive.zip");
+        $target_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/saved/test_archive.zip");
         $this->assertFalse($target_file->exists(),"Lo zip esiste già!");
         
-        $dir_to_zip = $_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/create/";
+        $dir_to_zip = $_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/create/";
         
         LZipUtils::createArchive($target_file,$dir_to_zip);
         
@@ -41,14 +41,14 @@ class ZipUtilsTest extends LTestCase
     
     function testExtractArchive()
     {
-        $create_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/create/");
+        $create_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/create/");
         $this->assertTrue($create_dir->exists(),"La directory create non esiste!!");
         
-        $save_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/saved/");
+        $save_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/saved/");
         $save_dir->touch();
         $this->assertTrue($save_dir->exists(),"La directory save non esiste!!");
         
-        $extract_dir = new LDir($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/extract/");
+        $extract_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/extract/");
         $extract_dir->touch();
         $this->assertTrue($extract_dir->exists(),"La directory extract non esiste!!");
         
@@ -58,10 +58,10 @@ class ZipUtilsTest extends LTestCase
             $f->delete(true);
         }
         
-        $target_file = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/saved/test_archive.zip");
+        $target_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/saved/test_archive.zip");
         $this->assertFalse($target_file->exists(),"Lo zip esiste già!");
         
-        $dir_to_zip = $_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/create/";
+        $dir_to_zip = $_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/create/";
         
         LZipUtils::createArchive($target_file,$dir_to_zip);
         
@@ -69,7 +69,7 @@ class ZipUtilsTest extends LTestCase
         $this->assertTrue($target_file->getSize()>0,"Il file creato ha dimensione vuota!!");
         
         //ora estraggo l'archivio
-        $extract_root = $_SERVER['FRAMEWORK_DIR']."tests/fs/zip_test/extract/";
+        $extract_root = $_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/zip_test/extract/";
         
         
         LZipUtils::expandArchive($target_file, $extract_root);

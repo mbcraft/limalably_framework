@@ -605,19 +605,17 @@ class DDir extends DFileSystemElement
         {
             throw new \DIOException("A file with this name already exists");
         }
-
+        //directory or files do not exists
+        
         if (!file_exists($this->__full_path)) {
             $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
         
             if ($result==true) {
                 chmod($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal());
-                return new LDir($this->__path.$name);
+                return new DDir($this->__path.$name);
             }
         }
-        else
-        {
-            throw new \LIOException("Unable to create dir : ".$this->__full_path.$name);
-        }
+        else return new DDir($this->__full_path);
 
     }
 /*
@@ -807,7 +805,7 @@ class DDir extends DFileSystemElement
         return $result;
     }
     
-    function hasSingleSubdir()
+    function hasOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)
@@ -818,7 +816,7 @@ class DDir extends DFileSystemElement
         return false;
     }
     
-    function getSingleSubdir()
+    function getOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)

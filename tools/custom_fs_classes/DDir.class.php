@@ -168,17 +168,15 @@ class DDir extends DFileSystemElement
         }
         //directory or files do not exists
         
-        $result = @mkdir($this->__full_path.$name, DFileSystemElement::getDefaultPermissionsOctal(),true);
+        if (!file_exists($this->__full_path)) {
+            $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
         
-        
-        if ($result==true) {
-            chmod($this->__full_path.$name, DFileSystemElement::getDefaultPermissionsOctal());
-            return new DDir($this->__path.$name);
+            if ($result==true) {
+                chmod($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal());
+                return new DDir($this->__path.$name);
+            }
         }
-        else
-        {
-            throw new \DIOException("Unable to create dir : ".$this->__full_path.$name);
-        }
+        else return new DDir($this->__full_path);
 
     }
 /*
@@ -364,7 +362,7 @@ class DDir extends DFileSystemElement
         return @rmdir($this->__full_path);
     }
     
-    function hasSingleSubdir()
+    function hasOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)
@@ -375,7 +373,7 @@ class DDir extends DFileSystemElement
         return false;
     }
     
-    function getSingleSubdir()
+    function getOnlyOneSubdir()
     {
         $content = $this->listFolders();
         if (count($content)==1)

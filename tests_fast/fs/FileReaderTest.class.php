@@ -10,7 +10,7 @@ class FileReaderTest extends LTestCase
 {
     function testReader1()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/myfile_01.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/myfile_01.txt");
         try
         {
             $reader = $f->openReader();
@@ -29,7 +29,7 @@ class FileReaderTest extends LTestCase
 
     function testReader2()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/non_existent_file.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/non_existent_file.txt");
 
         $this->assertFalse($f->exists(),"Il file esiste!!");
         $this->expectException("LIOException");
@@ -39,7 +39,7 @@ class FileReaderTest extends LTestCase
 
     function testReaderScanf()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/scanf_test.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/scanf_test.txt");
 
         $reader = $f->openReader();
 
@@ -57,7 +57,7 @@ class FileReaderTest extends LTestCase
 
     function testReaderSeek()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/scanf_test.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/scanf_test.txt");
 
         $reader = $f->openReader();
 
@@ -76,7 +76,7 @@ class FileReaderTest extends LTestCase
 
     function testWriterSeek()
     {
-        $f = new LFile($_SERVER['FRAMEWORK_DIR']."tests/fs/reader_writer/printf_test.txt");
+        $f = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/reader_writer/printf_test.txt");
 
         $writer = $f->openWriter();
 

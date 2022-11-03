@@ -40,7 +40,6 @@ class LocalDeployerClientTest extends LTestCase {
 		$backup_save_dir->touch();
 	}
 
-	/*
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -188,7 +187,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
+	/*
 	function testProjectCheck() {
 
 		$this->initAll();
@@ -209,7 +208,6 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
 	
 	function testProjectUpdate() {
 
@@ -244,7 +242,6 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	
 	function testFrameworkCheck() {
 
 		$this->initAll();
@@ -264,7 +261,6 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 
-	
 	function testFrameworkUpdate() {
 		$this->initAll();
 
@@ -296,8 +292,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
-
+	*/
 	function testDisappear() {
 		$this->initAll();
 
@@ -340,6 +335,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 	}
 
+	/*
 	function testManualConfig() {
 
 		$this->initAll();
@@ -367,6 +363,7 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
+	*/
 
 	function testDeployerVersion() {
 
@@ -434,5 +431,5 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
-	*/
+	
 }

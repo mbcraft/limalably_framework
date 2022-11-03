@@ -38,6 +38,8 @@ class LTestRunner {
     }
     
     static function run() {
+        LExecutionMode::setUnitTesting();
+
         foreach (self::$test_classes as $test_class) {
             //echo "Test class  : ".$test_class."\n";
             require_once($test_class);

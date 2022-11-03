@@ -49,6 +49,7 @@ class FileWriterTest extends LTestCase
         {
             $this->fail("Errore nell'apertura del writer di un file non esistente!!");
         }
+        sleep(1);
         $f->delete();
 
     }
@@ -85,6 +86,7 @@ class FileWriterTest extends LTestCase
         {
             $this->fail("Errore nell'apertura del writer di un file non esistente!!");
         }
+        sleep(1);
         $f->delete();
     }
 
@@ -116,6 +118,7 @@ class FileWriterTest extends LTestCase
         {
             $this->fail("Errore nell'apertura del writer di un file non esistente!!");
         }
+        sleep(1);
         $f->delete();
     }
 

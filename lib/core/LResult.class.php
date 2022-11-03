@@ -81,13 +81,20 @@ class LResult {
     public static function exception(\Exception $ex,bool $print_stack_trace=true) {
         self::$has_error = true;
         
+        if (LTestRunner::$unit_tests_running) {
+            echo "Exception during unit tests : \n\n";
+            echo LStringUtils::getExceptionMessage($ex, $print_stack_trace, true);
+            return;
+        }
         if (LConfigReader::executionMode("/misc/errors/display")) {
             $use_newline = $_SERVER['ENVIRONMENT'] == 'script';
             echo LStringUtils::getExceptionMessage($ex, $print_stack_trace, $use_newline);
+            return;
         } 
         if (LConfigReader::executionMode("/misc/errors/log"))
         {
             LLog::exception($ex);
+            return;
         }
     }
     

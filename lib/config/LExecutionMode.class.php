@@ -12,6 +12,9 @@
  */
 class LExecutionMode {
     
+    const MODE_UNIT_TESTING = 'unit_testing';
+    const MODE_UNIT_TESTING_SHORT = 'ut';
+
     const MODE_MAINTENANCE = 'maintenance';
     const MODE_MAINTENANCE_SHORT = 'm';
     const FILENAME_MAINTENANCE = 'maintenance.txt';
@@ -43,7 +46,14 @@ class LExecutionMode {
         return self::isFrameworkDevelopment() || self::isDevelopment() || self::isTesting();
     }
 */    
+
+    public static function isUnitTesting() {
+        return self::$my_mode == self::MODE_UNIT_TESTING;
+    }
+
     public static function isMaintenance() {
+        if (self::isUnitTesting()) return false;
+
         if (!isset($_SERVER['PROJECT_DIR'])) return false;
         
         if (self::$my_mode) return self::$my_mode == self::MODE_MAINTENANCE;
@@ -52,6 +62,8 @@ class LExecutionMode {
     }
     
     public static function isFrameworkDevelopment() {
+        if (self::isUnitTesting()) return false;
+
         if (!isset($_SERVER['PROJECT_DIR'])) return true;
         
         if (self::$my_mode) return self::$my_mode == self::MODE_FRAMEWORK_DEVELOPMENT;
@@ -60,6 +72,8 @@ class LExecutionMode {
     }
     
     public static function isDevelopment() {
+        if (self::isUnitTesting()) return false;
+
         if (!isset($_SERVER['PROJECT_DIR'])) return false;
         
         if (self::$my_mode) return self::$my_mode == self::MODE_DEVELOPMENT;
@@ -68,6 +82,8 @@ class LExecutionMode {
     }
     
     public static function isTesting() {
+        if (self::isUnitTesting()) return false;
+
         if (!isset($_SERVER['PROJECT_DIR'])) return false;
         
         if (self::$my_mode) return self::$my_mode == self::MODE_TESTING;
@@ -76,6 +92,8 @@ class LExecutionMode {
     }
     
     public static function isProduction() {
+        if (self::isUnitTesting()) return false;
+
         if (!isset($_SERVER['PROJECT_DIR'])) return false;
         
         if (self::$my_mode) return self::$my_mode == self::MODE_PRODUCTION;
@@ -133,6 +151,7 @@ class LExecutionMode {
         
         if (self::$my_mode) return self::$my_mode;
         
+        if (self::isUnitTesting()) return self::MODE_UNIT_TESTING;
         if (self::isMaintenance()) return self::MODE_MAINTENANCE;
         if (self::isFrameworkDevelopment()) return self::MODE_FRAMEWORK_DEVELOPMENT;
         if (self::isDevelopment()) return self::MODE_DEVELOPMENT;
@@ -146,6 +165,7 @@ class LExecutionMode {
         $mode_long = self::get();
         
         switch ($mode_long) {
+            case self::MODE_UNIT_TESTING : return self::MODE_UNIT_TESTING_SHORT;
             case self::MODE_FRAMEWORK_DEVELOPMENT : return self::MODE_FRAMEWORK_DEVELOPMENT_SHORT;
             case self::MODE_DEVELOPMENT : return self::MODE_DEVELOPMENT_SHORT;
             case self::MODE_TESTING : return self::MODE_TESTING_SHORT;
@@ -161,6 +181,7 @@ class LExecutionMode {
     
     public static function isByName($mode_name) {
         switch ($mode_name) {
+            case self::MODE_UNIT_TESTING : return self::isUnitTesting();
             case self::MODE_MAINTENANCE : return self::isMaintenance();
             case self::MODE_FRAMEWORK_DEVELOPMENT : return self::isFrameworkDevelopment();
             case self::MODE_DEVELOPMENT : return self::isDevelopment();
@@ -172,6 +193,7 @@ class LExecutionMode {
     
     public static function setByName($mode_name) {
         switch ($mode_name) {
+            case self::MODE_UNIT_TESTING : return self::setUnitTesting();
             case self::MODE_MAINTENANCE : return self::setMaintenance();
             case self::MODE_FRAMEWORK_DEVELOPMENT : return self::setFrameworkDevelopment();
             case self::MODE_DEVELOPMENT : return self::setDevelopment();
@@ -179,6 +201,10 @@ class LExecutionMode {
             case self::MODE_PRODUCTION : return self::setProduction();
             default : throw self::invalidExecutionModeException();
         }
+    }
+
+    public static function setUnitTesting() {
+        self::$my_mode = self::MODE_UNIT_TESTING;
     }
     
     public static function setMaintenance() {

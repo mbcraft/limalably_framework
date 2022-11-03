@@ -605,19 +605,17 @@ class DDir extends DFileSystemElement
         {
             throw new \DIOException("A file with this name already exists");
         }
-
+        //directory or files do not exists
+        
         if (!file_exists($this->__full_path)) {
             $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
         
             if ($result==true) {
                 chmod($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal());
-                return new LDir($this->__path.$name);
+                return new DDir($this->__path.$name);
             }
         }
-        else
-        {
-            throw new \LIOException("Unable to create dir : ".$this->__full_path.$name);
-        }
+        else return new DDir($this->__full_path);
 
     }
 /*
@@ -841,28 +839,36 @@ class DDir extends DFileSystemElement
     }
     
     /*
-     * Copia una cartella all'interno di un'altra sottocartella
+     * Copia una cartella all'interno di un'altra cartella
      */
-    function copy($path,$new_name=null)
+    function copy($dest_dir)
     {
-        if ($path instanceof DDir)
-            $target_dir = $path;
-        else
-            $target_dir = new DDir($path);
+        $dest_dir_ok = null;
 
-        if ($target_dir instanceof DDir)
-        {          
-            if ($new_name==null)
-                $new_name = $this->getName();
-            
-            $copy_dir = $target_dir->newSubdir($new_name);
-            
-            $all_files = $this->listAll();
-            foreach ($all_files as $elem)
+        if (is_string($dest_dir))
+            $dest_dir_ok = new DDir($dest_dir);
+        if ($dest_dir instanceof DDir)
+            $dest_dir_ok = $dest_dir;
+
+        if ($dest_dir_ok)
+        {                      
+            $all_elems = $this->listAll();
+
+            foreach ($all_elems as $elem)
             {
-                $elem->copy($copy_dir);
+                if ($elem instanceof DFile) {
+                    $elem->copy($dest_dir_ok);
+                    continue;
+                }
+                if ($elem instanceof DDir)
+                {
+                    $subdir = $dest_dir_ok->newSubdir($elem->getName());
+                    $elem->copy($subdir);
+                    continue;
+                }
+                throw new \DIOException("Unable to copy element of class : ".get_class($elem));
             }
-        }
+        } else throw new \DIOException("dest_dir is not a valid path or LDir instance!");
 
     }
 
@@ -1003,13 +1009,14 @@ class DFile extends DFileSystemElement
         return $this->getSize()==0;
     }
 
-    function copy($target_dir,$new_name=null)
+    function copy($dest_dir_or_file)
     {      
-        if ($target_dir instanceof DDir)
+        if ($dest_dir_or_file instanceof DDir)
         {
-            if ($new_name==null)
-                $new_name = $this->getFilename();
-            return copy($this->__full_path,$target_dir->__full_path.'/'.$new_name);
+            return copy($this->__full_path,$dest_dir_or_file->__full_path.$this->getFilename());
+        }
+        if ($dest_dir_or_file instanceof DFile) {
+            return copy($this->__full_path,$dest_dir_or_file->__full_path);
         }
     }
 

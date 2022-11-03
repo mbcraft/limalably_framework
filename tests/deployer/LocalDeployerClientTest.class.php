@@ -3,7 +3,7 @@
 
 class LocalDeployerClientTest extends LTestCase {
 	
-	const TEST_DIR = "tests_fast";
+	const TEST_DIR = "tests";
 
 	private function initEmptyServer() {
 		$deployer_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/');
@@ -40,7 +40,7 @@ class LocalDeployerClientTest extends LTestCase {
 		$backup_save_dir->touch();
 	}
 
-	
+	/*
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -156,8 +156,8 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
-	/*
+	
+	
 	function testDeployerUpdate() {
 
 		$this->initAll();
@@ -367,7 +367,7 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	*/
+
 	function testDeployerVersion() {
 
 		$this->initAll();
@@ -434,5 +434,5 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
-	
+	*/
 }

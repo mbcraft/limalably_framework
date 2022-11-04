@@ -16,6 +16,8 @@ class LDeployerClient {
 
 	const DEPLOYER_PATH_FROM_ROOT = 'DPFR';
 
+	private $DPFR;
+
 	private $current_driver = null;
 	private $current_uri = null;
 	private $current_password = "";
@@ -223,16 +225,29 @@ class LDeployerClient {
 
 	}
 
+    private function getFinalPathList($path_list) {
+
+        $result = [];
+
+        foreach ($path_list as $p) {
+            if ($p==='@') $result[] = $this->DPFR;
+                else $result[] = $p;
+        }
+
+        return $result;
+
+    }
+
 	private function clientListHashes($excluded_paths,$included_paths) {
 			
 		$this->visit_result = [];
 
-		$this->excluded_paths = $excluded_paths;
-		$this->included_paths = $included_paths;
+		$this->excluded_paths = $this->getFinalPathList($excluded_paths);
+		$this->included_paths = $this->getFinalPathList($included_paths);
 
 		if (count($this->included_paths)>0) {
-			foreach ($this->included_paths as $dp) {
-				$my_dir = new LDir($_SERVER['PROJECT_DIR'].$dp);
+			foreach ($this->included_paths as $path) {
+				$my_dir = new LDir($_SERVER['PROJECT_DIR'].$path);
 
 				if (!$my_dir->exists()) continue;
 
@@ -294,11 +309,13 @@ class LDeployerClient {
 		if ($deployer_key->exists() && $deployer_key->isReadable()) {
 			$lr = $deployer_key->openReader();
 
+			$this->DPFR = $lr->readLine();
 			$this->current_uri = $lr->readLine();
 			$this->current_password = $lr->readLine();
 
 			$lr->close();
 
+			echo "Local deployer path is project : ".$this->DPFR."\n";
 			echo "Deployer uri found in key : ".$this->current_uri."\n";
 			echo "Waiting 3 seconds to let you block if the uri is wrong ...\n";
 			sleep(3);
@@ -360,7 +377,7 @@ class LDeployerClient {
 		$deployer_key_file->delete();
 	}
 
-	private function saveKey(string $name,string $deployer_uri) {
+	private function saveKey(string $name,string $local_deployer_path,string $deployer_uri) {
 
 		$this->initDeployerClientKeysFolder();
 
@@ -382,6 +399,8 @@ class LDeployerClient {
 		$deployer_key_file = $this->deployer_keys_folder->newFile($name.self::DEPLOYER_KEY_EXTENSION);
 
 		$lw = $deployer_key_file->openWriter();
+
+		$lw->writeln($local_deployer_path);
 
 		$lw->writeln($deployer_uri);
 
@@ -410,7 +429,7 @@ class LDeployerClient {
 		echo "\n\n";
 		echo "Command List : \n\n";
 		echo "./bin/deployer.sh help --> prints this help\n\n";
-		echo "./bin/deployer.sh attach <deploy_key_name> <deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
+		echo "./bin/deployer.sh attach <deploy_key_name> <local deployer.php path> <remote deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
 		echo "./bin/deployer.sh detach <deploy_key_name> --> detaches the deployer removing the server token and deleting the local key\n\n";
 		echo "./bin/deployer.sh get_deployer_path_from_root <deploy_key_name> --> gets the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh set_deployer_path_from_root <deploy_key_name> <deployer_path> --> set the deployer path from root dir\n\n";
@@ -440,11 +459,17 @@ class LDeployerClient {
 		} else return $this->failure("Unable to load key ".$key_name);
 	}
 
-	public function attach(string $key_name,string $deployer_uri) {
+	public function attach(string $key_name,string $local_deployer_path,string $deployer_uri) {
 
-		$random_token = $this->saveKey($key_name,$deployer_uri);
+		$random_token = $this->saveKey($key_name,$local_deployer_path,$deployer_uri);
 		echo "Key generated, starts with : [".substr($random_token,0,5)."...]\n";
 		if ($this->loadKey($key_name,false)) {
+
+			$local_deployer_file = new LFile($local_deployer_path);
+
+			if (!$local_deployer_file->exists()) return $this->failure("Local deployer file is not found! : ".$local_deployer_file->getFullPath());
+
+			$this->DPFR = $local_deployer_path;
 
 			$this->current_password = $random_token;
 
@@ -502,9 +527,9 @@ class LDeployerClient {
 	public function set_deployer_path_from_root(string $key_name,string $deployer_path) {
 		if ($this->loadKey($key_name)) {
 
-			$r = $this->current_driver->set_env($this->current_password,self::DEPLOYER_PATH_FROM_ROOT,$deployer_path);
+			$r = $this->current_driver->setEnv($this->current_password,self::DEPLOYER_PATH_FROM_ROOT,$deployer_path);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to set environment variable from deployer instance : ".$result['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to set environment variable from deployer instance : ".$r['message']);
 
 			echo "Deployer path from root now is : ".$deployer_path."\n\n";
 
@@ -754,7 +779,7 @@ class LDeployerClient {
 
 			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance : ".$r['message']);
 
 			$server_list = $r['data'];
 
@@ -766,7 +791,9 @@ class LDeployerClient {
 
 			return true;
 
-		} else return false;
+		} else 
+			return false;
+		
 	}
 
 

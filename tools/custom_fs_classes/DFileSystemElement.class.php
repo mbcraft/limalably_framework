@@ -123,11 +123,11 @@ abstract class DFileSystemElement
         if (strpos($path,'/')===0) {
             $this->__full_path = $path;
 
-            $base_folder = $_SERVER['DEPLOYER_DIR'];
+            $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
 
             if (strpos($this->__full_path,$base_folder)===0) $this->__path = substr($this->__full_path,strlen($base_folder));
         } else {
-            $base_folder = $_SERVER['DEPLOYER_DIR'];
+            $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
             $this->__full_path = $base_folder.$path;
         }
 

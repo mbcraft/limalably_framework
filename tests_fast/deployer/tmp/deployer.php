@@ -212,11 +212,11 @@ abstract class DFileSystemElement
         if (strpos($path,'/')===0) {
             $this->__full_path = $path;
 
-            $base_folder = $_SERVER['PROJECT_DIR'];
+            $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
 
             if (strpos($this->__full_path,$base_folder)===0) $this->__path = substr($this->__full_path,strlen($base_folder));
         } else {
-            $base_folder = $_SERVER['PROJECT_DIR'];
+            $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
             $this->__full_path = $base_folder.$path;
         }
 
@@ -391,7 +391,7 @@ class DFileSystemUtils
 
     static function isFile(string $path)
     {
-        $base_folder = $_SERVER['PROJECT_DIR'];
+        $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         if (strpos($path,'/')===0) {
             
@@ -404,7 +404,7 @@ class DFileSystemUtils
 
     static function isDir(string $path)
     {
-        $base_folder = $_SERVER['PROJECT_DIR'];
+        $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         if (strpos($path,'/')===0) {
             
@@ -430,14 +430,14 @@ class DFileSystemUtils
 
     static function getFreeDiskSpace()
     {
-        $path = $_SERVER['PROJECT_DIR'];
+        $path = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         return disk_free_space($path);
     }
 
     static function getTotalDiskSpace()
     {
-        $path = $_SERVER['PROJECT_DIR'];
+        $path = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         return disk_total_space($path);
     }
@@ -1316,7 +1316,7 @@ $current_dir = __DIR__;
 
 if (!DStringUtils::endsWith($current_dir,'/')) $current_dir.='/';
 
-$_SERVER['PROJECT_DIR'] = $current_dir;
+$_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 //starting deployer controller ---
 
@@ -1350,7 +1350,7 @@ class DeployerController {
 
 		$this->root_dir = $current_dir;
 
-        $_SERVER['PROJECT_DIR'] = $this->root_dir->getFullPath();
+        $_SERVER['DEPLOYER_PROJECT_DIR'] = $this->root_dir->getFullPath();
 
 	}
 
@@ -1576,7 +1576,7 @@ class DeployerController {
 
     //using a trick to avoid replacement
 
-    const ENV_VAR_NAME_MAP = ['PWD' => 'Deployer Password','RMP' => 'Root mangle dir from deployer dir','WWWRD' => 'Wwwroot dir path from root dir'];
+    const ENV_VAR_NAME_MAP = ['PWD' => 'Deployer Password','DPFR' => 'Deployer path from root'];
 
     public function listEnv($password) {
         if ($this->accessGranted($password)) {

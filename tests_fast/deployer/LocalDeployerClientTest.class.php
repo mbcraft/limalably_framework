@@ -40,6 +40,17 @@ class LocalDeployerClientTest extends LTestCase {
 		$backup_save_dir->touch();
 	}
 
+	private function isSuccess($result) {
+		if ($result===true) return true;
+		else return false;
+	}
+
+	private function getErrorMessage($result) {
+		if (is_array($result)) return $result['message'];
+		else return '';
+	}
+
+	//ok
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -50,9 +61,11 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$this->assertTrue($r,"Impossibile effettuare l'attach con successo!");
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
@@ -71,7 +84,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 	}
 	
-	
+	//ok
 	function testReset() {
 
 		$this->initAll();
@@ -82,7 +95,9 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
@@ -108,6 +123,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 	}
 
+	//ok
 	function testTempClean() {
 
 		$this->initAll();
@@ -118,7 +134,9 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
@@ -156,7 +174,8 @@ class LocalDeployerClientTest extends LTestCase {
 
 	}
 	
-	
+	//ok
+	/*
 	function testDeployerUpdate() {
 
 		$this->initAll();
@@ -169,7 +188,9 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -187,16 +208,26 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	/*
+	*/
+
+	//ok
 	function testProjectCheck() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$r = $dc->set_deployer_path_from_root('default_key','deployer.php');
+
+		$this->assertTrue($r,"Il set del percorso dalla root non è andato a buon fine!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
 		$r = $dc->project_check('default_key');
 
@@ -208,16 +239,25 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
+
+	/*
 	function testProjectUpdate() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$r = $dc->set_deployer_path_from_root('default_key','deployer.php');
+
+		$this->assertTrue($r,"Il set del percorso del deployer non è valido");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
 		$r = $dc->project_update('default_key');
 
@@ -241,14 +281,18 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
+	*/
+
+	/*
 	function testFrameworkCheck() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -260,13 +304,17 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
+	*/
 
+	/*
 	function testFrameworkUpdate() {
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -293,12 +341,16 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	*/
+
+	//ok
 	function testDisappear() {
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -312,14 +364,18 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($fd->exists(),"Il deployer non è stato cancellato!");
 	}
+	
 
+	//ok
 	function testAutoConfig() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -335,14 +391,16 @@ class LocalDeployerClientTest extends LTestCase {
 
 	}
 
-	/*
+	//ok
 	function testManualConfig() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -363,15 +421,17 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	*/
 
+	//ok
 	function testDeployerVersion() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -386,14 +446,18 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
+	
 
+	//ok
 	function testBackup() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -421,7 +485,8 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
+
+	//ok
 	function testHelp() {
 		$this->initAll();
 
@@ -431,5 +496,6 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
+	
 	
 }

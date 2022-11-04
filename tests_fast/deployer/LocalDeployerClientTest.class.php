@@ -240,7 +240,7 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 
-	/*
+	//ok
 	function testProjectUpdate() {
 
 		$this->initAll();
@@ -281,9 +281,8 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	*/
 
-	/*
+	//ok
 	function testFrameworkCheck() {
 
 		$this->initAll();
@@ -304,9 +303,8 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	*/
+	
 
-	/*
 	function testFrameworkUpdate() {
 		$this->initAll();
 
@@ -340,7 +338,6 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	*/
 
 	//ok
 	function testDisappear() {

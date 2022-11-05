@@ -162,7 +162,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	
+
 	/*
 	function testDeployerUpdate() {
 
@@ -194,8 +194,9 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
-	
+	*/
+
+	/*
 	function testProjectCheck() {
 
 		$this->initAll();
@@ -223,6 +224,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	*/
+
 	/*
 	function testProjectUpdate() {
 
@@ -262,6 +264,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
+	*/
 
 	function testFrameworkCheck() {
 
@@ -295,18 +298,6 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'update non è andato a buon fine!");
 
-		$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/SampleClass.class.php');
-
-		$this->assertTrue($f1->exists(),"Il file del framework non è stato copiato con successo!");
-
-		$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/bin/sample_command.sh');
-
-		$this->assertFalse($f2->exists(),"Il file nella sottodirectory del framework è stato copiato ma non doveva esserci!");
-
-		$f3 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/lib/subdir/SampleLib.class.php');
-
-		$this->assertTrue($f3->exists(),"Il file nella sotto sotto directory del framework non è stato copiato con successo!");
-
 		$r = $dc->detach('default_key');
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
@@ -323,7 +314,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
-		$fd = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$fd = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
 
 		$this->assertTrue($fd->exists(),"Il deployer non è al suo posto!");
 
@@ -366,7 +357,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
-		$host_config = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/config/hostnames/my_host/config.json');
+		$host_config = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/config/hostnames/my_host/config.json');
 
 		$this->assertFalse($host_config->exists(),"Il file di configurazione esiste già nella destinazione e non dovrebbe!");
 
@@ -406,6 +397,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 	
+	/*
 	function testBackup() {
 
 		$this->initAll();
@@ -414,7 +406,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
-		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+		$this->assertTrue($this->isSuccess($r),"L'attach non è avvenuto con successo!");
 
 		$backup_save_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/backup_save/');
 
@@ -426,7 +418,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$r = $dc->backup('default_key',$backup_save_dir->getFullPath());
 
-		$this->assertTrue($r,"La procedura di backup ha dato esito negativo!");
+		$this->assertTrue($this->isSuccess($r),"La procedura di backup ha dato esito negativo! : ".$this->getErrorMessage($r));
 
 		$file_list = $backup_save_dir->listFiles();
 

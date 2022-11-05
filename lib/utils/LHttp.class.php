@@ -37,7 +37,7 @@ class LHttp
         return $response;
     }
 
-    public static function post_to_file($url,$params,$target) {
+    public static function post_to_file($url,$params,$target_file) {
         $ch = curl_init($url);
         
         curl_setopt($ch,CURLOPT_POST,true);

@@ -13,6 +13,28 @@ class LFile extends LFileSystemElement
 {
     static $content_hash_cache = [];
 
+    function setOwner($user_name) {
+        chown($this->__full_path,$user_name);
+    }
+
+    function setGroup($group_name) {
+        chgrp($this->__full_path,$group_name);
+    }
+
+    function execute(bool $return_result=true) {
+        if ($return_result) {
+            $result = [];
+
+            exec($this->__full_path,$result);
+
+            return $result;
+        } else {
+
+            system($this->__full_path);
+
+        }
+    }
+
     function getDirectory()
     {
         return new LDir(dirname($this->__full_path));

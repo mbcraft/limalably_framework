@@ -187,6 +187,10 @@ abstract class LFileSystemElement
         return $this->hasPermissions("--w-------");
     }
 
+    function isExecutable() {
+        return $this->hasPermissions("---x------");
+    }
+
     function hasPermissions($rwx_permissions)
     {
         $current_perms = $this->getPermissions();

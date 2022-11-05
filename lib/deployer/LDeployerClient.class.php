@@ -659,7 +659,7 @@ class LDeployerClient {
 
 				if ($this->isSuccess($r1) && $this->isSuccess($r2)) {
 					
-					echo "Deployer instance templ clean executed successfully.\n";
+					echo "Deployer instance 'temp' folder cleanup executed successfully.\n";
 
 					return true;
 				}
@@ -779,7 +779,7 @@ class LDeployerClient {
 
 			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance : ".$r['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance : ".$this->getResultMessage($r));
 
 			$server_list = $r['data'];
 

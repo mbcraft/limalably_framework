@@ -579,7 +579,9 @@ class LDeployerClient {
 
 			$r2 = $this->current_driver->setEnv("","PWD",$this->current_password);
 
-			if (!$this->isSuccess($r1) || !$this->isSuccess($r2)) return $this->failure("Unable to complete deployer update procedure.");
+			$r3 = $this->current_driver->hello($this->current_password);
+
+			if (!$this->isSuccess($r1) || !$this->isSuccess($r2) || !$this->isSuccess($r3)) return $this->failure("Unable to complete deployer update procedure.");
 
 			return true;
 

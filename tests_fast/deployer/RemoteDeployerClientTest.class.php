@@ -48,7 +48,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		if (is_array($result)) return $result['message'];
 		else return '';
 	}
-
+	
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -163,7 +163,6 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 	
-
 	/*
 	function testDeployerUpdate() {
 
@@ -197,7 +196,7 @@ class RemoteDeployerClientTest extends LTestCase {
 	}
 	*/
 
-	/*
+	
 	function testProjectCheck() {
 
 		$this->initAll();
@@ -208,11 +207,11 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
 		$r = $dc->set_deployer_path_from_root('default_key','deployer.php');
 
 		$this->assertTrue($r,"Il set del percorso dalla root non è andato a buon fine!");
-
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
 		$r = $dc->project_check('default_key');
 
@@ -224,9 +223,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	*/
-
-	/*
+	
 	function testProjectUpdate() {
 
 		$this->initAll();
@@ -247,15 +244,15 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'update non è andato a buon fine!");
 
-		$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_file.txt');
+		$f1 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_file.txt');
 
 		$this->assertTrue($f1->exists(),"Il file di progetto non è stato copiato con successo!");
 
-		$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/my_file.txt');
+		$f2 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_dir/my_file.txt');
 
 		$this->assertTrue($f2->exists(),"Il file di progetto nella sottodirectory non è stato copiato con successo!");
 
-		$f3 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/subdir/my_subdir_file.txt');
+		$f3 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_dir/subdir/my_subdir_file.txt');
 
 		$this->assertTrue($f3->exists(),"Il file di progetto nella sotto sotto directory non è stato copiato con successo!");
 
@@ -265,9 +262,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	*/
 
-	
 	function testFrameworkCheck() {
 
 		$this->initAll();

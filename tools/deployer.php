@@ -1425,13 +1425,13 @@ class DeployerController {
 		if ($this->accessGranted($password)) {
 
             if ($this->containsDeployerPath($excluded_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
             if ($this->containsDeployerPath($included_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }

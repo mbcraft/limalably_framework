@@ -8,6 +8,9 @@
 
 interface LIDeployerInstanceDriver {
 	
+	const SUCCESS_RESULT = ':)';
+	const FAILURE_RESULT = ':(';
+	
 	public function version($password);
 
 	public function listElements($password,$folder);

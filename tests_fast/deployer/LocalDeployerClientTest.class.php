@@ -59,6 +59,8 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
 
+		if ($key_file->exists()) $key_file->delete();
+
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
@@ -92,6 +94,8 @@ class LocalDeployerClientTest extends LTestCase {
 		$dc = new LDeployerClient();
 
 		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
@@ -131,6 +135,8 @@ class LocalDeployerClientTest extends LTestCase {
 		$dc = new LDeployerClient();
 
 		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 

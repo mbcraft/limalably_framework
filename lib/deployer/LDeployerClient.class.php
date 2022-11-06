@@ -841,14 +841,14 @@ class LDeployerClient {
 			$r = $this->current_driver->downloadDir($this->current_password,'/',$backup_file);
 		
 			if ($this->isSuccess($r)) return true;
-			else return $this->failure("Unable to backup remote installation into zip file.");
+			else return $this->failure("Unable to backup remote installation into zip file : ".$r['message']);
 		} else return false;
 	}
 
 	private function executeConfigSync($config_folder) {
 		$cf = new LDir($_SERVER['PROJECT_DIR'].'/config/hostnames/'.$config_folder);
 
-		if (!$cf->exists()) return $this->failure("Speciefied hostname not found in config folder : ".$config_folder);
+		if (!$cf->exists()) return $this->failure("Specified hostname not found in config folder : ".$config_folder);
 
 		$r0 = $this->current_driver->listElements($this->current_password,'/config/hostnames/');
 

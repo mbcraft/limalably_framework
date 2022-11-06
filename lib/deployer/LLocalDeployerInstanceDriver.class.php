@@ -10,9 +10,6 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 	
 	private $controller;
 
-	const SUCCESS_RESULT = ':)';
-	const FAILURE_RESULT = ':(';
-
 	function __construct($deployer_instance_file) {
 		if (!$deployer_instance_file instanceof LFile) throw new \Exception("Deployer file not found!");
 

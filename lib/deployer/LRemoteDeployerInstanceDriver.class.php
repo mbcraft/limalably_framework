@@ -121,6 +121,9 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 		LHttp::post_to_file($this->full_deployer_url,$params,$save_file);
 
+		if ($save_file->exists() && $save_file->getSize()>0) return ['result' => self::SUCCESS_RESULT];
+		else return ['result' => self::FAILURE_RESULT,'message' => 'Unable to save file on downloadDir : '.$save_file->getFullPath()];
+
 	}
 
 	public function listEnv($password) {

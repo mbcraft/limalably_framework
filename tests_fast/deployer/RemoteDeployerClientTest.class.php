@@ -48,7 +48,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		if (is_array($result)) return $result['message'];
 		else return '';
 	}
-	
+
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -162,6 +162,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
+	
 
 	/*
 	function testDeployerUpdate() {
@@ -266,6 +267,7 @@ class RemoteDeployerClientTest extends LTestCase {
 	}
 	*/
 
+	
 	function testFrameworkCheck() {
 
 		$this->initAll();
@@ -397,7 +399,6 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 	
-	/*
 	function testBackup() {
 
 		$this->initAll();
@@ -432,7 +433,6 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	*/
 	
 	function testHelp() {
 		$this->initAll();

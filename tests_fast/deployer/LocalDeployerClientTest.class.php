@@ -83,7 +83,6 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 
-
 	}
 	
 	//ok
@@ -179,6 +178,27 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
+
+	//ok
+	function testSetGetEnv() {
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$dc->set_deployer_path_from_root('default_key','ABCD');
+
+		$dc->get_deployer_path_from_root('default_key');
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($this->isSuccess($r),"Il detach non è avvenuto con successo!");
+
+		$this->disposeAll();
+	}
 	
 	//ok
 	function testDeployerUpdate() {
@@ -201,6 +221,8 @@ class LocalDeployerClientTest extends LTestCase {
 
 		sleep(1);
 
+		$r = $dc->set_deployer_path_from_root('default_key','deployer.php');
+
 		$r = $dc->deployer_update('default_key');
 
 		$time2 = $df->getLastModificationTime();
@@ -213,7 +235,7 @@ class LocalDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
 	//ok
 	function testProjectCheck() {
 
@@ -447,7 +469,7 @@ class LocalDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	
+
 
 	//ok
 	function testBackup() {

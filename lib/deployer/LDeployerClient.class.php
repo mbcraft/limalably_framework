@@ -513,11 +513,11 @@ class LDeployerClient {
 	public function get_deployer_path_from_root(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
-			$r = $this->current_driver->get_env($this->current_password,self::DEPLOYER_PATH_FROM_ROOT);
+			$r = $this->current_driver->getEnv($this->current_password,self::DEPLOYER_PATH_FROM_ROOT);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to get environment variable from deployer instance : ".$result['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get environment variable from deployer instance : ".$r['message']);
 
-			echo "Deployer path from root is : ".var_export($result['data'],true)."\n\n";
+			echo "Deployer path from root is : ".$r['data']."\n\n";
 
 			return true;
 
@@ -575,7 +575,13 @@ class LDeployerClient {
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to complete deployer update procedure.");
 
-			$r1 = $this->current_driver->copyFile("",'/'.$deployer_filename,$updated_deployer);
+			$result = $this->current_driver->getEnv("","DPFR");
+
+			if (!$this->isSuccess($result)) return $this->failure("Unable to get deployer path from root from deployer instance");
+
+			$deployer_path_from_root = $result['data'];
+
+			$r1 = $this->current_driver->copyFile("",$deployer_path_from_root,$updated_deployer);
 
 			$r2 = $this->current_driver->setEnv("","PWD",$this->current_password);
 
@@ -797,8 +803,6 @@ class LDeployerClient {
 			return false;
 		
 	}
-
-
 
 	public function project_update(string $key_name) {
 		if ($this->loadKey($key_name)) {

@@ -49,6 +49,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		else return '';
 	}
 	
+	//ok
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -79,6 +80,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 
+	//ok
 	function testReset() {
 
 		$this->initAll();
@@ -115,6 +117,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 
+	//ok
 	function testTempClean() {
 
 		$this->initAll();
@@ -163,7 +166,34 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 	
-	/*
+	//ok
+	function testSetGetEnv() {
+		$this->initAll();
+
+		$df = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
+
+		$this->assertTrue($df->exists(),"Il deployer non è stato trovato al suo posto!");
+
+		$time1 = $df->getLastModificationTime();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+
+		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$dc->set_deployer_path_from_root('default_key','ABCD');
+
+		$dc->get_deployer_path_from_root('default_key');
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($this->isSuccess($r),"Il detach non è avvenuto con successo! : ");
+
+		$this->disposeAll();
+	}
+
+	//ok
 	function testDeployerUpdate() {
 
 		$this->initAll();
@@ -182,6 +212,14 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		sleep(1);
 
+		$r = $dc->set_deployer_path_from_root('default_key','deployer.php');
+
+		$dc->get_deployer_path_from_root('default_key');
+
+		$this->disposeAll();
+
+		exit(1);
+
 		$r = $dc->deployer_update('default_key');
 
 		$time2 = $df->getLastModificationTime();
@@ -190,13 +228,12 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$r = $dc->detach('default_key');
 
-		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+		$this->assertTrue($this->isSuccess($r),"Il detach non è avvenuto con successo! : ");
 
 		$this->disposeAll();
 	}
-	*/
-
 	
+	//ok
 	function testProjectCheck() {
 
 		$this->initAll();
@@ -224,6 +261,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
+	//ok
 	function testProjectUpdate() {
 
 		$this->initAll();
@@ -263,6 +301,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 
+	//ok
 	function testFrameworkCheck() {
 
 		$this->initAll();
@@ -282,6 +321,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
+	//ok
 	function testFrameworkUpdate() {
 		$this->initAll();
 
@@ -302,6 +342,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 
+	//ok
 	function testDisappear() {
 		$this->initAll();
 
@@ -322,6 +363,7 @@ class RemoteDeployerClientTest extends LTestCase {
 		$this->assertFalse($fd->exists(),"Il deployer non è stato cancellato!");
 	}
 	
+	//ok
 	function testAutoConfig() {
 
 		$this->initAll();
@@ -344,6 +386,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 
+	//ok
 	function testManualConfig() {
 
 		$this->initAll();
@@ -372,6 +415,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerVersion() {
 
 		$this->initAll();
@@ -394,6 +438,7 @@ class RemoteDeployerClientTest extends LTestCase {
 
 	}
 	
+	//ok
 	function testBackup() {
 
 		$this->initAll();
@@ -428,7 +473,8 @@ class RemoteDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-	
+
+	//ok
 	function testHelp() {
 		$this->initAll();
 

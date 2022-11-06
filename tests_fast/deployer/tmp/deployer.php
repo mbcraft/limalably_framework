@@ -1425,13 +1425,13 @@ class DeployerController {
 		if ($this->accessGranted($password)) {
 
             if ($this->containsDeployerPath($excluded_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
             if ($this->containsDeployerPath($included_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
@@ -1588,7 +1588,11 @@ class DeployerController {
         if ($this->accessGranted($password)) {
             if (!isset(self::ENV_VAR_NAME_MAP[$env_var_name])) return $this->failure("Unavailable environment variable to get : ".$env_var_name);
 
-            return ["result" => self::SUCCESS_RESULT,'data' => self::$$env_var_name];
+            $data = null;
+            if ($env_var_name=='PWD') $data = self::$PWD;
+            if ($env_var_name=='DPFR') $data = self::$DPFR;
+
+            return ["result" => self::SUCCESS_RESULT,'data' => $data];
         } else return $this->failure("Wrong password.");
     }
 

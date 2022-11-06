@@ -39,6 +39,7 @@ class DeployerServerTest extends LTestCase {
 		$_FILES['f']['tmp_name'] = $file->getFullPath();
 	}
 	
+	//ok
 	function testDeployerHello() {
 
 		$this->reinit();
@@ -55,6 +56,7 @@ class DeployerServerTest extends LTestCase {
 	
 	}
 	
+	//ok
 	function testDeployerChangePassword() {
 
 		$this->reinit();
@@ -84,6 +86,7 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerCopyFile() {
 
 		$this->reinit();
@@ -112,6 +115,7 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerMakeDir() {
 
 		$this->reinit();
@@ -146,6 +150,7 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerDeleteFile() {
 
 		$this->reinit();
@@ -194,6 +199,7 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerDeleteDir() {
 
 		$this->reinit();
@@ -220,6 +226,7 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerListElements() {
 
 		$this->reinit();
@@ -263,6 +270,7 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerListHashes() {
 
 		$this->reinit();
@@ -307,6 +315,7 @@ class DeployerServerTest extends LTestCase {
 
 	}
 
+	//ok
 	function testDeployerDownloadDir() {
 
 		$this->reinit();

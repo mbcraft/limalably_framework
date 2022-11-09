@@ -16,6 +16,13 @@ class LTestRunner {
     
     static function collect($root_dir,$folder) {
         
+        if (LStringUtils::endsWith('_',$folder)) {
+            
+            echo "Skipping folder '".$folder."' as it ends with '_' ...\n";
+
+            return;
+        }
+
         $elements = scandir($root_dir.$folder); 
         
         foreach ($elements as $elem) {

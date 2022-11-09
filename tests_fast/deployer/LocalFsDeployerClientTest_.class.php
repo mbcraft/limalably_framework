@@ -1,7 +1,7 @@
 <?php
 
 
-class LocalDeployerClientTest extends LTestCase {
+class LocalFsDeployerClientTest extends LTestCase {
 	
 	const TEST_DIR = "tests_fast";
 

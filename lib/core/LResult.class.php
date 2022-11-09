@@ -81,7 +81,7 @@ class LResult {
     public static function exception(\Exception $ex,bool $print_stack_trace=true) {
         self::$has_error = true;
         
-        if (LTestRunner::$unit_tests_running) {
+        if (LExecutionMode::isUnitTesting()) {
             echo "Exception during unit tests : \n\n";
             echo LStringUtils::getExceptionMessage($ex, $print_stack_trace, true);
             return;

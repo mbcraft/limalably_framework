@@ -585,6 +585,8 @@ class LDeployerClient {
 
 			$r2 = $this->current_driver->setEnv("","PWD",$this->current_password);
 
+			
+
 			$r3 = $this->current_driver->hello($this->current_password);
 
 			if (!$this->isSuccess($r1) || !$this->isSuccess($r2) || !$this->isSuccess($r3)) return $this->failure("Unable to complete deployer update procedure.");
@@ -660,7 +662,14 @@ class LDeployerClient {
 					if ($el=='temp/') $temp_found = true;
 				}
 
-				if (!$temp_found) return $this->failure("Unable to find temp folder to clean.");
+				if (!$temp_found) 
+				{
+					echo "temp directory not found, creating it.";
+
+					$this->current_driver->makeDir($this->current_password,'temp/');
+
+					return true;
+				}
 
 				$r1 = $this->current_driver->deleteDir($this->current_password,'temp/',true);
 				$r2 = $this->current_driver->makeDir($this->current_password,'temp/');

@@ -1,6 +1,6 @@
 <?php
 
-class RemoteDeployerClientTest extends LTestCase {
+class LocalHttpDeployerClientTest extends LTestCase {
 	
 
 	const TEST_DIR = "tests_fast";

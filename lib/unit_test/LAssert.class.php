@@ -41,10 +41,22 @@ class LAssert {
         
         throw new LTestFailure($message);
     }
+
+    private function getValueAsString($value) {
+        if ($value===true) return "true";
+        if ($value===false) return "false";
+        if (is_string($value)) return $value;
+        if (is_numeric($value)) return $value;
+        if (is_array($value)) return var_export($value,true);
+        if (get_class($value)!=null) {
+            $class = get_class($value);
+            return "Object of class ".$class;
+        }
+    }
     
     public function assertFalse($value,$message) {
         if ($value==true) {
-            self::failure($message." - Value:'".$value."'");
+            self::failure($message." - Value:'".$this->getValueAsString($value)."'");
         } else {
             self::success();
         }
@@ -52,7 +64,7 @@ class LAssert {
     
     public function assertTrue($value,$message) {
         if ($value==false) {
-            self::failure($message." - Value:'".$value."'");
+            self::failure($message." - Value:'".$this->getValueAsString($value)."'");
         } else {
             self::success();
         }
@@ -66,7 +78,7 @@ class LAssert {
     
     public function assertNotSame($actual,$expected,$message) {
         if ($actual===$expected) {
-            self::failure($message." - Actual:'".$actual."' - Expected:'".$expected."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Expected:'".$this->getValueAsString($expected)."'");
         } else {
             self::success();
         }
@@ -75,7 +87,7 @@ class LAssert {
     
     public function assertSame($actual,$expected,$message) {
         if ($actual!==$expected) {
-            self::failure($message." - Actual:'".$actual."' - Expected:'".$expected."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Expected:'".$this->getValueAsString($expected)."'");
         } else {
             self::success();
         }
@@ -83,7 +95,7 @@ class LAssert {
     
     public function assertLessThanOrEqual($actual,$max,$message) {
         if ($actual>$max) {
-            self::failure($message." - Actual:'".$actual."' - Max:'".$max."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Max:'".$this->getValueAsString($max)."'");
         } else {
             self::success();
         }
@@ -92,7 +104,7 @@ class LAssert {
     
     public function assertLessThan($actual,$max,$message) {
         if ($actual>=$max) {
-            self::failure($message." - Actual:'".$actual."' - Max:'".$max."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Max:'".$this->getValueAsString($max)."'");
         } else {
             self::success();
         }
@@ -100,7 +112,7 @@ class LAssert {
     
     public function assertGreaterThanOrEqual($actual,$min,$message) {
         if ($actual<$min) {
-            self::failure($message." - Actual:'".$actual."' - Min:'".$min."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Min:'".$this->getValueAsString($min)."'");
         } else {
             self::success();
         }
@@ -109,7 +121,7 @@ class LAssert {
     
     public function assertGreaterThan($actual,$min,$message) {
         if ($actual<=$min) {
-            self::failure($message." - Actual:'".$actual."' - Min:'".$min."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Min:'".$this->getValueAsSting($min)."'");
         } else {
             self::success();
         }
@@ -117,7 +129,7 @@ class LAssert {
     
     public function assertNotEqual($actual,$expected,$message) {
         if ($actual==$expected) {
-            self::failure($message." - Actual:'".$actual."' - Expected:'".$expected."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Expected:'".$this->getValueAsString($expected)."'");
         } else
         {
             self::success();
@@ -126,7 +138,7 @@ class LAssert {
     
     public function assertEqual($actual,$expected,$message) {
         if ($actual!=$expected) {
-            self::failure($message." - Actual:'".$actual."' - Expected:'".$expected."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."' - Expected:'".$this->getValueAsString($expected)."'");
         } else
         {
             self::success();
@@ -135,7 +147,7 @@ class LAssert {
     
     public function assertNull($actual,$message) {
         if ($actual!=null) {
-            self::failure($message." - Actual:'".$actual."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."'");
         } else
         {
             self::success();
@@ -144,7 +156,7 @@ class LAssert {
     
     public function assertNotNull($actual,$message) {
         if ($actual==null) {
-            self::failure($message." - Actual:'".$actual."'");
+            self::failure($message." - Actual:'".$this->getValueAsString($actual)."'");
         } else
         {
             self::success();

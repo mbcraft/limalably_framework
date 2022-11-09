@@ -110,7 +110,11 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	public function setEnv($password,$env_var_name,$env_var_value) {
 
-		return $this->controller->setEnv($password,$env_var_name,$env_var_value);
+		$result = $this->controller->setEnv($password,$env_var_name,$env_var_value);
+
+		sleep(5);
+
+		return $result;
 
 	}
 	

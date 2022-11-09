@@ -1608,8 +1608,12 @@ class DeployerController {
 
                 $final_string = var_export($var_value_array,true);
 
+                $final_string = str_replace("'",'"',$final_string);
+
             } else {
                 $final_string = var_export($env_var_value,true);
+
+                $final_string = str_replace("'",'"',$final_string);
             }
 
             $env_var_delimiter = DStringUtils::getCommentDelimitedReplacementsStringSeparator($env_var_name);

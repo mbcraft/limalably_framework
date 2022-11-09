@@ -13,6 +13,11 @@ class LFile extends LFileSystemElement
 {
     static $content_hash_cache = [];
 
+    const EXECUTE_RESULT_FORMAT_COMMAND_LINE = "command_line";
+    const EXECUTE_RESULT_FORMAT_WEB = "web_simple";
+    const EXECUTE_RESULT_FORMAT_WEB_LI = "web_li";
+    const EXECUTE_RESULT_FORMAT_RAW = "raw";
+
     function setOwner($user_name) {
         chown($this->__full_path,$user_name);
     }
@@ -21,18 +26,36 @@ class LFile extends LFileSystemElement
         chgrp($this->__full_path,$group_name);
     }
 
-    function execute(bool $return_result=true) {
-        if ($return_result) {
-            $result = [];
+    function execute($result_format) {
+        
+        $result_format_list = [
+            self::EXECUTE_RESULT_FORMAT_COMMAND_LINE,self::EXECUTE_RESULT_FORMAT_WEB,self::EXECUTE_RESULT_FORMAT_RAW];
 
-            exec($this->__full_path,$result);
+        if (!in_array($result_format,$result_format_list)) throw new \LIOException("Invalid result format for LFile::execute!");
 
-            return $result;
-        } else {
+        $result = [];
 
-            system($this->__full_path);
+        exec($this->__full_path,$result);
 
+        switch ($result_format) {
+            case self::EXECUTE_RESULT_FORMAT_COMMAND_LINE : return implode("\n",$result);
+            case self::EXECUTE_RESULT_FORMAT_WEB_SIMPLE : return implode("<br />",$result)."<br />";
+            case self::EXECUTE_RESULT_FORMAT_WEB_LI : {
+
+                $final_result = "";
+
+                foreach ($result as $rl) {
+                    $final_result = "<li>".$rl."</li>";
+                }
+
+
+                return $final_result;
+            }
+            case self::EXECUTE_RESULT_FORMAT_RAW : return $result;
         }
+
+        throw new \LIOException("Unmanaged result_format in case.");
+        
     }
 
     function getDirectory()

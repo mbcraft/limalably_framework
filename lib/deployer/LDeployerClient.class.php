@@ -120,7 +120,7 @@ class LDeployerClient {
 			return $result['message'];
 		else {
 			if ($result===null)
-				return "Hard server failure!!! Probably the server host firewall or setup needs to be fixed!!!";
+				return "Hard server failure!!! Probably the server host firewall or setup needs to be fixed or you need to place a .htaccess file with 'require all granted' inside server!!!";
 			else 
 				return $result;
 		}
@@ -566,12 +566,20 @@ class LDeployerClient {
 	public function deployer_update(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			echo "Preparing for deployer update ...\n";
+
+			sleep(5);
+
 			$uri_parts = explode('/',$this->current_uri);
 			$deployer_filename = end($uri_parts);
 
 			$updated_deployer = new LFile($_SERVER['FRAMEWORK_DIR'].'/tools/deployer.php');
 
 			$r = $this->current_driver->setEnv($this->current_password,"PWD","");
+
+			echo "Waiting for file cache to update correctly ...\n";
+
+			sleep(5);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to complete deployer update procedure.");
 
@@ -583,9 +591,15 @@ class LDeployerClient {
 
 			$r1 = $this->current_driver->copyFile("",$deployer_path_from_root,$updated_deployer);
 
+			echo "Waiting for file cache to update correctly again ...\n";
+
+			sleep(5);
+
 			$r2 = $this->current_driver->setEnv("","PWD",$this->current_password);
 
-			
+			echo "Again you need to wait until file cache updates ...\n";
+
+			sleep(5);
 
 			$r3 = $this->current_driver->hello($this->current_password);
 

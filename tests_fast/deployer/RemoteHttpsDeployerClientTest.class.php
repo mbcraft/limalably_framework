@@ -6,7 +6,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 	
 	const TEST_DIR = 'tests_fast';	
 	
-	/*
+	//ok
 	function testProjectCheck() {
 
 		$dc = new LDeployerClient();
@@ -35,6 +35,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 	}
 	
+	//ok
 	function testProjectUpdate() {
 
 
@@ -74,7 +75,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 	}
 	
-
+	//ok
 	function testFrameworkCheck() {
 
 		$dc = new LDeployerClient();
@@ -99,6 +100,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 	}
 	
+	//ok
 	function testFrameworkUpdate() {
 
 		$dc = new LDeployerClient();
@@ -128,6 +130,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 	}
 
+	//ok
 	function testTempClean() {
 		$dc = new LDeployerClient();
 
@@ -155,8 +158,8 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 	}
-	*/
-
+	
+	//ok
 	function testDeployerUpdate() {
 		$dc = new LDeployerClient();
 

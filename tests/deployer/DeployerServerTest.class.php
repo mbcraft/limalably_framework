@@ -3,7 +3,7 @@
 
 class DeployerServerTest extends LTestCase {
 	
-	const TEST_DIR = "tests_fast";
+	const TEST_DIR = "tests";
 	
 	function reinit() {
 

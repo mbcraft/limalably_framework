@@ -4,7 +4,7 @@
 
 class RemoteHttpsDeployerClientTest extends LTestCase {
 	
-	const TEST_DIR = 'tests_fast';	
+	const TEST_DIR = 'tests';	
 	
 	//ok
 	function testProjectCheck() {

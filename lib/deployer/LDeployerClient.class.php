@@ -16,6 +16,14 @@ class LDeployerClient {
 
 	const DEPLOYER_PATH_FROM_ROOT = 'DPFR';
 
+	const RUNNING_MODE_MAP = [
+			LExecutionMode::MODE_MAINTENANCE_SHORT => LExecutionMode::MODE_MAINTENANCE,
+			LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT_SHORT => LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT,
+			LExecutionMode::MODE_DEVELOPMENT_SHORT => LExecutionMode::MODE_DEVELOPMENT,
+			LExecutionMode::MODE_TESTING_SHORT => LExecutionMode::MODE_TESTING,
+			LExecutionMode::MODE_PRODUCTION_SHORT => LExecutionMode::MODE_PRODUCTION
+		];
+
 	private $DPFR;
 
 	private $current_driver = null;
@@ -431,6 +439,8 @@ class LDeployerClient {
 		echo "./bin/deployer.sh help --> prints this help\n\n";
 		echo "./bin/deployer.sh attach <deploy_key_name> <local deployer.php path> <remote deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
 		echo "./bin/deployer.sh detach <deploy_key_name> --> detaches the deployer removing the server token and deleting the local key\n\n";
+		echo "./bin/deployer.sh get_running_mode <deploy_key_name> --> gets the running mode on the deployer instance\n\n";
+		echo "./bin/deployer.sh set_running_mode <deploy_key_name> <running_mode> --> sets the running mode on the deployer instance\n\n";
 		echo "./bin/deployer.sh get_deployer_path_from_root <deploy_key_name> --> gets the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh set_deployer_path_from_root <deploy_key_name> <deployer_path> --> set the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh deployer_version <deploy_key_name> --> prints the deployer version\n\n";
@@ -445,6 +455,16 @@ class LDeployerClient {
 		echo "./bin/deployer.sh disappear <deploy_key_name> --> deletes the remote deployer\n\n";
 		echo "./bin/deployer.sh reset <deploy_key_name> --> deletes all the remote files but not the deployer one\n\n";
 		echo "./bin/deployer.sh temp_clean <deploy_key_name> --> cleans up the remote temporary files folder\n\n";
+
+		echo "\n\n";
+
+		echo "Available running modes for command 'set_running_mode' are :\n\n";
+
+		foreach (self::RUNNING_MODE_MAP as $short_name => $classic_name) {
+			echo "- '".$short_name."' OR '".$classic_name."'\n";
+		}
+
+		echo "\n";
 
 		return true;
 	}
@@ -510,6 +530,131 @@ class LDeployerClient {
 		} else return $this->failure("Unable to find key to load for detach : ".$key_name);
 	}
 
+	public function get_running_mode(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->fileExists($this->current_password,"config/mode/");
+
+			if ($this->isSuccess($r)) {
+
+				if ($r['data']=='false') return $this->failure("Config directory does not exist in deployer instance.");
+
+			}
+
+			$r = $this->current_driver->listElements($this->current_password,"config/mode/");
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to list config/mode/ directory in deployer instance.");
+
+			$elements = $r['data'];
+
+			if (in_array(LExecutionMode::FILENAME_FRAMEWORK_DEVELOPMENT,$elements)) {
+
+				echo "Deployer instance running mode : framework_development.\n";
+
+				return true;
+			}
+			if (in_array(LExecutionMode::FILENAME_DEVELOPMENT,$elements)) {
+
+				echo "Deployer instance running mode : development.\n";
+
+				return true;
+			}
+			if (in_array(LExecutionMode::FILENAME_TESTING,$elements)) {
+
+				echo "Deployer instance running mode : testing.\n";
+
+				return true;
+			}
+			if (in_array(LExecutionMode::FILENAME_PRODUCTION,$elements)) {
+
+				echo "Deployer instance running mode : production.\n";
+
+				return true;
+			}
+			if (in_array(LExecutionMode::FILENAME_MAINTENANCE,$elements)) {
+
+				echo "Deployer instance running mode : maintenance.\n";
+
+				return true;
+			}
+
+			return $this->failure("Unable to recognize running mode from deployer instance result.");
+
+		} else return false;
+	}
+
+	public function set_running_mode(string $key_name,string $running_mode) {
+
+		$running_mode_short = [
+			LExecutionMode::MODE_MAINTENANCE_SHORT => LExecutionMode::FILENAME_MAINTENANCE,
+			LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT_SHORT => LExecutionMode::FILENAME_FRAMEWORK_DEVELOPMENT,
+			LExecutionMode::MODE_DEVELOPMENT_SHORT => LExecutionMode::FILENAME_DEVELOPMENT,
+			LExecutionMode::MODE_TESTING_SHORT => LExecutionMode::FILENAME_TESTING,
+			LExecutionMode::MODE_PRODUCTION_SHORT => LExecutionMode::FILENAME_PRODUCTION
+		];
+
+		$running_mode_classic = [
+			LExecutionMode::MODE_MAINTENANCE => LExecutionMode::FILENAME_MAINTENANCE,
+			LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT => LExecutionMode::FILENAME_FRAMEWORK_DEVELOPMENT,
+			LExecutionMode::MODE_DEVELOPMENT => LExecutionMode::FILENAME_DEVELOPMENT,
+			LExecutionMode::MODE_TESTING => LExecutionMode::FILENAME_TESTING,
+			LExecutionMode::MODE_PRODUCTION => LExecutionMode::FILENAME_PRODUCTION
+		];
+
+		if (!isset($running_mode_short[$running_mode]) && !isset($running_mode_classic[$running_mode])) {
+			return $this->failure("Unable to recognize running mode '".$running_mode."'. See help for more instructions.");
+		}
+
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->fileExists($this->current_password,"config/mode/");
+
+			if ($this->isSuccess($r)) {
+
+				if ($r['data']=='false') {
+					echo "Config mode directory do not exists, creating it ...";
+
+					$r = $this->current_driver->makeDir($this->current_password,"config/mode/");
+
+					if (!$this->isSuccess($r)) { 
+						return $this->failure("Unable to create config/mode/ directory on deployer instance : ".$r['message']);
+					}
+				}
+
+			}
+
+			$r = $this->current_driver->listElements($this->current_password,"config/mode/");
+
+			if ($this->isSuccess($r)) {
+
+				$elements = $r['data'];
+
+				foreach ($elements as $el) {
+					$r = $this->current_driver->deleteFile($this->current_password,"config/mode/".$el);
+
+					if (!$this->isSuccess($r)) return $this->failure("Unable to successfully cleanup config/mode/ folder in deployer instance.");
+				}
+
+				//ok config mode cleaned, now need to create new mode file
+
+				$filename = null;
+
+				if (isset($running_mode_short[$running_mode])) $filename = $running_mode_short[$running_mode];
+				if (isset($running_mode_classic[$running_mode])) $filename = $running_mode_classic[$running_mode];
+
+				$content = LEnvironmentUtils::getServerUser();
+
+				$r = $this->current_driver->writeFileContent($this->current_password,"config/mode/".$filename,$content);
+
+				if (!$this->isSuccess($r)) return $this->failure("Error during write of running mode file on deployer instance.");
+
+				return true;
+
+			} else return $this->failure("Unable to list config/mode/ directory on deployer instance : ".$r['message']);
+
+		} else return false;
+	}
+ 
 	public function get_deployer_path_from_root(string $key_name) {
 		if ($this->loadKey($key_name)) {
 

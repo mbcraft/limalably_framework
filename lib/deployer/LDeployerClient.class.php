@@ -1100,6 +1100,8 @@ class LDeployerClient {
 
 		if (!$ok) return $this->failure("Error during copy of config files to remote deployer instance.");
 
+		echo "Config directory ".$config_folder." and internal copied successfully.\n";
+
 		return true;
 	}
 
@@ -1120,7 +1122,8 @@ class LDeployerClient {
 				$parts = explode('/',$uri_from_hostname);
 				$hostname = $parts[0];
 
-				$this->executeConfigSync($hostname);
+				return $this->executeConfigSync($hostname);
+
 			} else return $this->failure("Unable to probe the host name from deployer configuration. Use manual_config.");
 
 		} else return false;

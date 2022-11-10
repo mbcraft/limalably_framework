@@ -45,6 +45,83 @@ class DeployerServerTest extends LTestCase {
 	}
 	
 	//ok
+	function testFileExists() {
+
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$f = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR."/deployer/tmp/file_that_exists.txt");
+		$f->touch();
+
+		$result = $deployer_controller->fileExists("","file_that_exists.txt");
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata è fallita ma non doveva!");
+
+		$this->assertEqual($result['data'],'true',"La chiamata ha un risultato che non corrisponde a quello atteso!");
+
+		$result = $deployer_controller->fileExists("","file_that_do_not_exists.txt");
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata è fallita ma non doveva!");
+
+		$this->assertEqual($result['data'],'false',"La chiamata ha un risultato che non corrisponde a quello atteso!");
+
+	}
+
+	//ok
+	function testReadFileContent() {
+
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$result = $deployer_controller->readFileContent("","file_that_do_not_exists.txt");
+
+		$this->assertFalse($this->isSuccess($result),"Il file che non esiste non da esito negativo nella chiamata!");
+
+		$f = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR."/deployer/tmp/file_with_content.txt");
+		$f->setContent("Hello! :)");
+
+		$result = $deployer_controller->readFileContent("","file_with_content.txt");
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata è fallita ma non doveva!");
+
+		$this->assertEqual($result['data'],"Hello! :)","Il risultato della chiamata non corrisponde a quello atteso!");
+
+	}
+
+	//ok
+	function testWriteFileContent() {
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$result = $deployer_controller->writeFileContent("","my_dir/file_with_content_from_write.txt","Hello again! :)");
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$f = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR."/deployer/tmp/my_dir/file_with_content_from_write.txt");
+
+		$this->assertTrue($f->exists(),"Il file non è stato creato!");
+
+		$file_content = $f->getContent();
+
+		$this->assertEqual($file_content,"Hello again! :)","Il contenuto del file non corrisponde a quello previsto!");
+	}
+
+	//ok
 	function testDeployerHello() {
 
 		$this->reinit();

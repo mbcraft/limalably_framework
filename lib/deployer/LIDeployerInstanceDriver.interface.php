@@ -35,4 +35,10 @@ interface LIDeployerInstanceDriver {
 
 	public function hello($password=null);
 
+	public function fileExists($password,$path);
+
+	public function readFileContent($password,$path);
+
+	public function writeFileContent($password,$path,$content);
+
 }

@@ -172,5 +172,42 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		return $this->asResult($result);
 	}
 
+	public function fileExists($password,$path) {
+
+		$params = [];
+		$params['METHOD'] = 'FILE_EXISTS';
+		$params['PASSWORD'] = $password;
+		$params['PATH'] = $path;
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+	}
+
+	public function readFileContent($password,$path) {
+
+		$params = [];
+		$params['METHOD'] = 'READ_FILE_CONTENT';
+		$params['PASSWORD'] = $password;
+		$params['PATH'] = $path;
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+	}
+
+	public function writeFileContent($password,$path,$content) {
+
+		$params = [];
+		$params['METHOD'] = 'WRITE_FILE_CONTENT';
+		$params['PASSWORD'] = $password;
+		$params['PATH'] = $path;
+		$params['CONTENT'] = $content;
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+	}
+
 
 }

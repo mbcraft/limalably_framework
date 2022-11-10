@@ -124,4 +124,22 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		
 	}
 
+	public function fileExists($password,$path) {
+
+		return $this->controller->fileExists($password,$path);
+
+	}
+
+	public function readFileContent($password,$path) {
+
+		return $this->controller->readFileContent($password,$path);
+
+	}
+
+	public function writeFileContent($password,$path,$content) {
+
+		return $this->controller->writeFileContent($password,$path,$content);
+
+	}
+
 }

@@ -1421,6 +1421,51 @@ class DeployerController {
         return in_array('@',$path_list);
     }
 
+    public function fileExists($password,$path) {
+        if ($this->accessGranted($password)) {
+
+            $final_path = $this->root_dir->getFullPath().$path;
+
+            if (file_exists($final_path)) return ["result" => self::SUCCESS_RESULT,"data" => 'true'];
+            else return ["result" => self::SUCCESS_RESULT,"data" => 'false'];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function readFileContent($password,$path) {
+        if ($this->accessGranted($password)) {
+
+            $f = new DFile($path);
+
+            if (!$f->exists()) return $this->failure("File at path '".$path."' do not exists on this deployer instance.");
+
+            if (!$f->isReadable()) return $this->failure("File at path '".$path."' is not readable on this deployer instance.");
+
+            $content = $f->getContent();
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $content];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function writeFileContent($password,$path,$content) {
+        if ($this->accessGranted($password)) {
+
+            $f = new DFile($path);
+
+            $parent_dir = $f->getDirectory();
+
+            if (!$parent_dir->exists()) $parent_dir->touch();
+
+            if ($f->exists() && !$f->isWritable()) return $this->failure("File at path '".$path."' already exists but is not writable in this deployer instance.");
+
+            $f->setContent($content);
+
+            return ["result" => self::SUCCESS_RESULT];
+
+        } else return $this->failure("Wrong password.");
+    }
+
 	public function listElements($password,$folder) {
 		if ($this->accessGranted($password)) {
 
@@ -1719,9 +1764,61 @@ class DeployerController {
 					echo $this->preparePostResponse($this->hello($password));
     				break;
     			}
+                case 'FILE_EXISTS' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in FILE_EXISTS request."));
+
+                    if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
+                    else echo $this->preparePostResponse($this->failure("PATH field missing in FILE_EXISTS request."));
+
+                    echo $this->preparePostResponse($this->fileExists($password,$path));
+
+                    break;
+                }
+                case 'READ_FILE_CONTENT' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in READ_FILE_CONTENT request."));
+
+                    if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
+                    else echo $this->preparePostResponse($this->failure("PATH field missing in READ_FILE_CONTENT request."));
+
+                    echo $this->preparePostResponse($this->readFileContent($password,$path));
+
+                    break;
+                }
+                case 'WRITE_FILE_CONTENT' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in WRITE_FILE_CONTENT request."));
+
+                    if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
+                    else echo $this->preparePostResponse($this->failure("PATH field missing in WRITE_FILE_CONTENT request."));
+                    
+                    if ($this->hasPostParameter('CONTENT')) {
+                        if ($this->accessGranted($password)) {
+                            //content is unfiltered
+                            $content = $_POST['CONTENT'];
+                        } else {
+                            if ($this->isPostParameterDangerous('CONTENT')) {
+                            echo $this->preparePostResponse($this->failure('Warning!! CONTENT field with potential security issues and wrong password detected!!'));
+                            return;
+                            } else {
+                                echo $this->preparePostResponse($this->failure("Wrong password."));
+                                return;
+                            }
+                        }
+                    }    
+                    else {
+                        echo $this->preparePostResponse($this->failure("CONTENT field missing in WRITE_FILE_CONTENT request."));
+                        return;
+                    }        
+
+                    echo $this->preparePostResponse($this->writeFileContent($password,$path,$content));
+
+                    break;
+                }
                 case 'SET_ENV' : {
                     if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
-                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in SET_ENV request."));
 
                     if ($this->hasPostParameter('ENV_VAR_NAME')) $env_var_name = $this->getPostParameter('ENV_VAR_NAME');
                     else echo $this->preparePostResponse($this->failure("ENV_VAR_NAME field missing in SET_ENV request."));

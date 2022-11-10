@@ -530,6 +530,14 @@ class LDeployerClient {
 		} else return $this->failure("Unable to find key to load for detach : ".$key_name);
 	}
 
+	private function getConfigModeUser($config_filename) {
+		$r = $this->current_driver->readFileContent($this->current_password,"config/mode/".$config_filename);
+
+		if ($this->isSuccess($r)) {
+			return $r['data'];
+		} else return false;
+	}
+
 	public function get_exec_mode(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
@@ -551,11 +559,21 @@ class LDeployerClient {
 
 				echo "Deployer instance execution mode : framework_development.\n";
 
+				$user = $this->getConfigModeUser(LExecutionMode::FILENAME_FRAMEWORK_DEVELOPMENT);
+
+				if ($user) echo "User that setted this execution mode : ".$user."\n";
+				else return $this->failure("Unable to get user that setted this execution mode.");
+				
 				return 'framework_development';
 			}
 			if (in_array(LExecutionMode::FILENAME_DEVELOPMENT,$elements)) {
 
 				echo "Deployer instance execution mode : development.\n";
+
+				$user = $this->getConfigModeUser(LExecutionMode::FILENAME_DEVELOPMENT);
+
+				if ($user) echo "User that setted this execution mode : ".$user."\n";
+				else return $this->failure("Unable to get user that setted this execution mode.");
 
 				return 'development';
 			}
@@ -563,17 +581,32 @@ class LDeployerClient {
 
 				echo "Deployer instance execution mode : testing.\n";
 
+				$user = $this->getConfigModeUser(LExecutionMode::FILENAME_TESTING);
+
+				if ($user) echo "User that setted this execution mode : ".$user."\n";
+				else return $this->failure("Unable to get user that setted this execution mode.");
+
 				return 'testing';
 			}
 			if (in_array(LExecutionMode::FILENAME_PRODUCTION,$elements)) {
 
 				echo "Deployer instance execution mode : production.\n";
 
+				$user = $this->getConfigModeUser(LExecutionMode::FILENAME_PRODUCTION);
+
+				if ($user) echo "User that setted this execution mode : ".$user."\n";
+				else return $this->failure("Unable to get user that setted this execution mode.");
+
 				return 'production';
 			}
 			if (in_array(LExecutionMode::FILENAME_MAINTENANCE,$elements)) {
 
 				echo "Deployer instance execution mode : maintenance.\n";
+
+				$user = $this->getConfigModeUser(LExecutionMode::FILENAME_MAINTENANCE);
+
+				if ($user) echo "User that setted this execution mode : ".$user."\n";
+				else return $this->failure("Unable to get user that setted this execution mode.");
 
 				return 'maintenance';
 			}
@@ -612,7 +645,7 @@ class LDeployerClient {
 			if ($this->isSuccess($r)) {
 
 				if ($r['data']=='false') {
-					echo "Config mode directory do not exists, creating it ...";
+					echo "Config mode directory do not exists, creating it ...\n";
 
 					$r = $this->current_driver->makeDir($this->current_password,"config/mode/");
 
@@ -823,7 +856,7 @@ class LDeployerClient {
 
 				if (!$temp_found) 
 				{
-					echo "temp directory not found, creating it.";
+					echo "temp directory not found, creating it.\n";
 
 					$this->current_driver->makeDir($this->current_password,'temp/');
 

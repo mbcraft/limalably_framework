@@ -11,7 +11,7 @@ class MysqlConditionBlocksTest extends LTestCase {
 
 	function testWhereBlock() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$w1 = new LMysqlWhereBlock(LMysqlCondition::equal('column_name',12));
 		$w2 = new LMysqlWhereBlock(new LMysqlAndBlock(LMysqlCondition::equal('column_name1',12),LMysqlCondition::not_equal('column_name2','ab')));
@@ -31,7 +31,7 @@ class MysqlConditionBlocksTest extends LTestCase {
 
 	function testHavingBlock() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$h1 = new LMysqlHavingBlock(LMysqlCondition::equal('column_name',12));
 		$h2 = new LMysqlHavingBlock(new LMysqlAndBlock(LMysqlCondition::equal('column_name1',12),LMysqlCondition::not_equal('column_name2','ab')));
@@ -51,7 +51,7 @@ class MysqlConditionBlocksTest extends LTestCase {
 
 	function testOnBlock() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$o1 = new LMysqlOnBlock(LMysqlCondition::equal('column_name',12));
 		$o2 = new LMysqlOnBlock(new LMysqlAndBlock(LMysqlCondition::equal('column_name1',12),LMysqlCondition::not_equal('column_name2','ab')));

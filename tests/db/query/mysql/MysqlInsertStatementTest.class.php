@@ -13,7 +13,7 @@ class MysqlInsertStatementTest extends LTestCase {
 	function testInsertStatement() {
 
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$i1 = insert('table_name123',['c1','c2','c3'],['a','b','c']);
 		$i2 = insert('table_abc',['c1','c2','c3'],[['a','b','c'],['d','e','f']]);
@@ -25,7 +25,7 @@ class MysqlInsertStatementTest extends LTestCase {
 
 	function testInsertWithDifferentModes() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('my_test')->if_exists()->go($db);
 
@@ -50,7 +50,7 @@ class MysqlInsertStatementTest extends LTestCase {
 	}
 
 	function testInsertWithStrangeCharacters() {
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('my_test')->if_exists()->go($db);
 

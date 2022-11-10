@@ -20,7 +20,7 @@ class MysqlImportExportWithCsvTest extends LTestCase {
 	}
 
 	function executeTests() {
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('my_test')->if_exists()->go($db);
 

@@ -11,7 +11,7 @@ class MysqlUpdateStatementTest extends LTestCase {
 
 	function testUpdateStatement() {
 
-		db("framework_unit_tests");
+		db("hosting_dreamhost_tests");
 
 		$u1 = update('table_name123',['a' => 1,'b' => 2]);
 		$u2 = update('table_name123',['a' => 1,'b' => 2])->where(_eq('c',3));

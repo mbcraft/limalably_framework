@@ -10,14 +10,14 @@ class DfdtTest extends LTestCase {
 	
 
 	function testDatabaseInHosting() {
-		$db = db('hosting_dfdt');
+		$db = db('hosting_dfdt_tests');
 
 		$table_list = table_list()->go($db);
 	}
 
 	function testCreateDropBigTable() {
 
-		$db = db('hosting_dfdt');
+		$db = db('hosting_dfdt_tests');
 
 		drop_table('big_table')->if_exists()->go($db);
 

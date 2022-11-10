@@ -10,7 +10,7 @@ class MysqlExpressionTest extends LTestCase {
 	
 	function testBasicExpressionUsage() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('my_expr_test')->if_exists()->go($db);
 

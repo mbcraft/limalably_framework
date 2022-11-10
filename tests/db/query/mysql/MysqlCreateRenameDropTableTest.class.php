@@ -12,7 +12,7 @@ class MysqlCreateRenameDropTableTest extends LTestCase {
 
 	function testShowCreateTable() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		$result = create_table('regione')->show()->go($db);
 
@@ -22,7 +22,7 @@ class MysqlCreateRenameDropTableTest extends LTestCase {
 
 	function testCreateRenameDropTable() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('my_test_table')->if_exists()->go($db);
 
@@ -53,7 +53,7 @@ class MysqlCreateRenameDropTableTest extends LTestCase {
 
 	function testCreateDropBigTable() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('big_table')->if_exists()->go($db);
 

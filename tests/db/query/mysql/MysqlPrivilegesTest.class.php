@@ -11,7 +11,7 @@ class MysqlPrivilegesTest extends LTestCase {
 
 
 	function testPrivileges() {
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		$result = privileges_list()->go($db);
 

@@ -11,7 +11,7 @@ class MysqlMultipleQueryTest extends LTestCase {
 
 	function testSomeLittleQueries() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		delete('regione')->go($db);
 
@@ -31,7 +31,7 @@ class MysqlMultipleQueryTest extends LTestCase {
 
 	function testSomeMoreQueries() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		delete('check_up_albero')->go($db);
 

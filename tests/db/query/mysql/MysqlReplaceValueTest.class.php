@@ -11,7 +11,7 @@ class MysqlReplaceValueTest extends LTestCase {
 
 	function testReplaceValue() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$r1 = _repl('column_name','@search_value','@replace_value');
 		$r2 = _replace_value('column_name','@search_value','@replace_value');

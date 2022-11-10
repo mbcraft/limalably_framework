@@ -12,7 +12,7 @@ class MysqlTransactionsTest extends LTestCase {
 
 	function testCommit() {
 		
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		$db->beginTransaction();
 
@@ -36,7 +36,7 @@ class MysqlTransactionsTest extends LTestCase {
 
 
 	function testRollback() {
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		delete('targhetta_albero')->go($db);
 
@@ -63,7 +63,7 @@ class MysqlTransactionsTest extends LTestCase {
 
 	function testSetCharset() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		$db->setCharset('utf8');
 	}

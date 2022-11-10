@@ -12,7 +12,7 @@ class MysqlTruncateStatementTest extends LTestCase {
 	function testTruncate()
 	{
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$t = truncate('table_name123');
 

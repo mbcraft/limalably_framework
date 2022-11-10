@@ -11,7 +11,7 @@ class MysqlFunctionsTest extends LTestCase {
 
 	function testIsNull() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$result = _ifnull('my_column_name','ABC');
 
@@ -19,7 +19,7 @@ class MysqlFunctionsTest extends LTestCase {
 	}
 
 	function testCaseFunction() {
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('my_test_table')->if_exists()->go($db);
 

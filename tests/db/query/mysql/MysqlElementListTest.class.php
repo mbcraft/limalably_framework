@@ -10,7 +10,7 @@ class MysqlElementListTest extends LTestCase {
 	
 	function testElementListWithString() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$el = el('prova');
 
@@ -23,7 +23,7 @@ class MysqlElementListTest extends LTestCase {
 
 	function testElementListWithMultipleParametersWithAdd() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$el = el();
 
@@ -41,7 +41,7 @@ class MysqlElementListTest extends LTestCase {
 
 	function testElementListWithMultipleParameters() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$el = el('elemento1','elemento2','elemento3');			
 
@@ -54,7 +54,7 @@ class MysqlElementListTest extends LTestCase {
 
 	function testElementListWithArray() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$el = el(['elemento1','elemento2','elemento3']);
 
@@ -68,7 +68,7 @@ class MysqlElementListTest extends LTestCase {
 
 	function testElementListWithArrayIntruder() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		try {
 
@@ -83,7 +83,7 @@ class MysqlElementListTest extends LTestCase {
 
 	function testEmptyElementList() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		try {
 			$el = el();
@@ -96,7 +96,7 @@ class MysqlElementListTest extends LTestCase {
 
 	function testElementListWithEmptyArray() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		try {
 			$el = el([]);

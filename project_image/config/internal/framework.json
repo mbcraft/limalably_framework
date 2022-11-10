@@ -1,14 +1,21 @@
 {
     "defaults": {
         "database": {
-            "framework_unit_tests" : {
+            "hosting_dreamhost_tests" : {
                 "driver" : "mysql",
                 "host" : "mysql.mbcraftlab.it",
                 "username" : "db_mbcraftlab",
                 "password" : "pdx1-mysql-a7-2b!",
                 "db_name" : "db_mbcraftlab_test"
             },
-            "hosting_dfdt" : {
+            "hosting_dreamhost_tests2" : {
+                "driver" : "mysql",
+                "host" : "mysql.mbcraftlab.it",
+                "username" : "db_mbcraftlab",
+                "password" : "pdx1-mysql-a7-2b!",
+                "db_name" : "db_mbcraftlab_test2"
+            },
+            "hosting_dfdt_tests" : {
                 "driver" : "mysql",
                 "host" : "51.38.33.34",
                 "username" : "m187937d1",

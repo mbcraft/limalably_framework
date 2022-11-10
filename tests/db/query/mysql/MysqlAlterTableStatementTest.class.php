@@ -12,7 +12,7 @@ class MysqlAlterTableStatementTest extends LTestCase {
 
 	function testBasicColumnsOperations() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('big_table')->if_exists()->go($db);
 
@@ -62,7 +62,7 @@ class MysqlAlterTableStatementTest extends LTestCase {
 	}
 
 	function testForeignKeysOperations() {
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		drop_table('cliente_test')->if_exists()->go($db);
 

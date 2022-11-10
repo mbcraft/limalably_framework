@@ -10,7 +10,7 @@ class MysqlQueryListTest extends LTestCase {
 	
 	function testQueryListFromStringWithIterator() {
 
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		delete('specie_albero')->go($db);
 
@@ -71,7 +71,7 @@ END_OF_QUERY_LIST;
 
 	function testQueryListFromStringWithFetchResults() {
 
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		delete('specie_albero')->go($db);
 
@@ -135,7 +135,7 @@ END_OF_QUERY_LIST;
 
 	function testQueryListFromStringWithFetchResultsWithFunction() {
 
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		delete('specie_albero')->go($db);
 
@@ -200,7 +200,7 @@ END_OF_QUERY_LIST;
 
 	function testQueryListFromStringWithGoNoResults() {
 
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		$ql = <<<END_OF_QUERY_LIST
 
@@ -231,7 +231,7 @@ END_OF_QUERY_LIST;
 
 	function testQueryListFromFileFetchResults() {
 
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		delete('specie_albero')->go($db);
 
@@ -269,7 +269,7 @@ END_OF_QUERY_LIST;
 
 	function testQueryListFromFileNoResults() {
 
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		$f = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/db/query/mysql/multi_query_test.sql');
 

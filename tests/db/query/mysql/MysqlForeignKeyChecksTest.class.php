@@ -12,7 +12,7 @@ class MysqlForeignKeyChecksTest extends LTestCase {
 
 	function testForeignKeyChecks() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		foreign_key_checks(false)->go($db);
 

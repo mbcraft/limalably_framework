@@ -12,7 +12,7 @@ class MysqlResultIteratorTest extends LTestCase {
 	function testResultIteratorWithSomeQueries() {
 
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		delete('check_up_albero')->go($db);
 

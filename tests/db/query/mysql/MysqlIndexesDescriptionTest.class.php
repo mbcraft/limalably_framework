@@ -13,7 +13,7 @@ class MysqlIndexesDescriptionTest extends LTestCase {
 	function testDescribeIndexes() {
 
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		$indexes = table_indexes_list('albero')->go($db);
 

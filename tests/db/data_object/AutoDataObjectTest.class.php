@@ -30,7 +30,7 @@ class AutoDataObjectTest extends LTestCase {
 
 	function testBasicInsertSaveUpdateDelete() {
 		
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		truncate('targhetta_albero')->go($db);
 
@@ -82,7 +82,7 @@ class AutoDataObjectTest extends LTestCase {
 
 	function testNavigation() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		foreign_key_checks(false)->go($db);
 

@@ -10,7 +10,7 @@ class MysqlSelectStatementTest extends LTestCase {
 	
 	function testBasicSelect() {
 		
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		$s1 = select('*','mia_tabella');
 		$s2 = select('*','mia_tabella',_eq('a',1));
@@ -31,7 +31,7 @@ class MysqlSelectStatementTest extends LTestCase {
 
 	function testSelectInFrom() {
 
-		$db = db("framework_unit_tests");
+		$db = db("hosting_dreamhost_tests");
 
 		truncate('targhetta_albero')->go($db);
 

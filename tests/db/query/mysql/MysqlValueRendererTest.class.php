@@ -11,7 +11,7 @@ class MysqlValueRendererTest extends LTestCase {
 
 	function testValueRenderer() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$v1 = new LMysqlValueRenderer('a');
 		$v2 = new LMysqlValueRenderer(12);

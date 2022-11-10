@@ -11,7 +11,7 @@ class MysqlDeleteStatementTest extends LTestCase {
 
 	function testDeleteStatement() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$d1 = delete('table_123')->where(_eq('column_name',12));
 		$d2 = delete('table_123')->where(_eq('column_name',12))->inner_join(true,'table_for_join');

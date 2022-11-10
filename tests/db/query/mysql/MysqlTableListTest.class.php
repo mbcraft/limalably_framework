@@ -11,7 +11,7 @@ class MysqlTableListTest extends LTestCase {
 	
 
 	function testTableList() {
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		$result = table_list()->go($db);
 

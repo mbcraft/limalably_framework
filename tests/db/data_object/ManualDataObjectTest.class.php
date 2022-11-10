@@ -21,7 +21,7 @@ class ManualDataObjectTest extends LTestCase {
 
 	function testBasicInsertSaveUpdateDelete() {
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 		truncate('targhetta_albero')->go($db);
 

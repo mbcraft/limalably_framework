@@ -13,7 +13,7 @@ class MysqlTableDescriptionTest extends LTestCase {
 	function testTableDescription() {
 
 
-		$db = db('framework_unit_tests');
+		$db = db('hosting_dreamhost_tests');
 
 
 		$td = table_description('regione')->go($db);

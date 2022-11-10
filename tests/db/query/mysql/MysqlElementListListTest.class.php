@@ -10,7 +10,7 @@ class MysqlElementListListTest extends LTestCase {
 	
 
 	function testElementListListWithAdd() {
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 		
 		$ell4 = ell();	// ell con dentro 2 el - array di array -> array con 2 el
 
@@ -23,7 +23,7 @@ class MysqlElementListListTest extends LTestCase {
 
 	function testElementListList() {
 		
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 		
 		try {
 			$ell0 = ell();	// ell vuota - non ammessa

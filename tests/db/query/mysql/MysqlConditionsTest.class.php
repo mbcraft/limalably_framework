@@ -12,7 +12,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testEqual() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _eq('column_name',123);
 		$c2 = _eq('column_name',12.34);
@@ -33,7 +33,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testNotEqual() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _n_eq('column_name',123);
 		$c2 = _n_eq('column_name',12.34);
@@ -54,7 +54,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testGreaterThan() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _gt('column_name',123);
 		$c2 = _gt('column_name',12.34);
@@ -71,7 +71,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testGreaterThanOrEqual() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _gt_eq('column_name',123);
 		$c2 = _gt_eq('column_name',12.34);
@@ -88,7 +88,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testLessThan() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _lt('column_name',123);
 		$c2 = _lt('column_name',12.34);
@@ -105,7 +105,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testLessThanOrEqual() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _lt_eq('column_name',123);
 		$c2 = _lt_eq('column_name',12.34);
@@ -122,7 +122,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testLike() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c4 = _like('column_name','abc');
 		$c5 = _like('column_name','%abc%');
@@ -133,7 +133,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testNotLike() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c4 = _not_like('column_name','abc');
 		$c5 = _not_like('column_name','%abc%');
@@ -144,7 +144,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testRLike() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c4 = _rlike('column_name','abc');
 		$c5 = _rlike('column_name','def');
@@ -155,7 +155,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testIsNull() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _is_null('column_name');
 		$c2 = _is_null('field123');
@@ -168,7 +168,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testIsNotNull() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _is_not_null('column_name');
 		$c2 = _is_not_null('field123');
@@ -181,7 +181,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testIn() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _in('column_name',[]);
 		$c2 = _in('column_name',[1,2,3]);
@@ -202,7 +202,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testNotIn() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _not_in('column_name',[]);
 		$c2 = _not_in('column_name',[1,2,3]);
@@ -222,7 +222,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testBetween() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _between('column_name',12,34);
 
@@ -234,7 +234,7 @@ class MysqlConditionsTest extends LTestCase {
 	}
 
 	function testNotBetween() {
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _not_between('column_name',12,34);
 
@@ -246,7 +246,7 @@ class MysqlConditionsTest extends LTestCase {
 	}
 
 	function testExists() {
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _exists(select('*','mia_tabella'));
 
@@ -254,7 +254,7 @@ class MysqlConditionsTest extends LTestCase {
 	}
 
 	function testNotExists() {
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _not_exists(select('*','mia_tabella'));
 
@@ -263,7 +263,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testAnd() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _and(_eq('a',1),_eq('b','z'));
 
@@ -273,7 +273,7 @@ class MysqlConditionsTest extends LTestCase {
 
 	function testOr() {
 
-		db('framework_unit_tests');
+		db('hosting_dreamhost_tests');
 
 		$c1 = _or(_eq('a',1),_eq('b','z'));
 

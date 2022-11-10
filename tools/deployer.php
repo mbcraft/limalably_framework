@@ -1324,7 +1324,7 @@ class DeployerController {
 
     const DEPLOYER_VERSION = "1.2";
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent'];
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','downloadDbStructure','downloadDbData'];
 
 	private $deployer_file;
 	private $root_dir;

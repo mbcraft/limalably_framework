@@ -1322,9 +1322,9 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const DEPLOYER_VERSION = "1.1";
+    const DEPLOYER_VERSION = "1.2";
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello'];
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent'];
 
 	private $deployer_file;
 	private $root_dir;
@@ -1353,6 +1353,29 @@ class DeployerController {
         $_SERVER['DEPLOYER_PROJECT_DIR'] = $this->root_dir->getFullPath();
 
 	}
+
+    private function hasPostParameter($param_name) {
+
+        return isset($_POST[$param_name]);
+
+    }
+
+    private function isPostParameterDangerous($param_name) {
+        $filtered_param_value = $this->getPostParameter($param_name);
+
+        $raw_param_value = $_POST[$param_name];
+
+        if ($filtered_param_value!=$raw_param_value) return true;
+        else return false;
+    }
+
+    private function getPostParameter($param_name) {
+        $value = $_POST[$param_name];
+
+        $final_value = filter_var($value,FILTER_DEFAULT);
+
+        return $final_value;
+    }
 
 	private $visit_result = [];
 
@@ -1639,6 +1662,8 @@ class DeployerController {
 		} else return $this->failure("Wrong password.");
 	}
 
+
+
 	private function accessGranted($password) {
 	   if (($this->hasPassword() && self::$PWD==$password) || (!$this->hasPassword() && !$password)) 
             return true;
@@ -1676,32 +1701,32 @@ class DeployerController {
     }
 
     public function processRequest() {
-    	if (isset($_POST['METHOD'])) {
-    		$method = $_POST['METHOD'];
+    	if ($this->hasPostParameter('METHOD')) {
+    		$method = $this->getPostParameter('METHOD');
 
     		switch ($method) {
                 case 'VERSION' : {
-                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
                     else echo $this->preparePostResponse($this->failure("PASSWORD field missing in VERSION request."));
 
                     echo $this->preparePostResponse($this->version($password));
                     break;
                 }
     			case 'HELLO' : {
-					if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in HELLO request."));
 
 					echo $this->preparePostResponse($this->hello($password));
     				break;
     			}
                 case 'SET_ENV' : {
-                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
                     else echo $this->preparePostResponse($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
 
-                    if (isset($_POST['ENV_VAR_NAME'])) $env_var_name = $_POST['ENV_VAR_NAME'];
+                    if ($this->hasPostParameter('ENV_VAR_NAME')) $env_var_name = $this->getPostParameter('ENV_VAR_NAME');
                     else echo $this->preparePostResponse($this->failure("ENV_VAR_NAME field missing in SET_ENV request."));
 
-                    if (isset($_POST['ENV_VAR_VALUE'])) $env_var_value = $_POST['ENV_VAR_VALUE'];
+                    if ($this->hasPostParameter('ENV_VAR_VALUE')) $env_var_value = $this->getPostParameter('ENV_VAR_VALUE');
                     else echo $this->preparePostResponse($this->failure("ENV_VAR_VALUE field missing in SET_ENV request."));
 
                     echo $this->preparePostResponse($this->setEnv($password,$env_var_name,$env_var_value));
@@ -1709,10 +1734,10 @@ class DeployerController {
                     break;
                 }
     			case 'GET_ENV' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in GET_ENV request."));
 
-					if (isset($_POST['ENV_VAR_NAME'])) $env_var_name = $_POST['ENV_VAR_NAME'];
+					if ($this->hasPostParameter('ENV_VAR_NAME')) $env_var_name = $this->getPostParameter('ENV_VAR_NAME');
 					else echo $this->preparePostResponse($this->failure("ENV_VAR_NAME field missing in GET_ENV request."));
 
 					echo $this->preparePostResponse($this->getEnv($password,$env_var_name));
@@ -1720,7 +1745,7 @@ class DeployerController {
 					break;
     			}
                 case 'LIST_ENV' : {
-                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
                     else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_ENV request."));
 
                     echo $this->preparePostResponse($this->listEnv($password));
@@ -1729,10 +1754,10 @@ class DeployerController {
                 }
     			case 'LIST_ELEMENTS' : {
 
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_ELEMENTS request."));
 
-					if (isset($_POST['FOLDER'])) $folder = $_POST['FOLDER'];
+					if (isset($_POST['FOLDER'])) $folder = $this->getPostParameter('FOLDER');
 					else echo $this->preparePostResponse($this->failure("FOLDER field missing in LIST_ELEMENTS request."));
 
 					echo $this->preparePostResponse($this->listElements($password,$folder));
@@ -1740,13 +1765,13 @@ class DeployerController {
     				break;
     			}
     			case 'LIST_HASHES' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_HASHES request."));
 
-					if (isset($_POST['EXCLUDED_PATHS'])) $excluded_paths = explode(',',$_POST['EXCLUDED_PATHS']);
+					if ($this->hasPostParameter('EXCLUDED_PATHS')) $excluded_paths = explode(',',$this->getPostParameter('EXCLUDED_PATHS'));
 					else echo $this->preparePostResponse($this->failure("EXCLUDED_PATHS field missing in LIST_HASHES request."));
 
-					if (isset($_POST['INCLUDED_PATHS'])) $included_paths = explode(',',$_POST['INCLUDED_PATHS']);
+					if ($this->hasPostParameter('INCLUDED_PATHS')) $included_paths = explode(',',$this->getPostParameter('INCLUDED_PATHS'));
 					else echo $this->preparePostResponse($this->failure("INCLUDED_PATHS field missing in LIST_HASHES request."));					
 
 					echo $this->preparePostResponse($this->listHashes($password,$excluded_paths,$included_paths));
@@ -1755,10 +1780,10 @@ class DeployerController {
     			}
     			case 'COPY_FILE' : {
 
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in COPY_FILE request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in COPY_FILE request."));
 
 					echo $this->preparePostResponse($this->copyFile($password,$path));
@@ -1766,10 +1791,10 @@ class DeployerController {
 					break;
     			}
     			case 'MAKE_DIR' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in MAKE_DIR request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in MAKE_DIR request."));
 
 					echo $this->preparePostResponse($this->makeDir($password,$path));
@@ -1777,13 +1802,13 @@ class DeployerController {
 					break;
     			}
     			case 'DELETE_DIR' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DELETE_DIR request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in DELETE_DIR request."));
 
-					if (isset($_POST['RECURSIVE'])) $recursive = $_POST['RECURSIVE'] == 'true' ? true : false;
+					if ($this->hasPostParameter('RECURSIVE')) $recursive = $this->getPostParameter('RECURSIVE') == 'true' ? true : false;
 					else echo $this->preparePostResponse($this->failure("RECURSIVE field missing in DELETE_DIR request."));
 
 					echo $this->preparePostResponse($this->deleteDir($password,$path,$recursive));
@@ -1791,10 +1816,10 @@ class DeployerController {
 					break;
     			}
     			case 'DELETE_FILE' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DELETE_FILE request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in DELETE_FILE request."));
 
 					echo $this->preparePostResponse($this->deleteFile($password,$path));
@@ -1802,10 +1827,10 @@ class DeployerController {
 					break;
     			}
     			case 'DOWNLOAD_DIR' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DOWNLOAD_DIR request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in DOWNLOAD_DIR request."));
 
 					$result = $this->downloadDir($password,$path);

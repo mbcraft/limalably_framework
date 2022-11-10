@@ -190,6 +190,18 @@ class LDir extends LFileSystemElement
         return count($this->listAll())===0;
     }
 
+    function makeEmpty() {
+
+        if (!$this->exists()) return false;
+
+        $elements = $this->listAll();
+
+        foreach ($elements as $el) {
+            $el->delete(true);
+        }
+
+    }
+
     function listAll($myExcludes=self::DEFAULT_EXCLUDES) {
         return $this->listElements($myExcludes,self::FILTER_ALL_ELEMENTS);
     }

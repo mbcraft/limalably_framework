@@ -16,7 +16,7 @@ class LDeployerClient {
 
 	const DEPLOYER_PATH_FROM_ROOT = 'DPFR';
 
-	const RUNNING_MODE_MAP = [
+	const EXEC_MODE_MAP = [
 			LExecutionMode::MODE_MAINTENANCE_SHORT => LExecutionMode::MODE_MAINTENANCE,
 			LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT_SHORT => LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT,
 			LExecutionMode::MODE_DEVELOPMENT_SHORT => LExecutionMode::MODE_DEVELOPMENT,
@@ -439,8 +439,8 @@ class LDeployerClient {
 		echo "./bin/deployer.sh help --> prints this help\n\n";
 		echo "./bin/deployer.sh attach <deploy_key_name> <local deployer.php path> <remote deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
 		echo "./bin/deployer.sh detach <deploy_key_name> --> detaches the deployer removing the server token and deleting the local key\n\n";
-		echo "./bin/deployer.sh get_running_mode <deploy_key_name> --> gets the running mode on the deployer instance\n\n";
-		echo "./bin/deployer.sh set_running_mode <deploy_key_name> <running_mode> --> sets the running mode on the deployer instance\n\n";
+		echo "./bin/deployer.sh get_exec_mode <deploy_key_name> --> gets the execution mode on the deployer instance\n\n";
+		echo "./bin/deployer.sh set_exec_mode <deploy_key_name> <running_mode> --> sets the execution mode on the deployer instance\n\n";
 		echo "./bin/deployer.sh get_deployer_path_from_root <deploy_key_name> --> gets the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh set_deployer_path_from_root <deploy_key_name> <deployer_path> --> set the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh deployer_version <deploy_key_name> --> prints the deployer version\n\n";
@@ -458,9 +458,9 @@ class LDeployerClient {
 
 		echo "\n\n";
 
-		echo "Available running modes for command 'set_running_mode' are :\n\n";
+		echo "Available execution modes for command 'set_exec_mode' are :\n\n";
 
-		foreach (self::RUNNING_MODE_MAP as $short_name => $classic_name) {
+		foreach (self::EXEC_MODE_MAP as $short_name => $classic_name) {
 			echo "- '".$short_name."' OR '".$classic_name."'\n";
 		}
 
@@ -530,7 +530,7 @@ class LDeployerClient {
 		} else return $this->failure("Unable to find key to load for detach : ".$key_name);
 	}
 
-	public function get_running_mode(string $key_name) {
+	public function get_exec_mode(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
 			$r = $this->current_driver->fileExists($this->current_password,"config/mode/");
@@ -549,43 +549,43 @@ class LDeployerClient {
 
 			if (in_array(LExecutionMode::FILENAME_FRAMEWORK_DEVELOPMENT,$elements)) {
 
-				echo "Deployer instance running mode : framework_development.\n";
+				echo "Deployer instance execution mode : framework_development.\n";
 
-				return true;
+				return 'framework_development';
 			}
 			if (in_array(LExecutionMode::FILENAME_DEVELOPMENT,$elements)) {
 
-				echo "Deployer instance running mode : development.\n";
+				echo "Deployer instance execution mode : development.\n";
 
-				return true;
+				return 'development';
 			}
 			if (in_array(LExecutionMode::FILENAME_TESTING,$elements)) {
 
-				echo "Deployer instance running mode : testing.\n";
+				echo "Deployer instance execution mode : testing.\n";
 
-				return true;
+				return 'testing';
 			}
 			if (in_array(LExecutionMode::FILENAME_PRODUCTION,$elements)) {
 
-				echo "Deployer instance running mode : production.\n";
+				echo "Deployer instance execution mode : production.\n";
 
-				return true;
+				return 'production';
 			}
 			if (in_array(LExecutionMode::FILENAME_MAINTENANCE,$elements)) {
 
-				echo "Deployer instance running mode : maintenance.\n";
+				echo "Deployer instance execution mode : maintenance.\n";
 
-				return true;
+				return 'maintenance';
 			}
 
-			return $this->failure("Unable to recognize running mode from deployer instance result.");
+			return $this->failure("Unable to recognize execution mode from deployer instance result.");
 
 		} else return false;
 	}
 
-	public function set_running_mode(string $key_name,string $running_mode) {
+	public function set_exec_mode(string $key_name,string $exec_mode) {
 
-		$running_mode_short = [
+		$exec_mode_short = [
 			LExecutionMode::MODE_MAINTENANCE_SHORT => LExecutionMode::FILENAME_MAINTENANCE,
 			LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT_SHORT => LExecutionMode::FILENAME_FRAMEWORK_DEVELOPMENT,
 			LExecutionMode::MODE_DEVELOPMENT_SHORT => LExecutionMode::FILENAME_DEVELOPMENT,
@@ -593,7 +593,7 @@ class LDeployerClient {
 			LExecutionMode::MODE_PRODUCTION_SHORT => LExecutionMode::FILENAME_PRODUCTION
 		];
 
-		$running_mode_classic = [
+		$exec_mode_classic = [
 			LExecutionMode::MODE_MAINTENANCE => LExecutionMode::FILENAME_MAINTENANCE,
 			LExecutionMode::MODE_FRAMEWORK_DEVELOPMENT => LExecutionMode::FILENAME_FRAMEWORK_DEVELOPMENT,
 			LExecutionMode::MODE_DEVELOPMENT => LExecutionMode::FILENAME_DEVELOPMENT,
@@ -601,8 +601,8 @@ class LDeployerClient {
 			LExecutionMode::MODE_PRODUCTION => LExecutionMode::FILENAME_PRODUCTION
 		];
 
-		if (!isset($running_mode_short[$running_mode]) && !isset($running_mode_classic[$running_mode])) {
-			return $this->failure("Unable to recognize running mode '".$running_mode."'. See help for more instructions.");
+		if (!isset($exec_mode_short[$exec_mode]) && !isset($exec_mode_classic[$exec_mode])) {
+			return $this->failure("Unable to recognize running mode '".$exec_mode."'. See help for more instructions.");
 		}
 
 		if ($this->loadKey($key_name)) {
@@ -639,8 +639,8 @@ class LDeployerClient {
 
 				$filename = null;
 
-				if (isset($running_mode_short[$running_mode])) $filename = $running_mode_short[$running_mode];
-				if (isset($running_mode_classic[$running_mode])) $filename = $running_mode_classic[$running_mode];
+				if (isset($exec_mode_short[$exec_mode])) $filename = $exec_mode_short[$exec_mode];
+				if (isset($exec_mode_classic[$exec_mode])) $filename = $exec_mode_classic[$exec_mode];
 
 				$content = LEnvironmentUtils::getServerUser();
 
@@ -664,7 +664,7 @@ class LDeployerClient {
 
 			echo "Deployer path from root is : ".$r['data']."\n\n";
 
-			return true;
+			return $r['data'];
 
 		} else return false;
 	}
@@ -701,7 +701,7 @@ class LDeployerClient {
 				}
 				echo "\n";
 
-				return true;
+				return $r['version'];
 			}
 			else $this->failure("Unable to update deployer on server : ".$this->getResultMessage($r));
 

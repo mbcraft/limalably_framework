@@ -1566,6 +1566,8 @@ class DeployerController {
 
 			$dest->touch();
 
+            $dest->setPermissions('-rwxrwx---');
+
 			if ($dest->exists()) return ["result" => self::SUCCESS_RESULT];
 			else return $this->failure("Unable to create directory.");
 
@@ -1607,6 +1609,8 @@ class DeployerController {
 				if (!$dir->exists()) return $this->failure("Parent directory does not exist.");
 
 				$dest->setContent($content);
+
+                $dest->setPermissions('-rwxrwx---');
 
 				if ($dest->getSize()!=$_FILES['f']['size']) {
 					$dest->delete();

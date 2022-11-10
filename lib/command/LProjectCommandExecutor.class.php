@@ -141,8 +141,8 @@ class LProjectCommandExecutor implements LICommandExecutor {
             'disappear' => 2,
             'reset' => 2,
             'temp_clean' => 2,
-            'get_running_mode' => 2,
-            'set_running_mode' => 3
+            'get_exec_mode' => 2,
+            'set_exec_mode' => 3
         ];
 
         if (LParameters::count()<1) {
@@ -178,15 +178,15 @@ class LProjectCommandExecutor implements LICommandExecutor {
         $deploy_key_name = LParameters::getByIndex(1);
 
         if (LParameters::count()>2) {
-            $path_host_uri_or_running_mode = LParameters::getByIndex(2);
+            $path_host_uri_or_exec_mode = LParameters::getByIndex(2);
         }
 
         switch ($command) {
             case 'help' : $dc->help();break;
-            case 'attach': $dc->attach($deploy_key_name,$path_host_uri_or_running_mode);break;
+            case 'attach': $dc->attach($deploy_key_name,$path_host_uri_or_exec_mode);break;
             case 'detach' : $dc->detach($deploy_key_name);break;
             case 'get_deployer_path_from_root' : $dc->get_deployer_path_from_root($deploy_key_name);break;
-            case 'set_deployer_path_from_root' : $dc->set_deployer_path_from_root($deploy_key_name,$path_host_uri_or_running_mode);break;
+            case 'set_deployer_path_from_root' : $dc->set_deployer_path_from_root($deploy_key_name,$path_host_uri_or_exec_mode);break;
             case 'deployer_version' : $dc->deployer_version($deploy_key_name);break;
             case 'deployer_update' : $dc->deployer_update($deploy_key_name);break;
             case 'framework_check' : $dc->framework_check($deploy_key_name);break;
@@ -194,13 +194,13 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'project_check' : $dc->project_check($deploy_key_name);break;
             case 'project_update' : $dc->project_update($deploy_key_name);break;
             case 'auto_config' : $dc->auto_config($deploy_key_name);break;
-            case 'manual_config' : $dc->manual_config($deploy_key_name,$path_host_uri_or_running_mode);break;
-            case 'backup' : $dc->backup($deploy_key_name,$path_host_uri_or_running_mode);break;
+            case 'manual_config' : $dc->manual_config($deploy_key_name,$path_host_uri_or_exec_mode);break;
+            case 'backup' : $dc->backup($deploy_key_name,$path_host_uri_or_exec_mode);break;
             case 'disappear' : $dc->disappear($deploy_key_name);break;
             case 'reset' : $dc->reset($deploy_key_name);break;
             case 'temp_clean': $dc->temp_clean($deploy_key_name);break;
-            case 'get_running_mode': $dc->get_running_mode($deploy_key_name);break;
-            case 'set_running_mode': $dc->set_running_mode($deploy_key_name,$path_host_uri_or_running_mode);break;
+            case 'get_exec_mode': $dc->get_exec_mode($deploy_key_name);break;
+            case 'set_exec_mode': $dc->set_exec_mode($deploy_key_name,$path_host_uri_or_exec_mode);break;
 
             default : throw new \Exception("Command handler not implemented : ".$command);
 

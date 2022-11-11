@@ -209,5 +209,54 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		return $this->asResult($result);
 	}
 
+	public function listDb($password) {
+
+		$params = [];
+		$params['METHOD'] = 'LIST_DB';
+		$params['PASSWORD'] = $password;
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+	}
+
+	public function backupDbStructure($password,$connection_name,$save_dir) {
+
+		$d = new LDir($save_dir);
+		if (!$d->exists()) return ['result' => self::FAILURE_RESULT,'message' => 'Save folder do not exist'];
+
+		$save_file = $d->newFile($connection_name.'_structure_'.date('Y_m_d__h_i').'.zip');
+
+		$params = [];
+		$params['METHOD'] = 'BACKUP_DB_STRUCTURE';
+		$params['PASSWORD'] = $password;
+		$params['CONNECTION_NAME'] = $connection_name;
+
+		LHttp::post_to_file($this->full_deployer_url,$params,$save_file);
+
+		if ($save_file->exists() && $save_file->getSize()>0) return ['result' => self::SUCCESS_RESULT];
+		else return ['result' => self::FAILURE_RESULT,'message' => 'Unable to save file on backupDbStructure : '.$save_file->getFullPath()];
+
+	}
+
+	public function backupDbData($password,$connection_name,$save_dir) {
+
+		$d = new LDir($save_dir);	
+		if (!$d->exists()) return ['result' => self::FAILURE_RESULT,'message' => 'Save folder do not exist'];
+
+		$save_file = $d->newFile($connection_name.'_data_'.date('Y_m_d__h_i').'.zip');
+
+		$params = [];
+		$params['METHOD'] = 'BACKUP_DB_DATA';
+		$params['PASSWORD'] = $password;
+		$params['CONNECTION_NAME'] = $connection_name;
+		
+		LHttp::post_to_file($this->full_deployer_url,$params,$save_file);
+
+		if ($save_file->exists() && $save_file->getSize()>0) return ['result' => self::SUCCESS_RESULT];
+		else return ['result' => self::FAILURE_RESULT,'message' => 'Unable to save file on backupDbData : '.$save_file->getFullPath()];
+
+	}
+
 
 }

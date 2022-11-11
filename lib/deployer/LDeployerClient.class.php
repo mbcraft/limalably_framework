@@ -451,7 +451,10 @@ class LDeployerClient {
 		echo "./bin/deployer.sh project_update <deploy_key_name> --> updates the remote project files and prints a report of the operations done\n\n";
 		echo "./bin/deployer.sh auto_config <deploy_key_name> --> updates the remote project config files probing the right config to use if possible\n\n";
 		echo "./bin/deployer.sh manual_config <deploy_key_name> <host_name> --> updates the remote project config files using the selected host name configs\n\n";
-		echo "./bin/deployer.sh backup <deploy_key_name> <backup_dir_path> --> makes a full backup of a remote project and saves it in the backup dir specified\n\n";
+		echo "./bin/deployer.sh backup <deploy_key_name> <backup_dir_path> --> makes a full backup of a remote project files and saves it in the backup dir specified\n\n";
+		echo "./bin/deployer.sh list_db <deploy_key_name> --> lists all the db connections available on the server\n\n";
+		echo "./bin/deployer.sh backup_db_structure <deploy_key_name> <connection_name> <save_dir> --> makes a full backup of a remote database structures and saves the zipped sql in the specified folder\n\n";
+		echo "./bin/deployer.sh backup_db_data <deploy_key_name> <connection_name> <save_dir> --> makes a full backup of a remote database data and saves it in the specified folder\n\n";
 		echo "./bin/deployer.sh disappear <deploy_key_name> --> deletes the remote deployer\n\n";
 		echo "./bin/deployer.sh reset <deploy_key_name> --> deletes all the remote files but not the deployer one\n\n";
 		echo "./bin/deployer.sh temp_clean <deploy_key_name> --> cleans up the remote temporary files folder\n\n";
@@ -684,6 +687,45 @@ class LDeployerClient {
 				return true;
 
 			} else return $this->failure("Unable to list config/mode/ directory on deployer instance : ".$r['message']);
+
+		} else return false;
+	}
+
+	public function list_db(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->listDb($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$r['message']);
+
+			$connection_name_list = $r['data'];
+
+			echo "Connection name list available on deployer instance :\n\n";
+
+			foreach ($connection_name_list as $connection_name) {
+				echo "- ".$connection_name."\n";
+			}
+			echo "\n";
+
+		} else return false;
+	}
+
+	public function backup_db_structure(string $key_name,string $connection_name,string $save_dir) {
+		if ($this->loadKey($key_name)) {
+
+			//to be implemented ...
+
+			return true;
+
+		} else return false;
+	}
+
+	public function backup_db_data(string $key_name,string $connection_name,string $save_dir) {
+		if ($this->loadKey($key_name)) {
+
+			//to be implemented ...
+
+			return true;
 
 		} else return false;
 	}

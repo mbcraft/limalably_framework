@@ -142,4 +142,22 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
+	public function listDb($password) {
+
+		return $this->controller->listDb($password);
+
+	}
+
+	public function backupDbStructure($password,$connection_name) {
+
+		return $this->controller->backupDbStructure($password,$connection_name);
+
+	}
+
+	public function backupDbData($password,$connection_name) {
+
+		return $this->controller->backupDbData($password,$connection_name);
+
+	}
+
 }

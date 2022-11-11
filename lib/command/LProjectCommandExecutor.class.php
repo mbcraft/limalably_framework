@@ -142,7 +142,10 @@ class LProjectCommandExecutor implements LICommandExecutor {
             'reset' => 2,
             'temp_clean' => 2,
             'get_exec_mode' => 2,
-            'set_exec_mode' => 3
+            'set_exec_mode' => 3,
+            'list_db' => 2,
+            'backup_db_structure' => 3,
+            'backup_db_data' => 3
         ];
 
         if (LParameters::count()<1) {
@@ -204,6 +207,9 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'temp_clean': $dc->temp_clean($deploy_key_name);break;
             case 'get_exec_mode': $dc->get_exec_mode($deploy_key_name);break;
             case 'set_exec_mode': $dc->set_exec_mode($deploy_key_name,$parameter2);break;
+            case 'list_db': $dc->list_db($deploy_key_name);break;
+            case 'backup_db_structure': $dc->backup_db_structure($deploy_key_name,$parameter2,$parameter3);break;
+            case 'backup_db_data': $dc->backup_db_data($deploy_key_name,$parameter2,$parameter3);break;
 
             default : throw new \Exception("Command handler not implemented : ".$command);
 

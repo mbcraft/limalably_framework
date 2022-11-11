@@ -41,6 +41,13 @@ class LDbConnectionManager {
         return $conn;
     }
 
+    public static function has($connection_name) {
+        
+        return LConfigReader::has('/database/'.$connection_name);
+
+    }
+
+
     /**
      * Restituisce l'handle di una determinata connessione, come da configurazione.
      * 
@@ -75,7 +82,7 @@ class LDbConnectionManager {
 
         }
 
-        throw new \Exception("Unable");
+        throw new \Exception("Unable to find suitable connection to use with name : ".$connection_name);
         
     }
     

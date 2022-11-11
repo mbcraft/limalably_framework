@@ -1324,7 +1324,7 @@ class DeployerController {
 
     const DEPLOYER_VERSION = "1.2";
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent'];
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData'];
 
 	private $deployer_file;
 	private $root_dir;
@@ -1419,6 +1419,67 @@ class DeployerController {
 
     private function containsDeployerPath($path_list) {
         return in_array('@',$path_list);
+    }
+
+    public function listDb($password) {
+        if ($this->accessGranted($password)) {
+
+            $framework_boot = new DFile('lymz_framework/framework_boot.php');
+
+            if ($framework_boot->exists()) $framework_boot->requireFileOnce();
+            else return $this->failure("The framework is needed to complete this operation. Use framework_update to upload the framework.");
+
+            $db_list = LConfig::simple('/database');
+
+            $result_data = [];
+
+            foreach ($db_list as $db_name => $db_data) {
+                $result_data[] = $db_name;
+            }
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $result_data];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function backupDbStructure($password,$connection_name) {
+        if ($this->accessGranted($password)) {
+
+            $framework_boot = new DFile('lymz_framework/framework_boot.php');
+
+            if ($framework_boot->exists()) $framework_boot->requireFileOnce();
+            else return $this->failure("The framework is needed to complete this operation. Use framework_update to upload the framework.");
+
+            if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $temp_dir = new DDir('temp/backup/db/structure/'.$connection_name);
+            $temp_dir->touch();
+
+            $db = db($connection_name);
+
+            return ["result" => self::SUCCESS_RESULT,"data" => "Still need to complete this part ..."];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function backupDbData($password,$connection_name) {
+        if ($this->accessGranted($password)) {
+
+            $framework_boot = new DFile('lymz_framework/framework_boot.php');
+
+            if ($framework_boot->exists()) $framework_boot->requireFileOnce();
+            else return $this->failure("The framework is needed to complete this operation. Use framework_update to upload the framework.");
+
+            if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $temp_dir = new DDir('temp/backup/db/data/'.$connection_name);
+            $temp_dir->touch();
+
+            $db = db($connection_name);
+
+            return ["result" => self::SUCCESS_RESULT,"data" => "Still need to complete this part ..."];
+
+        } else return $this->failure("Wrong password.");
     }
 
     public function fileExists($password,$path) {
@@ -1776,6 +1837,38 @@ class DeployerController {
                     else echo $this->preparePostResponse($this->failure("PATH field missing in FILE_EXISTS request."));
 
                     echo $this->preparePostResponse($this->fileExists($password,$path));
+
+                    break;
+                }
+                case 'LIST_DB' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_DB request."));
+
+                    echo $this->preparePostResponse($this->listDb($password));
+
+                    break;
+                }
+                case 'BACKUP_DB_STRUCTURE' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in BACKUP_DB_STRUCTURE request."));
+
+                    if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
+                    else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_STRUCTURE request."));
+
+                    echo $this->preparePostResponse($this->backupDbStructure($password,$connection_name));
+
+                    break;
+                }
+                case 'BACKUP_DB_DATA' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in BACKUP_DB_DATA request."));
+
+                    if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
+                    else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_DATA request."));
+
+                    echo $this->preparePostResponse($this->backupDbData($password,$connection_name));
 
                     break;
                 }

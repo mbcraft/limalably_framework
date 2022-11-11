@@ -1512,7 +1512,7 @@ class DeployerController {
 	private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; 
 
     //deployer path from root
-    private static $DPFR = /*!D_P_F_R!*/"."/*!D_P_F_R!*/; 
+    private static $DPFR = /*!D_P_F_R!*/"deployer.php"/*!D_P_F_R!*/; 
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
@@ -1610,40 +1610,55 @@ class DeployerController {
         }
 
         $f = new $file_class($path_prefix.'lib/treemap/LTreeMap.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/treemap/LTreeMapView.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
 
         //config
         $f = new $file_class($path_prefix.'lib/config/LConfig.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/config/LConfigReader.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/config/LExecutionMode.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/config/LEnvironmentUtils.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
 
         //core
         $f = new $file_class($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/core/LInvalidParameterException.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/core/LResult.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/core/LClassLoader.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
 
         //utils
         $f = new $file_class($path_prefix.'lib/utils/LStringUtils.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
         $f = new $file_class($path_prefix.'lib/utils/LJsonUtils.class.php');
+        if (!$f->exists()) return false;
         $f->requireFileOnce();
 
         if (!LConfig::initCalled()) LConfig::init();
@@ -1657,7 +1672,8 @@ class DeployerController {
 
         if ($this->accessGranted($password)) {
 
-            $this->loadFrameworkBasicClasses();
+            $file_class = $this->loadFrameworkBasicClasses();
+            if (!$file_class) return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
 
             $db_list = LConfigReader::simple('/database');
 
@@ -1676,6 +1692,7 @@ class DeployerController {
         if ($this->accessGranted($password)) {
 
             $file_class = $this->loadFrameworkBasicClasses();
+            if (!$file_class) return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1706,7 +1723,8 @@ class DeployerController {
     public function backupDbData($password,$connection_name) {
         if ($this->accessGranted($password)) {
 
-            $this->loadFrameworkBasicClasses();
+            $file_class = $this->loadFrameworkBasicClasses();
+            if (!$file_class) return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 

@@ -16,7 +16,9 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	private function asResult($data) {
 
-		return json_decode($data,true);
+		$result = json_decode($data,true);
+
+		if ($result==null) return ['result' => self::FAILURE_RESULT,'message' => $data];
 
 	}
 
@@ -220,12 +222,7 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		return $this->asResult($result);
 	}
 
-	public function backupDbStructure($password,$connection_name,$save_dir) {
-
-		$d = new LDir($save_dir);
-		if (!$d->exists()) return ['result' => self::FAILURE_RESULT,'message' => 'Save folder do not exist'];
-
-		$save_file = $d->newFile($connection_name.'_structure_'.date('Y_m_d__h_i').'.zip');
+	public function backupDbStructure($password,$connection_name,$save_file) {
 
 		$params = [];
 		$params['METHOD'] = 'BACKUP_DB_STRUCTURE';
@@ -239,12 +236,7 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
-	public function backupDbData($password,$connection_name,$save_dir) {
-
-		$d = new LDir($save_dir);	
-		if (!$d->exists()) return ['result' => self::FAILURE_RESULT,'message' => 'Save folder do not exist'];
-
-		$save_file = $d->newFile($connection_name.'_data_'.date('Y_m_d__h_i').'.zip');
+	public function backupDbData($password,$connection_name,$save_file) {
 
 		$params = [];
 		$params['METHOD'] = 'BACKUP_DB_DATA';

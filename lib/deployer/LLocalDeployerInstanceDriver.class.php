@@ -148,15 +148,39 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
-	public function backupDbStructure($password,$connection_name) {
+	public function backupDbStructure($password,$connection_name,$save_file) {
 
-		return $this->controller->backupDbStructure($password,$connection_name);
+		$result = $this->controller->backupDbStructure($password,$connection_name);
+
+		if ($this->isSuccess($result)) {
+
+			$downloaded_file_orig = $result['data'];
+
+			$downloaded_file_ok = new LFile($downloaded_file_orig->getFullPath());
+
+			$r = $downloaded_file_ok->move_to($save_file);
+			if (!$r) return ['result' => self::FAILURE_RESULT,'message' => "Unable to copy backup file to final destination ..."];
+
+			return ['result' => self::SUCCESS_RESULT];
+		} else $this->failure("Unable to download backup of db structure from server : ".$r['message']);
 
 	}
 
-	public function backupDbData($password,$connection_name) {
+	public function backupDbData($password,$connection_name,$save_file) {
 
 		return $this->controller->backupDbData($password,$connection_name);
+
+		if ($this->isSuccess($result)) {
+
+			$downloaded_file_orig = $result['data'];
+
+			$downloaded_file_ok = new LFile($downloaded_file_orig->getFullPath());
+
+			$r = $downloaded_file_ok->move_to($save_file);
+			if (!$r) return ['result' => self::FAILURE_RESULT,'message' => "Unable to copy backup file to final destination ..."];
+
+			return ['result' => self::SUCCESS_RESULT];
+		} else $this->failure("Unable to download backup of db data from server : ".$r['message']);
 
 	}
 

@@ -9,6 +9,13 @@
 define ('FRAMEWORK_NAME','lymz');
 define ('FRAMEWORK_DIR_NAME','lymz_framework');
 
+$uniform_file_path = str_replace('\\','/',__FILE__);
+$path_parts = explode('/',$uniform_file_path);
+array_pop($path_parts); //rimuovo l'ultimo elemento
+
+$framework_dir = implode('/',$path_parts).'/';
+$_SERVER['FRAMEWORK_DIR'] = $framework_dir;
+
 //hashmap
 require_once ('lib/treemap/LTreeMap.class.php');
 require_once ('lib/treemap/LTreeMapView.class.php');

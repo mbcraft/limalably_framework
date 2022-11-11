@@ -1124,6 +1124,185 @@ class DFile extends DFileSystemElement
 
 }
 
+
+class DFileReader
+{
+    protected $my_handle;
+    protected $open;
+    
+    function __construct($handle)
+    {
+        $this->my_handle = $handle;
+        $this->open = true;
+    }
+
+    protected function checkClosed()
+    {
+        if (!$this->open) throw new \DIOException("The stream is closed!!");
+    }
+
+    function isOpen()
+    {
+        return $this->open;
+    }
+
+    function scanf($format)
+    {
+        $this->checkClosed();
+
+        return fscanf($this->my_handle,$format);
+    }
+    
+    function read($length)
+    {
+        $this->checkClosed();
+
+        return fread($this->my_handle,$length);
+    }
+    
+    function readLine()
+    {
+        $this->checkClosed();
+
+        $line = fgets($this->my_handle);
+        return preg_replace("/\r?\n\Z/","",$line);
+    }
+    
+    function readChar()
+    {
+        $this->checkClosed();
+
+        return fgetc($this->my_handle);
+    }
+    
+    function readCSV($delimiter=",")
+    {
+        $this->checkClosed();
+
+        return fgetcsv($this->my_handle,$delimiter);
+    }
+
+    function reset()
+    {
+        $this->checkClosed();
+
+        rewind($this->my_handle);
+    }
+    
+    function seek($location)
+    {
+        $this->checkClosed();
+
+        fseek($this->my_handle,$location,SEEK_SET);
+    }
+    
+    function skip($offset)
+    {
+        $this->checkClosed();
+
+        fseek($this->my_handle,$offset,SEEK_CUR);
+    }
+    
+    function pos()
+    {
+        $this->checkClosed();
+
+        return ftell($this->my_handle);
+    }
+        
+    function isEndOfStream()
+    {
+        $this->checkClosed();
+
+        return feof($this->my_handle);
+    }
+    
+    function close()
+    {
+        if ($this->open)
+        {
+            fflush($this->my_handle);
+            flock($this->my_handle,LOCK_UN);
+            fclose($this->my_handle);
+
+            $this->open = false;
+            $this->my_handle = null;
+        }
+        else
+            throw new \DIOException("Reader/Writer already closed.");
+
+    }
+    
+    function getHandler()
+    {
+        return $this->my_handle;
+    }
+}
+
+
+class DFileWriter extends DFileReader
+{
+    const CR = "\r";
+    const LF = "\n";
+
+    static function newTmpFile()
+    {
+        return new DFileWriter(tmpfile());
+    }
+
+    /*
+     * Uso eval per simulare printf
+     * */
+    function printf($format)
+    {
+        $this->checkClosed();
+
+        $args = func_get_args();
+        $printf_args = array_slice($args,1);
+
+        $p = 'fprintf($this->my_handle,$format';
+        $i = 0;
+        foreach ($printf_args as $arg)
+        {
+
+            $p.=',$printf_args['.$i.']';
+            $i++;
+        }
+        $p.=");";
+        eval($p);
+    }
+    
+    function write($string)
+    {
+        $this->checkClosed();
+
+        fwrite($this->my_handle, $string);
+    }
+
+    function writeln($string)
+    {
+        $this->checkClosed();
+
+        fwrite($this->my_handle,$string.self::CR.self::LF);
+    }
+    
+    function writeCSV($values,$delimiter=",")
+    {
+        $this->checkClosed();
+
+        fputcsv($this->my_handle, $values,$delimiter);
+    }
+
+    function truncate($size)
+    {
+        $this->checkClosed();
+
+        ftruncate($this->my_handle, $size);
+    }
+    
+}
+
+
 class DZipUtils
 {
     public static function expandArchive($zip_file,$target_folder)
@@ -1324,7 +1503,7 @@ class DeployerController {
 
     const DEPLOYER_VERSION = "1.2";
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent'];
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData'];
 
 	private $deployer_file;
 	private $root_dir;
@@ -1419,6 +1598,151 @@ class DeployerController {
 
     private function containsDeployerPath($path_list) {
         return in_array('@',$path_list);
+    }
+
+    private function loadFrameworkBasicClasses() {
+        if (class_exists('LFile')) {
+            $file_class = 'LFile';
+            $path_prefix = '';
+        } else {
+            $file_class = 'DFile';
+            $path_prefix = FRAMEWORK_DIR_NAME.'/';
+        }
+
+        $f = new $file_class($path_prefix.'lib/treemap/LTreeMap.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LTreeMapView.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
+        $f->requireFileOnce();
+
+        //config
+        $f = new $file_class($path_prefix.'lib/config/LConfig.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/config/LConfigReader.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/config/LExecutionMode.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/config/LEnvironmentUtils.class.php');
+        $f->requireFileOnce();
+
+        //core
+        $f = new $file_class($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/core/LInvalidParameterException.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/core/LResult.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/core/LClassLoader.class.php');
+        $f->requireFileOnce();
+
+        //utils
+        $f = new $file_class($path_prefix.'lib/utils/LStringUtils.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/utils/LJsonUtils.class.php');
+        $f->requireFileOnce();
+
+        if (!LConfig::initCalled()) LConfig::init();
+
+        if (!LClassLoader::initCalled()) LClassLoader::init();
+
+        return $file_class;
+    }
+
+    public function listDb($password) {
+
+        if ($this->accessGranted($password)) {
+
+            $this->loadFrameworkBasicClasses();
+
+            $db_list = LConfigReader::simple('/database');
+
+            $result_data = [];
+
+            foreach ($db_list as $db_name => $db_data) {
+                $result_data[] = $db_name;
+            }
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $result_data];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function backupDbStructure($password,$connection_name) {
+        if ($this->accessGranted($password)) {
+
+            $file_class = $this->loadFrameworkBasicClasses();
+
+            if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $temp_dir = new DDir('temp/backup/db/structure/'.$connection_name);
+            $temp_dir->touch();
+
+            $db = db($connection_name);
+
+            $table_list = table_list()->go($db);
+
+            foreach ($table_list as $tb) {
+                $query = create_table($tb)->show()->go($db);
+                
+                $qf = $temp_dir->newFile($tb.'__structure.sql');
+                $qf->setContent($query."\n\n");
+            }
+
+            $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
+            $zip_file->touch();
+
+            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function backupDbData($password,$connection_name) {
+        if ($this->accessGranted($password)) {
+
+            $this->loadFrameworkBasicClasses();
+
+            if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $temp_dir = new DDir('temp/backup/db/data/'.$connection_name);
+            $temp_dir->touch();
+
+            $db = db($connection_name);
+
+            $table_list = table_list()->go($db);
+
+            foreach ($table_list as $tb) {
+                $iterator = select('*',$tb)->iterator($db);
+                
+                $qf = $temp_dir->newFile($tb.'__data.sql');
+                $wr = $qf->openWriter();
+
+                while ($iterator->hasNext()) {
+                    $data = $iterator->next();
+
+                    $query = insert($tb,array_keys($data),array_values($data)).";";
+
+                    $wr->writeln($query);
+                    $wr->writeln("");
+                }
+
+                $wr->close();
+            }
+
+            $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
+            $zip_file->touch();
+
+            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
+
+        } else return $this->failure("Wrong password.");
     }
 
     public function fileExists($password,$path) {
@@ -1776,6 +2100,38 @@ class DeployerController {
                     else echo $this->preparePostResponse($this->failure("PATH field missing in FILE_EXISTS request."));
 
                     echo $this->preparePostResponse($this->fileExists($password,$path));
+
+                    break;
+                }
+                case 'LIST_DB' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_DB request."));
+
+                    echo $this->preparePostResponse($this->listDb($password));
+
+                    break;
+                }
+                case 'BACKUP_DB_STRUCTURE' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in BACKUP_DB_STRUCTURE request."));
+
+                    if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
+                    else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_STRUCTURE request."));
+
+                    echo $this->preparePostResponse($this->backupDbStructure($password,$connection_name));
+
+                    break;
+                }
+                case 'BACKUP_DB_DATA' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in BACKUP_DB_DATA request."));
+
+                    if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
+                    else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_DATA request."));
+
+                    echo $this->preparePostResponse($this->backupDbData($password,$connection_name));
 
                     break;
                 }

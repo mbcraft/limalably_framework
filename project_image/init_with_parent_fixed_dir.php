@@ -35,7 +35,6 @@ if (!is_dir($final_framework_path) || !is_file($final_framework_path.'framework_
     echo "Framework not found in path : ".$final_framework_path;
     exit(1);
 } else {
-    $_SERVER['FRAMEWORK_DIR'] = $final_framework_path;
     require_once($final_framework_path.'framework_boot.php');
 }
 

@@ -360,9 +360,8 @@ class LDeployerClient {
 
 	private function unreachableDeployerServer($result) {
 
-		$msg = "Deployer server is unreachable at : ".$this->current_uri." - ";
-		if (isset($result['message'])) $msg.=$result['message'];
-
+		$msg = "Deployer server is unreachable at : ".$this->current_uri." - ".$this->getResultMessage($result);
+		
 		$msg.= "\n\n";
 
 		echo $msg;
@@ -696,7 +695,7 @@ class LDeployerClient {
 
 			$r = $this->current_driver->listDb($this->current_password);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$r['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$this->getResultMessage($r));
 
 			$connection_name_list = $r['data'];
 
@@ -707,13 +706,32 @@ class LDeployerClient {
 			}
 			echo "\n";
 
+			return true;
+
 		} else return false;
 	}
 
 	public function backup_db_structure(string $key_name,string $connection_name,string $save_dir) {
 		if ($this->loadKey($key_name)) {
 
-			//to be implemented ...
+			$backup_dir = new LDir($save_dir);
+
+			$backup_filename = "backup_db_".$connection_name."_structure__".date('Y_m_d__h_i').".zip";
+
+			$backup_file = $backup_dir->newFile($backup_filename);
+
+			$r = $this->current_driver->backupDbStructure($this->current_password,$connection_name,$backup_file);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$this->getResultMessage($r));
+
+			$connection_name_list = $r['data'];
+
+			echo "Connection name list available on deployer instance :\n\n";
+
+			foreach ($connection_name_list as $connection_name) {
+				echo "- ".$connection_name."\n";
+			}
+			echo "\n";
 
 			return true;
 
@@ -723,7 +741,24 @@ class LDeployerClient {
 	public function backup_db_data(string $key_name,string $connection_name,string $save_dir) {
 		if ($this->loadKey($key_name)) {
 
-			//to be implemented ...
+			$backup_dir = new LDir($save_dir);
+
+			$backup_filename = "backup_db_".$connection_name."_data__".date('Y_m_d__h_i').".zip";
+
+			$backup_file = $backup_dir->newFile($backup_filename);
+
+			$r = $this->current_driver->backupDbData($this->current_password,$connection_name,$backup_file);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$this->getResultMessage($r));
+
+			$connection_name_list = $r['data'];
+
+			echo "Connection name list available on deployer instance :\n\n";
+
+			foreach ($connection_name_list as $connection_name) {
+				echo "- ".$connection_name."\n";
+			}
+			echo "\n";
 
 			return true;
 
@@ -735,7 +770,7 @@ class LDeployerClient {
 
 			$r = $this->current_driver->getEnv($this->current_password,self::DEPLOYER_PATH_FROM_ROOT);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to get environment variable from deployer instance : ".$r['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to get environment variable from deployer instance : ".$this->getResultMessage($r));
 
 			echo "Deployer path from root is : ".$r['data']."\n\n";
 
@@ -749,7 +784,7 @@ class LDeployerClient {
 
 			$r = $this->current_driver->setEnv($this->current_password,self::DEPLOYER_PATH_FROM_ROOT,$deployer_path);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to set environment variable from deployer instance : ".$r['message']);
+			if (!$this->isSuccess($r)) return $this->failure("Unable to set environment variable from deployer instance : ".$this->getResultMessage($r));
 
 			echo "Deployer path from root now is : ".$deployer_path."\n\n";
 

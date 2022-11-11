@@ -63,11 +63,11 @@ class LResult {
     public static function error_message(string $message) {
         self::$has_error = true;
         
-        if (LConfigReader::executionMode("/misc/errors/display")) {
+        if (!LConfigReader::has("/misc/errors/display") || LConfigReader::executionMode("/misc/errors/display")) {
             echo $message;
             self::newline();
         } 
-        if (LConfigReader::executionMode("/misc/errors/log"))
+        if (LConfigReader::has("/misc/errors/log") && LConfigReader::executionMode("/misc/errors/log"))
         {
             LLog::error($message);
         }

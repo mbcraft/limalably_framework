@@ -43,8 +43,8 @@ interface LIDeployerInstanceDriver {
 
 	public function listDb($password);
 
-	public function backupDbStructure($password,$connection_name);
+	public function backupDbStructure($password,$connection_name,$save_file);
 
-	public function backupDbData($password,$connection_name);
+	public function backupDbData($password,$connection_name,$save_file);
 
 }

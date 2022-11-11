@@ -142,7 +142,14 @@ class LClassLoader {
         self::deleteClassContentCache();
     }
     
+    private static $init_called = false;
+
+    public static function initCalled() {
+        return self::$init_called;
+    }
+
     public static function init() {
+        self::$init_called = true;
             
         if (LExecutionMode::isTesting() || LExecutionMode::isProduction()) {
             if (self::hasClassMapCache()) {

@@ -59,7 +59,7 @@ class LConfig {
         $hostname = 'localhost'; //default set as localhost
         $hostname_found = false;
 
-        if (isset($_SERVER['SERVER_NAME'])) { //is a virtual host?
+        if (isset($_SERVER['SERVER_NAME']) && isset($_REQUEST['routemap'])) { //is a virtual host?
             $hostname = $_SERVER['SERVER_NAME'];
             $hostname_found = true;
             $_SERVER['RAW_ROUTE'] = $_REQUEST['routemap'];
@@ -212,6 +212,10 @@ class LConfig {
 
         self::$tree_map->setRoot($final_data);
 
+    }
+
+    public static function initCalled() {
+        return self::$init_called;
     }
 
     public static function init() {

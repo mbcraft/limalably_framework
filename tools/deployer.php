@@ -1124,6 +1124,185 @@ class DFile extends DFileSystemElement
 
 }
 
+
+class DFileReader
+{
+    protected $my_handle;
+    protected $open;
+    
+    function __construct($handle)
+    {
+        $this->my_handle = $handle;
+        $this->open = true;
+    }
+
+    protected function checkClosed()
+    {
+        if (!$this->open) throw new \DIOException("The stream is closed!!");
+    }
+
+    function isOpen()
+    {
+        return $this->open;
+    }
+
+    function scanf($format)
+    {
+        $this->checkClosed();
+
+        return fscanf($this->my_handle,$format);
+    }
+    
+    function read($length)
+    {
+        $this->checkClosed();
+
+        return fread($this->my_handle,$length);
+    }
+    
+    function readLine()
+    {
+        $this->checkClosed();
+
+        $line = fgets($this->my_handle);
+        return preg_replace("/\r?\n\Z/","",$line);
+    }
+    
+    function readChar()
+    {
+        $this->checkClosed();
+
+        return fgetc($this->my_handle);
+    }
+    
+    function readCSV($delimiter=",")
+    {
+        $this->checkClosed();
+
+        return fgetcsv($this->my_handle,$delimiter);
+    }
+
+    function reset()
+    {
+        $this->checkClosed();
+
+        rewind($this->my_handle);
+    }
+    
+    function seek($location)
+    {
+        $this->checkClosed();
+
+        fseek($this->my_handle,$location,SEEK_SET);
+    }
+    
+    function skip($offset)
+    {
+        $this->checkClosed();
+
+        fseek($this->my_handle,$offset,SEEK_CUR);
+    }
+    
+    function pos()
+    {
+        $this->checkClosed();
+
+        return ftell($this->my_handle);
+    }
+        
+    function isEndOfStream()
+    {
+        $this->checkClosed();
+
+        return feof($this->my_handle);
+    }
+    
+    function close()
+    {
+        if ($this->open)
+        {
+            fflush($this->my_handle);
+            flock($this->my_handle,LOCK_UN);
+            fclose($this->my_handle);
+
+            $this->open = false;
+            $this->my_handle = null;
+        }
+        else
+            throw new \DIOException("Reader/Writer already closed.");
+
+    }
+    
+    function getHandler()
+    {
+        return $this->my_handle;
+    }
+}
+
+
+class DFileWriter extends DFileReader
+{
+    const CR = "\r";
+    const LF = "\n";
+
+    static function newTmpFile()
+    {
+        return new DFileWriter(tmpfile());
+    }
+
+    /*
+     * Uso eval per simulare printf
+     * */
+    function printf($format)
+    {
+        $this->checkClosed();
+
+        $args = func_get_args();
+        $printf_args = array_slice($args,1);
+
+        $p = 'fprintf($this->my_handle,$format';
+        $i = 0;
+        foreach ($printf_args as $arg)
+        {
+
+            $p.=',$printf_args['.$i.']';
+            $i++;
+        }
+        $p.=");";
+        eval($p);
+    }
+    
+    function write($string)
+    {
+        $this->checkClosed();
+
+        fwrite($this->my_handle, $string);
+    }
+
+    function writeln($string)
+    {
+        $this->checkClosed();
+
+        fwrite($this->my_handle,$string.self::CR.self::LF);
+    }
+    
+    function writeCSV($values,$delimiter=",")
+    {
+        $this->checkClosed();
+
+        fputcsv($this->my_handle, $values,$delimiter);
+    }
+
+    function truncate($size)
+    {
+        $this->checkClosed();
+
+        ftruncate($this->my_handle, $size);
+    }
+    
+}
+
+
 class DZipUtils
 {
     public static function expandArchive($zip_file,$target_folder)
@@ -1421,15 +1600,66 @@ class DeployerController {
         return in_array('@',$path_list);
     }
 
+    private function loadFrameworkBasicClasses() {
+        if (class_exists('LFile')) {
+            $file_class = 'LFile';
+            $path_prefix = '';
+        } else {
+            $file_class = 'DFile';
+            $path_prefix = FRAMEWORK_DIR_NAME.'/';
+        }
+
+        $f = new $file_class($path_prefix.'lib/treemap/LTreeMap.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LTreeMapView.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
+        $f->requireFileOnce();
+
+        //config
+        $f = new $file_class($path_prefix.'lib/config/LConfig.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/config/LConfigReader.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/config/LExecutionMode.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/config/LEnvironmentUtils.class.php');
+        $f->requireFileOnce();
+
+        //core
+        $f = new $file_class($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/core/LInvalidParameterException.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/core/LResult.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/core/LClassLoader.class.php');
+        $f->requireFileOnce();
+
+        //utils
+        $f = new $file_class($path_prefix.'lib/utils/LStringUtils.class.php');
+        $f->requireFileOnce();
+        $f = new $file_class($path_prefix.'lib/utils/LJsonUtils.class.php');
+        $f->requireFileOnce();
+
+        if (!LConfig::initCalled()) LConfig::init();
+
+        if (!LClassLoader::initCalled()) LClassLoader::init();
+
+        return $file_class;
+    }
+
     public function listDb($password) {
+
         if ($this->accessGranted($password)) {
 
-            $framework_boot = new DFile('lymz_framework/framework_boot.php');
+            $this->loadFrameworkBasicClasses();
 
-            if ($framework_boot->exists()) $framework_boot->requireFileOnce();
-            else return $this->failure("The framework is needed to complete this operation. Use framework_update to upload the framework.");
-
-            $db_list = LConfig::simple('/database');
+            $db_list = LConfigReader::simple('/database');
 
             $result_data = [];
 
@@ -1445,10 +1675,7 @@ class DeployerController {
     public function backupDbStructure($password,$connection_name) {
         if ($this->accessGranted($password)) {
 
-            $framework_boot = new DFile('lymz_framework/framework_boot.php');
-
-            if ($framework_boot->exists()) $framework_boot->requireFileOnce();
-            else return $this->failure("The framework is needed to complete this operation. Use framework_update to upload the framework.");
+            $file_class = $this->loadFrameworkBasicClasses();
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1457,7 +1684,21 @@ class DeployerController {
 
             $db = db($connection_name);
 
-            return ["result" => self::SUCCESS_RESULT,"data" => "Still need to complete this part ..."];
+            $table_list = table_list()->go($db);
+
+            foreach ($table_list as $tb) {
+                $query = create_table($tb)->show()->go($db);
+                
+                $qf = $temp_dir->newFile($tb.'__structure.sql');
+                $qf->setContent($query."\n\n");
+            }
+
+            $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
+            $zip_file->touch();
+
+            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
         } else return $this->failure("Wrong password.");
     }
@@ -1465,10 +1706,7 @@ class DeployerController {
     public function backupDbData($password,$connection_name) {
         if ($this->accessGranted($password)) {
 
-            $framework_boot = new DFile('lymz_framework/framework_boot.php');
-
-            if ($framework_boot->exists()) $framework_boot->requireFileOnce();
-            else return $this->failure("The framework is needed to complete this operation. Use framework_update to upload the framework.");
+            $this->loadFrameworkBasicClasses();
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1477,7 +1715,32 @@ class DeployerController {
 
             $db = db($connection_name);
 
-            return ["result" => self::SUCCESS_RESULT,"data" => "Still need to complete this part ..."];
+            $table_list = table_list()->go($db);
+
+            foreach ($table_list as $tb) {
+                $iterator = select('*',$tb)->iterator($db);
+                
+                $qf = $temp_dir->newFile($tb.'__data.sql');
+                $wr = $qf->openWriter();
+
+                while ($iterator->hasNext()) {
+                    $data = $iterator->next();
+
+                    $query = insert($tb,array_keys($data),array_values($data)).";";
+
+                    $wr->writeln($query);
+                    $wr->writeln("");
+                }
+
+                $wr->close();
+            }
+
+            $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
+            $zip_file->touch();
+
+            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
         } else return $this->failure("Wrong password.");
     }

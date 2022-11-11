@@ -2130,6 +2130,7 @@ class DeployerController {
                 header('Connection: close');
                 flush(); // Flush system output buffer
                 readfile($f->getFullPath());
+                $f->delete();
                 exit();
             } else {
                 echo $this->preparePostResponse($this->failure("Unable to find zip file to send to client."));

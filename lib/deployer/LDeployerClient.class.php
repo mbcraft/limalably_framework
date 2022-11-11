@@ -1114,7 +1114,12 @@ class LDeployerClient {
 
 			$r = $this->current_driver->downloadDir($this->current_password,'/',$backup_file);
 		
-			if ($this->isSuccess($r)) return true;
+			if ($this->isSuccess($r)) {
+				
+				echo "Backup file ".$backup_filename." saved successfully.\n";
+
+				return true;
+			}
 			else return $this->failure("Unable to backup remote installation into zip file : ".$r['message']);
 		} else return false;
 	}

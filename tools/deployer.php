@@ -1337,6 +1337,8 @@ class DZipUtils
         else
             $dir_to_zip = new DDir($folder_to_zip);
         
+        if (!class_exists('ZipArchive')) throw new \Exception("Can't use zip files, ZipArchive class missing.");
+
         $zip_archive = new ZipArchive();
 
         $zip_archive->open($save_file->getFullPath(),  ZipArchive::CREATE);
@@ -1710,7 +1712,10 @@ class DeployerController {
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
             $temp_dir = new DDir('temp/backup/db/structure/'.$connection_name);
+            if ($temp_dir->exists()) $temp_dir->delete(true);
             $temp_dir->touch();
+
+            if (!$temp_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
             $db = db($connection_name);
 
@@ -1725,6 +1730,8 @@ class DeployerController {
 
             $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
             $zip_file->touch();
+
+            if (!$zip_file->exists()) return $this->failure("Unable to create zip file for storing files.");
 
             DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
 
@@ -1742,7 +1749,10 @@ class DeployerController {
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
             $temp_dir = new DDir('temp/backup/db/data/'.$connection_name);
+            if ($temp_dir->exists()) $temp_dir->delete(true);
             $temp_dir->touch();
+
+            if (!$temp_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
             $db = db($connection_name);
 
@@ -1761,6 +1771,7 @@ class DeployerController {
 
                     $wr->writeln($query);
                     $wr->writeln("");
+
                 }
 
                 $wr->close();
@@ -1768,6 +1779,8 @@ class DeployerController {
 
             $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
             $zip_file->touch();
+
+            if (!$zip_file->exists()) return $this->failure("Unable to create zip file for storing files.");
 
             DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
 
@@ -2104,6 +2117,33 @@ class DeployerController {
         return "".$data;
     }
 
+    private function sendFileFromResult($result) {
+        if ($result['result']==self::SUCCESS_RESULT) {
+            $f = $result['data'];
+
+            if ($f->exists() && $f->getSize()>0) {
+
+                header('Content-Description: File Transfer');
+                header('Content-Type: '.mime_content_type ($f->getFullPath()));
+                
+                $content_disposition = 'inline';
+                
+                header('Content-Disposition: '.$content_disposition.'; filename="my_dir.zip"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . $f->getSize());
+                header('Connection: close');
+                flush(); // Flush system output buffer
+                readfile($f->getFullPath());
+                exit();
+            } else {
+                echo $this->preparePostResponse($this->failure("Unable to find zip file to send to client."));
+                exit();
+            }
+        }
+    }
+
     public function processRequest() {
     	if ($this->hasPostParameter('METHOD')) {
     		$method = $this->getPostParameter('METHOD');
@@ -2150,7 +2190,11 @@ class DeployerController {
                     if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
                     else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_STRUCTURE request."));
 
-                    echo $this->preparePostResponse($this->backupDbStructure($password,$connection_name));
+                    $result = $this->backupDbStructure($password,$connection_name);
+
+                    if ($this->isSuccess($result))
+                        $this->sendFileFromResult($result);
+                    else echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
 
                     break;
                 }
@@ -2162,7 +2206,11 @@ class DeployerController {
                     if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
                     else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_DATA request."));
 
-                    echo $this->preparePostResponse($this->backupDbData($password,$connection_name));
+                    $result = $this->backupDbData($password,$connection_name);
+
+                    if ($this->isSuccess($result))
+                        $this->sendFileFromResult($result);
+                    else echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
 
                     break;
                 }
@@ -2323,24 +2371,7 @@ class DeployerController {
 
 					$result = $this->downloadDir($password,$path);
 
-					if ($result['result']==self::SUCCESS_RESULT) {
-						$f = $result['data'];
-
-				        header('Content-Description: File Transfer');
-				        header('Content-Type: '.mime_content_type ($f->getFullPath()));
-				        
-				        $content_disposition = 'inline';
-				        
-				        header('Content-Disposition: '.$content_disposition.'; filename="my_dir.zip"');
-				        header('Expires: 0');
-				        header('Cache-Control: must-revalidate');
-				        header('Pragma: public');
-				        header('Content-Length: ' . $f->getSize());
-				        header('Connection: close');
-				        flush(); // Flush system output buffer
-				        readfile($f->getFullPath());
-				        exit();
-					}
+					$this->sendFileFromResult($result);
 
 					break;
     			}

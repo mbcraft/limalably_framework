@@ -76,7 +76,9 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 
-		$this->assertTrue($result['data']->getSize()>0,"Il file ritornato risulta essere vuoto!");
+		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
+
+		echo "\nResult file is for backup db structure is : ".$result['data']->getSize()."\n";
 	}
 
 	
@@ -96,7 +98,9 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 
-		$this->assertTrue($result['data']->getSize()>0,"Il file ritornato risulta essere vuoto!");
+		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
+
+		echo "\nResult file is for backup db data is : ".$result['data']->getSize()."\n";
 	}
 	
 	/*

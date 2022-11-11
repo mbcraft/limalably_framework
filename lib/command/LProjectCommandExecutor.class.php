@@ -144,8 +144,8 @@ class LProjectCommandExecutor implements LICommandExecutor {
             'get_exec_mode' => 2,
             'set_exec_mode' => 3,
             'list_db' => 2,
-            'backup_db_structure' => 3,
-            'backup_db_data' => 3
+            'backup_db_structure' => 4,
+            'backup_db_data' => 4
         ];
 
         if (LParameters::count()<1) {
@@ -173,7 +173,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
         }
 
         if (isset($parameter_map[$command]) && $parameter_map[$command]!=LParameters::count()) {
-            echo "Parameter number mismatch.\n";
+            echo "Parameter number mismatch : found ".LParameters::count()." parameters.\n";
             $dc->help();
             return;
         }

@@ -60,6 +60,7 @@ class LHttp
         curl_setopt($ch,CURLOPT_FILE,$handle);
         curl_exec($ch);
         curl_close($ch);
+        $fw->close();
         
     }
     

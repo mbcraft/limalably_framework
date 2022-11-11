@@ -724,17 +724,10 @@ class LDeployerClient {
 
 			$r = $this->current_driver->backupDbStructure($this->current_password,$connection_name,$backup_file);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$this->getResultMessage($r));
-
-			$connection_name_list = $r['data'];
-
-			echo "Connection name list available on deployer instance :\n\n";
-
-			foreach ($connection_name_list as $connection_name) {
-				echo "- ".$connection_name."\n";
+			if ($this->isSuccess($r)) {
+				echo "Backup db structure file download successfully\n";
+				echo "[".$backup_file->getFilename()." - size ".$backup_file->getSize()." bytes] ...\n";
 			}
-			echo "\n";
-
 			return true;
 
 		} else return false;
@@ -751,17 +744,10 @@ class LDeployerClient {
 
 			$r = $this->current_driver->backupDbData($this->current_password,$connection_name,$backup_file);
 
-			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$this->getResultMessage($r));
-
-			$connection_name_list = $r['data'];
-
-			echo "Connection name list available on deployer instance :\n\n";
-
-			foreach ($connection_name_list as $connection_name) {
-				echo "- ".$connection_name."\n";
+			if ($this->isSuccess($r)) {
+				echo "Backup db data file download successfully\n";
+				echo "[".$backup_file->getFilename()." - size ".$backup_file->getSize()." bytes] ...\n";
 			}
-			echo "\n";
-
 			return true;
 
 		} else return false;

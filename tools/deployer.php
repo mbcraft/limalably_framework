@@ -1332,6 +1332,8 @@ class DZipUtils
     
     public static function createArchive($save_file,$folder_to_zip,$local_dir="/")
     {
+        if ($save_file->exists()) $save_file->delete(); 
+
         if ($folder_to_zip instanceof DDir)
             $dir_to_zip = $folder_to_zip;
         else
@@ -1729,9 +1731,6 @@ class DeployerController {
             }
 
             $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
-            $zip_file->touch();
-
-            if (!$zip_file->exists()) return $this->failure("Unable to create zip file for storing files.");
 
             DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
 
@@ -1778,9 +1777,6 @@ class DeployerController {
             }
 
             $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
-            $zip_file->touch();
-
-            if (!$zip_file->exists()) return $this->failure("Unable to create zip file for storing files.");
 
             DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
 
@@ -2002,8 +1998,6 @@ class DeployerController {
 			if (!$source->exists()) return $this->failure("Directory to zip and get does not exist.");
 
 			$zip_file = $this->root_dir->newFile("my_dir.zip");
-
-			if ($zip_file->exists()) $zip_file->delete(); //...
 
 			DZipUtils::createArchive($zip_file,$source);
 

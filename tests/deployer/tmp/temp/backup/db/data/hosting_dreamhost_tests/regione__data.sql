@@ -1,2 +1,0 @@
-INSERT INTO regione (id,nome,codice) VALUES (9,'REGIONE_TEST','CODICE_REGIONE_TEST');
-

@@ -340,11 +340,13 @@ class LDeployerClient {
 				echo "Using local deployer driver ...\n";
 			}
 
+			echo "Trying hello with server ...\n";
+
 			if ($use_password) {
-				//echo "Using hello with password ...\n";
+				echo "Using hello with password ...\n";
 				$hello_result = $this->current_driver->hello($this->current_password);
 			} else {
-				//echo "Using hello without password ...\n";
+				echo "Using hello without password ...\n";
 				$hello_result = $this->current_driver->hello();
 			}
 

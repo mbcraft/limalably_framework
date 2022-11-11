@@ -19,6 +19,7 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$result = json_decode($data,true);
 
 		if ($result==null) return ['result' => self::FAILURE_RESULT,'message' => $data];
+		else return $result;
 
 	}
 

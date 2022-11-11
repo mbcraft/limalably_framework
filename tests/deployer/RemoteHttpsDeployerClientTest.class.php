@@ -10,6 +10,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 	
 	const TEST_DIR = 'tests';	
 	
+	/*
 	//ok
 	function testProjectCheck() {
 
@@ -133,7 +134,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 	}
-
+	*/
 	//ok
 	function testTempClean() {
 		$dc = new LDeployerClient();
@@ -162,7 +163,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 	}
-	
+	/*
 	//ok
 	function testDeployerUpdate() {
 		$dc = new LDeployerClient();
@@ -187,5 +188,6 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 	}
+	*/
 	
 }

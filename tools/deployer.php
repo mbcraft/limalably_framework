@@ -6,6 +6,9 @@
 *
 */
 
+if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','lymz');
+if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','lymz_framework');
+
 function lymz_deployer_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
@@ -1609,6 +1612,10 @@ class DeployerController {
             $path_prefix = FRAMEWORK_DIR_NAME.'/';
         }
 
+        $f = new $file_class($path_prefix.'framework_spec.php');
+        if (!$f->exists()) return false;
+        $f->requireFileOnce();
+
         $f = new $file_class($path_prefix.'lib/treemap/LTreeMap.class.php');
         if (!$f->exists()) return false;
         $f->requireFileOnce();
@@ -1672,8 +1679,14 @@ class DeployerController {
 
         if ($this->accessGranted($password)) {
 
-            $file_class = $this->loadFrameworkBasicClasses();
-            if (!$file_class) return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            try {
+                $file_class = $this->loadFrameworkBasicClasses();
+                if (!$file_class) return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            } catch (\Exception $ex) {
+                return $this->failure("Failure during class loading : ".$ex->getMessage());
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
 
             $db_list = LConfigReader::simple('/database');
 

@@ -54,15 +54,18 @@ class LConfig {
     }
 
     private static function detectAndSaveHostnameRawRouteAndParameters() {
+        
         // hostname to detect
 
         $hostname = 'localhost'; //default set as localhost
         $hostname_found = false;
 
-        if (isset($_SERVER['SERVER_NAME']) && isset($_REQUEST['routemap'])) { //is a virtual host?
+        if (isset($_SERVER['SERVER_NAME'])) { //is a virtual host?
             $hostname = $_SERVER['SERVER_NAME'];
             $hostname_found = true;
-            $_SERVER['RAW_ROUTE'] = $_REQUEST['routemap'];
+            if (isset($_REQUEST['routemap'])) {
+                $_SERVER['RAW_ROUTE'] = $_REQUEST['routemap'];
+            }
         }
 
         if (!$hostname_found && isset($_SERVER['SESSION_MANAGER'])) { //is a console window inside a window manager?
@@ -115,31 +118,38 @@ class LConfig {
         
 
         // hostname set
-        LConfig::saveServerVar('RAW_ROUTE');
+        if (isset($_SERVER['RAW_ROUTE'])) {
+            LConfig::saveServerVar('RAW_ROUTE');
+        }
         
     }
 
     private static function initRoute() {
 
-        
-        $route = $_SERVER['RAW_ROUTE'];
+        if (isset($_SERVER['RAW_ROUTE'])) {
+            $route = $_SERVER['RAW_ROUTE'];
 
-        if ($route == null) {
-            $route = '';
+            if ($route == null) {
+                $route = '';
+            }
+
+            $_SERVER['ROUTE'] = $route;
+            LConfig::saveServerVar('ROUTE');
+            // route set
         }
-
-        $_SERVER['ROUTE'] = $route;
-        LConfig::saveServerVar('ROUTE');
-        // route set
     }
 
     private static function initFromConfigFiles() {
-        if (isset($_SERVER['PROJECT_DIR'])) {
+        if (isset($_SERVER['PROJECT_DIR']) || isset($_SERVER['DEPLOYER_PROJECT_DIR'])) {
             $path_parts = [];
             $path_parts[] = 'config';
             $path_parts[] = 'internal';
             $path_parts[] = 'framework'.self::CONFIG_EXTENSION;
-            $internal_config_file_path = $_SERVER['PROJECT_DIR'] . implode('/', $path_parts);
+
+            if (isset($_SERVER['PROJECT_DIR'])) $prefix = $_SERVER['PROJECT_DIR'];
+            if (isset($_SERVER['DEPLOYER_PROJECT_DIR'])) $prefix = $_SERVER['DEPLOYER_PROJECT_DIR'];
+
+            $internal_config_file_path = $prefix . implode('/', $path_parts);
         } else {
             $path_parts = [];
             $path_parts[] = 'project_image';
@@ -238,7 +248,9 @@ class LConfig {
 
         self::initFromConfigFiles();
         
-        self::printDebuggingInfos();
+        if (!isset($_SERVER['DEPLOYER_PROJECT_DIR'])) {
+            self::printDebuggingInfos();
+        }
 
     }
     
@@ -253,9 +265,15 @@ class LConfig {
         
         LResult::trace("Hostname detected : " . $_SERVER['HOSTNAME']);
         
-        LResult::trace("Raw route detected : " . $_SERVER['RAW_ROUTE']);
-        
-        LResult::trace("Route detected : " . $_SERVER['ROUTE']);
+        if (isset($_SERVER['RAW_ROUTE']))
+            LResult::trace("Raw route detected : " . $_SERVER['RAW_ROUTE']);
+        else 
+            LResult::trace("No raw route detected.");
+
+        if (isset($_SERVER['ROUTE']))
+            LResult::trace("Route detected : " . $_SERVER['ROUTE']);
+        else
+            LResult::trace("No route detected.");
         
         LResult::trace("Execution mode : " . LExecutionMode::get());
         

@@ -8,6 +8,8 @@
 
 // booting framework ONLY ...
 
+require_once('framework_spec.php');
+
 require_once('framework_boot.php');
 
 Lymz::framework_boot();

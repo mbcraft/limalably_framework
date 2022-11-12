@@ -764,6 +764,13 @@ class LDeployerClient {
 	public function backup_db_data(string $key_name,string $connection_name,string $save_dir) {
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			$backup_dir = new LDir($save_dir);
 
 			$backup_filename = "backup_db_".$connection_name."_data__".date('Y_m_d__h_i').".zip";
@@ -855,6 +862,8 @@ class LDeployerClient {
 
 			echo "Preparing for deployer update ...\n";
 
+			$r = $this->current_driver->version($this->current_password);
+
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
 			echo "Deployer version : ".$r['version']."\n";
@@ -907,6 +916,8 @@ class LDeployerClient {
 	public function disappear(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
 			echo "Deployer version : ".$r['version']."\n";
@@ -931,6 +942,8 @@ class LDeployerClient {
 
 	public function reset(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
@@ -969,6 +982,8 @@ class LDeployerClient {
 
 	public function temp_clean(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
@@ -1020,6 +1035,8 @@ class LDeployerClient {
 
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
 			echo "Deployer version : ".$r['version']."\n";
@@ -1069,6 +1086,8 @@ class LDeployerClient {
 
 	public function framework_update(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
@@ -1127,6 +1146,8 @@ class LDeployerClient {
 	public function project_check(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
 			echo "Deployer version : ".$r['version']."\n";
@@ -1153,6 +1174,8 @@ class LDeployerClient {
 
 	public function project_update(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
@@ -1181,6 +1204,8 @@ class LDeployerClient {
 
 	public function backup(string $key_name,string $save_dir_path) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
@@ -1269,6 +1294,8 @@ class LDeployerClient {
 	public function auto_config(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
 			echo "Deployer version : ".$r['version']."\n";
@@ -1297,6 +1324,8 @@ class LDeployerClient {
 
 	public function manual_config(string $key_name,string $config_folder) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 

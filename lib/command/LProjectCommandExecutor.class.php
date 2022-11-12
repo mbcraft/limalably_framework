@@ -154,17 +154,14 @@ class LProjectCommandExecutor implements LICommandExecutor {
         }
 
         if (LParameters::count()==1) {
-            if (LParameters::getByIndex(0)=='help') {
-                $dc->help();
-                return;
-            } else {
-                echo "Unknown command '".LParameters::getByIndex(0)."'.\n";
-                $dc->help();
-                return;
-            }
+            echo "Unknown command '".LParameters::getByIndex(0)."'.\n";
+            $dc->help();
+            return;
         }
 
-        $command = LParameters::getByIndex(0);
+        $deploy_key_name = LParameters::getByIndex(0);
+
+        $command = LParameters::getByIndex(1);
 
         if (!isset($parameter_map[$command])) {
             echo "Unknown command.\n";
@@ -177,8 +174,6 @@ class LProjectCommandExecutor implements LICommandExecutor {
             $dc->help();
             return;
         }
-
-        $deploy_key_name = LParameters::getByIndex(1);
 
         if (LParameters::count()>2) {
             $parameter2 = LParameters::getByIndex(2);

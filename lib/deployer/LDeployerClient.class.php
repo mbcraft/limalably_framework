@@ -434,31 +434,31 @@ class LDeployerClient {
 	}
 
 	function help() {
-		echo "Generic usage : ./bin/deployer.sh <command> <parameter1> <parameter2> <parameter...>";
+		echo "Generic usage : ./bin/deployer.sh <deploy_key_name> <command> <parameter1> <parameter2> <parameter...>";
 		echo "\n\n";
 		echo "Command List : \n\n";
-		echo "./bin/deployer.sh help --> prints this help\n\n";
-		echo "./bin/deployer.sh attach <deploy_key_name> <local deployer.php path> <remote deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
-		echo "./bin/deployer.sh detach <deploy_key_name> --> detaches the deployer removing the server token and deleting the local key\n\n";
-		echo "./bin/deployer.sh get_exec_mode <deploy_key_name> --> gets the execution mode on the deployer instance\n\n";
-		echo "./bin/deployer.sh set_exec_mode <deploy_key_name> <running_mode> --> sets the execution mode on the deployer instance\n\n";
-		echo "./bin/deployer.sh get_deployer_path_from_root <deploy_key_name> --> gets the deployer path from root dir\n\n";
-		echo "./bin/deployer.sh set_deployer_path_from_root <deploy_key_name> <deployer_path> --> set the deployer path from root dir\n\n";
-		echo "./bin/deployer.sh deployer_version <deploy_key_name> --> prints the deployer version\n\n";
-		echo "./bin/deployer.sh deployer_update <deploy_key_name> --> updates the remote deployer using the local version\n\n";
-		echo "./bin/deployer.sh framework_check <deploy_key_name> --> check and lists which framework files needs an update\n\n";
-		echo "./bin/deployer.sh framework_update <deploy_key_name> --> updates the remote framework files and prints a report of the operations done\n\n";
-		echo "./bin/deployer.sh project_check <deploy_key_name> --> check and lists which remote project files needs an update\n\n";
-		echo "./bin/deployer.sh project_update <deploy_key_name> --> updates the remote project files and prints a report of the operations done\n\n";
-		echo "./bin/deployer.sh auto_config <deploy_key_name> --> updates the remote project config files probing the right config to use if possible\n\n";
-		echo "./bin/deployer.sh manual_config <deploy_key_name> <host_name> --> updates the remote project config files using the selected host name configs\n\n";
-		echo "./bin/deployer.sh backup <deploy_key_name> <backup_dir_path> --> makes a full backup of a remote project files and saves it in the backup dir specified\n\n";
-		echo "./bin/deployer.sh list_db <deploy_key_name> --> lists all the db connections available on the server\n\n";
-		echo "./bin/deployer.sh backup_db_structure <deploy_key_name> <connection_name> <save_dir> --> makes a full backup of a remote database structures and saves the zipped sql in the specified folder\n\n";
-		echo "./bin/deployer.sh backup_db_data <deploy_key_name> <connection_name> <save_dir> --> makes a full backup of a remote database data and saves it in the specified folder\n\n";
-		echo "./bin/deployer.sh disappear <deploy_key_name> --> deletes the remote deployer\n\n";
-		echo "./bin/deployer.sh reset <deploy_key_name> --> deletes all the remote files but not the deployer one\n\n";
-		echo "./bin/deployer.sh temp_clean <deploy_key_name> --> cleans up the remote temporary files folder\n\n";
+		echo "./bin/deployer.sh --> prints this help\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> attach <local deployer.php path> <remote deployer.php full uri path> --> attaches the remote deployer and generates a local security token\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> detach --> detaches the deployer removing the server token and deleting the local key\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> get_exec_mode --> gets the execution mode on the deployer instance\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> set_exec_mode <running_mode> --> sets the execution mode on the deployer instance\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> get_deployer_path_from_root --> gets the deployer path from root dir\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> set_deployer_path_from_root <deployer_path> --> set the deployer path from root dir\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> deployer_version --> prints the deployer version\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> deployer_update --> updates the remote deployer using the local version\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> framework_check --> check and lists which framework files needs an update\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> framework_update --> updates the remote framework files and prints a report of the operations done\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> project_check --> check and lists which remote project files needs an update\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> project_update --> updates the remote project files and prints a report of the operations done\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> auto_config --> updates the remote project config files probing the right config to use if possible\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> manual_config <host_name> --> updates the remote project config files using the selected host name configs\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> backup <backup_dir_path> --> makes a full backup of a remote project files and saves it in the backup dir specified\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> list_db --> lists all the db connections available on the server\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> backup_db_structure <connection_name> <save_dir> --> makes a full backup of a remote database structures and saves the zipped sql in the specified folder\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> backup_db_data <connection_name> <save_dir> --> makes a full backup of a remote database data and saves it in the specified folder\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> disappear --> deletes the remote deployer\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> reset --> deletes all the remote files but not the deployer one\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> temp_clean --> cleans up the remote temporary files folder\n\n";
 
 		echo "\n\n";
 
@@ -544,6 +544,13 @@ class LDeployerClient {
 
 	public function get_exec_mode(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$r = $this->current_driver->fileExists($this->current_password,"config/mode/");
 
@@ -644,6 +651,13 @@ class LDeployerClient {
 
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			$r = $this->current_driver->fileExists($this->current_password,"config/mode/");
 
 			if ($this->isSuccess($r)) {
@@ -695,6 +709,13 @@ class LDeployerClient {
 	public function list_db(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			$r = $this->current_driver->listDb($this->current_password);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get connection name list from server : ".$this->getResultMessage($r));
@@ -715,6 +736,13 @@ class LDeployerClient {
 
 	public function backup_db_structure(string $key_name,string $connection_name,string $save_dir) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$backup_dir = new LDir($save_dir);
 
@@ -756,6 +784,13 @@ class LDeployerClient {
 	public function get_deployer_path_from_root(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			$r = $this->current_driver->getEnv($this->current_password,self::DEPLOYER_PATH_FROM_ROOT);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to get environment variable from deployer instance : ".$this->getResultMessage($r));
@@ -769,6 +804,13 @@ class LDeployerClient {
 
 	public function set_deployer_path_from_root(string $key_name,string $deployer_path) {
 		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$r = $this->current_driver->setEnv($this->current_password,self::DEPLOYER_PATH_FROM_ROOT,$deployer_path);
 
@@ -789,9 +831,11 @@ class LDeployerClient {
 			if ($this->isSuccess($r)) {
 				
 				$version = $r['version'];
+				$build = $r['build'];
 				$features = $r['features'];
 
 				echo "\n\nDeployer Version : ".$version;
+				echo "\n\nBuild number : ".$build;
 				echo "\n\nDeployer Features : \n";
 
 				foreach ($features as $f) {
@@ -810,6 +854,11 @@ class LDeployerClient {
 		if ($this->loadKey($key_name)) {
 
 			echo "Preparing for deployer update ...\n";
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			sleep(5);
 
@@ -858,6 +907,11 @@ class LDeployerClient {
 	public function disappear(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			$uri_parts = explode('/',$this->current_uri);
 			$deployer_filename = end($uri_parts);
 
@@ -877,6 +931,11 @@ class LDeployerClient {
 
 	public function reset(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$uri_parts = explode('/',$this->current_uri);
 			$deployer_filename = end($uri_parts);
@@ -910,6 +969,11 @@ class LDeployerClient {
 
 	public function temp_clean(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$result = $this->current_driver->listElements($this->current_password,'/');
 
@@ -956,6 +1020,11 @@ class LDeployerClient {
 
 		if ($this->loadKey($key_name)) {
 
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
@@ -1000,6 +1069,11 @@ class LDeployerClient {
 
 	public function framework_update(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
@@ -1053,6 +1127,11 @@ class LDeployerClient {
 	public function project_check(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance : ".$this->getResultMessage($r));
@@ -1074,6 +1153,11 @@ class LDeployerClient {
 
 	public function project_update(string $key_name) {
 		if ($this->loadKey($key_name)) {
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
 
@@ -1097,6 +1181,11 @@ class LDeployerClient {
 
 	public function backup(string $key_name,string $save_dir_path) {
 		if ($this->loadKey($key_name)) {
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
 
 			$current_dir = new LDir('');
 
@@ -1180,6 +1269,11 @@ class LDeployerClient {
 	public function auto_config(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			if (LStringUtils::startsWith($this->current_uri,'http')) {
 				$ok = false;
 				if (LStringUtils::startsWith($this->current_uri,'http://')) {
@@ -1203,6 +1297,12 @@ class LDeployerClient {
 
 	public function manual_config(string $key_name,string $config_folder) {
 		if ($this->loadKey($key_name)) {
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
 			return $this->executeConfigSync($config_folder);
 		} else return false;
 	}

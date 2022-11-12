@@ -116,6 +116,8 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
 
+		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
+
 		$save_dir->makeEmpty();
 
 	}
@@ -161,6 +163,8 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		$files = $save_dir->listAll();
 
 		$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
+
+		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
 		$save_dir->makeEmpty();
 

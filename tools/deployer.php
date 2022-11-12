@@ -1609,76 +1609,43 @@ class DeployerController {
         return in_array('@',$path_list);
     }
 
+    private function requireFrameworkFile($path) {
+        $path_prefix = $this->root_dir->getFullPath().FRAMEWORK_DIR_NAME.'/';
+
+        $f = new DFile($path_prefix.$path);
+        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.$path);
+        $f->requireFileOnce();
+    }
+
     private function loadFrameworkBasicClasses() {
-        if (class_exists('LFile')) {
-            $file_class = 'LFile';
-            $path_prefix = $this->root_dir->getFullPath().FRAMEWORK_DIR_NAME.'/';
-        } else {
-            $file_class = 'DFile';
-            $path_prefix = $this->root_dir->getFullPath().FRAMEWORK_DIR_NAME.'/';
+
+        $files_to_require = [
+            'framework_spec.php',
+            'lib/treemap/LTreeMap.class.php',
+            'lib/treemap/LTreeMapView.class.php',
+            'lib/treemap/LStaticTreeMapBase.trait.php',
+            'lib/treemap/LStaticTreeMapRead.trait.php',
+            'lib/treemap/LStaticTreeMapWrite.trait.php',
+            'lib/config/LConfig.class.php',
+            'lib/config/LConfigReader.class.php',
+            'lib/config/LExecutionMode.class.php',
+            'lib/config/LEnvironmentUtils.class.php',
+            'lib/core/LErrorReportingInterceptors.class.php',
+            'lib/core/LInvalidParameterException.class.php',
+            'lib/core/LResult.class.php',
+            'lib/core/LClassLoader.class.php',
+            'lib/utils/LStringUtils.class.php',
+            'lib/utils/LJsonUtils.class.php'
+        ];
+
+        foreach ($files_to_require as $ftr) {
+            $this->requireFrameworkFile($ftr);
         }
-
-        $f = new $file_class($path_prefix.'framework_spec.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'framework_spec.php');
-        $f->requireFileOnce();
-
-        $f = new $file_class($path_prefix.'lib/treemap/LTreeMap.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/treemap/LTreeMap.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/treemap/LTreeMapView.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/treemap/LTreeMapView.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
-        $f->requireFileOnce();
-
-        //config
-        $f = new $file_class($path_prefix.'lib/config/LConfig.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/config/LConfig.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/config/LConfigReader.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/config/LConfigReader.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/config/LExecutionMode.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/config/LExecutionMode.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/config/LEnvironmentUtils.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/config/LEnvironmentUtils.class.php');
-        $f->requireFileOnce();
-
-        //core
-        $f = new $file_class($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/core/LInvalidParameterException.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/core/LInvalidParameterException.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/core/LResult.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/core/LResult.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/core/LClassLoader.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/core/LClassLoader.class.php');
-        $f->requireFileOnce();
-
-        //utils
-        $f = new $file_class($path_prefix.'lib/utils/LStringUtils.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/utils/LStringUtils.class.php');
-        $f->requireFileOnce();
-        $f = new $file_class($path_prefix.'lib/utils/LJsonUtils.class.php');
-        if (!$f->exists()) throw new \Exception('Unable to find '.$path_prefix.'lib/utils/LJsonUtils.class.php');
-        $f->requireFileOnce();
 
         if (!LConfig::initCalled()) LConfig::init();
 
         if (!LClassLoader::initCalled()) LClassLoader::init();
 
-        return $file_class;
     }
 
     public function listDb($password) {
@@ -1710,21 +1677,13 @@ class DeployerController {
         if ($this->accessGranted($password)) {
 
             try {
-                $file_class = $this->loadFrameworkBasicClasses();
+                $this->loadFrameworkBasicClasses();
             } catch (\Exception $ex) {
                 return $this->failure("Failure during class loading, unable to load class : ".$ex->getMessage());
             }
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
-            if ($file_class=='DFile') {
-                $dir_class = 'DDir';
-                $zip_class = 'DZipUtils';
-            } else {
-                $dir_class = 'LDir';
-                $zip_class = 'LZipUtils';
-            }
-
-            $zip_dir = new $dir_class('temp/backup/db/structure/'.$connection_name.'/');
+            $zip_dir = new DDir('temp/backup/db/structure/'.$connection_name.'/');
             if ($zip_dir->exists()) $zip_dir->delete(true);
             sleep(3);
             $zip_dir->touch();
@@ -1742,9 +1701,9 @@ class DeployerController {
                 $qf->setContent($query."\n\n");
             }
 
-            $zip_file = new $file_class('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
+            $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
 
-            $zip_class::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
+            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -1755,21 +1714,13 @@ class DeployerController {
         if ($this->accessGranted($password)) {
 
             try {
-                $file_class = $this->loadFrameworkBasicClasses();
+                $this->loadFrameworkBasicClasses();
             } catch (\Exception $ex) {
                 return $this->failure("Failure during class loading, unable to load class : ".$ex->getMessage());
             }
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
-            if ($file_class=='DFile') {
-                $dir_class = 'DDir';
-                $zip_class = 'DZipUtils';
-            } else {
-                $dir_class = 'LDir';
-                $zip_class = 'LZipUtils';
-            }
-
-            $zip_dir = new $dir_class('temp/backup/db/data/'.$connection_name.'/');
+            $zip_dir = new DDir('temp/backup/db/data/'.$connection_name.'/');
             if ($zip_dir->exists()) $zip_dir->delete(true);
             sleep(3);
             $zip_dir->touch();
@@ -1799,9 +1750,9 @@ class DeployerController {
                 $wr->close();
             }
 
-            $zip_file = new $file_class('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
+            $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
 
-            $zip_class::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
+            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -2137,6 +2088,10 @@ class DeployerController {
     private function sendFileFromResult($result) {
         if ($result['result']==self::SUCCESS_RESULT) {
             $f = $result['data'];
+
+            $f_class = get_class($f);
+
+            if ($f_class!='DFile' && $f_class!='LFile') throw new \Exception("Unrecognized class of data file element.");
 
             if ($f->exists() && $f->getSize()>0) {
 

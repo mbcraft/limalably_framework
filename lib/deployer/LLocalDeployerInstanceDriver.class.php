@@ -168,7 +168,7 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	public function backupDbData($password,$connection_name,$save_file) {
 
-		return $this->controller->backupDbData($password,$connection_name);
+		$result = $this->controller->backupDbData($password,$connection_name);
 
 		if ($this->isSuccess($result)) {
 

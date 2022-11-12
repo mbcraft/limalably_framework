@@ -33,7 +33,8 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		if (is_array($result)) return $result['message'];
 		else return '';
 	}
-
+	
+	/*
 	//ok
 	function testListDb() {
 
@@ -72,7 +73,8 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
+	*/
+	
 	
 	function testBackupDbStructure() {
 
@@ -118,11 +120,13 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
-		$save_dir->makeEmpty();
+		//$save_dir->makeEmpty();
 
 	}
 	
-	function testBackupDbStructureData() {
+	
+	/*
+	function testBackupDbData() {
 
 		$this->initAll();
 
@@ -166,7 +170,9 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
-		$save_dir->makeEmpty();
+		//$save_dir->makeEmpty();
 
 	}
+	*/
+
 }

@@ -32,6 +32,10 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$_FILES['f']['tmp_name'] = $file->getFullPath();
 	}
 
+	private function failure($message) {
+		return ['result' => self::FAILURE_RESULT,'message' => $message];
+	}
+
 	public function version($password) {
 
 		return $this->controller->version($password);

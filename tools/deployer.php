@@ -991,6 +991,8 @@ class DFile extends DFileSystemElement
     function setContent($content)
     {
         file_put_contents($this->__full_path, $content, LOCK_EX);
+
+        if (filesize($this->__full_path)!=strlen($content)) throw new \DIOException("Unable to correctly complete write operation on file : ".$this->__full_path);
     }
 
     function getSize()
@@ -1508,7 +1510,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 1000;
+    const BUILD_NUMBER = 1001;
 
     const DEPLOYER_VERSION = "1.3";
 
@@ -1685,8 +1687,8 @@ class DeployerController {
 
             $zip_dir = new DDir('temp/backup/db/structure/'.$connection_name.'/');
             if ($zip_dir->exists()) $zip_dir->delete(true);
-            sleep(3);
             $zip_dir->touch();
+            $zip_dir->setPermissions('-rwxrwxrwx');
 
             if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
@@ -1722,8 +1724,8 @@ class DeployerController {
 
             $zip_dir = new DDir('temp/backup/db/data/'.$connection_name.'/');
             if ($zip_dir->exists()) $zip_dir->delete(true);
-            sleep(3);
             $zip_dir->touch();
+            $zip_dir->setPermissions('-rwxrwxrwx');
 
             if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
@@ -2100,7 +2102,7 @@ class DeployerController {
                 
                 $content_disposition = 'inline';
                 
-                header('Content-Disposition: '.$content_disposition.'; filename="my_dir.zip"');
+                header('Content-Disposition: '.$content_disposition.'; filename="my_archive.zip"');
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate');
                 header('Pragma: public');
@@ -2108,7 +2110,7 @@ class DeployerController {
                 header('Connection: close');
                 flush(); // Flush system output buffer
                 readfile($f->getFullPath());
-                $f->delete();
+                
                 exit();
             } else {
                 echo $this->preparePostResponse($this->failure("Unable to find zip file to send to client."));

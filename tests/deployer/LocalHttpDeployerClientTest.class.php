@@ -56,6 +56,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		else return '';
 	}
 
+	/*
 	//ok
 	function testGetExecMode() {
 		$this->initAll();
@@ -554,7 +555,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	
+	*/
 	//ok
 	function testBackup() {
 

@@ -1723,14 +1723,12 @@ class DeployerController {
                 $zip_class = 'LZipUtils';
             }
 
-            $temp_dir = new $dir_class('backup/db/structure/'.$connection_name);
-            if ($temp_dir->exists()) $temp_dir->delete(true);
+            $zip_dir = new $dir_class('backup/db/structure/'.$connection_name.'/');
+            if ($zip_dir->exists()) $zip_dir->delete(true);
             sleep(3);
-            $temp_dir->touch();
+            $zip_dir->touch();
 
-            return ["result" => self::FAILURE_RESULT,'message' => $temp_dir->getFullPath()];
-
-            if (!$temp_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
+            if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
             $db = db($connection_name);
 
@@ -1739,7 +1737,7 @@ class DeployerController {
             foreach ($table_list as $tb) {
                 $query = create_table($tb)->show()->go($db);
                 
-                $qf = $temp_dir->newFile($tb.'__structure.sql');
+                $qf = $zip_dir->newFile($tb.'__structure.sql');
                 $qf->setContent($query."\n\n");
             }
 
@@ -1768,12 +1766,12 @@ class DeployerController {
                 $zip_class = 'LZipUtils';
             }
 
-            $temp_dir = new $dir_class('backup/db/data/'.$connection_name);
-            if ($temp_dir->exists()) $temp_dir->delete(true);
+            $zip_dir = new $dir_class('backup/db/data/'.$connection_name.'/');
+            if ($zip_dir->exists()) $zip_dir->delete(true);
             sleep(3);
-            $temp_dir->touch();
+            $zip_dir->touch();
 
-            if (!$temp_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
+            if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
             $db = db($connection_name);
 
@@ -1782,7 +1780,7 @@ class DeployerController {
             foreach ($table_list as $tb) {
                 $iterator = select('*',$tb)->iterator($db);
                 
-                $qf = $temp_dir->newFile($tb.'__data.sql');
+                $qf = $zip_dir->newFile($tb.'__data.sql');
                 $wr = $qf->openWriter();
 
                 while ($iterator->hasNext()) {
@@ -2161,6 +2159,11 @@ class DeployerController {
         }
     }
 
+    private function getResultMessage($result) {
+        if (is_array($result) && isset($result['message'])) return $result['message'];
+        else return "Unknown error";
+    }
+
     public function processRequest() {
     	if ($this->hasPostParameter('METHOD')) {
     		$method = $this->getPostParameter('METHOD');
@@ -2209,9 +2212,12 @@ class DeployerController {
 
                     $result = $this->backupDbStructure($password,$connection_name);
 
-                    if ($this->isSuccess($result))
+                    if ($this->isSuccess($result)) {
                         $this->sendFileFromResult($result);
-                    else echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
+                    else {
+                        echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
 
                     break;
                 }
@@ -2225,9 +2231,12 @@ class DeployerController {
 
                     $result = $this->backupDbData($password,$connection_name);
 
-                    if ($this->isSuccess($result))
+                    if ($this->isSuccess($result)) {
                         $this->sendFileFromResult($result);
-                    else echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
+                    else {
+                        echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
 
                     break;
                 }

@@ -1332,6 +1332,8 @@ class DZipUtils
     
     public static function createArchive($save_file,$folder_to_zip,$local_dir="/")
     {
+        if ($save_file->exists()) $save_file->delete(); 
+
         if ($folder_to_zip instanceof DDir)
             $dir_to_zip = $folder_to_zip;
         else
@@ -1506,6 +1508,8 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
+    const BUILD_NUMBER = 1000;
+
     const DEPLOYER_VERSION = "1.3";
 
     const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData'];
@@ -1584,7 +1588,7 @@ class DeployerController {
 
     public function version($password) {
         if ($this->accessGranted($password)) {
-            return ['result' => self::SUCCESS_RESULT,'version' => self::DEPLOYER_VERSION,'features' => self::DEPLOYER_FEATURES];
+            return ['result' => self::SUCCESS_RESULT,'version' => self::DEPLOYER_VERSION,'features' => self::DEPLOYER_FEATURES,'build' => self::BUILD_NUMBER];
         } else return $this->failure("Wrong password");
     }
 
@@ -1711,11 +1715,20 @@ class DeployerController {
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
-            $temp_dir = new DDir('temp/backup/db/structure/'.$connection_name);
-            if ($temp_dir->exists()) $temp_dir->delete(true);
-            $temp_dir->touch();
+            if ($file_class=='DFile') {
+                $dir_class = 'DDir';
+                $zip_class = 'DZipUtils';
+            } else {
+                $dir_class = 'LDir';
+                $zip_class = 'LZipUtils';
+            }
 
-            if (!$temp_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
+            $zip_dir = new $dir_class('backup/db/structure/'.$connection_name.'/');
+            if ($zip_dir->exists()) $zip_dir->delete(true);
+            sleep(3);
+            $zip_dir->touch();
+
+            if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
             $db = db($connection_name);
 
@@ -1724,16 +1737,13 @@ class DeployerController {
             foreach ($table_list as $tb) {
                 $query = create_table($tb)->show()->go($db);
                 
-                $qf = $temp_dir->newFile($tb.'__structure.sql');
+                $qf = $zip_dir->newFile($tb.'__structure.sql');
                 $qf->setContent($query."\n\n");
             }
 
-            $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
-            $zip_file->touch();
+            $zip_file = new $file_class('backup/db/structure/'.$connection_name.'_structure_bkp.zip');
 
-            if (!$zip_file->exists()) return $this->failure("Unable to create zip file for storing files.");
-
-            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
+            $zip_class::createArchive($zip_file,'backup/db/structure/'.$connection_name.'/');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -1748,11 +1758,20 @@ class DeployerController {
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
-            $temp_dir = new DDir('temp/backup/db/data/'.$connection_name);
-            if ($temp_dir->exists()) $temp_dir->delete(true);
-            $temp_dir->touch();
+            if ($file_class=='DFile') {
+                $dir_class = 'DDir';
+                $zip_class = 'DZipUtils';
+            } else {
+                $dir_class = 'LDir';
+                $zip_class = 'LZipUtils';
+            }
 
-            if (!$temp_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
+            $zip_dir = new $dir_class('backup/db/data/'.$connection_name.'/');
+            if ($zip_dir->exists()) $zip_dir->delete(true);
+            sleep(3);
+            $zip_dir->touch();
+
+            if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
             $db = db($connection_name);
 
@@ -1761,7 +1780,7 @@ class DeployerController {
             foreach ($table_list as $tb) {
                 $iterator = select('*',$tb)->iterator($db);
                 
-                $qf = $temp_dir->newFile($tb.'__data.sql');
+                $qf = $zip_dir->newFile($tb.'__data.sql');
                 $wr = $qf->openWriter();
 
                 while ($iterator->hasNext()) {
@@ -1777,12 +1796,9 @@ class DeployerController {
                 $wr->close();
             }
 
-            $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
-            $zip_file->touch();
+            $zip_file = new $file_class('backup/db/data/'.$connection_name.'_data_bkp.zip');
 
-            if (!$zip_file->exists()) return $this->failure("Unable to create zip file for storing files.");
-
-            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
+            $zip_class::createArchive($zip_file,'backup/db/data/'.$connection_name.'/');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -2003,8 +2019,6 @@ class DeployerController {
 
 			$zip_file = $this->root_dir->newFile("my_dir.zip");
 
-			if ($zip_file->exists()) $zip_file->delete(); //...
-
 			DZipUtils::createArchive($zip_file,$source);
 
 			if (!$zip_file->exists()) return $this->failure("Unable to create zip file.");
@@ -2136,12 +2150,18 @@ class DeployerController {
                 header('Connection: close');
                 flush(); // Flush system output buffer
                 readfile($f->getFullPath());
+                $f->delete();
                 exit();
             } else {
                 echo $this->preparePostResponse($this->failure("Unable to find zip file to send to client."));
                 exit();
             }
         }
+    }
+
+    private function getResultMessage($result) {
+        if (is_array($result) && isset($result['message'])) return $result['message'];
+        else return "Unknown error";
     }
 
     public function processRequest() {
@@ -2192,9 +2212,12 @@ class DeployerController {
 
                     $result = $this->backupDbStructure($password,$connection_name);
 
-                    if ($this->isSuccess($result))
+                    if ($this->isSuccess($result)) {
                         $this->sendFileFromResult($result);
-                    else echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
+                    else {
+                        echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
 
                     break;
                 }
@@ -2208,9 +2231,12 @@ class DeployerController {
 
                     $result = $this->backupDbData($password,$connection_name);
 
-                    if ($this->isSuccess($result))
+                    if ($this->isSuccess($result)) {
                         $this->sendFileFromResult($result);
-                    else echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
+                    else {
+                        echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
 
                     break;
                 }

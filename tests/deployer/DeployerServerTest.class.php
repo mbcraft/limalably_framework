@@ -43,6 +43,11 @@ class DeployerServerTest extends LTestCase {
 		$_FILES['f']['size'] = $file->getSize();
 		$_FILES['f']['tmp_name'] = $file->getFullPath();
 	}
+
+    private function getResultMessage($result) {
+        if (is_array($result) && isset($result['message'])) return $result['message'];
+        else return "Unknown error";
+    }
 	
 	function testListDb() {
 		$this->reinit();
@@ -72,9 +77,9 @@ class DeployerServerTest extends LTestCase {
 
 		$result = $deployer_controller->backupDbStructure("","hosting_dreamhost_tests");
 
-		$this->assertTrue($this->isSuccess($result),"La chiamata a backupDbStructure non ha dato esito positivo!");
+		$this->assertTrue($this->isSuccess($result),"La chiamata a backupDbStructure non ha dato esito positivo : ".$this->getResultMessage($result));
 
-		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
+		$this->assertTrue($result['data'] instanceof LFile,"L'elemento restituito non è un file!");
 
 		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
 
@@ -96,7 +101,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata a backupDbData non ha dato esito positivo!");
 
-		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
+		$this->assertTrue($result['data'] instanceof LFile,"L'elemento restituito non è un file!");
 
 		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
 

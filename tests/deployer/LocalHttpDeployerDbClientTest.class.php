@@ -34,7 +34,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		else return '';
 	}
 	
-	/*
+	
 	//ok
 	function testListDb() {
 
@@ -73,7 +73,6 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	*/
 	
 	
 	function testBackupDbStructure() {

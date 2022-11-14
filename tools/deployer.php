@@ -1745,7 +1745,7 @@ class DeployerController {
 
             $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
 
-            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/','/');
+            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/','');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -1804,7 +1804,7 @@ class DeployerController {
 
             $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
 
-            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/','/');
+            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/','');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 

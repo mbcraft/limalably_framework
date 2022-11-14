@@ -79,7 +79,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata a backupDbStructure non ha dato esito positivo : ".$this->getResultMessage($result));
 
-		$this->assertTrue($result['data'] instanceof LFile,"L'elemento restituito non è un file!");
+		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 
 		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
 
@@ -101,7 +101,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata a backupDbData non ha dato esito positivo!");
 
-		$this->assertTrue($result['data'] instanceof LFile,"L'elemento restituito non è un file!");
+		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 
 		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
 

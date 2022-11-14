@@ -116,9 +116,10 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
 
-		//$save_dir->makeEmpty();
+		$save_dir->makeEmpty();
 
 	}
+	
 	
 	function testBackupDbStructureData() {
 
@@ -162,7 +163,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
 
-		//$save_dir->makeEmpty();
+		$save_dir->makeEmpty();
 
 	}
 	

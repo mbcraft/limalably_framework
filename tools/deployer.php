@@ -1508,7 +1508,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 1000;
+    const BUILD_NUMBER = 1001;
 
     const DEPLOYER_VERSION = "1.3";
 
@@ -1669,6 +1669,10 @@ class DeployerController {
         if (!$f->exists()) return false;
         $f->requireFileOnce();
 
+        $f = new DFile($path_prefix.'lib/db/functions.php');
+        if (!$f->exists()) return false;
+        $f->requireFileOnce();
+
         if (!LConfig::initCalled()) LConfig::init();
 
         if (!LClassLoader::initCalled()) LClassLoader::init();
@@ -1710,7 +1714,11 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $connection = LDbConnectionManager::get($connection_name);
 
             $zip_dir = new DDir('temp/backup/db/structure/'.$connection_name.'/');
             if ($zip_dir->exists()) $zip_dir->delete(true);
@@ -1719,23 +1727,25 @@ class DeployerController {
 
             if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
-            $db = db($connection_name);
+            try {
+                $db = db($connection_name);
 
-            $table_list = table_list()->go($db);
+                $table_list = table_list()->go($db);
 
-            foreach ($table_list as $tb) {
-                $query = create_table($tb)->show()->go($db);
-                
-                $qf = $zip_dir->newFile($tb.'__structure.sql');
-                $qf->setContent($query."\n\n");
-                sleep(3);
-            }
+                foreach ($table_list as $tb) {
+                    $query = create_table($tb)->show()->go($db);
+                    
+                    $qf = $zip_dir->newFile($tb.'__structure.sql');
+                    $qf->setContent($query."\n\n");
+                }
+            } catch (\Exception $ex) {
+
+                return $this->failure("Exception during query phase : ".$ex->getMessage());
+            } 
 
             $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
 
-            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/');
-
-            sleep(5);
+            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/','/');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -1752,41 +1762,49 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $connection = LDbConnectionManager::get($connection_name);
 
             $zip_dir = new DDir('temp/backup/db/data/'.$connection_name.'/');
             if ($zip_dir->exists()) $zip_dir->delete(true);
-            sleep(3);
             $zip_dir->touch();
 
             if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
 
-            $db = db($connection_name);
+            try {
+                $db = db($connection_name);
 
-            $table_list = table_list()->go($db);
+                $table_list = table_list()->go($db);
 
-            foreach ($table_list as $tb) {
-                $iterator = select('*',$tb)->iterator($db);
-                
-                $qf = $zip_dir->newFile($tb.'__data.sql');
-                $wr = $qf->openWriter();
+                foreach ($table_list as $tb) {
+                    $iterator = select('*',$tb)->iterator($db);
+                    
+                    $qf = $zip_dir->newFile($tb.'__data.sql');
+                    $wr = $qf->openWriter();
 
-                while ($iterator->hasNext()) {
-                    $data = $iterator->next();
+                    while ($iterator->hasNext()) {
+                        $data = $iterator->next();
 
-                    $query = insert($tb,array_keys($data),array_values($data)).";";
+                        $query = insert($tb,array_keys($data),array_values($data)).";";
 
-                    $wr->writeln($query);
-                    $wr->writeln("");
+                        $wr->writeln($query);
+                        $wr->writeln("");
 
+                    }
+
+                    $wr->close();
                 }
+            } catch (\Exception $ex) {
 
-                $wr->close();
-            }
+                return $this->failure("Exception during query phase : ".$ex->getMessage());
+            } 
 
             $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
 
-            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/');
+            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/','/');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -2139,6 +2157,7 @@ class DeployerController {
                 
                 exit();
             } else {
+
                 echo $this->preparePostResponse($this->failure("Unable to find zip file to send to client."));
                 exit();
             }
@@ -2148,6 +2167,10 @@ class DeployerController {
     private function getResultMessage($result) {
         if (is_array($result) && isset($result['message'])) return $result['message'];
         else return "Unknown error";
+    }
+
+    private function isSuccess($result) {
+        return is_array($result) && $result['result']==self::SUCCESS_RESULT;
     }
 
     public function processRequest() {
@@ -2199,9 +2222,11 @@ class DeployerController {
                     $result = $this->backupDbStructure($password,$connection_name);
 
                     if ($this->isSuccess($result)) {
+
                         $this->sendFileFromResult($result);
                     }
                     else {
+
                         echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
                     }
 

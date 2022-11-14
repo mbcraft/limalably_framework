@@ -31,6 +31,9 @@ require_once ('lib/core/LClassLoader.class.php');
 require_once ('lib/utils/LStringUtils.class.php');
 require_once ('lib/utils/LJsonUtils.class.php');
 
+//functions
+require_once ('lib/db/functions.php');
+
 //lym
 require_once ('lib/Lymz.class.php');
 

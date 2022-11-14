@@ -119,12 +119,11 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
-		//$save_dir->makeEmpty();
+		$save_dir->makeEmpty();
 
 	}
 	
 	
-	/*
 	function testBackupDbData() {
 
 		$this->initAll();
@@ -169,9 +168,8 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
-		//$save_dir->makeEmpty();
+		$save_dir->makeEmpty();
 
 	}
-	*/
 
 }

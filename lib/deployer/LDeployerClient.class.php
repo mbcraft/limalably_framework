@@ -755,8 +755,6 @@ class LDeployerClient {
 			if ($this->isSuccess($r)) {
 				echo "Backup db structure file download successfully\n";
 				echo "[".$backup_file->getFilename()." - size ".$backup_file->getSize()." bytes] ...\n";
-			} else {
-				echo "Error during download of db structure backup : [".$this->getResultMessage($r)."]";
 			}
 			return true;
 
@@ -784,8 +782,6 @@ class LDeployerClient {
 			if ($this->isSuccess($r)) {
 				echo "Backup db data file download successfully\n";
 				echo "[".$backup_file->getFilename()." - size ".$backup_file->getSize()." bytes] ...\n";
-			} else {
-				echo "Error during download of db data backup : [".$this->getResultMessage($r)."]";
 			}
 			return true;
 

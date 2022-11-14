@@ -56,8 +56,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		else return '';
 	}
 
-	/*
-	//ok
+	//ok-
 	function testGetExecMode() {
 		$this->initAll();
 
@@ -105,7 +104,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 	}
 
-	//ok
+	//ok-
 	function testSetExecMode() {
 		$this->initAll();
 
@@ -167,7 +166,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 	}
 	
-	//ok
+	//ok-
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -198,7 +197,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 	}
 
-	//ok
+	//ok-
 	function testReset() {
 
 		$this->initAll();
@@ -235,7 +234,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 	}
 
-	//ok
+	//ok-
 	function testTempClean() {
 
 		$this->initAll();
@@ -284,7 +283,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 	}
 	
-	//ok
+	//ok-
 	function testSetGetEnv() {
 		$this->initAll();
 
@@ -313,7 +312,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	//ok
+	//ok-
 	function testDeployerUpdate() {
 
 		$this->initAll();
@@ -351,7 +350,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	//ok
+	//ok-
 	function testProjectCheck() {
 
 		$this->initAll();
@@ -418,8 +417,9 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
+	
 
-	//ok
+	//ok-
 	function testFrameworkCheck() {
 
 		$this->initAll();
@@ -439,7 +439,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	//ok
+	//ok-
 	function testFrameworkUpdate() {
 		$this->initAll();
 
@@ -460,7 +460,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	//ok
+	//ok-
 	function testDisappear() {
 		$this->initAll();
 
@@ -481,7 +481,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->assertFalse($fd->exists(),"Il deployer non è stato cancellato!");
 	}
 	
-	//ok
+	//ok-
 	function testAutoConfig() {
 
 		$this->initAll();
@@ -503,7 +503,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
+	*/
 	//ok
 	function testManualConfig() {
 
@@ -517,13 +517,20 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$host_config = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/config/hostnames/my_host/config.json');
 
+		$internal_config = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/config/internal/framework.json');
+
 		$this->assertFalse($host_config->exists(),"Il file di configurazione esiste già nella destinazione e non dovrebbe!");
+
+		$this->assertFalse($internal_config->exists(),"Il file di configurazione esiste già nella destinazione e non dovrebbe!");
 
 		$r = $dc->manual_config('default_key','my_host');
 
 		$this->assertTrue($r,"La procedura di manual_config ha dato esito negativo!");
 
-		$this->assertTrue($host_config->exists(),"Il file di configurazione non è stato copiato con successo!");
+		$this->assertTrue($host_config->exists(),"Il file di configurazione non è stato copiato con successo! : ".$host_config->getFullPath());
+
+		$this->assertTrue($internal_config->exists(),"Il file di configurazione non è stato copiato con successo! : ".$internal_config->getFullPath());
+
 
 		$r = $dc->detach('default_key');
 
@@ -533,7 +540,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 	}
 	
-	//ok
+	//ok-
 	function testDeployerVersion() {
 
 		$this->initAll();
@@ -555,8 +562,8 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	*/
-	//ok
+	
+	//ok-
 	function testBackup() {
 
 		$this->initAll();
@@ -592,7 +599,8 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	//ok
+
+	//ok-
 	function testHelp() {
 		$this->initAll();
 
@@ -602,5 +610,5 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
-
+	
 }

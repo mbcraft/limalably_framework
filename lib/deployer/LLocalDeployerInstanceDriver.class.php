@@ -32,10 +32,6 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$_FILES['f']['tmp_name'] = $file->getFullPath();
 	}
 
-	private function failure($message) {
-		return ['result' => self::FAILURE_RESULT,'message' => $message];
-	}
-
 	public function version($password) {
 
 		return $this->controller->version($password);
@@ -172,7 +168,7 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	public function backupDbData($password,$connection_name,$save_file) {
 
-		$result = $this->controller->backupDbData($password,$connection_name);
+		return $this->controller->backupDbData($password,$connection_name);
 
 		if ($this->isSuccess($result)) {
 

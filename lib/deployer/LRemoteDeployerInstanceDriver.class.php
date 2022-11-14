@@ -23,10 +23,6 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
-	private function failure($message) {
-		return ['result' => self::FAILURE_RESULT,'message' => $message];
-	}
-
 	public function version($password) {
 
 		$params = [];
@@ -247,7 +243,7 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		$params['METHOD'] = 'BACKUP_DB_DATA';
 		$params['PASSWORD'] = $password;
 		$params['CONNECTION_NAME'] = $connection_name;
-
+		
 		LHttp::post_to_file($this->full_deployer_url,$params,$save_file);
 
 		if ($save_file->exists() && $save_file->getSize()>0) return ['result' => self::SUCCESS_RESULT];

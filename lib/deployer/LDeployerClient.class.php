@@ -1140,7 +1140,7 @@ class LDeployerClient {
 	}
 
 	private function getProjectExcludeList() {
-		return ['.cache/','.config/','.gnupg/','Maildir/','.local/','.php/','composer.json','composer.lock','@','config/',FRAMEWORK_DIR_NAME.'/','bin/','logs/','temp/','composer.json'];
+		return ['.alias','.bash_history','.bash_profile','.bashrc','.cshrc','.cache/','.config/','.gnupg/','Maildir/','.local/','.php/','composer.json','composer.lock','@','config/',FRAMEWORK_DIR_NAME.'/','bin/','logs/','temp/','composer.json'];
 	}
 
 	public function project_check(string $key_name) {

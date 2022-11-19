@@ -1125,6 +1125,10 @@ class LDeployerClient {
 
 			$this->previewChangesList();
 
+			echo "\nWaiting 5 seconds before actual execution ...\n";
+
+			sleep(5);
+
 			$this->executeChangesList();
 
 			if ($testing) {
@@ -1193,6 +1197,10 @@ class LDeployerClient {
 			$this->setupChangesList($client_list,$server_list);
 
 			$this->previewChangesList();
+
+			echo "\nWaiting 5 seconds before actual execution ...\n";
+
+			sleep(5);
 
 			$this->executeChangesList();
 

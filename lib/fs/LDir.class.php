@@ -50,12 +50,12 @@ class LDir extends LFileSystemElement
         {
             $r = $fold->explore($inspector);
 
-            $pre_result = array_remove_value($r,'');
+            $pre_result = array_remove_key_or_value($r,'');
 
             $result = array_merge($pre_result,$result);
         }
 
-        $final_result = array_remove_value($result,'');
+        $final_result = array_remove_key_or_value($result,'');
 
         return $final_result;
     }

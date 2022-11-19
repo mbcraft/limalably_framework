@@ -288,10 +288,10 @@ class LDeployerClient {
 
 	private function clientListHashes($excluded_paths,$included_paths) {
 			
-		$this->explore_result = [];
-
 		$this->excluded_paths = $this->getFinalPathList($excluded_paths);
 		$this->included_paths = $this->getFinalPathList($included_paths);
+
+		$pre_include_result = [];
 
 		if (count($this->included_paths)>0) {
 			foreach ($this->included_paths as $path) {
@@ -303,24 +303,26 @@ class LDeployerClient {
 			$pre_include_result = $this->root_dir->explore($this);
 		}
 
-        $pre_result = array_remove_value($pre_include_result,'');
+        $pre_result = array_remove_key_or_value($pre_include_result,'');
+
+        $final_result = [];
 
         if (empty($this->excluded_paths))
             $final_result = $pre_result;
+        else {
+	        foreach ($pre_result as $path => $hash) {
+	            $skip = false;
+	            foreach ($this->excluded_paths as $excluded) {
+	                if (LStringUtils::startsWith($path,$excluded)) 
+	                    $skip = true;
+	                if (LStringUtils::startsWith($path,'config/deployer/'))
+	                    $skip = true;
+	            }
 
-        foreach ($pre_result as $path => $hash) {
-            $skip = false;
-            foreach ($this->excluded_paths as $excluded) {
-                if (LStringUtils::startsWith($path,$excluded)) 
-                    $skip = true;
-                if (LStringUtils::startsWith($path,'config/deployer/'))
-                    $skip = true;
-            }
-
-            if (!$skip) $final_result [$path] = $hash;
-        }
-
-        $final_result_2 = array_remove_value($final_result,'');
+	            if (!$skip) $final_result [$path] = $hash;
+	        }
+		}
+        $final_result_2 = array_remove_key_or_value($final_result,'');
 
         return $final_result_2;
 	}
@@ -539,7 +541,7 @@ class LDeployerClient {
 
 		$lr->close();
 
-		$result = array_remove_value($result,'');
+		$result = array_remove_key_or_value($result,'');
 
 		return $result;
 	}
@@ -613,7 +615,7 @@ class LDeployerClient {
 			if (in_array($path,$entries)) {
 				echo "Path '".$path."' found in list. Removing ...\n\n";
 
-				$result = array_remove_value($entries,$path);
+				$result = array_remove_key_or_value($entries,$path);
 
 				try {
 					$this->save_ignore_list($key_name,$result);

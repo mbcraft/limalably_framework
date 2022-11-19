@@ -1940,21 +1940,23 @@ class DeployerController {
 
             $pre_result = array_remove_key_or_value($pre_include_result,'');
 
+            $final_result = [];
+
             if (empty($this->excluded_paths))
                 $final_result = $pre_result;
+            else {
+                foreach ($pre_result as $path => $hash) {
+                    $skip = false;
+                    foreach ($this->excluded_paths as $excluded) {
+                        if (DStringUtils::startsWith($path,$excluded)) 
+                            $skip = true;
+                        if (DStringUtils::startsWith($path,'config/deployer/'))
+                            $skip = true;
+                    }
 
-            foreach ($pre_result as $path => $hash) {
-                $skip = false;
-                foreach ($this->excluded_paths as $excluded) {
-                    if (DStringUtils::startsWith($path,$excluded)) 
-                        $skip = true;
-                    if (DStringUtils::startsWith($path,'config/deployer/'))
-                        $skip = true;
+                    if (!$skip) $final_result[$path] = $hash;
                 }
-
-                if (!$skip) $final_result [$path] = $hash;
             }
-
             $final_result_2 = array_remove_key_or_value($final_result,'');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $final_result_2];

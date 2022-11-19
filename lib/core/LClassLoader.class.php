@@ -12,14 +12,14 @@ error_reporting(E_ALL);
 /**
  * This function removes a value from an array, removing also the corresponding key.
  */
-function array_remove_value(array $data,$value_to_remove) {
+function array_remove_key_or_value(array $data,$to_remove) {
 
     if ($data===null) return null;
 
     $result = [];
 
     foreach ($data as $key => $value) {
-        if ($value!==$value_to_remove) {
+        if ($key!==$to_remove && $value!==$to_remove) {
             $result[$key] = $value;
         } 
     }

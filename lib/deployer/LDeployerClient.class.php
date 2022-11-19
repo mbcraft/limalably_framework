@@ -79,6 +79,29 @@ class LDeployerClient {
 
 	}
 
+	private function changesListSummary(bool $wait) {
+
+		echo "\nChanges list summary :\n\n";
+
+		echo count($this->dirs_to_add)." dir to add.\n";
+		echo "\n";
+		echo count($this->files_to_add)." files to add.\n";
+		echo "\n";
+		echo count($this->dirs_to_update)." dir to update.\n";
+		echo "\n";
+		echo count($this->files_to_update)." files to update.\n";
+		echo "\n";
+		echo count($this->dirs_to_delete)." dir to delete.\n";
+		echo "\n";
+		echo count($this->files_to_delete)." files to delete.\n";
+		echo "\n\n";
+
+		if ($wait) {
+			echo "Waiting 5 seconds before actual execution ...\n";
+			sleep(5);
+		}
+	}
+
 	private function previewChangesList() {
 
 		echo "\nChanges list :\n\n";
@@ -107,7 +130,6 @@ class LDeployerClient {
 			echo ">> ".$f."\n";
 		}
 		echo "\n";
-
 		echo count($this->dirs_to_delete)." dir to delete.\n";
 
 		foreach ($this->dirs_to_delete as $d) {
@@ -1071,6 +1093,8 @@ class LDeployerClient {
 
 			$this->previewChangesList();
 
+			$this->changesListSummary(false);
+
 			if ($testing) {
 				$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
 			} else {
@@ -1125,9 +1149,7 @@ class LDeployerClient {
 
 			$this->previewChangesList();
 
-			echo "\nWaiting 5 seconds before actual execution ...\n";
-
-			sleep(5);
+			$this->changesListSummary(true);
 
 			$this->executeChangesList();
 
@@ -1169,6 +1191,8 @@ class LDeployerClient {
 
 			$this->previewChangesList();
 
+			$this->changesListSummary(false);
+
 			return true;
 
 		} else 
@@ -1196,11 +1220,9 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
+			$this->changesListSummary(true);
+
 			$this->previewChangesList();
-
-			echo "\nWaiting 5 seconds before actual execution ...\n";
-
-			sleep(5);
 
 			$this->executeChangesList();
 

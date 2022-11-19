@@ -8,6 +8,25 @@
 
 error_reporting(E_ALL);
 
+
+/**
+ * This function removes a value from an array, removing also the corresponding key.
+ */
+function array_remove_value(array $data,$value_to_remove) {
+
+    if ($data===null) return null;
+
+    $result = [];
+
+    foreach ($data as $key => $value) {
+        if ($value!==$value_to_remove) {
+            $result[$key] = $value;
+        } 
+    }
+
+    return $result;
+}
+
 /**
  * Alias of require_once but with project path as base folder
  * 

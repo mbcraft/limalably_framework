@@ -291,13 +291,14 @@ class LDeployerClient {
 			$root_dir->visit($this);
 		}
 
-		unset($this->visit_result['']);
+		$this->visit_result = array_remove_value($this->visit_result,'');
 
 		foreach ($this->excluded_paths as $excluded) {
-			foreach ($this->visit_result as $path => $hash)
-				if (LStringUtils::startsWith($path,$excluded)) {
-					unset($this->visit_result[$path]);
+			foreach ($this->visit_result as $path => $hash) {
+				if (LStringUtils::startsWith($path,$excluded)) 
+					$this->visit_result = array_remove_value($this->visit_result,$path);
 			}
+
 		}
 		
 		return $this->visit_result;
@@ -499,7 +500,7 @@ class LDeployerClient {
 	}
 
 	private function load_ignore_list($key_name) {
-		$ignore_file = new LFile('/config/deployer/'.$key_name.'.ignore_list');
+		$ignore_file = new LFile('config/deployer/'.$key_name.'.ignore_list');
 
 		if (!$ignore_file->exists()) {
 			return [];
@@ -521,9 +522,13 @@ class LDeployerClient {
 	}
 
 	private function save_ignore_list($key_name,array $entries) {
-		$ignore_file = new LFile('/config/deployer/'.$key_name.'.ignore_list');
+		$ignore_file = new LFile('config/deployer/'.$key_name.'.ignore_list');
 
-		if (!$ignore_file->isWritable()) throw new \Exception("ignore list is not writable for deployment ".$key_name.".");
+		$config_deployer_dir = $ignore_file->getDirectory();
+
+		if (!$config_deployer_dir->isWritable()) throw new \Exception("ignore list not writable in config directory.");
+
+		if ($ignore_file->exists() && !$ignore_file->isWritable()) throw new \Exception("ignore list is not writable for deployment ".$key_name.".");
 
 		$wr = $ignore_file->openWriter();
 

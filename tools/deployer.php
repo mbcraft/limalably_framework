@@ -9,6 +9,23 @@
 if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','lymz');
 if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','lymz_framework');
 
+if (!function_exists('array_remove_value')) {
+    function array_remove_value(array $data,$value_to_remove) {
+
+        if ($data===null) return null;
+
+        $result = [];
+
+        foreach ($data as $key => $value) {
+            if ($value!==$value_to_remove) {
+                $result[$key] = $value;
+            } 
+        }
+
+        return $result;
+    }
+}
+
 function lymz_deployer_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
@@ -1907,12 +1924,12 @@ class DeployerController {
 				$this->root_dir->visit($this);
 			}
 
-            unset($this->visit_result['']);
+            $this->visit_result = array_remove_value($this->visit_result,'');
 
 			foreach ($this->excluded_paths as $excluded) {
-				foreach ($this->visit_result as $path => $hash)
-					if (DStringUtils::startsWith($path,$excluded)) {
-						unset($this->visit_result[$path]);
+				foreach ($this->visit_result as $path => $hash) {
+					if (DStringUtils::startsWith($path,$excluded)) 
+						$this->visit_result = array_remove_value($this->visit_result,$path);
 				}
 			}
 

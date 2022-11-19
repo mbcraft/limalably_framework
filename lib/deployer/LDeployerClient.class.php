@@ -293,15 +293,22 @@ class LDeployerClient {
 
 		$this->visit_result = array_remove_value($this->visit_result,'');
 
-		foreach ($this->excluded_paths as $excluded) {
-			foreach ($this->visit_result as $path => $hash) {
-				if (LStringUtils::startsWith($path,$excluded)) 
-					$this->visit_result = array_remove_value($this->visit_result,$path);
-			}
+        $final_result = [];
 
-		}
+        foreach ($this->excluded_paths as $excluded) {
+            foreach ($this->visit_result as $path => $hash) {
+                if (LStringUtils::startsWith($path,$excluded)) 
+                    continue;
+                if (LStringUtils::startsWith($path,'config/deployer/'))
+                    continue;
+
+                $final_result [] = $path;
+            }
+        }
+
+            
 		
-		return $this->visit_result;
+		return $final_result;
 	}
 
 	public function setDeployerClientKeysFolder($dir_or_path) {

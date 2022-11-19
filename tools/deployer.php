@@ -1926,14 +1926,20 @@ class DeployerController {
 
             $this->visit_result = array_remove_value($this->visit_result,'');
 
-			foreach ($this->excluded_paths as $excluded) {
-				foreach ($this->visit_result as $path => $hash) {
-					if (DStringUtils::startsWith($path,$excluded)) 
-						$this->visit_result = array_remove_value($this->visit_result,$path);
-				}
-			}
+            $final_result = [];
 
-			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
+            foreach ($this->excluded_paths as $excluded) {
+                foreach ($this->visit_result as $path => $hash) {
+                    if (DStringUtils::startsWith($path,$excluded)) 
+                        continue;
+                    if (DStringUtils::startsWith($path,'config/deployer/'))
+                        continue;
+
+                    $final_result [] = $path;
+                }
+            }
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $final_result];
 
 		} else return $this->failure("Wrong password.");
 	}

@@ -164,7 +164,7 @@ class LUrlMapResolver {
     }
     
     /**
-     * Ritorna true se la route parametro è inserita nell'url_hash_db delle route.
+     * Ritorna true se la route parametro è inserita nell'url_alias_db delle route.
      * 
      * @param string $route La route
      * @return boolean Se la route è valida per l'url alias db.

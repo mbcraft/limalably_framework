@@ -40,26 +40,30 @@ class LTemplateRendering {
     private function findEngineName() {
         $engine = null;
 
-        if ($this->my_urlmap->is_set('/template/engine'))  
-        { 
-            $engine = $this->my_urlmap->get('/template/engine');
+        if (isset($this->my_urlmap)) {
+            if ($this->my_urlmap->is_set('/template/engine'))  
+            { 
+                $engine = $this->my_urlmap->get('/template/engine');
 
-            $this->engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
-        } else {
-            $template_name = $this->my_urlmap->get('/template/name');
+                $this->engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
+            } else {
+                $template_name = $this->my_urlmap->get('/template/name');
 
-            $engine_list = LConfigReader::simple('/template');
+                $engine_list = LConfigReader::simple('/template');
 
-            foreach ($engine_list as $engine_name => $engine_specs) {
-                $extension_search_list = $engine_specs['extension_search_list'];
+                foreach ($engine_list as $engine_name => $engine_specs) {
+                    $extension_search_list = $engine_specs['extension_search_list'];
 
-                foreach ($extension_search_list as $ext) {
-                    if (LStringUtils::endsWith($template_name,$ext)) {
-                        $this->engine_name = $engine_name;
-                        return;
+                    foreach ($extension_search_list as $ext) {
+                        if (LStringUtils::endsWith($template_name,$ext)) {
+                            $this->engine_name = $engine_name;
+                            return;
+                        }
                     }
                 }
             }
+        } else {
+            $this->engine_name = "twig";
         }
     }
 

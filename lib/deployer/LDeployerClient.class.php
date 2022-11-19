@@ -617,7 +617,7 @@ class LDeployerClient {
 		} return $this->failure("Unable to load key ".$key_name);
 	}
 
-	public function print_ignore_list(string $key_name,string $path) {
+	public function print_ignore_list(string $key_name) {
 		if ($this->loadKey($key_name)) {
 
 			try {
@@ -629,16 +629,21 @@ class LDeployerClient {
 
 			$default_ignore_list = $this->getProjectDefaultExcludeList();
 
-			echo "Default standard ignore list :\n\n";
+			echo "Default standard project ignore list :\n\n";
 
 			foreach ($default_ignore_list as $entry) {
+
+				if ($entry == '@') $entry .= " (dynamic deployer path)";
+
 				echo " - ".$entry."\n";
 			}
 
-			if (is_empty($entries)) {
-				echo "Custom ignore list is empty.\n\n";
+			echo "\n";
+
+			if (empty($entries)) {
+				echo "Custom project ignore list is empty.\n\n";
 			} else {
-				echo "Custom ignore list :\n\n";
+				echo "Custom project ignore list :\n\n";
 
 				foreach ($entries as $entry) {
 					echo " - ".$entry."\n";

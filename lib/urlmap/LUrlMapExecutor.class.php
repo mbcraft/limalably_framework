@@ -319,6 +319,10 @@ class LUrlMapExecutor {
             throw new LHttpError($this->my_url_map->get('/http_error'));
         }
         
+        //default format setup
+        if (LConfigReader::has('/format/default_response_format')) {
+            $this->my_format = LConfigReader::simple('/format/default_response_format');
+        }
 
         //template rendering
 
@@ -355,6 +359,7 @@ class LUrlMapExecutor {
                 }
             } else {
                 $this->my_format = $this->my_url_map->get('/format');
+
                 LResult::trace("Recognized format inside urlmap : ".$this->my_format);
             }
             LResult::trace("Rendering template ...");
@@ -369,7 +374,7 @@ class LUrlMapExecutor {
                         case LFormat::JSON : throw new LJsonResponse($result);
                         case LFormat::XML : throw new LXmlResponse($result);
 
-                        default : throw new \Exception("Unrecognized response format ...");
+                        default : throw new \Exception("Unrecognized response format ... : ".$this->my_format);
                     }
                 } else
                     return $result;
@@ -381,6 +386,7 @@ class LUrlMapExecutor {
         if ($this->my_url_map->is_set('/format')) {
             $this->my_format = $this->my_url_map->get('/format');
         } else {
+
             if ($this->is_root) {
                 $this->my_format = LFormat::JSON;
             } else {

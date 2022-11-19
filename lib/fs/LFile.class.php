@@ -156,7 +156,10 @@ class LFile extends LFileSystemElement
  */
     function delete()
     {
-        return @unlink($this->__full_path);
+        if (file_exists($this->__full_path))
+            return @unlink($this->__full_path);
+        else 
+            return false;
     }
 
     function isEmpty()

@@ -555,7 +555,7 @@ class LDeployerClient {
 
 		if ($ignore_file->exists() && !$ignore_file->isWritable()) throw new \Exception("ignore list is not writable for deployment ".$key_name.".");
 
-		$ignore_file->delete();
+		if ($ignore_file->exists()) $ignore_file->delete();
 
 		$wr = $ignore_file->openWriter();
 
@@ -673,7 +673,7 @@ class LDeployerClient {
 
 			echo "\n\n";
 
-			return true;
+			return $entries;
 
 		} return $this->failure("Unable to load key ".$key_name);
 

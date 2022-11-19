@@ -503,7 +503,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	*/
+	
 	//ok
 	function testManualConfig() {
 

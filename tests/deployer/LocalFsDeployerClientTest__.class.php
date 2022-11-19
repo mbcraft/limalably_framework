@@ -54,6 +54,80 @@ class LocalFsDeployerClientTest extends LTestCase {
 		if (is_array($result)) return $result['message'];
 		else return '';
 	}
+
+	//ok
+	function testAddRemoveListIgnore() {
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$ignore_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.ignore_list');
+
+		if ($ignore_file->exists()) $ignore_file->delete();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('default_key');
+
+		$custom_ignore_list = $dc->print_ignore_list("default_key");
+
+		$this->assertTrue(empty($custom_ignore_list),"L'ignore list non è vuota come dovrebbe essere!");
+
+		$dc->add_to_ignore_list("default_key","qualcosa/");
+
+		$custom_ignore_list = $dc->print_ignore_list("default_key");
+
+		$this->assertTrue(count($custom_ignore_list)==1,"L'ignore list non è vuota come dovrebbe essere!");
+
+		$this->assertTrue($custom_ignore_list[0],"qualcosa/","L'elemento nella ignore list non corrisponde!");
+
+		$dc->rm_from_ignore_list("default_key","ahhh");
+
+		$dc->add_to_ignore_list("default_key","qualcosa/");
+
+		$custom_ignore_list = $dc->print_ignore_list("default_key");
+
+		$this->assertTrue(count($custom_ignore_list)==1,"L'ignore list non è vuota come dovrebbe essere!");
+
+		$this->assertTrue($custom_ignore_list[0],"qualcosa/","L'elemento nella ignore list non corrisponde!");
+
+		$dc->add_to_ignore_list("default_key","qualcosa/");
+
+		$custom_ignore_list = $dc->print_ignore_list("default_key");
+
+		$this->assertTrue(count($custom_ignore_list)==1,"L'ignore list non è vuota come dovrebbe essere!");
+
+		$this->assertTrue($custom_ignore_list[0],"qualcosa/","L'elemento nella ignore list non corrisponde!");
+
+		$dc->rm_from_ignore_list("default_key","qualcosa/");
+
+		$custom_ignore_list = $dc->print_ignore_list("default_key");
+
+		$this->assertTrue(empty($custom_ignore_list),"L'ignore list non è vuota come dovrebbe essere!");
+
+		$r = $dc->detach('default_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+		if ($ignore_file->exists()) $ignore_file->delete();
+
+    }
 	
 	//ok
 	function testGetExecMode() {
@@ -648,5 +722,6 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
+	
 	
 }

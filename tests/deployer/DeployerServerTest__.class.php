@@ -48,7 +48,7 @@ class DeployerServerTest extends LTestCase {
         if (is_array($result) && isset($result['message'])) return $result['message'];
         else return "Unknown error";
     }
-	/*
+
 	function testListDb() {
 		$this->reinit();
 
@@ -415,7 +415,7 @@ class DeployerServerTest extends LTestCase {
 
 
 	}
-	*/
+	
 	//ok
 	function testDeployerListHashes() {
 
@@ -470,7 +470,7 @@ class DeployerServerTest extends LTestCase {
 		$this->assertEqual(count($result['data']),1,"Il numero di elementi ritornati non corrisponde!");
 
 	}
-	/*
+	
 	//ok
 	function testDeployerDownloadDir() {
 
@@ -506,5 +506,5 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 	}
-	*/
+	
 }

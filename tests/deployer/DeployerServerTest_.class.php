@@ -48,7 +48,7 @@ class DeployerServerTest extends LTestCase {
         if (is_array($result) && isset($result['message'])) return $result['message'];
         else return "Unknown error";
     }
-	
+	/*
 	function testListDb() {
 		$this->reinit();
 
@@ -415,7 +415,7 @@ class DeployerServerTest extends LTestCase {
 
 
 	}
-	
+	*/
 	//ok
 	function testDeployerListHashes() {
 
@@ -446,6 +446,16 @@ class DeployerServerTest extends LTestCase {
 		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
 
 		$this->assertEqual(count($result['data']),3,"Il numero di elementi ritornati non corrisponde!");
+		foreach ($result['data'] as $key => $value) {
+
+			$this->assertTrue(!is_numeric($key),"Il listHashes ritorna i valori in modo sbagliato! : ".$key);
+
+			$this->assertTrue(is_string($key),"La chiave non è una stringa come dovrebbe!! : ".$key);
+
+			$this->assertTrue(strlen($key)<30,"La lunghezza della chiave è eccessiva! : ".$key);
+
+			$this->assertTrue(strlen($value)>30,"La lunghezza dell'hash non è corretta!! : ".$value);
+		}
 
 		$result = $deployer_controller->listHashes("",['@'],[]);
 
@@ -460,7 +470,7 @@ class DeployerServerTest extends LTestCase {
 		$this->assertEqual(count($result['data']),1,"Il numero di elementi ritornati non corrisponde!");
 
 	}
-	
+	/*
 	//ok
 	function testDeployerDownloadDir() {
 
@@ -496,5 +506,5 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 	}
-	
+	*/
 }

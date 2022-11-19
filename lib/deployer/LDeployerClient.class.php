@@ -44,6 +44,12 @@ class LDeployerClient {
 	private $dirs_to_delete = [];
 	private $files_to_delete = [];
 
+	private $root_dir = null;
+
+	function __construct() {
+		$this->root_dir = new LDir("");
+	}
+
 	private function setupChangesList($client_hash_list,$server_hash_list) {
 
 		$this->dirs_to_add = [];
@@ -56,26 +62,30 @@ class LDeployerClient {
 		foreach ($client_hash_list as $path => $hash) {
 			if (!isset($server_hash_list[$path])) {
 				if (LStringUtils::endsWith($path,'/'))
-					$this->dirs_to_add[] = $path;
+					$this->dirs_to_add []= $path;
 				else
-					$this->files_to_add[] = $path;
+					$this->files_to_add []= $path;
 			}
 			if (isset($server_hash_list[$path]) && $server_hash_list[$path]!=$hash) {
 				if (LStringUtils::endsWith($path,'/'))
-					$this->dirs_to_update[] = $path;
+					$this->dirs_to_update []= $path;
 				else
-					$this->files_to_update[] = $path;
+					$this->files_to_update []= $path;
 			}
 		}
 
 		foreach ($server_hash_list as $path => $hash) {
 			if (!isset($client_hash_list[$path])) {
 				if (LStringUtils::endsWith($path,'/'))
-					$this->dirs_to_delete[] = $path;
+					$this->dirs_to_delete []= $path;
 				else
-					$this->files_to_delete[] = $path;
+					$this->files_to_delete []= $path;
 			}
 		}
+
+		echo "FILES TO ADD : \n";
+
+		var_dump($this->files_to_add);
 
 	}
 
@@ -307,7 +317,7 @@ class LDeployerClient {
                     $skip = true;
             }
 
-            if (!$skip) $final_result [] = $path;
+            if (!$skip) $final_result [$path] = $hash;
         }
 
         $final_result_2 = array_remove_value($final_result,'');
@@ -1401,9 +1411,17 @@ class LDeployerClient {
 
 			$this->setupChangesList($client_list,$server_list);
 
-			$this->changesListSummary(true);
+			echo "SERVER LIST : \n";
+
+			var_dump($server_list);
+
+			echo "CLIENT LIST : \n";
+
+			var_dump($client_list);
 
 			$this->previewChangesList();
+
+			$this->changesListSummary(true);
 
 			$this->executeChangesList();
 

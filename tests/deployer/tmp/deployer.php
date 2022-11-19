@@ -9,15 +9,15 @@
 if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','lymz');
 if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','lymz_framework');
 
-if (!function_exists('array_remove_value')) {
-    function array_remove_value(array $data,$value_to_remove) {
+if (!function_exists('array_remove_key_or_value')) {
+    function array_remove_key_or_value(array $data,$to_remove) {
 
         if ($data===null) return null;
 
         $result = [];
 
         foreach ($data as $key => $value) {
-            if ($value!==$value_to_remove) {
+            if ($key!==$to_remove && $value!==$to_remove) {
                 $result[$key] = $value;
             } 
         }
@@ -507,12 +507,12 @@ class DDir extends DFileSystemElement
         {
             $r = $fold->explore($inspector);
 
-            $pre_result = array_remove_value($r,'');
+            $pre_result = array_remove_key_or_value($r,'');
 
             $result = array_merge($pre_result,$result);
         }
 
-        $final_result = array_remove_value($result,'');
+        $final_result = array_remove_key_or_value($result,'');
 
         return $final_result;
     }
@@ -1535,7 +1535,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 1001;
+    const BUILD_NUMBER = 1010;
 
     const DEPLOYER_VERSION = "1.3";
 
@@ -1545,7 +1545,7 @@ class DeployerController {
 	private $root_dir;
 
     //password
-	private static $PWD = /*!P_W_D!*/"dwztbtxgatinsipwmnqcbwzaqbiybbawhgiz"/*!P_W_D!*/; 
+	private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; 
 
     //deployer path from root
     private static $DPFR = /*!D_P_F_R!*/"deployer.php"/*!D_P_F_R!*/; 
@@ -1591,8 +1591,6 @@ class DeployerController {
 
         return $final_value;
     }
-
-	private $explore_result = [];
 
 	private $excluded_paths = [];
 	private $included_paths = [];
@@ -1913,8 +1911,6 @@ class DeployerController {
 	public function listHashes($password,$excluded_paths,$included_paths) {
 		if ($this->accessGranted($password)) {
 
-            $this->explore_result = [];
-
             if ($this->containsDeployerPath($excluded_paths)) {
                 $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
@@ -1930,6 +1926,8 @@ class DeployerController {
 			$this->excluded_paths = $this->getFinalPathList($excluded_paths);
 			$this->included_paths = $this->getFinalPathList($included_paths);
 
+            $pre_include_result = [];
+
 			if (count($this->included_paths)>0) {
 				foreach ($this->included_paths as $path) {
 					$my_dir = new DDir($this->root_dir->getFullPath().$path);
@@ -1940,7 +1938,7 @@ class DeployerController {
 				$pre_include_result = $this->root_dir->explore($this);
 			}
 
-            $pre_result = array_remove_value($pre_include_result,'');
+            $pre_result = array_remove_key_or_value($pre_include_result,'');
 
             if (empty($this->excluded_paths))
                 $final_result = $pre_result;
@@ -1954,10 +1952,10 @@ class DeployerController {
                         $skip = true;
                 }
 
-                if (!$skip) $final_result [] = $path;
+                if (!$skip) $final_result [$path] = $hash;
             }
 
-            $final_result_2 = array_remove_value($final_result,'');
+            $final_result_2 = array_remove_key_or_value($final_result,'');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $final_result_2];
 

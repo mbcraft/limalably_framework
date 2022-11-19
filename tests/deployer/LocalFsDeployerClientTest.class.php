@@ -54,7 +54,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 		if (is_array($result)) return $result['message'];
 		else return '';
 	}
-
+	
 	//ok
 	function testGetExecMode() {
 		$this->initAll();
@@ -394,7 +394,8 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
+	
 	//ok
 	function testProjectUpdate() {
 

@@ -518,6 +518,8 @@ class LDeployerClient {
 
 		$lr->close();
 
+		$result = array_remove_value($result,'');
+
 		return $result;
 	}
 
@@ -529,6 +531,8 @@ class LDeployerClient {
 		if (!$config_deployer_dir->isWritable()) throw new \Exception("ignore list not writable in config directory.");
 
 		if ($ignore_file->exists() && !$ignore_file->isWritable()) throw new \Exception("ignore list is not writable for deployment ".$key_name.".");
+
+		$ignore_file->delete();
 
 		$wr = $ignore_file->openWriter();
 
@@ -552,7 +556,7 @@ class LDeployerClient {
 			}
 
 			if (in_array($path,$entries)) {
-				echo "Path '".$path."' already in ignore list. Skipping.\n\n";
+				echo "Path '".$path."' already in ignore list. Skipping...\n\n";
 
 				return true;
 			} else {
@@ -588,14 +592,10 @@ class LDeployerClient {
 			if (in_array($path,$entries)) {
 				echo "Path '".$path."' found in list. Removing ...\n\n";
 
-				$result = [];
-
-				foreach ($entries as $entry) {
-					if ($entry!=$path) $result[] = $entry;
-				}
+				$result = array_remove_value($entries,$path);
 
 				try {
-					$this->save_ignore_list($key_name,$entries);
+					$this->save_ignore_list($key_name,$result);
 				}
 				catch (\Exception $ex) {
 					return $this->failure("Unable to save ignore list for deployment ".$key_name.", operation canceled.");
@@ -604,16 +604,7 @@ class LDeployerClient {
 				return true;
 			} else {
 
-				$entries [] = $path;
-
-				try {
-					$this->save_ignore_list($key_name,$entries);
-				}
-				catch (\Exception $ex) {
-					return $this->failure("Unable to save ignore list for deployment ".$key_name.", operation canceled.");
-				}
-
-				echo "Path '".$path."' added to ignore list.\n\n";
+				echo "Path '".$path."' not found in custom ignore list. Skipping ...\n\n";
 
 				return true;
 

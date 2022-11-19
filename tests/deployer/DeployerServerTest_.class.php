@@ -108,7 +108,6 @@ class DeployerServerTest extends LTestCase {
 		echo "\nResult file is for backup db data is : ".$result['data']->getSize()."\n";
 	}
 	
-	/*
 	//ok
 	function testFileExists() {
 
@@ -416,7 +415,7 @@ class DeployerServerTest extends LTestCase {
 
 
 	}
-
+	
 	//ok
 	function testDeployerListHashes() {
 
@@ -442,26 +441,26 @@ class DeployerServerTest extends LTestCase {
 
 		$f_source->copy($f_dest2);
 
-		$result = $deployer_controller->listHashes("",[],[]);
+		$result = $deployer_controller->listHashes("",['@'],[]);
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
 
-		$this->assertEqual(count($result['data']),4,"Il numero di elementi ritornati non corrisponde!");
+		$this->assertEqual(count($result['data']),3,"Il numero di elementi ritornati non corrisponde!");
 
-		$result = $deployer_controller->listHashes("",[],[]);
-
-		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
-
-		$this->assertEqual(count($result['data']),4,"Il numero di elementi ritornati non corrisponde!");
-
-		$result = $deployer_controller->listHashes("",['prova/'],[]);
+		$result = $deployer_controller->listHashes("",['@'],[]);
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
 
-		$this->assertEqual(count($result['data']),2,"Il numero di elementi ritornati non corrisponde!");
+		$this->assertEqual(count($result['data']),3,"Il numero di elementi ritornati non corrisponde!");
+
+		$result = $deployer_controller->listHashes("",['@','prova/'],[]);
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
+
+		$this->assertEqual(count($result['data']),1,"Il numero di elementi ritornati non corrisponde!");
 
 	}
-
+	
 	//ok
 	function testDeployerDownloadDir() {
 
@@ -497,5 +496,5 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 	}
-	*/
+	
 }

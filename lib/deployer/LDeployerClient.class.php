@@ -32,7 +32,7 @@ class LDeployerClient {
 
 	private $deployer_keys_folder = null;
 
-	private $visit_result = [];
+	private $explore_result = [];
 
 	private $excluded_paths = [];
 	private $included_paths = [];
@@ -108,37 +108,37 @@ class LDeployerClient {
 
 		echo count($this->dirs_to_add)." dir to add.\n";
 
-		foreach ($this->dirs_to_add as $d) {
+		foreach ($this->dirs_to_add as $k => $d) {
 			echo ">> ".$d."\n";
 		}
 		echo "\n";
 		echo count($this->files_to_add)." files to add.\n";
 
-		foreach ($this->files_to_add as $f) {
+		foreach ($this->files_to_add as $k => $f) {
 			echo ">> ".$f."\n";
 		}
 		echo "\n";
 		echo count($this->dirs_to_update)." dir to update.\n";
 
-		foreach ($this->dirs_to_update as $d) {
+		foreach ($this->dirs_to_update as $k => $d) {
 			echo ">> ".$d."\n";
 		}
 		echo "\n";
 		echo count($this->files_to_update)." files to update.\n";
 
-		foreach ($this->files_to_update as $f) {
+		foreach ($this->files_to_update as $k => $f) {
 			echo ">> ".$f."\n";
 		}
 		echo "\n";
 		echo count($this->dirs_to_delete)." dir to delete.\n";
 
-		foreach ($this->dirs_to_delete as $d) {
+		foreach ($this->dirs_to_delete as $k => $d) {
 			echo ">> ".$d."\n";
 		}
 		echo "\n";
 		echo count($this->files_to_delete)." files to delete.\n";
 
-		foreach ($this->files_to_delete as $f) {
+		foreach ($this->files_to_delete as $k => $f) {
 			echo ">> ".$f."\n";
 		}
 		echo "\n\n";
@@ -241,17 +241,21 @@ class LDeployerClient {
 
 	public function visit($dir) {
 
-		if (!in_array($dir->getPath(),$this->excluded_paths)) {
-			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
+        $result = [];
+
+		if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
+			$result[$dir->getPath()] = $dir->getContentHash();
 
 			$files = $dir->listFiles();
 
 			foreach ($files as $f) {
 				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$this->visit_result[$f->getPath()] = $f->getContentHash();
+					$result[$f->getPath()] = $f->getContentHash();
 				}
 			}
 		}
+
+        return $result;
 
 	}
 
@@ -268,47 +272,47 @@ class LDeployerClient {
 
     }
 
+    private function containsDeployerPath($path_list) {
+        return in_array('@',$path_list);
+    }
+
 	private function clientListHashes($excluded_paths,$included_paths) {
 			
-		$this->visit_result = [];
+		$this->explore_result = [];
 
 		$this->excluded_paths = $this->getFinalPathList($excluded_paths);
 		$this->included_paths = $this->getFinalPathList($included_paths);
 
 		if (count($this->included_paths)>0) {
 			foreach ($this->included_paths as $path) {
-				$my_dir = new LDir($_SERVER['PROJECT_DIR'].$path);
+				$my_dir = new LDir($this->root_dir->getFullPath().$path);
 
-				if (!$my_dir->exists()) continue;
-
-				$my_dir->visit($this);
+				$pre_include_result = array_merge($my_dir->explore($this),$pre_include_result);
 			}
-
 		} else {
-
-			$root_dir = new LDir($_SERVER['PROJECT_DIR']);
-
-			$root_dir->visit($this);
+			$pre_include_result = $this->root_dir->explore($this);
 		}
 
-		$this->visit_result = array_remove_value($this->visit_result,'');
+        $pre_result = array_remove_value($pre_include_result,'');
 
-        $final_result = [];
+        if (empty($this->excluded_paths))
+            $final_result = $pre_result;
 
-        foreach ($this->excluded_paths as $excluded) {
-            foreach ($this->visit_result as $path => $hash) {
+        foreach ($pre_result as $path => $hash) {
+            $skip = false;
+            foreach ($this->excluded_paths as $excluded) {
                 if (LStringUtils::startsWith($path,$excluded)) 
-                    continue;
+                    $skip = true;
                 if (LStringUtils::startsWith($path,'config/deployer/'))
-                    continue;
-
-                $final_result [] = $path;
+                    $skip = true;
             }
+
+            if (!$skip) $final_result [] = $path;
         }
 
-            
-		
-		return $final_result;
+        $final_result_2 = array_remove_value($final_result,'');
+
+        return $final_result_2;
 	}
 
 	public function setDeployerClientKeysFolder($dir_or_path) {

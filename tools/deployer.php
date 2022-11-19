@@ -493,18 +493,28 @@ class DDir extends DFileSystemElement
         
     }
     
-    function visit($visitor)
+    function explore($inspector)
     {
-        if (!$this->exists()) return;
+        $result = [];
 
-        $visitor->visit($this);
+        if (!$this->exists()) return $result;
+
+        $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $fold->visit($visitor);
+            $r = $fold->explore($inspector);
+
+            $pre_result = array_remove_value($r,'');
+
+            $result = array_merge($pre_result,$result);
         }
+
+        $final_result = array_remove_value($result,'');
+
+        return $final_result;
     }
     
     /*
@@ -1525,7 +1535,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 1001;
+    const BUILD_NUMBER = 1010;
 
     const DEPLOYER_VERSION = "1.3";
 
@@ -1582,24 +1592,28 @@ class DeployerController {
         return $final_value;
     }
 
-	private $visit_result = [];
+	private $explore_result = [];
 
 	private $excluded_paths = [];
 	private $included_paths = [];
 
 	public function visit($dir) {
 
+        $result = [];
+
 		if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
-			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
+			$result[$dir->getPath()] = $dir->getContentHash();
 
 			$files = $dir->listFiles();
 
 			foreach ($files as $f) {
 				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$this->visit_result[$f->getPath()] = $f->getContentHash();
+					$result[$f->getPath()] = $f->getContentHash();
 				}
 			}
 		}
+
+        return $result;
 
 	}
 
@@ -1899,6 +1913,8 @@ class DeployerController {
 	public function listHashes($password,$excluded_paths,$included_paths) {
 		if ($this->accessGranted($password)) {
 
+            $this->explore_result = [];
+
             if ($this->containsDeployerPath($excluded_paths)) {
                 $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
@@ -1918,28 +1934,32 @@ class DeployerController {
 				foreach ($this->included_paths as $path) {
 					$my_dir = new DDir($this->root_dir->getFullPath().$path);
 
-					$my_dir->visit($this);
+					$pre_include_result = array_merge($my_dir->explore($this),$pre_include_result);
 				}
 			} else {
-				$this->root_dir->visit($this);
+				$pre_include_result = $this->root_dir->explore($this);
 			}
 
-            $this->visit_result = array_remove_value($this->visit_result,'');
+            $pre_result = array_remove_value($pre_include_result,'');
 
-            $final_result = [];
+            if (empty($this->excluded_paths))
+                $final_result = $pre_result;
 
-            foreach ($this->excluded_paths as $excluded) {
-                foreach ($this->visit_result as $path => $hash) {
+            foreach ($pre_result as $path => $hash) {
+                $skip = false;
+                foreach ($this->excluded_paths as $excluded) {
                     if (DStringUtils::startsWith($path,$excluded)) 
-                        continue;
+                        $skip = true;
                     if (DStringUtils::startsWith($path,'config/deployer/'))
-                        continue;
-
-                    $final_result [] = $path;
+                        $skip = true;
                 }
+
+                if (!$skip) $final_result [] = $path;
             }
 
-            return ["result" => self::SUCCESS_RESULT,"data" => $final_result];
+            $final_result_2 = array_remove_value($final_result,'');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $final_result_2];
 
 		} else return $this->failure("Wrong password.");
 	}

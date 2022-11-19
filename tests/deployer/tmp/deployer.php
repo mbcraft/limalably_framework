@@ -9,6 +9,23 @@
 if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','lymz');
 if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','lymz_framework');
 
+if (!function_exists('array_remove_value')) {
+    function array_remove_value(array $data,$value_to_remove) {
+
+        if ($data===null) return null;
+
+        $result = [];
+
+        foreach ($data as $key => $value) {
+            if ($value!==$value_to_remove) {
+                $result[$key] = $value;
+            } 
+        }
+
+        return $result;
+    }
+}
+
 function lymz_deployer_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
@@ -476,18 +493,28 @@ class DDir extends DFileSystemElement
         
     }
     
-    function visit($visitor)
+    function explore($inspector)
     {
-        if (!$this->exists()) return;
+        $result = [];
 
-        $visitor->visit($this);
+        if (!$this->exists()) return $result;
+
+        $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $fold->visit($visitor);
+            $r = $fold->explore($inspector);
+
+            $pre_result = array_remove_value($r,'');
+
+            $result = array_merge($pre_result,$result);
         }
+
+        $final_result = array_remove_value($result,'');
+
+        return $final_result;
     }
     
     /*
@@ -1518,7 +1545,7 @@ class DeployerController {
 	private $root_dir;
 
     //password
-	private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; 
+	private static $PWD = /*!P_W_D!*/"dwztbtxgatinsipwmnqcbwzaqbiybbawhgiz"/*!P_W_D!*/; 
 
     //deployer path from root
     private static $DPFR = /*!D_P_F_R!*/"deployer.php"/*!D_P_F_R!*/; 
@@ -1565,24 +1592,28 @@ class DeployerController {
         return $final_value;
     }
 
-	private $visit_result = [];
+	private $explore_result = [];
 
 	private $excluded_paths = [];
 	private $included_paths = [];
 
 	public function visit($dir) {
 
+        $result = [];
+
 		if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
-			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
+			$result[$dir->getPath()] = $dir->getContentHash();
 
 			$files = $dir->listFiles();
 
 			foreach ($files as $f) {
 				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$this->visit_result[$f->getPath()] = $f->getContentHash();
+					$result[$f->getPath()] = $f->getContentHash();
 				}
 			}
 		}
+
+        return $result;
 
 	}
 
@@ -1882,6 +1913,8 @@ class DeployerController {
 	public function listHashes($password,$excluded_paths,$included_paths) {
 		if ($this->accessGranted($password)) {
 
+            $this->explore_result = [];
+
             if ($this->containsDeployerPath($excluded_paths)) {
                 $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
@@ -1901,22 +1934,32 @@ class DeployerController {
 				foreach ($this->included_paths as $path) {
 					$my_dir = new DDir($this->root_dir->getFullPath().$path);
 
-					$my_dir->visit($this);
+					$pre_include_result = array_merge($my_dir->explore($this),$pre_include_result);
 				}
 			} else {
-				$this->root_dir->visit($this);
+				$pre_include_result = $this->root_dir->explore($this);
 			}
 
-            unset($this->visit_result['']);
+            $pre_result = array_remove_value($pre_include_result,'');
 
-			foreach ($this->excluded_paths as $excluded) {
-				foreach ($this->visit_result as $path => $hash)
-					if (DStringUtils::startsWith($path,$excluded)) {
-						unset($this->visit_result[$path]);
-				}
-			}
+            if (empty($this->excluded_paths))
+                $final_result = $pre_result;
 
-			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
+            foreach ($pre_result as $path => $hash) {
+                $skip = false;
+                foreach ($this->excluded_paths as $excluded) {
+                    if (DStringUtils::startsWith($path,$excluded)) 
+                        $skip = true;
+                    if (DStringUtils::startsWith($path,'config/deployer/'))
+                        $skip = true;
+                }
+
+                if (!$skip) $final_result [] = $path;
+            }
+
+            $final_result_2 = array_remove_value($final_result,'');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $final_result_2];
 
 		} else return $this->failure("Wrong password.");
 	}

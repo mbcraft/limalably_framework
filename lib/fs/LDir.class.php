@@ -35,19 +35,29 @@ class LDir extends LFileSystemElement
         parent::__construct($path);
         
     }
-    
-    function visit($visitor)
-    {
-        if (!$this->exists()) return;
 
-        $visitor->visit($this);
+    function explore($inspector)
+    {
+        $result = [];
+
+        if (!$this->exists()) return $result;
+
+        $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $fold->visit($visitor);
+            $r = $fold->explore($inspector);
+
+            $pre_result = array_remove_value($r,'');
+
+            $result = array_merge($pre_result,$result);
         }
+
+        $final_result = array_remove_value($result,'');
+
+        return $final_result;
     }
     
     /*

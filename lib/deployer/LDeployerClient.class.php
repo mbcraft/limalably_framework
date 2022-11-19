@@ -464,6 +464,9 @@ class LDeployerClient {
 		echo "./bin/deployer.sh <deploy_key_name> detach --> detaches the deployer removing the server token and deleting the local key\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> get_exec_mode --> gets the execution mode on the deployer instance\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> set_exec_mode <running_mode> --> sets the execution mode on the deployer instance\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> add_ignore <path> --> adds a path to the custom ignore list\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> rm_ignore <path> --> removes a path from the custom ignore list\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> list_ignore --> lists the full ignore list\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> get_deployer_path_from_root --> gets the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> set_deployer_path_from_root <deployer_path> --> set the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> deployer_version --> prints the deployer version\n\n";
@@ -493,6 +496,163 @@ class LDeployerClient {
 		echo "\n";
 
 		return true;
+	}
+
+	private function load_ignore_list($key_name) {
+		$ignore_file = new LFile('/config/deployer/'.$key_name.'.ignore_list');
+
+		if (!$ignore_file->exists()) {
+			return [];
+		}
+
+		if (!$ignore_file->isReadable()) throw new \Exception("ignore file for deployment ".$key_name." is not readable!");
+
+		$lr = $ignore_file->openReader();
+
+		$result = [];
+
+		while (!$lr->isEndOfStream()) {
+			$result[] = $lr->readLine();
+		}
+
+		$lr->close();
+
+		return $result;
+	}
+
+	private function save_ignore_list($key_name,array $entries) {
+		$ignore_file = new LFile('/config/deployer/'.$key_name.'.ignore_list');
+
+		if (!$ignore_file->isWritable()) throw new \Exception("ignore list is not writable for deployment ".$key_name.".");
+
+		$wr = $ignore_file->openWriter();
+
+		foreach ($entries as $entry) {
+			$wr->writeln($entry);
+		}
+
+		$wr->close();
+
+		return true;
+	}
+
+	public function add_to_ignore_list(string $key_name,string $path) {
+		if ($this->loadKey($key_name)) {
+
+			try {
+				$entries = $this->load_ignore_list($key_name);
+			}
+			catch (\Exception $ex) {
+				return $this->failure("Unable to read entry list for deployment ".$key_name.", operation canceled.");
+			}
+
+			if (in_array($path,$entries)) {
+				echo "Path '".$path."' already in ignore list. Skipping.\n\n";
+
+				return true;
+			} else {
+
+				$entries [] = $path;
+
+				try {
+					$this->save_ignore_list($key_name,$entries);
+				}
+				catch (\Exception $ex) {
+					return $this->failure("Unable to save ignore list for deployment ".$key_name.", operation canceled.");
+				}
+
+				echo "Path '".$path."' added to ignore list.\n\n";
+
+				return true;
+
+			}
+			
+		} return $this->failure("Unable to load key ".$key_name);
+	}
+
+	public function rm_from_ignore_list(string $key_name,string $path) {
+		if ($this->loadKey($key_name)) {
+
+			try {
+				$entries = $this->load_ignore_list($key_name);
+			}
+			catch (\Exception $ex) {
+				return $this->failure("Unable to read entry list for deployment ".$key_name.", operation canceled.");
+			}
+
+			if (in_array($path,$entries)) {
+				echo "Path '".$path."' found in list. Removing ...\n\n";
+
+				$result = [];
+
+				foreach ($entries as $entry) {
+					if ($entry!=$path) $result[] = $entry;
+				}
+
+				try {
+					$this->save_ignore_list($key_name,$entries);
+				}
+				catch (\Exception $ex) {
+					return $this->failure("Unable to save ignore list for deployment ".$key_name.", operation canceled.");
+				}
+
+				return true;
+			} else {
+
+				$entries [] = $path;
+
+				try {
+					$this->save_ignore_list($key_name,$entries);
+				}
+				catch (\Exception $ex) {
+					return $this->failure("Unable to save ignore list for deployment ".$key_name.", operation canceled.");
+				}
+
+				echo "Path '".$path."' added to ignore list.\n\n";
+
+				return true;
+
+			}
+			
+		} return $this->failure("Unable to load key ".$key_name);
+	}
+
+	public function print_ignore_list(string $key_name,string $path) {
+		if ($this->loadKey($key_name)) {
+
+			try {
+				$entries = $this->load_ignore_list($key_name);
+			}
+			catch (\Exception $ex) {
+				return $this->failure("Unable to read entry list for deployment ".$key_name.", operation canceled.");
+			}
+
+			$default_ignore_list = $this->getProjectDefaultExcludeList();
+
+			echo "Default standard ignore list :\n\n";
+
+			foreach ($default_ignore_list as $entry) {
+				echo " - ".$entry."\n";
+			}
+
+			if (is_empty($entries)) {
+				echo "Custom ignore list is empty.\n\n";
+			} else {
+				echo "Custom ignore list :\n\n";
+
+				foreach ($entries as $entry) {
+					echo " - ".$entry."\n";
+				}
+
+				echo "\n";
+			}
+
+			echo "\n\n";
+
+			return true;
+
+		} return $this->failure("Unable to load key ".$key_name);
+
 	}
 
 	public function hello(string $key_name) {
@@ -1165,8 +1325,17 @@ class LDeployerClient {
 
 	}
 
-	private function getProjectExcludeList() {
+	private function getProjectDefaultExcludeList() {
 		return ['.alias','.bash_history','.bash_profile','.bashrc','.cshrc','.cache/','.config/','.gnupg/','Maildir/','.local/','.php/','composer.json','composer.lock','@','config/',FRAMEWORK_DIR_NAME.'/','bin/','logs/','temp/','composer.json'];
+	}
+
+	private function getProjectExcludeList($key_name) {
+
+		$default_excludes = $this->getProjectDefaultExcludeList();
+
+		$custom_ignores = $this->load_ignore_list($key_name);
+
+		return array_merge($default_excludes,$custom_ignores);
 	}
 
 	public function project_check(string $key_name) {
@@ -1179,13 +1348,13 @@ class LDeployerClient {
 			echo "Deployer version : ".$r['version']."\n";
 			echo "Build number : ".$r['build']."\n";
 
-			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
+			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList($key_name),[]);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance : ".$this->getResultMessage($r));
 
 			$server_list = $r['data'];
 
-			$client_list = $this->clientListHashes($this->getProjectExcludeList(),[]);
+			$client_list = $this->clientListHashes($this->getProjectExcludeList($key_name),[]);
 
 			$this->setupChangesList($client_list,$server_list);
 
@@ -1210,13 +1379,13 @@ class LDeployerClient {
 			echo "Deployer version : ".$r['version']."\n";
 			echo "Build number : ".$r['build']."\n";
 
-			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList(),[]);
+			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList($key_name),[]);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
 
 			$server_list = $r['data'];
 
-			$client_list = $this->clientListHashes($this->getProjectExcludeList(),[]);
+			$client_list = $this->clientListHashes($this->getProjectExcludeList($key_name),[]);
 
 			$this->setupChangesList($client_list,$server_list);
 

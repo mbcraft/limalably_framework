@@ -129,6 +129,9 @@ class LProjectCommandExecutor implements LICommandExecutor {
             'detach' => 2,
             'set_deployer_path_from_root' => 3,
             'get_deployer_path_from_root' => 2,
+            'add_ignore' => 3,
+            'rm_ignore' => 3,
+            'print_ignore' => 2,
             'deployer_version' => 2, 
             'deployer_update' => 2,
             'framework_check' => 2,
@@ -188,6 +191,9 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'detach' : $dc->detach($deploy_key_name);break;
             case 'get_deployer_path_from_root' : $dc->get_deployer_path_from_root($deploy_key_name);break;
             case 'set_deployer_path_from_root' : $dc->set_deployer_path_from_root($deploy_key_name,$parameter2);break;
+            case 'add_ignore' : $dc->add_to_ignore_list($deploy_key_name,$parameter2); break;
+            case 'rm_ignore' : $dc->rm_from_ignore_list($deploy_key_name,$parameter2); break;
+            case 'print_ignore' : $dc->print_ignore_list($deploy_key_name); break;
             case 'deployer_version' : $dc->deployer_version($deploy_key_name);break;
             case 'deployer_update' : $dc->deployer_update($deploy_key_name);break;
             case 'framework_check' : $dc->framework_check($deploy_key_name);break;

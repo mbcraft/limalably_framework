@@ -36,16 +36,28 @@ class DDir extends DFileSystemElement
         
     }
     
-    function visit($visitor)
+    function explore($inspector)
     {
-        $visitor->visit($this);
+        $result = [];
+
+        if (!$this->exists()) return $result;
+
+        $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $visitor->visit($fold);
+            $r = $fold->explore($inspector);
+
+            $pre_result = array_remove_key_or_value($r,'');
+
+            $result = array_merge($pre_result,$result);
         }
+
+        $final_result = array_remove_key_or_value($result,'');
+
+        return $final_result;
     }
     
     /*

@@ -58,11 +58,15 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$r = $dc->hello('local_http_key');
 
-		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->set_deployer_path_from_root('local_http_key','wwwroot/deployer.php');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
 
 		$r = $dc->list_db('local_http_key');
 
-		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine!");
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine! : ".$this->getErrorMessage($r));
 
 		$r = $dc->detach('local_http_key');
 
@@ -73,7 +77,6 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	
 	
 	function testBackupDbStructure() {
 
@@ -99,6 +102,10 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
 
+		$r = $dc->set_deployer_path_from_root('local_http_key','wwwroot/deployer.php');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
 		$save_dir = new LDir('/home/marco/PhpProjects/lymz_framework/tmp/');
 
 		$r = $dc->backup_db_structure('local_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
@@ -115,11 +122,11 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$files = $save_dir->listAll();
 
-		//$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
+		$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
 
-		//$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
+		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
-		//$save_dir->makeEmpty();
+		$save_dir->makeEmpty();
 
 	}
 	
@@ -148,6 +155,10 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
 
+		$r = $dc->set_deployer_path_from_root('local_http_key','wwwroot/deployer.php');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
 		$save_dir = new LDir('/home/marco/PhpProjects/lymz_framework/tmp/');
 
 		$r = $dc->backup_db_data('local_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
@@ -164,12 +175,12 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$files = $save_dir->listAll();
 
-		//$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
+		$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
 
-		//$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
+		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
-		//$save_dir->makeEmpty();
+		$save_dir->makeEmpty();
 
 	}
-
+	
 }

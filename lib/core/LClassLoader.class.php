@@ -12,21 +12,22 @@ error_reporting(E_ALL);
 /**
  * This function removes a value from an array, removing also the corresponding key.
  */
-function array_remove_key_or_value(array $data,$to_remove) {
+if (!function_exists('array_remove_key_or_value')) {
+    function array_remove_key_or_value(array $data,$to_remove) {
 
-    if ($data===null) return null;
+        if ($data===null) return null;
 
-    $result = [];
+        $result = [];
 
-    foreach ($data as $key => $value) {
-        if ($key!==$to_remove && $value!==$to_remove) {
-            $result[$key] = $value;
-        } 
+        foreach ($data as $key => $value) {
+            if ($key!==$to_remove && $value!==$to_remove) {
+                $result[$key] = $value;
+            } 
+        }
+
+        return $result;
     }
-
-    return $result;
 }
-
 /**
  * Alias of require_once but with project path as base folder
  * 

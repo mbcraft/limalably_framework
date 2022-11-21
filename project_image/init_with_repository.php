@@ -30,7 +30,7 @@ if (strpos($lymz_framework_path,'/')===0) {
     $framework_path = $_SERVER['PROJECT_DIR'].$lymz_framework_path;
 }
 
-$final_framework_path = realpath($framework_path).'/'.$version.'/';
+$final_framework_path = $framework_path.'/'.$version.'/';
 
 if (!is_dir($final_framework_path) || !is_file($final_framework_path.'framework_boot.php')) {
     echo "Framework not found in path : ".$final_framework_path;

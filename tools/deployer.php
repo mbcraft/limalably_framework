@@ -493,19 +493,23 @@ class DDir extends DFileSystemElement
         
     }
     
-    function explore($inspector)
+    function explore($inspector,$excluded_paths)
     {
         $result = [];
 
         if (!$this->exists()) return $result;
 
+        $path = $this->getPath();
+
+        if (DStringUtils::startsWith($path,$excluded_paths)) return $result;
+        
         $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $r = $fold->explore($inspector);
+            $r = $fold->explore($inspector,$excluded_paths);
 
             $pre_result = array_remove_key_or_value($r,'');
 
@@ -555,7 +559,7 @@ class DDir extends DFileSystemElement
         else return false;
     }
 
-    function getContentHash() {
+    function getContentHash($excluded_paths) {
 
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 
@@ -564,7 +568,9 @@ class DDir extends DFileSystemElement
         $all_hashes = "";
 
         foreach ($elements as $elem) {
-            $all_hashes .= $elem->getContentHash();
+            if (!DStringUtils::startsWith($elem->getPath(),$excluded_paths)) {
+                $all_hashes .= $elem->getContentHash($excluded_paths);
+            }
         }
 
         $result = sha1($all_hashes);
@@ -1002,7 +1008,7 @@ class DFile extends DFileSystemElement
         return file_get_contents($this->__full_path);
     }
 
-    function getContentHash()
+    function getContentHash($excluded_paths)
     {
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 
@@ -1605,13 +1611,16 @@ class DeployerController {
         $result = [];
 
 		if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
-			$result[$dir->getPath()] = $dir->getContentHash();
+
+            if ($dir->getPath()!="") {
+			   $result[$dir->getPath()] = $dir->getContentHash($this->excluded_paths);
+            }
 
 			$files = $dir->listFiles();
 
 			foreach ($files as $f) {
 				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$result[$f->getPath()] = $f->getContentHash();
+					$result[$f->getPath()] = $f->getContentHash($this->excluded_paths);
 				}
 			}
 		}
@@ -1949,10 +1958,10 @@ class DeployerController {
 				foreach ($this->included_paths as $path) {
 					$my_dir = new DDir($this->root_dir->getFullPath().$path);
 
-					$pre_include_result = array_merge($my_dir->explore($this),$pre_include_result);
+					$pre_include_result = array_merge($my_dir->explore($this,$this->excluded_paths),$pre_include_result);
 				}
 			} else {
-				$pre_include_result = $this->root_dir->explore($this);
+				$pre_include_result = $this->root_dir->explore($this,$this->excluded_paths);
 			}
 
             $pre_result = array_remove_key_or_value($pre_include_result,'');

@@ -55,6 +55,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 		else return '';
 	}
 
+	
 	//ok
 	function testAddRemoveListIgnore() {
 		$this->initAll();
@@ -438,7 +439,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
 	//ok
 	function testProjectCheck() {
 
@@ -511,7 +512,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
 	//ok
 	function testFrameworkCheck() {
 

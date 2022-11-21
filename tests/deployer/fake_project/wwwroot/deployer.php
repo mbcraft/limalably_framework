@@ -6,6 +6,26 @@
 *
 */
 
+if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','lymz');
+if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','lymz_framework');
+
+if (!function_exists('array_remove_key_or_value')) {
+    function array_remove_key_or_value(array $data,$to_remove) {
+
+        if ($data===null) return null;
+
+        $result = [];
+
+        foreach ($data as $key => $value) {
+            if ($key!==$to_remove && $value!==$to_remove) {
+                $result[$key] = $value;
+            } 
+        }
+
+        return $result;
+    }
+}
+
 function lymz_deployer_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
@@ -212,11 +232,11 @@ abstract class DFileSystemElement
         if (strpos($path,'/')===0) {
             $this->__full_path = $path;
 
-            $base_folder = $_SERVER['PROJECT_DIR'];
+            $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
 
             if (strpos($this->__full_path,$base_folder)===0) $this->__path = substr($this->__full_path,strlen($base_folder));
         } else {
-            $base_folder = $_SERVER['PROJECT_DIR'];
+            $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
             $this->__full_path = $base_folder.$path;
         }
 
@@ -391,7 +411,7 @@ class DFileSystemUtils
 
     static function isFile(string $path)
     {
-        $base_folder = $_SERVER['PROJECT_DIR'];
+        $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         if (strpos($path,'/')===0) {
             
@@ -404,7 +424,7 @@ class DFileSystemUtils
 
     static function isDir(string $path)
     {
-        $base_folder = $_SERVER['PROJECT_DIR'];
+        $base_folder = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         if (strpos($path,'/')===0) {
             
@@ -430,14 +450,14 @@ class DFileSystemUtils
 
     static function getFreeDiskSpace()
     {
-        $path = $_SERVER['PROJECT_DIR'];
+        $path = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         return disk_free_space($path);
     }
 
     static function getTotalDiskSpace()
     {
-        $path = $_SERVER['PROJECT_DIR'];
+        $path = $_SERVER['DEPLOYER_PROJECT_DIR'];
         
         return disk_total_space($path);
     }
@@ -473,18 +493,28 @@ class DDir extends DFileSystemElement
         
     }
     
-    function visit($visitor)
+    function explore($inspector)
     {
-        if (!$this->exists()) return;
+        $result = [];
 
-        $visitor->visit($this);
+        if (!$this->exists()) return $result;
+
+        $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $fold->visit($visitor);
+            $r = $fold->explore($inspector);
+
+            $pre_result = array_remove_key_or_value($r,'');
+
+            $result = array_merge($pre_result,$result);
         }
+
+        $final_result = array_remove_key_or_value($result,'');
+
+        return $final_result;
     }
     
     /*
@@ -1124,6 +1154,185 @@ class DFile extends DFileSystemElement
 
 }
 
+
+class DFileReader
+{
+    protected $my_handle;
+    protected $open;
+    
+    function __construct($handle)
+    {
+        $this->my_handle = $handle;
+        $this->open = true;
+    }
+
+    protected function checkClosed()
+    {
+        if (!$this->open) throw new \DIOException("The stream is closed!!");
+    }
+
+    function isOpen()
+    {
+        return $this->open;
+    }
+
+    function scanf($format)
+    {
+        $this->checkClosed();
+
+        return fscanf($this->my_handle,$format);
+    }
+    
+    function read($length)
+    {
+        $this->checkClosed();
+
+        return fread($this->my_handle,$length);
+    }
+    
+    function readLine()
+    {
+        $this->checkClosed();
+
+        $line = fgets($this->my_handle);
+        return preg_replace("/\r?\n\Z/","",$line);
+    }
+    
+    function readChar()
+    {
+        $this->checkClosed();
+
+        return fgetc($this->my_handle);
+    }
+    
+    function readCSV($delimiter=",")
+    {
+        $this->checkClosed();
+
+        return fgetcsv($this->my_handle,$delimiter);
+    }
+
+    function reset()
+    {
+        $this->checkClosed();
+
+        rewind($this->my_handle);
+    }
+    
+    function seek($location)
+    {
+        $this->checkClosed();
+
+        fseek($this->my_handle,$location,SEEK_SET);
+    }
+    
+    function skip($offset)
+    {
+        $this->checkClosed();
+
+        fseek($this->my_handle,$offset,SEEK_CUR);
+    }
+    
+    function pos()
+    {
+        $this->checkClosed();
+
+        return ftell($this->my_handle);
+    }
+        
+    function isEndOfStream()
+    {
+        $this->checkClosed();
+
+        return feof($this->my_handle);
+    }
+    
+    function close()
+    {
+        if ($this->open)
+        {
+            fflush($this->my_handle);
+            flock($this->my_handle,LOCK_UN);
+            fclose($this->my_handle);
+
+            $this->open = false;
+            $this->my_handle = null;
+        }
+        else
+            throw new \DIOException("Reader/Writer already closed.");
+
+    }
+    
+    function getHandler()
+    {
+        return $this->my_handle;
+    }
+}
+
+
+class DFileWriter extends DFileReader
+{
+    const CR = "\r";
+    const LF = "\n";
+
+    static function newTmpFile()
+    {
+        return new DFileWriter(tmpfile());
+    }
+
+    /*
+     * Uso eval per simulare printf
+     * */
+    function printf($format)
+    {
+        $this->checkClosed();
+
+        $args = func_get_args();
+        $printf_args = array_slice($args,1);
+
+        $p = 'fprintf($this->my_handle,$format';
+        $i = 0;
+        foreach ($printf_args as $arg)
+        {
+
+            $p.=',$printf_args['.$i.']';
+            $i++;
+        }
+        $p.=");";
+        eval($p);
+    }
+    
+    function write($string)
+    {
+        $this->checkClosed();
+
+        fwrite($this->my_handle, $string);
+    }
+
+    function writeln($string)
+    {
+        $this->checkClosed();
+
+        fwrite($this->my_handle,$string.self::CR.self::LF);
+    }
+    
+    function writeCSV($values,$delimiter=",")
+    {
+        $this->checkClosed();
+
+        fputcsv($this->my_handle, $values,$delimiter);
+    }
+
+    function truncate($size)
+    {
+        $this->checkClosed();
+
+        ftruncate($this->my_handle, $size);
+    }
+    
+}
+
+
 class DZipUtils
 {
     public static function expandArchive($zip_file,$target_folder)
@@ -1150,11 +1359,15 @@ class DZipUtils
     
     public static function createArchive($save_file,$folder_to_zip,$local_dir="/")
     {
+        if ($save_file->exists()) $save_file->delete(); 
+
         if ($folder_to_zip instanceof DDir)
             $dir_to_zip = $folder_to_zip;
         else
             $dir_to_zip = new DDir($folder_to_zip);
         
+        if (!class_exists('ZipArchive')) throw new \Exception("Can't use zip files, ZipArchive class missing.");
+
         $zip_archive = new ZipArchive();
 
         $zip_archive->open($save_file->getFullPath(),  ZipArchive::CREATE);
@@ -1316,15 +1529,17 @@ $current_dir = __DIR__;
 
 if (!DStringUtils::endsWith($current_dir,'/')) $current_dir.='/';
 
-$_SERVER['PROJECT_DIR'] = $current_dir;
+$_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 //starting deployer controller ---
 
 class DeployerController {
 
-    const DEPLOYER_VERSION = "1.1";
+    const BUILD_NUMBER = 1010;
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello'];
+    const DEPLOYER_VERSION = "1.3";
+
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData'];
 
 	private $deployer_file;
 	private $root_dir;
@@ -1333,7 +1548,7 @@ class DeployerController {
 	private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; 
 
     //deployer path from root
-    private static $DPFR = /*!D_P_F_R!*/"."/*!D_P_F_R!*/; 
+    private static $DPFR = /*!D_P_F_R!*/"deployer.php"/*!D_P_F_R!*/; 
 
 	const SUCCESS_RESULT = ":)";
 	const FAILURE_RESULT = ":(";
@@ -1350,34 +1565,64 @@ class DeployerController {
 
 		$this->root_dir = $current_dir;
 
-        $_SERVER['PROJECT_DIR'] = $this->root_dir->getFullPath();
+        $_SERVER['DEPLOYER_PROJECT_DIR'] = $this->root_dir->getFullPath();
 
 	}
 
-	private $visit_result = [];
+    private function logWithFile(string $file_name,string $content) {
+        $f = new DFile($file_name);
+        $f->setContent($content);
+    }
+
+    private function hasPostParameter($param_name) {
+
+        return isset($_POST[$param_name]);
+
+    }
+
+    private function isPostParameterDangerous($param_name) {
+        $filtered_param_value = $this->getPostParameter($param_name);
+
+        $raw_param_value = $_POST[$param_name];
+
+        if ($filtered_param_value!=$raw_param_value) return true;
+        else return false;
+    }
+
+    private function getPostParameter($param_name) {
+        $value = $_POST[$param_name];
+
+        $final_value = filter_var($value,FILTER_DEFAULT);
+
+        return $final_value;
+    }
 
 	private $excluded_paths = [];
 	private $included_paths = [];
 
 	public function visit($dir) {
 
+        $result = [];
+
 		if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
-			$this->visit_result[$dir->getPath()] = $dir->getContentHash();
+			$result[$dir->getPath()] = $dir->getContentHash();
 
 			$files = $dir->listFiles();
 
 			foreach ($files as $f) {
 				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$this->visit_result[$f->getPath()] = $f->getContentHash();
+					$result[$f->getPath()] = $f->getContentHash();
 				}
 			}
 		}
+
+        return $result;
 
 	}
 
     public function version($password) {
         if ($this->accessGranted($password)) {
-            return ['result' => self::SUCCESS_RESULT,'version' => self::DEPLOYER_VERSION,'features' => self::DEPLOYER_FEATURES];
+            return ['result' => self::SUCCESS_RESULT,'version' => self::DEPLOYER_VERSION,'features' => self::DEPLOYER_FEATURES,'build' => self::BUILD_NUMBER];
         } else return $this->failure("Wrong password");
     }
 
@@ -1396,6 +1641,265 @@ class DeployerController {
 
     private function containsDeployerPath($path_list) {
         return in_array('@',$path_list);
+    }
+
+    private function loadFrameworkBasicClasses() {
+
+        $path_prefix = FRAMEWORK_DIR_NAME.'/';
+
+        $f = new DFile($path_prefix.'framework_spec.php');
+        if (!$f->exists()) return $path_prefix.'framework_spec.php not found.';
+        $f->requireFileOnce();
+
+        $f = new DFile($path_prefix.'lib/treemap/LTreeMap.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LTreeMap.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/treemap/LTreeMapView.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LTreeMapView.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php not found.';
+        $f->requireFileOnce();
+
+        //config
+        $f = new DFile($path_prefix.'lib/config/LConfig.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/config/LConfig.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/config/LConfigReader.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/config/LConfigReader.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/config/LExecutionMode.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/config/LExecutionMode.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/config/LEnvironmentUtils.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/config/LEnvironmentUtils.class.php not found.';
+        $f->requireFileOnce();
+
+        //core
+        $f = new DFile($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/core/LErrorReportingInterceptors.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/core/LInvalidParameterException.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/core/LInvalidParameterException.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/core/LResult.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/core/LResult.class.php not found.';
+        $f->requireFileOnce();
+
+        $f = new DFile($path_prefix.'lib/core/LClassLoader.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/core/LClassLoader.class.php not found.';
+        $f->requireFileOnce();
+
+        //utils
+        $f = new DFile($path_prefix.'lib/utils/LStringUtils.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/utils/LStringUtils.class.php not found.';
+        $f->requireFileOnce();
+        $f = new DFile($path_prefix.'lib/utils/LJsonUtils.class.php');
+        if (!$f->exists()) return $path_prefix.'lib/utils/LJsonUtils.class.php not found.';
+        $f->requireFileOnce();
+
+        $f = new DFile($path_prefix.'lib/db/functions.php');
+        if (!$f->exists()) return $path_prefix.'lib/db/functions.php not found.';
+        $f->requireFileOnce();
+
+        if (!LConfig::initCalled()) LConfig::init();
+
+        if (!LClassLoader::initCalled()) LClassLoader::init();
+
+        return true;
+
+    }
+
+    public function listDb($password) {
+
+        if ($this->accessGranted($password)) {
+
+            try {
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) {
+
+                    return $this->failure($result);
+                }
+            } catch (\Exception $ex) {
+                return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            $db_list = LConfigReader::simple('/database');
+
+            $result_data = [];
+
+            foreach ($db_list as $db_name => $db_data) {
+                $result_data[] = $db_name;
+            }
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $result_data];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function backupDbStructure($password,$connection_name) {
+        if ($this->accessGranted($password)) {
+
+            try {
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
+            }
+            catch (\Exception $ex) {
+                return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $connection = LDbConnectionManager::get($connection_name);
+
+            $zip_dir = new DDir('temp/backup/db/structure/'.$connection_name.'/');
+            if ($zip_dir->exists()) $zip_dir->delete(true);
+            sleep(3);
+            $zip_dir->touch();
+
+            if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
+
+            try {
+                $db = db($connection_name);
+
+                $table_list = table_list()->go($db);
+
+                foreach ($table_list as $tb) {
+                    $query = create_table($tb)->show()->go($db);
+                    
+                    $qf = $zip_dir->newFile($tb.'__structure.sql');
+                    $qf->setContent($query."\n\n");
+                }
+            } catch (\Exception $ex) {
+
+                return $this->failure("Exception during query phase : ".$ex->getMessage());
+            } 
+
+            $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
+
+            DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/','');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function backupDbData($password,$connection_name) {
+        if ($this->accessGranted($password)) {
+
+            try {
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
+            }
+            catch (\Exception $ex) {
+                return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
+
+            $connection = LDbConnectionManager::get($connection_name);
+
+            $zip_dir = new DDir('temp/backup/db/data/'.$connection_name.'/');
+            if ($zip_dir->exists()) $zip_dir->delete(true);
+            $zip_dir->touch();
+
+            if (!$zip_dir->exists()) return $this->failure("Unable to create temporary dir necessary for storing and compressing files.");
+
+            try {
+                $db = db($connection_name);
+
+                $table_list = table_list()->go($db);
+
+                foreach ($table_list as $tb) {
+                    $iterator = select('*',$tb)->iterator($db);
+                    
+                    $qf = $zip_dir->newFile($tb.'__data.sql');
+                    $wr = $qf->openWriter();
+
+                    while ($iterator->hasNext()) {
+                        $data = $iterator->next();
+
+                        $query = insert($tb,array_keys($data),array_values($data)).";";
+
+                        $wr->writeln($query);
+                        $wr->writeln("");
+
+                    }
+
+                    $wr->close();
+                }
+            } catch (\Exception $ex) {
+
+                return $this->failure("Exception during query phase : ".$ex->getMessage());
+            } 
+
+            $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
+
+            DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/','');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function fileExists($password,$path) {
+        if ($this->accessGranted($password)) {
+
+            $final_path = $this->root_dir->getFullPath().$path;
+
+            if (file_exists($final_path)) return ["result" => self::SUCCESS_RESULT,"data" => 'true'];
+            else return ["result" => self::SUCCESS_RESULT,"data" => 'false'];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function readFileContent($password,$path) {
+        if ($this->accessGranted($password)) {
+
+            $f = new DFile($path);
+
+            if (!$f->exists()) return $this->failure("File at path '".$path."' do not exists on this deployer instance.");
+
+            if (!$f->isReadable()) return $this->failure("File at path '".$path."' is not readable on this deployer instance.");
+
+            $content = $f->getContent();
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $content];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function writeFileContent($password,$path,$content) {
+        if ($this->accessGranted($password)) {
+
+            $f = new DFile($path);
+
+            $parent_dir = $f->getDirectory();
+
+            if (!$parent_dir->exists()) $parent_dir->touch();
+
+            if ($f->exists() && !$f->isWritable()) return $this->failure("File at path '".$path."' already exists but is not writable in this deployer instance.");
+
+            $f->setContent($content);
+
+            return ["result" => self::SUCCESS_RESULT];
+
+        } else return $this->failure("Wrong password.");
     }
 
 	public function listElements($password,$folder) {
@@ -1425,13 +1929,13 @@ class DeployerController {
 		if ($this->accessGranted($password)) {
 
             if ($this->containsDeployerPath($excluded_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
             if ($this->containsDeployerPath($included_paths)) {
-                $calc_deployer_file = new LFile($this->root_dir->getFullPath().self::$DPFR);
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
 
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
@@ -1439,26 +1943,40 @@ class DeployerController {
 			$this->excluded_paths = $this->getFinalPathList($excluded_paths);
 			$this->included_paths = $this->getFinalPathList($included_paths);
 
+            $pre_include_result = [];
+
 			if (count($this->included_paths)>0) {
 				foreach ($this->included_paths as $path) {
 					$my_dir = new DDir($this->root_dir->getFullPath().$path);
 
-					$my_dir->visit($this);
+					$pre_include_result = array_merge($my_dir->explore($this),$pre_include_result);
 				}
 			} else {
-				$this->root_dir->visit($this);
+				$pre_include_result = $this->root_dir->explore($this);
 			}
 
-            unset($this->visit_result['']);
+            $pre_result = array_remove_key_or_value($pre_include_result,'');
 
-			foreach ($this->excluded_paths as $excluded) {
-				foreach ($this->visit_result as $path => $hash)
-					if (DStringUtils::startsWith($path,$excluded)) {
-						unset($this->visit_result[$path]);
-				}
-			}
+            $final_result = [];
 
-			return ["result" => self::SUCCESS_RESULT,"data" => $this->visit_result];
+            if (empty($this->excluded_paths))
+                $final_result = $pre_result;
+            else {
+                foreach ($pre_result as $path => $hash) {
+                    $skip = false;
+                    foreach ($this->excluded_paths as $excluded) {
+                        if (DStringUtils::startsWith($path,$excluded)) 
+                            $skip = true;
+                        if (DStringUtils::startsWith($path,'config/deployer/'))
+                            $skip = true;
+                    }
+
+                    if (!$skip) $final_result[$path] = $hash;
+                }
+            }
+            $final_result_2 = array_remove_key_or_value($final_result,'');
+
+            return ["result" => self::SUCCESS_RESULT,"data" => $final_result_2];
 
 		} else return $this->failure("Wrong password.");
 	}
@@ -1540,6 +2058,8 @@ class DeployerController {
 
 				$dest->setContent($content);
 
+                $dest->setPermissions('-rwxrwx---');
+
 				if ($dest->getSize()!=$_FILES['f']['size']) {
 					$dest->delete();
 					return $this->failure("Size of file is wrong after write.");
@@ -1562,8 +2082,6 @@ class DeployerController {
 			if (!$source->exists()) return $this->failure("Directory to zip and get does not exist.");
 
 			$zip_file = $this->root_dir->newFile("my_dir.zip");
-
-			if ($zip_file->exists()) $zip_file->delete(); //...
 
 			DZipUtils::createArchive($zip_file,$source);
 
@@ -1588,7 +2106,11 @@ class DeployerController {
         if ($this->accessGranted($password)) {
             if (!isset(self::ENV_VAR_NAME_MAP[$env_var_name])) return $this->failure("Unavailable environment variable to get : ".$env_var_name);
 
-            return ["result" => self::SUCCESS_RESULT,'data' => self::$$env_var_name];
+            $data = null;
+            if ($env_var_name=='PWD') $data = self::$PWD;
+            if ($env_var_name=='DPFR') $data = self::$DPFR;
+
+            return ["result" => self::SUCCESS_RESULT,'data' => $data];
         } else return $this->failure("Wrong password.");
     }
 
@@ -1604,8 +2126,12 @@ class DeployerController {
 
                 $final_string = var_export($var_value_array,true);
 
+                $final_string = str_replace("'",'"',$final_string);
+
             } else {
                 $final_string = var_export($env_var_value,true);
+
+                $final_string = str_replace("'",'"',$final_string);
             }
 
             $env_var_delimiter = DStringUtils::getCommentDelimitedReplacementsStringSeparator($env_var_name);
@@ -1630,6 +2156,8 @@ class DeployerController {
 			return ["result" => self::SUCCESS_RESULT];
 		} else return $this->failure("Wrong password.");
 	}
+
+
 
 	private function accessGranted($password) {
 	   if (($this->hasPassword() && self::$PWD==$password) || (!$this->hasPassword() && !$password)) 
@@ -1667,33 +2195,171 @@ class DeployerController {
         return "".$data;
     }
 
+    private function sendFileFromResult($result) {
+        if ($result['result']==self::SUCCESS_RESULT) {
+            $f = $result['data'];
+
+            if ($f->exists() && $f->getSize()>0) {
+
+                header('Content-Description: File Transfer');
+                header('Content-Type: '.mime_content_type ($f->getFullPath()));
+                
+                $content_disposition = 'inline';
+                
+                header('Content-Disposition: '.$content_disposition.'; filename="my_dir.zip"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . $f->getSize());
+                header('Connection: close');
+                flush(); // Flush system output buffer
+                readfile($f->getFullPath());
+                
+                exit();
+            } else {
+
+                echo $this->preparePostResponse($this->failure("Unable to find zip file to send to client."));
+                exit();
+            }
+        }
+    }
+
+    private function getResultMessage($result) {
+        if (is_array($result) && isset($result['message'])) return $result['message'];
+        else return "Unknown error";
+    }
+
+    private function isSuccess($result) {
+        return is_array($result) && $result['result']==self::SUCCESS_RESULT;
+    }
+
     public function processRequest() {
-    	if (isset($_POST['METHOD'])) {
-    		$method = $_POST['METHOD'];
+    	if ($this->hasPostParameter('METHOD')) {
+    		$method = $this->getPostParameter('METHOD');
 
     		switch ($method) {
                 case 'VERSION' : {
-                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
                     else echo $this->preparePostResponse($this->failure("PASSWORD field missing in VERSION request."));
 
                     echo $this->preparePostResponse($this->version($password));
                     break;
                 }
     			case 'HELLO' : {
-					if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+					if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in HELLO request."));
 
 					echo $this->preparePostResponse($this->hello($password));
     				break;
     			}
-                case 'SET_ENV' : {
-                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
-                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in CHANGE_PASSWORD request."));
+                case 'FILE_EXISTS' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in FILE_EXISTS request."));
 
-                    if (isset($_POST['ENV_VAR_NAME'])) $env_var_name = $_POST['ENV_VAR_NAME'];
+                    if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
+                    else echo $this->preparePostResponse($this->failure("PATH field missing in FILE_EXISTS request."));
+
+                    echo $this->preparePostResponse($this->fileExists($password,$path));
+
+                    break;
+                }
+                case 'LIST_DB' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_DB request."));
+
+                    echo $this->preparePostResponse($this->listDb($password));
+
+                    break;
+                }
+                case 'BACKUP_DB_STRUCTURE' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in BACKUP_DB_STRUCTURE request."));
+
+                    if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
+                    else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_STRUCTURE request."));
+
+                    $result = $this->backupDbStructure($password,$connection_name);
+
+                    if ($this->isSuccess($result)) {
+
+                        $this->sendFileFromResult($result);
+                    }
+                    else {
+
+                        echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
+
+                    break;
+                }
+                case 'BACKUP_DB_DATA' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in BACKUP_DB_DATA request."));
+
+                    if ($this->hasPostParameter('CONNECTION_NAME')) $connection_name = $this->getPostParameter('CONNECTION_NAME');
+                    else echo $this->preparePostResponse($this->failure("CONNECTION_NAME field missing in BACKUP_DB_DATA request."));
+
+                    $result = $this->backupDbData($password,$connection_name);
+
+                    if ($this->isSuccess($result)) {
+                        $this->sendFileFromResult($result);
+                    }
+                    else {
+                        echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
+                    }
+
+                    break;
+                }
+                case 'READ_FILE_CONTENT' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in READ_FILE_CONTENT request."));
+
+                    if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
+                    else echo $this->preparePostResponse($this->failure("PATH field missing in READ_FILE_CONTENT request."));
+
+                    echo $this->preparePostResponse($this->readFileContent($password,$path));
+
+                    break;
+                }
+                case 'WRITE_FILE_CONTENT' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in WRITE_FILE_CONTENT request."));
+
+                    if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
+                    else echo $this->preparePostResponse($this->failure("PATH field missing in WRITE_FILE_CONTENT request."));
+                    
+                    if ($this->hasPostParameter('CONTENT')) {
+                        if ($this->accessGranted($password)) {
+                            //content is unfiltered
+                            $content = $_POST['CONTENT'];
+                        } else {
+                            if ($this->isPostParameterDangerous('CONTENT')) {
+                            echo $this->preparePostResponse($this->failure('Warning!! CONTENT field with potential security issues and wrong password detected!!'));
+                            return;
+                            } else {
+                                echo $this->preparePostResponse($this->failure("Wrong password."));
+                                return;
+                            }
+                        }
+                    }    
+                    else {
+                        echo $this->preparePostResponse($this->failure("CONTENT field missing in WRITE_FILE_CONTENT request."));
+                        return;
+                    }        
+
+                    echo $this->preparePostResponse($this->writeFileContent($password,$path,$content));
+
+                    break;
+                }
+                case 'SET_ENV' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in SET_ENV request."));
+
+                    if ($this->hasPostParameter('ENV_VAR_NAME')) $env_var_name = $this->getPostParameter('ENV_VAR_NAME');
                     else echo $this->preparePostResponse($this->failure("ENV_VAR_NAME field missing in SET_ENV request."));
 
-                    if (isset($_POST['ENV_VAR_VALUE'])) $env_var_value = $_POST['ENV_VAR_VALUE'];
+                    if ($this->hasPostParameter('ENV_VAR_VALUE')) $env_var_value = $this->getPostParameter('ENV_VAR_VALUE');
                     else echo $this->preparePostResponse($this->failure("ENV_VAR_VALUE field missing in SET_ENV request."));
 
                     echo $this->preparePostResponse($this->setEnv($password,$env_var_name,$env_var_value));
@@ -1701,10 +2367,10 @@ class DeployerController {
                     break;
                 }
     			case 'GET_ENV' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in GET_ENV request."));
 
-					if (isset($_POST['ENV_VAR_NAME'])) $env_var_name = $_POST['ENV_VAR_NAME'];
+					if ($this->hasPostParameter('ENV_VAR_NAME')) $env_var_name = $this->getPostParameter('ENV_VAR_NAME');
 					else echo $this->preparePostResponse($this->failure("ENV_VAR_NAME field missing in GET_ENV request."));
 
 					echo $this->preparePostResponse($this->getEnv($password,$env_var_name));
@@ -1712,7 +2378,7 @@ class DeployerController {
 					break;
     			}
                 case 'LIST_ENV' : {
-                    if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
                     else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_ENV request."));
 
                     echo $this->preparePostResponse($this->listEnv($password));
@@ -1721,10 +2387,10 @@ class DeployerController {
                 }
     			case 'LIST_ELEMENTS' : {
 
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_ELEMENTS request."));
 
-					if (isset($_POST['FOLDER'])) $folder = $_POST['FOLDER'];
+					if (isset($_POST['FOLDER'])) $folder = $this->getPostParameter('FOLDER');
 					else echo $this->preparePostResponse($this->failure("FOLDER field missing in LIST_ELEMENTS request."));
 
 					echo $this->preparePostResponse($this->listElements($password,$folder));
@@ -1732,13 +2398,13 @@ class DeployerController {
     				break;
     			}
     			case 'LIST_HASHES' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in LIST_HASHES request."));
 
-					if (isset($_POST['EXCLUDED_PATHS'])) $excluded_paths = explode(',',$_POST['EXCLUDED_PATHS']);
+					if ($this->hasPostParameter('EXCLUDED_PATHS')) $excluded_paths = explode(',',$this->getPostParameter('EXCLUDED_PATHS'));
 					else echo $this->preparePostResponse($this->failure("EXCLUDED_PATHS field missing in LIST_HASHES request."));
 
-					if (isset($_POST['INCLUDED_PATHS'])) $included_paths = explode(',',$_POST['INCLUDED_PATHS']);
+					if ($this->hasPostParameter('INCLUDED_PATHS')) $included_paths = explode(',',$this->getPostParameter('INCLUDED_PATHS'));
 					else echo $this->preparePostResponse($this->failure("INCLUDED_PATHS field missing in LIST_HASHES request."));					
 
 					echo $this->preparePostResponse($this->listHashes($password,$excluded_paths,$included_paths));
@@ -1747,10 +2413,10 @@ class DeployerController {
     			}
     			case 'COPY_FILE' : {
 
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in COPY_FILE request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in COPY_FILE request."));
 
 					echo $this->preparePostResponse($this->copyFile($password,$path));
@@ -1758,10 +2424,10 @@ class DeployerController {
 					break;
     			}
     			case 'MAKE_DIR' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in MAKE_DIR request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in MAKE_DIR request."));
 
 					echo $this->preparePostResponse($this->makeDir($password,$path));
@@ -1769,13 +2435,13 @@ class DeployerController {
 					break;
     			}
     			case 'DELETE_DIR' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DELETE_DIR request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in DELETE_DIR request."));
 
-					if (isset($_POST['RECURSIVE'])) $recursive = $_POST['RECURSIVE'] == 'true' ? true : false;
+					if ($this->hasPostParameter('RECURSIVE')) $recursive = $this->getPostParameter('RECURSIVE') == 'true' ? true : false;
 					else echo $this->preparePostResponse($this->failure("RECURSIVE field missing in DELETE_DIR request."));
 
 					echo $this->preparePostResponse($this->deleteDir($password,$path,$recursive));
@@ -1783,10 +2449,10 @@ class DeployerController {
 					break;
     			}
     			case 'DELETE_FILE' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DELETE_FILE request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in DELETE_FILE request."));
 
 					echo $this->preparePostResponse($this->deleteFile($password,$path));
@@ -1794,32 +2460,15 @@ class DeployerController {
 					break;
     			}
     			case 'DOWNLOAD_DIR' : {
-    				if (isset($_POST['PASSWORD'])) $password = $_POST['PASSWORD'];
+    				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
 					else echo $this->preparePostResponse($this->failure("PASSWORD field missing in DOWNLOAD_DIR request."));
 
-					if (isset($_POST['PATH'])) $path = $_POST['PATH'];
+					if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
 					else echo $this->preparePostResponse($this->failure("PATH field missing in DOWNLOAD_DIR request."));
 
 					$result = $this->downloadDir($password,$path);
 
-					if ($result['result']==self::SUCCESS_RESULT) {
-						$f = $result['data'];
-
-				        header('Content-Description: File Transfer');
-				        header('Content-Type: '.mime_content_type ($f->getFullPath()));
-				        
-				        $content_disposition = 'inline';
-				        
-				        header('Content-Disposition: '.$content_disposition.'; filename="my_dir.zip"');
-				        header('Expires: 0');
-				        header('Cache-Control: must-revalidate');
-				        header('Pragma: public');
-				        header('Content-Length: ' . $f->getSize());
-				        header('Connection: close');
-				        flush(); // Flush system output buffer
-				        readfile($f->getFullPath());
-				        exit();
-					}
+					$this->sendFileFromResult($result);
 
 					break;
     			}

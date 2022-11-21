@@ -117,7 +117,7 @@ abstract class LFileSystemElement
         $path = str_replace('/..', "", $path);
         //pulizia doppie barre dai percorsi
         $path = str_replace("//", "/", $path);
-        
+
         $this->__path = $path;
         
         if (strpos($path,'/')===0) {

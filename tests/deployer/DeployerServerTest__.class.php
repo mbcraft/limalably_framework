@@ -48,66 +48,9 @@ class DeployerServerTest extends LTestCase {
         if (is_array($result) && isset($result['message'])) return $result['message'];
         else return "Unknown error";
     }
-
-	function testListDb() {
-		$this->reinit();
-
-		$deployer_controller = new DeployerController();
-
-		$result = $deployer_controller->hello();
-
-		$this->assertTrue($this->isSuccess($result),"La chiamata a hello non ha dato esito positivo!");
-
-		$result = $deployer_controller->listDb("");
-
-		$this->assertTrue($this->isSuccess($result),"La chiamata a listDb non ha dato esito positivo!");
-
-		$this->assertEqual(count($result['data']),3,"Il numero di risultati non è quello atteso, != 3!");
-	}
-
-	function testBackupDbStructure() {
-
-		$this->reinit();
-
-		$deployer_controller = new DeployerController();
-
-		$result = $deployer_controller->hello();
-
-		$this->assertTrue($this->isSuccess($result),"La chiamata a hello non ha dato esito positivo!");
-
-		$result = $deployer_controller->backupDbStructure("","hosting_dreamhost_tests");
-
-		$this->assertTrue($this->isSuccess($result),"La chiamata a backupDbStructure non ha dato esito positivo : ".$this->getResultMessage($result));
-
-		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
-
-		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
-
-		echo "\nResult file is for backup db structure is : ".$result['data']->getSize()."\n";
-	}
-
 	
-	function testBackupDbData() {
+    //le chiamate per testare listDb, backupDbData e backupDbStructure sono state rimosse in quanto non possono funzionare!!
 
-		$this->reinit();
-
-		$deployer_controller = new DeployerController();
-
-		$result = $deployer_controller->hello();
-
-		$this->assertTrue($this->isSuccess($result),"La chiamata a hello non ha dato esito positivo!");
-
-		$result = $deployer_controller->backupDbData("","hosting_dreamhost_tests");
-
-		$this->assertTrue($this->isSuccess($result),"La chiamata a backupDbData non ha dato esito positivo!");
-
-		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
-
-		$this->assertTrue($result['data']->getSize()>300,"Il file ritornato risulta essere vuoto!");
-
-		echo "\nResult file is for backup db data is : ".$result['data']->getSize()."\n";
-	}
-	
 	//ok
 	function testFileExists() {
 

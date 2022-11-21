@@ -47,7 +47,12 @@ class LDeployerClient {
 	private $root_dir = null;
 
 	function __construct() {
-		$this->root_dir = new LDir("");
+		if (isset($_SERVER['PROJECT_DIR']))
+			$this->root_dir = new LDir($_SERVER['PROJECT_DIR']);
+		else if (isset($_SERVER['FRAMEWORK_DIR']))
+			$this->root_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
+
+		if ($this->root_dir==null) throw new \Exception("Unable to set root dir correctly in deployer client!");
 	}
 
 	private function setupChangesList($client_hash_list,$server_hash_list) {
@@ -82,10 +87,6 @@ class LDeployerClient {
 					$this->files_to_delete []= $path;
 			}
 		}
-
-		echo "FILES TO ADD : \n";
-
-		var_dump($this->files_to_add);
 
 	}
 
@@ -1245,9 +1246,6 @@ class LDeployerClient {
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
-			echo "Deployer version : ".$r['version']."\n";
-			echo "Build number : ".$r['build']."\n";
-
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
@@ -1258,6 +1256,14 @@ class LDeployerClient {
 			} else {
 				$testing = false;
 			}
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
+			echo "PROJECT_DIR : ".$_SERVER['PROJECT_DIR']."\n";
+			echo "FRAMEWORK_DIR : ".$_SERVER['FRAMEWORK_DIR']."\n";
+
+			sleep(3);
 
 			$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
@@ -1285,7 +1291,9 @@ class LDeployerClient {
 				$_SERVER['PROJECT_DIR'] = $temp_project_dir_path;
 			}
 
-			return true;
+			return ["dirs_to_add" => $this->dirs_to_add,'files_to_add' => $this->files_to_add,
+			'dirs_to_update' => $this->dirs_to_update,'files_to_update' => $this->files_to_update,
+			'files_to_delete' => $this->files_to_delete,'dirs_to_delete' => $this->dirs_to_delete];
 
 			
 		} else return false;
@@ -1299,9 +1307,6 @@ class LDeployerClient {
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
 
-			echo "Deployer version : ".$r['version']."\n";
-			echo "Build number : ".$r['build']."\n";
-
 			$framework_dir = new LDir($_SERVER['FRAMEWORK_DIR']);
 			$project_dir = new LDir($_SERVER['PROJECT_DIR']);
 
@@ -1313,6 +1318,13 @@ class LDeployerClient {
 				$testing = false;
 			}
 
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+			
+			echo "PROJECT_DIR : ".$_SERVER['PROJECT_DIR']."\n";
+			echo "FRAMEWORK_DIR : ".$_SERVER['FRAMEWORK_DIR']."\n";
+
+			sleep(3);
 
 			$r = $this->current_driver->listHashes($this->current_password,$this->getFrameworkExcludeList(),$this->getFrameworkIncludeList());
 
@@ -1372,6 +1384,11 @@ class LDeployerClient {
 			echo "Deployer version : ".$r['version']."\n";
 			echo "Build number : ".$r['build']."\n";
 
+			echo "PROJECT_DIR : ".$_SERVER['PROJECT_DIR']."\n";
+			echo "FRAMEWORK_DIR : ".$_SERVER['FRAMEWORK_DIR']."\n";
+
+			sleep(3);
+
 			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList($key_name),[]);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance : ".$this->getResultMessage($r));
@@ -1386,7 +1403,9 @@ class LDeployerClient {
 
 			$this->changesListSummary(false);
 
-			return true;
+			return ["dirs_to_add" => $this->dirs_to_add,'files_to_add' => $this->files_to_add,
+			'dirs_to_update' => $this->dirs_to_update,'files_to_update' => $this->files_to_update,
+			'files_to_delete' => $this->files_to_delete,'dirs_to_delete' => $this->dirs_to_delete];
 
 		} else 
 			return false;
@@ -1403,6 +1422,11 @@ class LDeployerClient {
 			echo "Deployer version : ".$r['version']."\n";
 			echo "Build number : ".$r['build']."\n";
 
+			echo "PROJECT_DIR : ".$_SERVER['PROJECT_DIR']."\n";
+			echo "FRAMEWORK_DIR : ".$_SERVER['FRAMEWORK_DIR']."\n";
+
+			sleep(3);
+
 			$r = $this->current_driver->listHashes($this->current_password,$this->getProjectExcludeList($key_name),[]);
 
 			if (!$this->isSuccess($r)) return $this->failure("Unable to get hashes from deployer instance.");
@@ -1412,14 +1436,6 @@ class LDeployerClient {
 			$client_list = $this->clientListHashes($this->getProjectExcludeList($key_name),[]);
 
 			$this->setupChangesList($client_list,$server_list);
-
-			echo "SERVER LIST : \n";
-
-			var_dump($server_list);
-
-			echo "CLIENT LIST : \n";
-
-			var_dump($client_list);
 
 			$this->previewChangesList();
 

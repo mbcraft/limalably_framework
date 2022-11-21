@@ -1569,6 +1569,11 @@ class DeployerController {
 
 	}
 
+    private function logWithFile(string $file_name,string $content) {
+        $f = new DFile($file_name);
+        $f->setContent($content);
+    }
+
     private function hasPostParameter($param_name) {
 
         return isset($_POST[$param_name]);
@@ -1643,68 +1648,71 @@ class DeployerController {
         $path_prefix = FRAMEWORK_DIR_NAME.'/';
 
         $f = new DFile($path_prefix.'framework_spec.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'framework_spec.php not found.';
         $f->requireFileOnce();
 
         $f = new DFile($path_prefix.'lib/treemap/LTreeMap.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LTreeMap.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/treemap/LTreeMapView.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LTreeMapView.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php not found.';
         $f->requireFileOnce();
 
         //config
         $f = new DFile($path_prefix.'lib/config/LConfig.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/config/LConfig.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/config/LConfigReader.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/config/LConfigReader.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/config/LExecutionMode.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/config/LExecutionMode.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/config/LEnvironmentUtils.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/config/LEnvironmentUtils.class.php not found.';
         $f->requireFileOnce();
 
         //core
         $f = new DFile($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/core/LErrorReportingInterceptors.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/core/LInvalidParameterException.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/core/LInvalidParameterException.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/core/LResult.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/core/LResult.class.php not found.';
         $f->requireFileOnce();
+
         $f = new DFile($path_prefix.'lib/core/LClassLoader.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/core/LClassLoader.class.php not found.';
         $f->requireFileOnce();
 
         //utils
         $f = new DFile($path_prefix.'lib/utils/LStringUtils.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/utils/LStringUtils.class.php not found.';
         $f->requireFileOnce();
         $f = new DFile($path_prefix.'lib/utils/LJsonUtils.class.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/utils/LJsonUtils.class.php not found.';
         $f->requireFileOnce();
 
         $f = new DFile($path_prefix.'lib/db/functions.php');
-        if (!$f->exists()) return false;
+        if (!$f->exists()) return $path_prefix.'lib/db/functions.php not found.';
         $f->requireFileOnce();
 
         if (!LConfig::initCalled()) LConfig::init();
 
         if (!LClassLoader::initCalled()) LClassLoader::init();
+
+        return true;
 
     }
 
@@ -1713,7 +1721,12 @@ class DeployerController {
         if ($this->accessGranted($password)) {
 
             try {
-                $this->loadFrameworkBasicClasses();
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) {
+
+                    return $this->failure($result);
+                }
             } catch (\Exception $ex) {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
@@ -1737,7 +1750,9 @@ class DeployerController {
         if ($this->accessGranted($password)) {
 
             try {
-                $this->loadFrameworkBasicClasses();
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
             }
             catch (\Exception $ex) {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
@@ -1785,7 +1800,9 @@ class DeployerController {
         if ($this->accessGranted($password)) {
 
             try {
-                $this->loadFrameworkBasicClasses();
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
             }
             catch (\Exception $ex) {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");

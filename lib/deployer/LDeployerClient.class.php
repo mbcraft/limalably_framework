@@ -502,7 +502,7 @@ class LDeployerClient {
 		echo "./bin/deployer.sh <deploy_key_name> project_update --> updates the remote project files and prints a report of the operations done\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> auto_config --> updates the remote project config files probing the right config to use if possible\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> manual_config <host_name> --> updates the remote project config files using the selected host name configs\n\n";
-		echo "./bin/deployer.sh <deploy_key_name> backup <backup_dir_path> --> makes a full backup of a remote project files and saves it in the backup dir specified\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> backup <dir_to_backup> <backup_dir_save_path> --> makes a full backup of a remote project dir folder and saves it in the backup dir specified\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> list_db --> lists all the db connections available on the server\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> backup_db_structure <connection_name> <save_dir> --> makes a full backup of a remote database structures and saves the zipped sql in the specified folder\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> backup_db_data <connection_name> <save_dir> --> makes a full backup of a remote database data and saves it in the specified folder\n\n";
@@ -1449,7 +1449,7 @@ class LDeployerClient {
 		} else return false;
 	}
 
-	public function backup(string $key_name,string $save_dir_path) {
+	public function backup(string $key_name,string $remote_folder,string $save_dir_path) {
 		if ($this->loadKey($key_name)) {
 
 			$r = $this->current_driver->version($this->current_password);
@@ -1465,7 +1465,9 @@ class LDeployerClient {
 
 			$fixed_key_name = str_replace('.','_',$key_name);
 
-			$backup_filename = "backup_".$current_dir_name.'_'.$fixed_key_name."_".date('Y_m_d__h_i').".zip";
+			$fixed_remote_folder = str_replace('/','_',$remote_folder);
+
+			$backup_filename = "backup_".$current_dir_name.'_'.$fixed_remote_folder."_".date('Y_m_d__h_i').".zip";
 
 			$save_dir = new LDir($save_dir_path);
 
@@ -1473,7 +1475,7 @@ class LDeployerClient {
 
 			$backup_file = $save_dir->newFile($backup_filename);
 
-			$r = $this->current_driver->downloadDir($this->current_password,'/',$backup_file);
+			$r = $this->current_driver->downloadDir($this->current_password,$remote_folder,$backup_file);
 		
 			if ($this->isSuccess($r)) {
 				

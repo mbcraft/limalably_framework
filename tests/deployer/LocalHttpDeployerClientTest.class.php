@@ -582,7 +582,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$backup_save_dir->touch();
 
-		$r = $dc->backup('default_key',$backup_save_dir->getFullPath());
+		$r = $dc->backup('default_key','/',$backup_save_dir->getFullPath());
 
 		$this->assertTrue($this->isSuccess($r),"La procedura di backup ha dato esito negativo! : ".$this->getErrorMessage($r));
 

@@ -125,7 +125,7 @@ class LFile extends LFileSystemElement
         return file_get_contents($this->__full_path);
     }
 
-    function getContentHash()
+    function getContentHash($excluded_paths=[])
     {
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 

@@ -140,7 +140,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
             'project_update' => 2,
             'auto_config' => 2,
             'manual_config' => 3,
-            'backup' => 3,
+            'backup' => 4,
             'disappear' => 2,
             'reset' => 2,
             'temp_clean' => 2,
@@ -202,7 +202,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'project_update' : $dc->project_update($deploy_key_name);break;
             case 'auto_config' : $dc->auto_config($deploy_key_name);break;
             case 'manual_config' : $dc->manual_config($deploy_key_name,$parameter2);break;
-            case 'backup' : $dc->backup($deploy_key_name,$parameter2);break;
+            case 'backup' : $dc->backup($deploy_key_name,$parameter2,$parameter3);break;
             case 'disappear' : $dc->disappear($deploy_key_name);break;
             case 'reset' : $dc->reset($deploy_key_name);break;
             case 'temp_clean': $dc->temp_clean($deploy_key_name);break;

@@ -122,7 +122,7 @@ abstract class DFileSystemElement
     protected $__full_path;
     protected $__path;
     
-    private static $defaultPermissionsRwx = "-rwxrwxrwx";
+    private static $defaultPermissionsRwx = "-rwxr-xr-x";
 
     public static function toOctalPermissions($rwx_permissions)
     {
@@ -493,7 +493,7 @@ class DDir extends DFileSystemElement
         
     }
     
-    function explore($inspector,$excluded_paths)
+    function explore($inspector,$excluded_paths=[])
     {
         $result = [];
 
@@ -559,7 +559,7 @@ class DDir extends DFileSystemElement
         else return false;
     }
 
-    function getContentHash($excluded_paths) {
+    function getContentHash($excluded_paths=[]) {
 
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 
@@ -1008,7 +1008,7 @@ class DFile extends DFileSystemElement
         return file_get_contents($this->__full_path);
     }
 
-    function getContentHash($excluded_paths)
+    function getContentHash($excluded_paths=[])
     {
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 
@@ -1541,7 +1541,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 1010;
+    const BUILD_NUMBER = 67;
 
     const DEPLOYER_VERSION = "1.3";
 
@@ -2067,7 +2067,7 @@ class DeployerController {
 
 				$dest->setContent($content);
 
-                $dest->setPermissions('-rwxrwx---');
+                $dest->setPermissions('-rw-r--r--');
 
 				if ($dest->getSize()!=$_FILES['f']['size']) {
 					$dest->delete();

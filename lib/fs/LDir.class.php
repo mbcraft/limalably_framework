@@ -36,19 +36,23 @@ class LDir extends LFileSystemElement
         
     }
 
-    function explore($inspector)
+    function explore($inspector,$excluded_paths=[])
     {
         $result = [];
 
         if (!$this->exists()) return $result;
 
+        $path = $this->getPath();
+
+        if (LStringUtils::startsWith($path,$excluded_paths)) return $result;
+        
         $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
         
         foreach ($all_folders as $fold)
         {
-            $r = $fold->explore($inspector);
+            $r = $fold->explore($inspector,$excluded_paths);
 
             $pre_result = array_remove_key_or_value($r,'');
 
@@ -98,7 +102,7 @@ class LDir extends LFileSystemElement
         else return false;
     }
 
-    function getContentHash() {
+    function getContentHash($excluded_paths=[]) {
 
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 
@@ -107,7 +111,9 @@ class LDir extends LFileSystemElement
         $all_hashes = "";
 
         foreach ($elements as $elem) {
-            $all_hashes .= $elem->getContentHash();
+            if (!LStringUtils::startsWith($elem->getPath(),$excluded_paths)) {
+                $all_hashes .= $elem->getContentHash($excluded_paths);
+            }
         }
 
         $result = sha1($all_hashes);
@@ -391,6 +397,8 @@ class LDir extends LFileSystemElement
     
     function hasOnlyOneSubdir()
     {
+        if (!$this->exists()) return false;
+
         $content = $this->listFolders();
         if (count($content)==1)
         {

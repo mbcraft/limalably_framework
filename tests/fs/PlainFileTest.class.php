@@ -138,6 +138,7 @@ class PlainFileTest extends LTestCase
         $source_file = new LFile($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_source/my_tiny_file.txt");
         $target_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/");
         
+        $target_dir->touch();
         $target_dir->delete(true);
         $target_dir->touch();
 

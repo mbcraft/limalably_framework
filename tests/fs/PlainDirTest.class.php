@@ -195,13 +195,14 @@ class PlainDirTest extends LTestCase
 
     function testHasOnlyOneSubdir() {
 
-        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/");
+        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/");
         
+        $dir->touch();
         $this->assertTrue($dir->hasOnlyOneSubdir(),"La cartella non ha un'unica sottocartella!");
         
         $dir2 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/");
         
-        $this->assertTrue($dir2->hasOnlyOneSubdir(),"La cartella non ha un'unica sottocartella!");
+        $this->assertFalse($dir2->hasOnlyOneSubdir(),"La cartella non ha un'unica sottocartella!");
         
         $dir3 = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/blablablax/");
         
@@ -210,11 +211,14 @@ class PlainDirTest extends LTestCase
 
     function testGetOnlyOneSubdir()
     {
-        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/");
-        
+        $dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/");
+        $dir->touch();
+
+        $this->assertTrue($dir->hasOnlyOneSubdir(),"La cartella non ha un'unica sottodirectory!");
+
         $sub_dir = $dir->getOnlyOneSubdir();
         
-        $this->assertEqual($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/blablablax/",$sub_dir->getFullPath(),"I percorsi delle cartelle non coincidono!");
+        $this->assertEqual($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/subdir_test/one/",$sub_dir->getFullPath(),"I percorsi delle cartelle non coincidono!");
     }
 
     function testGetOnlyOneSubdirFailManyElements()
@@ -257,6 +261,7 @@ class PlainDirTest extends LTestCase
     
         $dest_dir = new LDir($_SERVER['FRAMEWORK_DIR'].FsTestLib::TEST_DIR."/fs/copy_dest/");
         
+        $dest_dir->touch();
         //pulisco la cartella di destinazione
         foreach ($dest_dir->listAll() as $f)
             $f->delete(true);

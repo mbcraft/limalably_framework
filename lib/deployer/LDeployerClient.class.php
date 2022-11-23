@@ -1103,15 +1103,21 @@ class LDeployerClient {
 
 			sleep(5);
 
-			$r2 = $this->current_driver->setEnv("","PWD",$this->current_password);
+			$r2 = $this->current_driver->setEnv("","DPFR",$deployer_path_from_root);
 
-			echo "Again you need to wait until file cache updates ...\n";
+			echo "Waiting for file cache to update correctly after setup of deployer path from root ...\n";
 
 			sleep(5);
 
-			$r3 = $this->current_driver->hello($this->current_password);
+			$r3 = $this->current_driver->setEnv("","PWD",$this->current_password);
 
-			if (!$this->isSuccess($r1) || !$this->isSuccess($r2) || !$this->isSuccess($r3)) return $this->failure("Unable to complete deployer update procedure. Use set_deployer_path_from_root to fix deployer path env var on server.");
+			echo "Again you need to wait until file cache updates after password setup ...\n";
+
+			sleep(5);
+
+			$r4 = $this->current_driver->hello($this->current_password);
+
+			if (!$this->isSuccess($r1) || !$this->isSuccess($r2) || !$this->isSuccess($r3) || !$this->isSuccess($r4)) return $this->failure("Unable to complete deployer update procedure. Use set_deployer_path_from_root to fix deployer path env var on server.");
 
 			echo "Deployer update completed successfully.\n";
 

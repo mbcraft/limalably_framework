@@ -403,7 +403,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
-
+	
 	//ok
 	function testDeployerUpdate() {
 

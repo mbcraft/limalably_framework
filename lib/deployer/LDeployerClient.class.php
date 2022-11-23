@@ -491,7 +491,7 @@ class LDeployerClient {
 		echo "./bin/deployer.sh <deploy_key_name> set_exec_mode <running_mode> --> sets the execution mode on the deployer instance\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> add_ignore <path> --> adds a path to the custom ignore list\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> rm_ignore <path> --> removes a path from the custom ignore list\n\n";
-		echo "./bin/deployer.sh <deploy_key_name> list_ignore --> lists the full ignore list\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> print_ignore --> prints the full ignore list\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> get_deployer_path_from_root --> gets the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> set_deployer_path_from_root <deployer_path> --> set the deployer path from root dir\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> deployer_version --> prints the deployer version\n\n";

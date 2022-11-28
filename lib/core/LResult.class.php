@@ -9,7 +9,16 @@
 class LResult {
     
     private static $has_error = false;
-    
+    private static $disable_output = false;
+
+    public static function disableOutput() {
+        self::$disable_output = true;
+    }
+
+    public static function isOutputDisabled() {
+        return self::$disable_output;
+    }
+
     private static function newline() {
         echo LStringUtils::getNewlineString();
     }
@@ -21,6 +30,8 @@ class LResult {
      * @param string $message
      */
     public static function trace(string $message) {
+        if (self::isOutputDisabled()) return;
+
         if (LConfigReader::executionMode('/misc/trace_enabled')) {
             echo $message;
             self::newline();
@@ -34,6 +45,8 @@ class LResult {
      * @param string $message
      */
     public static function debug(string $message) {
+        if (self::isOutputDisabled()) return;
+
         if (LConfigReader::executionMode('/misc/debug_enabled')) {
             echo $message;
             self::newline();
@@ -48,10 +61,16 @@ class LResult {
      * @param bool $new_line_after true if newline must be appended, false otherwise. Defaults to true,
      */
     public static function message(string $message,bool $new_line_after=true) {
+        if (self::isOutputDisabled()) return;
+
         echo $message;
-        if ($new_line_after) {
-            self::newline();
-        }
+    }
+
+    public static function messagenl(string $message) {
+        if (self::isOutputDisabled()) return;
+
+        echo $message;    
+        self::newline();
     }
        
     /**

@@ -15,4 +15,4 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PARENT_DIR="$(dirname $DIR)"
 
-php $PARENT_DIR/init.php internal/run_tests_fast
+php $PARENT_DIR/init.php project/run_tests_fast

@@ -14,4 +14,4 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PARENT_DIR="$(dirname $DIR)"
 
-php $PARENT_DIR/init.php internal/get_execution_mode
+php $PARENT_DIR/init.php project/get_execution_mode

@@ -19,15 +19,15 @@ class LResultLogger implements LILogger {
     }
 
     public function error($message,$code = '') {
-        LResult::message("LOG Error : ".$message);
+        LResult::messagenl("LOG Error : ".$message);
     }
 
     public function exception(\Exception $ex) {
-        LResult::message("LOG Exception : ". LStringUtils::getExceptionMessage($ex));
+        LResult::messagenl("LOG Exception : ". LStringUtils::getExceptionMessage($ex));
     }
 
     public function fatal($message) {
-        LResult::message("LOG Fatal : ".$message);
+        LResult::messagenl("LOG Fatal : ".$message);
     }
 
     public function info($message) {
@@ -39,12 +39,12 @@ class LResultLogger implements LILogger {
     }
 
     public function init() {
-        LResult::message("Initializing output logger ...");
+        LResult::messagenl("Initializing output logger ...");
         $this->initialized = true;
     }
 
     public function warning($message) {
-        LResult::message("LOG Warning : ".$message);
+        LResult::messagenl("LOG Warning : ".$message);
     }
 
 }

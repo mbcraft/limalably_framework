@@ -64,22 +64,22 @@ class LTestRunner {
     static function printSummary() {
         //uso LResult ...
         //$NL = $_SERVER['ENVIRONMENT'] == 'script' ? "\n" : "<br>";
-        LResult::message('');
-        LResult::message('Unit test summary : ',false);
-        LResult::message(LTestCase::getTestCaseCount().' TEST CASES, '.LTestCase::getTestErrorsCount().' ERRORS, '.LTestCase::getTestMethodsCount().' METHODS, '.LTestCase::getAssertionsCount().' ASSERTIONS, '.LTestCase::getFailuresCount().' FAILURES.');
-        LResult::message('');
+        LResult::messagenl('');
+        LResult::message('Unit test summary : ');
+        LResult::messagenl(LTestCase::getTestCaseCount().' TEST CASES, '.LTestCase::getTestErrorsCount().' ERRORS, '.LTestCase::getTestMethodsCount().' METHODS, '.LTestCase::getAssertionsCount().' ASSERTIONS, '.LTestCase::getFailuresCount().' FAILURES.');
+        LResult::messagenl('');
         
         $failures_and_exceptions = LTestCase::getCollectedFailuresAndExceptions();
         foreach ($failures_and_exceptions as $ex) {
             if ($ex instanceof LUnitTestException) {
-                LResult::message("Unit Test Exception : ", false);
+                LResult::message("Unit Test Exception : ");
                 LResult::exception($ex, true);
             }
             elseif ($ex instanceof LTestFailure) {
-                LResult::message("Failure : ", false);
+                LResult::message("Failure : ");
                 $ex->printFailure();
             } else {
-                LResult::message("Exception : ",false);
+                LResult::message("Exception : ");
                 LResult::exception($ex, true);
             }
             

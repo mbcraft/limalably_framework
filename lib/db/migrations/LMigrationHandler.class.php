@@ -8,6 +8,7 @@ class LMigrationHandler {
 
 	private $migration_file = null;
 	private $context = null;
+	private $require_runned = false;
 	private $load_confirmed = false;
 
 	public function __construct($migration_file,$context) {
@@ -64,17 +65,19 @@ class LMigrationHandler {
 	}
 
 	public function isLoaded() {
-		return class_exists($this->migration_file->getName()) && $this->load_confirmed;
+		return class_exists($this->migration_file->getName()) && $this->require_runned;
 	}
 
 	public function load() {
 		
 		try {
-			if ($this->isLoaded()) throw new \Exception("The migration class is already loaded!!");
+			if ($this->isLoaded()) return true;
 
 			$this->migration_file->requireFileOnce();
 
-			if ($this->isLoaded()) 
+			$this->require_runned = true;
+
+			if (class_exists($this->migration_file->getName())) 
 				{
 					$this->load_confirmed = true;
 					return true;

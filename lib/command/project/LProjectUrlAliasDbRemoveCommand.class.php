@@ -5,7 +5,6 @@
 class LProjectUrlAliasDbRemoveCommand implements LICommand {
 
     private function execute() {
-        $this->setCommandAsExecuted();
         
         if (LParameters::count()!=1) {
             echo "One index of the entry to remove is needed. Use list command to list available url alias db routes.\n";

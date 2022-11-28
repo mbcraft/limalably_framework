@@ -8,14 +8,17 @@
 
 class LProjectCommandExecutor implements LICommandExecutor {
     
-    private $executed = false;
+    private $command_executed = false;
+    
+    private function setCommandAsExecuted() {
+        $this->command_executed = true;
+    }
 
     public function hasExecutedCommand() {
-        return $this->executed;
+        return $this->command_executed;
     }
 
     public function tryExecuteCommand() {
-        $this->executed = true;
         $route = $_SERVER['ROUTE'];
         switch ($route) {
             case 'project/set_execution_mode' : new LProjectSetExecutionModeCommand();break;
@@ -27,8 +30,10 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'project/url_alias_db_add' : new LProjectUrlAliasDbAddCommand();break;
             case 'project/url_alias_db_remove' : new LProjectUrlAliasDbRemoveCommand();break;
             case 'project/deployer' : $cmd = new LProjectDeployerCommand();break;
+            case 'project/migrate' : $cmd = new LProjectMigrateCommand();break;
         }
 
+        $this->setCommandAsExecuted();
         $cmd->execute();
         
         if ($this->hasExecutedCommand()) Lymz::finish ();

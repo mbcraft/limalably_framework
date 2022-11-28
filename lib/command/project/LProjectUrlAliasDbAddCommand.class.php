@@ -6,7 +6,6 @@ class LProjectUrlAliasDbAddCommand implements LICommand {
 	
 
     public function execute() {
-        $this->setCommandAsExecuted();
         
         if (LParameters::count()!=2) {
             echo "Two parameters needed : the name of the public route and the name of the wanted route. \n";

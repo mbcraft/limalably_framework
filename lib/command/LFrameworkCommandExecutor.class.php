@@ -14,10 +14,6 @@ class LFrameworkCommandExecutor implements LICommandExecutor {
         $this->command_executed = true;
     }
     
-
-
-    
-    
     public function tryExecuteCommand() {
         $route = $_SERVER['ROUTE'];
         switch ($route) {

@@ -5,8 +5,6 @@ class LProjectDeployerCommand implements LICommand {
 	
 
 	public function execute() {
-	
-        $this->setCommandAsExecuted();
 
         $dc = new LDeployerClient();
 

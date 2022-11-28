@@ -6,7 +6,6 @@ class LProjectUrlAliasDbListCommand implements LICommand {
 	
 
     private function execute() {
-        $this->setCommandAsExecuted();
         
         $url_alias_db_utils = new LUrlAliasDbUtils();
         

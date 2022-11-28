@@ -48,6 +48,10 @@ class MigrationListTest extends LTestCase {
 
 		$this->assertEqual(count($executed_migrations),0,"Il numero di migrazioni eseguite non è corretto!");
 
+		$config_migrations_dir->delete(true);
+
+		$this->assertFalse($config_migrations_dir->exists(),"La cartella usata nella config esiste ancora!");
+
 
 	}
 	

@@ -6,7 +6,7 @@ class LProjectMigrateCommand implements LICommand {
 
 	private function help() {
 
-		LResult::messageln("Migrate command help :");
+		LResult::messagenl("Migrate command help :");
 		LResult::messagenl("");
 		LResult::messagenl("./bin/migrate.sh all --> executes all missing migration on this running mode");
 		LResult::messagenl("./bin/migrate.sh reset --> cleans up the main db and all executed migration on this running mode");

@@ -60,9 +60,10 @@ class Lymz {
         }
         
         LLog::init();
-
+        
         $executor = new LProjectCommandExecutor();
         $executor->tryExecuteCommand();
+
         if (!$executor->hasExecutedCommand()) {
 
             try {

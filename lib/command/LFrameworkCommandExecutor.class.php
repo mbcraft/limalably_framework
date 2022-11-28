@@ -16,13 +16,16 @@ class LFrameworkCommandExecutor implements LICommandExecutor {
     
     public function tryExecuteCommand() {
         $route = $_SERVER['ROUTE'];
+        $cmd = null;
         switch ($route) {
             case 'framework/run_tests' : $cmd = new LFrameworkRunTestsCommand();break;
             case 'framework/run_tests_fast' : $cmd = new LFrameworkRunTestsFastCommand();break;
         }
 
-        $this->setCommandAsExecuted();
-        $cmd->execute();
+        if ($cmd) {
+            $this->setCommandAsExecuted();
+            $cmd->execute();
+        }
         
         if ($this->hasExecutedCommand()) Lymz::finish ();
     }

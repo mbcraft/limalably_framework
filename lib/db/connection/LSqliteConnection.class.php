@@ -8,13 +8,19 @@
 
 class LSqliteConnection implements LIDbConnection {
     
+    private $name = null;
     private $params = null;
     
     private $is_open = false;
     private $my_handle = null;
     
-    function __construct($params) {
+    function __construct(string $name,$params) {
+        $this->name = $name;
         $this->params = $params;
+    }
+
+    public function getName() {
+        return $this->name;
     }
     
     public function close() {

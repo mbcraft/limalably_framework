@@ -30,8 +30,8 @@ class LDbConnectionManager {
 
         $driver = $params['driver'];
         switch ($driver) {
-            case self::CONNECTION_TYPE_MYSQL : $conn = new LMysqlConnection($params);break;
-            case self::CONNECTION_TYPE_SQLITE : $conn = new LSqliteConnection($params);break;
+            case self::CONNECTION_TYPE_MYSQL : $conn = new LMysqlConnection($connection_name,$params);break;
+            case self::CONNECTION_TYPE_SQLITE : $conn = new LSqliteConnection($connection_name,$params);break;
             
             default : throw new \Exception('Unrecognized connection driver : '.$driver);
         }

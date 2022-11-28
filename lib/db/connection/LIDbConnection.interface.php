@@ -9,6 +9,8 @@
 
 interface LIDbConnection {
     
+    function getName();
+
     function isOpen();
     
     function open();

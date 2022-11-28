@@ -26,6 +26,8 @@ class MigrationListTest extends LTestCase {
 
 		$mh = $ml->findNextMissingMigration();
 
+		$this->assertNotNull($mh,"La prossima migrazione risulta essere nulla!");
+
 		$mh->executeIt();
 
 		$missing_migrations = $ml->findAllMissingMigrations();
@@ -36,7 +38,11 @@ class MigrationListTest extends LTestCase {
 
 		$this->assertEqual(count($executed_migrations),1,"Il numero di migrazioni eseguite non è corretto!");
 
+		$this->assertNull($ml->findNextMissingMigration(),"La prossima migrazione non ritorna null!!");
+
 		$mh2 = $ml->findLastExecutedMigration();
+
+		$this->assertNotNull($mh2,"L'ultima migrazione eseguita risulta essere nulla!");
 
 		$mh2->revertIt();
 

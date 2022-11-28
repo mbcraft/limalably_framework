@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LMigrationHelper {
 	
 	const MIGRATION_LOG_DIRECTORY = "config/executed_migrations/";

@@ -118,7 +118,10 @@ class LMigrationHandler {
 		$migration_log_dir = LMigrationHelper::getMigrationLogDirectory($this->context);
 
 		$migration_log_file = $migration_log_dir->newFile($this->migration_file->getName().self::MIGRATION_LOG_EXTENSION);
-		$migration_log_file->setContent(date('Y-m-d H:i:s'));
+		$my_date = date('Y-m-d H:i:s');
+		$migration_log_file->setContent($my_date);
+
+		LResult::messagenl("Migration ".$this->migration_file->getName()." from context ".LMigrationHelper::getCleanContextName($this->context)." executed at ".$my_date.".");
 
 	}
 
@@ -154,7 +157,12 @@ class LMigrationHandler {
 		$migration_log_file = $migration_log_dir->newFile($this->migration_file->getName().self::MIGRATION_LOG_EXTENSION);
 
 		if (!$migration_log_file->exists()) throw new \Exception("Migration log file does not exists!");
-		
+		$my_date = date('Y-m-d H:i:s');
+
+		LResult::messagenl("Migration ".$this->migration_file->getName()." from context ".LMigrationHelper::getCleanContextName($this->context)." reverted at ".$my_date.".");
+
 		return $migration_log_file->delete();
 	}
+
+
 }

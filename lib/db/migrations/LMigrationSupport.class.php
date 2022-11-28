@@ -15,48 +15,50 @@ class LMigrationSupport {
 		$this->context = $context;
 	}
 
-	public function printContextExecutedMigrations() {
+	public function printContextExecutedMigrations($child_mode=false) {
 
 		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
 		$mh_list = $this->lmigration_list->findAllExecutedMigrations();
 
-		echo "Executed migration list for context [".$this->context."] :\n\n";
+		LResult::messagenl("Executed migration list for context ".LMigrationHelper::getCleanContextName($this->context)." :");
 
 		if (empty($mh_list)) {
-			echo "No migrations found.\n\n";
+			LResult::messagenl("No migrations found.");
 		}
 		else
 			foreach ($mh_list as $f) {
 
-			echo ">> ".$f->getName()." at ".$f->getExecutionTime()."\n";
+			LResult::messagenl(">> ".$f->getName()." at ".$f->getExecutionTime());;
 		}
 
-		echo "\n";
+		if (!$child_mode) LResult::messagenl("... done!");
 
 	}
 
-	public function printContextMissingMigrations() {
+	public function printContextMissingMigrations($child_mode=false) {
 
 		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
 		$mh_list = $this->lmigration_list->findAllMissingMigrations();
 
-		echo "Missing migrations for context [".$this->context."] : \n\n";
+		LResult::messagenl("Missing migrations for context ".LMigrationHelper::getCleanContextName($this->context)." : ");
 
 		if (empty($mh_list)) {
 
-			echo "No migrations found.\n\n";
+			LResult::messagenl("No migrations found.");
 		}
 		else
 			foreach ($mh_list as $mh) {
-				echo ">> ".$mh->getName()."\n";
+				LResult::messagenl(">> ".$mh->getName());
 		}
 
-		echo "\n";
+		if (!$child_mode) LResult::messagenl("... done!");
 	}
 
 	public static function resetAllMigrations() {
+
+		LResult::messagenl("Resetting all migrations and cleaning up the main database ...");
 
 		LDbUtils::deleteAllTables();
 
@@ -64,9 +66,13 @@ class LMigrationSupport {
 		$log_dir->delete(true);
 
 		$log_dir->touch();
+
+		LResult::messagenl("... done!");
 	}
 
 	public static function executeAllMigrations() {
+
+		LResult::messagenl("Executing all migrations ...");
 
 		$ms = new LMigrationSupport();
 
@@ -76,11 +82,15 @@ class LMigrationSupport {
 
 		
 		$ms->loadMigrationList();
-		$ms->executeAllContextMigrations();
+		$ms->executeAllContextMigrations(true);
+
+		LResult::messagenl("... done!");
 	}
 
 	public static function printAllExecutedMigrations() {
 
+		LResult::messagenl("Listing all executed migrations ...");
+
 		$ms = new LMigrationSupport(); //default
 
 		//modules migrations in the future will be placed here ...
@@ -89,11 +99,15 @@ class LMigrationSupport {
 
 		
 		$ms->loadMigrationList();
-		$ms->printContextExecutedMigrations();
+		$ms->printContextExecutedMigrations(true);
+
+		LResult::messagenl("... done!");
 	}
 
 	public static function printAllMissingMigrations() {
 
+		LResult::messagenl("Listing all missing migrations ...");
+
 		$ms = new LMigrationSupport(); //default
 
 		//modules migrations in the future will be placed here ...
@@ -102,7 +116,9 @@ class LMigrationSupport {
 
 		
 		$ms->loadMigrationList();
-		$ms->printContextMissingMigrations();
+		$ms->printContextMissingMigrations(true);
+
+		LResult::messagenl("... done!");
 	}
 
 	public function hasExecutedAtLeastOneContextMigration() {
@@ -128,14 +144,20 @@ class LMigrationSupport {
 
 		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
+		LResult::messagenl("Executing next context ".LMigrationHelper::getCleanContextName($this->context)." migrations ...");
+
 		$mh = $this->lmigration_list->findNextMissingMigration();
 
 		return $mh->executeIt();
+
+		LResult::messagenl("... done!");
 	}
 
-	public function executeAllContextMigrations() {
+	public function executeAllContextMigrations($child_mode=false) {
 
 		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
+
+		LResult::messagenl("Executing all context ".LMigrationHelper::getCleanContextName($this->context)." migrations ...");
 
 		do {
 			$mh = $this->lmigration_list->findNextMissingMigration();
@@ -143,20 +165,28 @@ class LMigrationSupport {
 			if ($mh) $mh->executeIt();
 
 		} while ($mh!=null);
+
+		if (!$child_mode) LResult::messagenl("... done!");
 	}
 
 	public function revertLastContextMigration() {
 
 		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
+		LResult::messagenl("Reverting last context ".LMigrationHelper::getCleanContextName($this->context)." migration ...");
+
 		$mh = $this->lmigration_list->findLastExecutedMigration();
 
 		return $mh->revertIt();
+
+		LResult::messagenl("... done!");
 	}
 
-	public function revertAllContextMigrations() {
+	public function revertAllContextMigrations($child_mode=false) {
 
 		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
+
+		LResult::messagenl("Reverting all context ".LMigrationHelper::getCleanContextName($this->context)." migrations ...");
 
 		do {
 			$mh = $this->lmigration_list->findLastExecutedMigration();
@@ -164,6 +194,8 @@ class LMigrationSupport {
 			if ($mh) $mh->revertIt();
 
 		} while($mh!=null);
+
+		if (!$child_mode) LResult::messagenl("... done!");
 
 	}
 

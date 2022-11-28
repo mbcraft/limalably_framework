@@ -25,4 +25,9 @@ class LMigrationHelper {
 		return $result;
 	}
 
+	public static function getCleanContextName($context) {
+		if (LStringUtils::endsWith($context,'/')) return "[".substr($context,0,-1)."]";
+		else return "[".$context."]";
+	}
+
 }

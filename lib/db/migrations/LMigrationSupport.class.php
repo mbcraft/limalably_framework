@@ -63,7 +63,11 @@ class LMigrationSupport {
 
 	public static function resetAllMigrations() {
 
-		LResult::messagenl("Resetting all migrations and cleaning up the main database ...");
+		$db = db();
+
+		LResult::messagenl("Resetting all migrations and cleaning up the database on connection [".$db->getName()."] ...");
+
+		if (!LResult::isOutputDisabled()) sleep(5);
 
 		LDbUtils::deleteAllTables();
 
@@ -77,7 +81,11 @@ class LMigrationSupport {
 
 	public static function executeAllMigrations() {
 
-		LResult::messagenl("Executing all migrations ...");
+		$db = db();
+
+		LResult::messagenl("Executing all migrations on main connection [".$db->getName()."] ...");
+
+		if (!LResult::isOutputDisabled()) sleep(5);
 
 		$ms = new LMigrationSupport();
 

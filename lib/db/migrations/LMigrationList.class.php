@@ -25,6 +25,8 @@ class LMigrationList {
 
 		if ($my_dir==null) throw new \Exception("Unable to recognize dir as a folder!");
 
+		if (!$my_dir->exists()) return;
+
 		$file_list = $my_dir->listFiles();
 
 		foreach ($file_list as $f) {

@@ -71,6 +71,8 @@ class MigrationHandlerTest extends LTestCase {
 
 		$this->assertFalse($config_migrations_dir->exists(),"La cartella usata nella config esiste ancora!");
 
+		unset($_SERVER['PROJECT_DIR']);
+
 	}
 
 }

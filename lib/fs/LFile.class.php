@@ -66,7 +66,12 @@ class LFile extends LFileSystemElement
     function getName()
     {
         $result = pathinfo($this->__full_path);
-        return $result['filename'];
+        $filename = $result['filename'];
+
+        $parts = explode('.',$filename);
+
+        return $parts[0];
+
     }
 
   /*

@@ -4,7 +4,7 @@
 class LMigrationHandler {
 
 	const MIGRATION_LOG_EXTENSION = ".log";
-	const MIGRATION_EXTENSION = ".migration.php";
+	const MIGRATION_EXTENSION = "migration.php";
 
 	private $migration_file = null;
 	private $context = null;
@@ -15,7 +15,7 @@ class LMigrationHandler {
 
 		if (is_string($migration_file))
 			$my_file = new LFile($migration_file);
-		if ($file instanceof LFile)
+		if ($migration_file instanceof LFile)
 			$my_file = $migration_file;
 
 		if ($my_file == null) throw new \Exception("Unable to find suitable type for migration file");
@@ -31,7 +31,7 @@ class LMigrationHandler {
 		return $this->migration_file->getName();
 	}
 
-	private function getMigrationLogFile() {
+	public function getMigrationLogFile() {
 
 		$migration_dir = LMigrationHelper::getMigrationLogDirectory($this->context);
 

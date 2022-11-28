@@ -2,12 +2,12 @@
 
 class LMigrationHelper {
 	
-	const MIGRATION_LOG_DIRECTORY = "/config/migrations/";
+	const MIGRATION_LOG_DIRECTORY = "config/migrations/";
 	
 	public static function getMigrationRunningModeLogDirectory() {
 		$running_mode_folder = LExecutionMode::getShort().'/';
 
-		$result = new LDir(self::MIGRATION_LOG_DIRECTORY.$running_mode_folder);
+		$result = new LDir($_SERVER['PROJECT_DIR'].self::MIGRATION_LOG_DIRECTORY.$running_mode_folder);
 
 		return $result;
 	}
@@ -18,7 +18,7 @@ class LMigrationHelper {
 
 		$context_folder = LStringUtils::endsWith($context,'/') ? $context : $context.'/';
 
-		$result = new LDir(self::MIGRATION_LOG_DIRECTORY.$running_mode_folder.$context_folder);
+		$result = new LDir($_SERVER['PROJECT_DIR'].self::MIGRATION_LOG_DIRECTORY.$running_mode_folder.$context_folder);
 
 		$result->touch();
 

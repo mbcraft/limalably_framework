@@ -32,7 +32,7 @@ class MigrationHandlerTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project/';
 		
-		$this->assertEqual($mh->getMigrationLogFile()->getPath(),"config/migrations/ut/fw/TestMigration123.log","Il percorso del file di log della migrazione non coincide!");
+		$this->assertEqual($mh->getMigrationLogFile()->getPath(),"config/executed_migrations/ut/fw/TestMigration123.log","Il percorso del file di log della migrazione non coincide!");
 
 		$this->assertTrue($mh->isAlreadyExecuted(),"La migrazione nonostante il log non viene riconosciuta come già eseguita!");
 
@@ -51,7 +51,7 @@ class MigrationHandlerTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/';
 
-		$config_migrations_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/config/migrations/');
+		$config_migrations_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/config/executed_migrations/');
 
 		$this->assertFalse($config_migrations_dir->exists(),"La cartella usata nella config esiste già!");
 

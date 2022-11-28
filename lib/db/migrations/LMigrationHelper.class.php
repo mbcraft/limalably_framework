@@ -2,7 +2,7 @@
 
 class LMigrationHelper {
 	
-	const MIGRATION_LOG_DIRECTORY = "config/migrations/";
+	const MIGRATION_LOG_DIRECTORY = "config/executed_migrations/";
 	
 	public static function getMigrationRunningModeLogDirectory() {
 		$running_mode_folder = LExecutionMode::getShort().'/';

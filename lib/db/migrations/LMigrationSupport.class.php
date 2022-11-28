@@ -56,19 +56,6 @@ class LMigrationSupport {
 		echo "\n";
 	}
 
-	public function resetContextMigrations() {
-
-		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
-
-		do {
-			$mh = $this->migration_list->findLastExecutedMigration();
-
-			if ($mh) $mh->revertIt();
-
-		} while($mh!=null);
-
-	}
-
 	public static function resetAllMigrations() {
 
 		LDbUtils::deleteAllTables();
@@ -162,9 +149,22 @@ class LMigrationSupport {
 
 		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
-		$mh = $this->migration_list->findLastExecutedMigration();
+		$mh = $this->lmigration_list->findLastExecutedMigration();
 
 		return $mh->revertIt();
+	}
+
+	public function revertAllContextMigrations() {
+
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
+
+		do {
+			$mh = $this->lmigration_list->findLastExecutedMigration();
+
+			if ($mh) $mh->revertIt();
+
+		} while($mh!=null);
+
 	}
 
 

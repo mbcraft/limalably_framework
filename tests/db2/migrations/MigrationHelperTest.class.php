@@ -20,7 +20,7 @@ class MigrationHelperTest extends LTestCase {
 
 		$this->assertTrue($dir2->exists(),"La cartella non è stata creata!");
 
-		$dir3 = new LDir($_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/config/migrations/');
+		$dir3 = new LDir($_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/config/executed_migrations/');
 
 		if ($dir3->exists()) $dir3->delete(true);
 

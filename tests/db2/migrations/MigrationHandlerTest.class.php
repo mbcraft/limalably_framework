@@ -59,11 +59,17 @@ class MigrationHandlerTest extends LTestCase {
 
 		$mh->executeIt();
 
+		$this->assertTrue(TestMigration123::executeDone(),"Execute was not done on migration!");
+
+		$this->assertFalse(TestMigration123::revertDone(),"Revert was done on migration!");
+
 		$this->assertTrue($config_migrations_dir->exists(),"La cartella usata nella config non è stata creata!");
 
 		$this->assertTrue($mh->isAlreadyExecuted(),"La migrazione non risulta eseguita!");
 
 		$mh->revertIt();
+
+		$this->assertTrue(TestMigration123::revertDone(),"Revert was not done on migration!");
 
 		$this->assertFalse($mh->isAlreadyExecuted(),"La migrazione risulta già eseguita!");
 

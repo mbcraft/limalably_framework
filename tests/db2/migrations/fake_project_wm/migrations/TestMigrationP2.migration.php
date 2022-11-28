@@ -2,7 +2,7 @@
 
 
 
-class TestMigration123 implements LIMigration {
+class TestMigrationP2 implements LIMigration {
 	
 	public static $execute_done = false;
 	public static $revert_done = false;

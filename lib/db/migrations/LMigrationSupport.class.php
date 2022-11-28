@@ -3,7 +3,7 @@
 
 class LMigrationSupport {
 	
-	const PROJECT_MIGRATION_DIRECTORY = "/migrations/";
+	const PROJECT_MIGRATION_DIRECTORY = "migrations/";
 
 	private $lmigration_list = null;
 	private $context = null;
@@ -17,11 +17,17 @@ class LMigrationSupport {
 
 	public function printContextExecutedMigrations() {
 
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
+
 		$mh_list = $this->lmigration_list->findAllExecutedMigrations();
 
 		echo "Executed migration list for context [".$this->context."] :\n\n";
 
-		foreach ($files as $f) {
+		if (empty($mh_list)) {
+			echo "No migrations found.\n\n";
+		}
+		else
+			foreach ($mh_list as $f) {
 
 			echo ">> ".$f->getName()." at ".$f->getExecutionTime()."\n";
 		}
@@ -31,18 +37,28 @@ class LMigrationSupport {
 	}
 
 	public function printContextMissingMigrations() {
+
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
+
 		$mh_list = $this->lmigration_list->findAllMissingMigrations();
 
 		echo "Missing migrations for context [".$this->context."] : \n\n";
 
-		foreach ($mh_list as $mh) {
-			echo ">> ".$mh->getName()."\n";
+		if (empty($mh_list)) {
+
+			echo "No migrations found.\n\n";
+		}
+		else
+			foreach ($mh_list as $mh) {
+				echo ">> ".$mh->getName()."\n";
 		}
 
 		echo "\n";
 	}
 
 	public function resetContextMigrations() {
+
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
 		do {
 			$mh = $this->migration_list->findLastExecutedMigration();
@@ -65,33 +81,41 @@ class LMigrationSupport {
 
 	public static function executeAllMigrations() {
 
+		$ms = new LMigrationSupport();
+
 		//modules migrations in the future will be placed here ...
 
 		//...
 
-		$default_context_ms = new LMigrationSupport(); //default
-
-		$default_context_ms->executeAllContextMigrations();
+		
+		$ms->loadMigrationList();
+		$ms->executeAllContextMigrations();
 	}
 
 	public static function printAllExecutedMigrations() {
+
+		$ms = new LMigrationSupport(); //default
+
 		//modules migrations in the future will be placed here ...
 
 		//...
 
-		$default_context_ms = new LMigrationSupport(); //default
-
-		$default_context_ms->printContextExecutedMigrations();
+		
+		$ms->loadMigrationList();
+		$ms->printContextExecutedMigrations();
 	}
 
 	public static function printAllMissingMigrations() {
+
+		$ms = new LMigrationSupport(); //default
+
 		//modules migrations in the future will be placed here ...
 
 		//...
 
-		$default_context_ms = new LMigrationSupport(); //default
-
-		$default_context_ms->printContextMissingMigrations();
+		
+		$ms->loadMigrationList();
+		$ms->printContextMissingMigrations();
 	}
 
 	public function hasExecutedAtLeastOneContextMigration() {
@@ -104,6 +128,8 @@ class LMigrationSupport {
 
 	public function hasMoreContextMigrationsToExecute() {
 
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
+
 		$mh = $this->lmigration_list->findNextMissingMigration();
 
 		if ($mh==null) return false;
@@ -112,12 +138,17 @@ class LMigrationSupport {
 	}
 
 	public function executeNextContextMigration() {
+
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
+
 		$mh = $this->lmigration_list->findNextMissingMigration();
 
 		return $mh->executeIt();
 	}
 
 	public function executeAllContextMigrations() {
+
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
 		do {
 			$mh = $this->lmigration_list->findNextMissingMigration();
@@ -128,6 +159,8 @@ class LMigrationSupport {
 	}
 
 	public function revertLastContextMigration() {
+
+		if (!$this->lmigration_list) throw new \Exception("Migration list is not loaded!");
 
 		$mh = $this->migration_list->findLastExecutedMigration();
 

@@ -1,8 +1,6 @@
 <?php
 
-
-
-class TestMigration123 implements LIMigration {
+class TestMigrationP1 implements LIMigration {
 	
 	public static $execute_done = false;
 	public static $revert_done = false;

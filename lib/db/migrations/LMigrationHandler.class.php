@@ -169,5 +169,9 @@ class LMigrationHandler {
 		return $migration_log_file->delete();
 	}
 
+	public function __toString() {
+		return "Migration '".$this->migration_file->getName()."'' on context ".LMigrationHelper::getCleanContextName($this->context);
+	}
+
 
 }

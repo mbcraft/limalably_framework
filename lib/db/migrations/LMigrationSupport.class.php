@@ -39,6 +39,8 @@ class LMigrationSupport {
 
 		if (!$child_mode) LResult::messagenl("... done!");
 
+		return $mh_list;
+
 	}
 
 	public function printContextMissingMigrations($child_mode=false) {
@@ -59,6 +61,8 @@ class LMigrationSupport {
 		}
 
 		if (!$child_mode) LResult::messagenl("... done!");
+
+		return $mh_list;
 	}
 
 	public static function resetAllMigrations() {
@@ -102,6 +106,8 @@ class LMigrationSupport {
 
 	public static function printAllExecutedMigrations() {
 
+		$result = [];
+
 		LResult::messagenl("Listing all executed migrations ...");
 
 		$ms = new LMigrationSupport(); //default
@@ -112,12 +118,16 @@ class LMigrationSupport {
 
 		
 		$ms->loadMigrationList();
-		$ms->printContextExecutedMigrations(true);
+		$mh_list = $ms->printContextExecutedMigrations(true);
+		$result = array_merge($result,$mh_list);
 
 		LResult::messagenl("... done!");
+		return $result;
 	}
 
 	public static function printAllMissingMigrations() {
+
+		$result = [];
 
 		LResult::messagenl("Listing all missing migrations ...");
 
@@ -129,9 +139,11 @@ class LMigrationSupport {
 
 		
 		$ms->loadMigrationList();
-		$ms->printContextMissingMigrations(true);
+		$mh_list = $ms->printContextMissingMigrations(true);
+		$result = array_merge($result,$mh_list);
 
 		LResult::messagenl("... done!");
+		return $result;
 	}
 
 	public function hasExecutedAtLeastOneContextMigration() {

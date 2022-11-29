@@ -50,13 +50,13 @@ class LProjectMigrateCommand implements LICommand {
             return;
         }
 
-        if (LParameters::count()==1 && !isset($parameter_map[LParameters::get(0)])) {
+        if (LParameters::count()==1 && !isset($parameter_map[LParameters::getByIndex(0)])) {
             echo "Unknown command '".LParameters::getByIndex(0)."'.\n";
             $this->help();
             return;
         }
 
-        $command = LParameters::getByIndex(1);
+        $command = LParameters::getByIndex(0);
 
         switch ($command) {
 

@@ -71,8 +71,8 @@ class LMigrationSupport {
 
 		LDbUtils::deleteAllTables();
 
-		$log_dir = LMigrationHandler::getMigrationRunningModeLogDirectory();
-		$log_dir->delete(true);
+		$log_dir = LMigrationHelper::getMigrationRunningModeLogDirectory();
+		if ($log_dir->exists()) $log_dir->delete(true);
 
 		$log_dir->touch();
 

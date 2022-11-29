@@ -194,7 +194,7 @@ class LClassLoader {
         self::attachComposerInFramework();
         if (isset($_SERVER['PROJECT_DIR'])) {
             self::attachComposerInProject();
-        }
+        } 
     }
     
     private static function attachComposerInFramework() {
@@ -206,6 +206,8 @@ class LClassLoader {
     private static function attachComposerInProject() {
         if (is_file($_SERVER['PROJECT_DIR'].'vendor/autoload.php')) {
             require_once($_SERVER['PROJECT_DIR'].'vendor/autoload.php');
+        } else {
+            echo "Project composer not found! : [".$_SERVER['PROJECT_DIR']."]\n";
         }
     }
     

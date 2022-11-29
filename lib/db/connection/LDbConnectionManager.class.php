@@ -58,8 +58,8 @@ class LDbConnectionManager {
 
         if (!$connection_name) {
             $db_list = LConfigReader::simple('/database');
-            if (count($db_list)==1) return self::get(array_keys($db_list)[0]);
-            else throw new \Exception("Unable to uniquely determine database connection.");
+            if (count($db_list)>0) return self::get(array_keys($db_list)[0]);
+            else throw new \Exception("Unable to find any database connection.");
         }
         
         if (is_object($connection_name)) return $connection_name;

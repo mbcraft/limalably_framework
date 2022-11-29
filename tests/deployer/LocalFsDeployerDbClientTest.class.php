@@ -73,7 +73,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 	}
 
-	
+	//ok
 	function testBackupDbStructure() {
 
 		$this->initAll();
@@ -120,7 +120,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 	}
 	
-	
+	//ok
 	function testBackupDbStructureData() {
 
 		$this->initAll();
@@ -164,6 +164,162 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 		$this->assertTrue(count($files)==1,"Il numero di files nella cartella temporanea non corrisponde!");
 
 		$save_dir->makeEmpty();
+
+	}
+
+	//ok
+	function testMigrateAll() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_key');
+
+		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
+
+		$r = $dc->migrate_all('local_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine!");
+
+		$r = $dc->detach('local_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+	}
+
+	//ok
+	function testMigrateReset() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_key');
+
+		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
+
+		$r = $dc->migrate_reset('local_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine!");
+
+		$r = $dc->detach('local_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+	}
+
+	//ok
+	function testMigrateListDone() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_key');
+
+		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
+
+		$r = $dc->migrate_list_done('local_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine!");
+
+		$r = $dc->detach('local_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+	}
+
+	//ok
+	function testMigrateListMissing() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_key');
+
+		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
+
+		$r = $dc->migrate_list_missing('local_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine!");
+
+		$r = $dc->detach('local_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
 
 	}
 	

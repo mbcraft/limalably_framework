@@ -1013,6 +1013,8 @@ class LDeployerClient {
 
 			if ($this->isSuccess($result)) {
 				echo "Missing migrations executed successfully.\n";
+
+				return true;
 			} 
 			else 
 				return $this->failure("Unable to execute missing migrations on deployer installation.");
@@ -1034,6 +1036,8 @@ class LDeployerClient {
 
 			if ($this->isSuccess($result)) {
 				echo "Remote database and migrations resetted successfully.\n";
+
+				return true;
 			} 
 			else 
 				return $this->failure("Unable to clean up main database and reset migrations on deployer installation.");

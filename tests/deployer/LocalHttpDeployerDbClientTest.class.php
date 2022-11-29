@@ -34,7 +34,6 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		else return '';
 	}
 	
-	
 	//ok
 	function testListDb() {
 
@@ -180,6 +179,178 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 		$this->assertTrue(end($files)->getSize()>1000,"La dimensione del file non corrisponde a quella attesa!");
 
 		$save_dir->makeEmpty();
+
+	}
+
+	//ok
+	function testMigrateAll() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_http_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_http_key');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->set_deployer_path_from_root('local_http_key','wwwroot/deployer.php');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->migrate_all('local_http_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine! : ".$this->getErrorMessage($r));
+
+		$r = $dc->detach('local_http_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+	}
+
+	//ok
+	function testMigrateReset() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_http_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_http_key');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->set_deployer_path_from_root('local_http_key','wwwroot/deployer.php');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->migrate_reset('local_http_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine! : ".$this->getErrorMessage($r));
+
+		$r = $dc->detach('local_http_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+	}
+
+	//ok
+	function testMigrateListDone() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_http_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_http_key');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->set_deployer_path_from_root('local_http_key','wwwroot/deployer.php');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->migrate_list_done('local_http_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine! : ".$this->getErrorMessage($r));
+
+		$r = $dc->detach('local_http_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
+
+	}
+
+	//ok
+	function testMigrateListMissing() {
+
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/local_http_key.key');
+
+		if ($key_file->exists()) $key_file->delete();
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+
+		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
+
+		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
+
+		$r = $dc->hello('local_http_key');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->set_deployer_path_from_root('local_http_key','wwwroot/deployer.php');
+
+		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
+
+		$r = $dc->migrate_list_missing('local_http_key');
+
+		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine! : ".$this->getErrorMessage($r));
+
+		$r = $dc->detach('local_http_key');
+
+		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+
+		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
+
+		$this->disposeAll();
 
 	}
 	

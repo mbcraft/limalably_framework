@@ -1017,7 +1017,7 @@ class LDeployerClient {
 				return true;
 			} 
 			else 
-				return $this->failure("Unable to execute missing migrations on deployer installation.");
+				return $this->failure("Unable to execute missing migrations on deployer installation : ".$result['message']);
 		} else return false;
 	}
 
@@ -1040,7 +1040,7 @@ class LDeployerClient {
 				return true;
 			} 
 			else 
-				return $this->failure("Unable to clean up main database and reset migrations on deployer installation.");
+				return $this->failure("Unable to clean up main database and reset migrations on deployer installation : ".$result['message']);
 		} else return false;
 	}
 
@@ -1061,9 +1061,12 @@ class LDeployerClient {
 
 			$migration_list = $r['data'];
 
-			echo "Executed migration list available on deployer instance :\n\n";
+			echo "Executed migration list found on deployer instance :\n\n";
 
-			foreach ($migration_list as $migration_name) {
+			if (empty($migration_list)) {
+				echo "No migrations found.\n";
+			}
+			else foreach ($migration_list as $migration_name) {
 				echo "- ".$migration_name."\n";
 			}
 			echo "\n";
@@ -1089,9 +1092,12 @@ class LDeployerClient {
 
 			$migration_list = $r['data'];
 
-			echo "Missing migration list available on deployer instance :\n\n";
+			echo "Missing migration list found on deployer instance :\n\n";
 
-			foreach ($migration_list as $migration_name) {
+			if (empty($migration_list)) {
+				echo "No migrations found.\n";
+			}
+			else foreach ($migration_list as $migration_name) {
 				echo "- ".$migration_name."\n";
 			}
 			echo "\n";

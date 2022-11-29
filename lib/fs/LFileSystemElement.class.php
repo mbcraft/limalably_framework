@@ -6,7 +6,7 @@
  *  
  */
 
-define('DS','/');
+if (!defined('DS')) define('DS','/');
 
 abstract class LFileSystemElement
 {

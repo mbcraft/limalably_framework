@@ -13,7 +13,9 @@ class LMigrationHelper {
 	public static function getMigrationRunningModeLogDirectory() {
 		$running_mode_folder = LExecutionMode::getShort().'/';
 
-		$result = new LDir($_SERVER['PROJECT_DIR'].self::MIGRATION_LOG_DIRECTORY.$running_mode_folder);
+		$base_dir = isset($_SERVER['DEPLOYER_PROJECT_DIR']) ? $_SERVER['DEPLOYER_PROJECT_DIR'] : $_SERVER['PROJECT_DIR'];
+
+		$result = new LDir($base_dir.self::MIGRATION_LOG_DIRECTORY.$running_mode_folder);
 
 		return $result;
 	}
@@ -24,7 +26,9 @@ class LMigrationHelper {
 
 		$context_folder = LStringUtils::endsWith($context,'/') ? $context : $context.'/';
 
-		$result = new LDir($_SERVER['PROJECT_DIR'].self::MIGRATION_LOG_DIRECTORY.$running_mode_folder.$context_folder);
+		$base_dir = isset($_SERVER['DEPLOYER_PROJECT_DIR']) ? $_SERVER['DEPLOYER_PROJECT_DIR'] : $_SERVER['PROJECT_DIR'];
+
+		$result = new LDir($base_dir.self::MIGRATION_LOG_DIRECTORY.$running_mode_folder.$context_folder);
 
 		$result->touch();
 

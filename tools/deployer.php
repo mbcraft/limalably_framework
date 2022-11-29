@@ -1880,6 +1880,8 @@ class DeployerController {
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
 
+            LResult::disableOutput();
+
             LMigrationSupport::executeAllMigrations();
 
             return ['result' => self::SUCCESS_RESULT];
@@ -1901,6 +1903,8 @@ class DeployerController {
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
 
+            LResult::disableOutput();
+
             LMigrationSupport::resetAllMigrations();
 
             return ['result' => self::SUCCESS_RESULT];
@@ -1921,6 +1925,8 @@ class DeployerController {
             }
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            LResult::disableOutput();
 
             $mh_list = LMigrationSupport::printAllExecutedMigrations();
 
@@ -1946,6 +1952,8 @@ class DeployerController {
             }
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            LResult::disableOutput();
 
             $mh_list = LMigrationSupport::printAllMissingMigrations();
 

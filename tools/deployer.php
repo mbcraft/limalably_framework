@@ -1541,11 +1541,11 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 67;
+    const BUILD_NUMBER = 68;
 
-    const DEPLOYER_VERSION = "1.3";
+    const DEPLOYER_VERSION = "1.4";
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData'];
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing'];
 
 	private $deployer_file;
 	private $root_dir;
@@ -1862,6 +1862,98 @@ class DeployerController {
             DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/','');
 
             return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function migrateAll($password) {
+        if ($this->accessGranted($password)) {
+
+            try {
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
+            }
+            catch (\Exception $ex) {
+                return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            LMigrationSupport::executeAllMigrations();
+
+            return ['result' => self::SUCCESS_RESULT];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function migrateReset($password) {
+        if ($this->accessGranted($password)) {
+
+            try {
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
+            }
+            catch (\Exception $ex) {
+                return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            LMigrationSupport::resetAllMigrations();
+
+            return ['result' => self::SUCCESS_RESULT];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function migrateListDone($password) {
+        if ($this->accessGranted($password)) {
+
+            try {
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
+            }
+            catch (\Exception $ex) {
+                return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            $mh_list = LMigrationSupport::printAllExecutedMigrations();
+
+            $result = [];
+
+            foreach ($mh_list as $mh) $result[] = ">> ".$mh;
+
+            return ['result' => self::SUCCESS_RESULT,'data' => $result];
+
+        } else return $this->failure("Wrong password.");
+    }
+
+    public function migrateListMissing($password) {
+        if ($this->accessGranted($password)) {
+
+            try {
+                $result = $this->loadFrameworkBasicClasses();
+
+                if ($result!==true) return $this->failure($result);
+            }
+            catch (\Exception $ex) {
+                return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
+            }
+
+            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            $mh_list = LMigrationSupport::printAllMissingMigrations();
+
+            $result = [];
+
+            foreach ($mh_list as $mh) $result[] = ">> ".$mh;
+
+            return ['result' => self::SUCCESS_RESULT,'data' => $result];
 
         } else return $this->failure("Wrong password.");
     }
@@ -2317,6 +2409,42 @@ class DeployerController {
                     else {
                         echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
                     }
+
+                    break;
+                }
+                case 'MIGRATE_ALL' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in MIGRATE_ALL request."));
+
+                    echo $this->preparePostResponse($this->migrateAll($password));
+
+                    break;
+                }
+                case 'MIGRATE_RESET' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in MIGRATE_ALL request."));
+
+                    echo $this->preparePostResponse($this->migrateReset($password));
+
+                    break;
+                }
+                case 'MIGRATE_LIST_DONE' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in MIGRATE_LIST_DONE request."));
+
+                    echo $this->preparePostResponse($this->migrateListDone($password));
+
+                    break;
+                }
+                case 'MIGRATE_LIST_MISSING' : {
+
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in MIGRATE_LIST_MISSING request."));
+
+                    echo $this->preparePostResponse($this->migrateListMissing($password));
 
                     break;
                 }

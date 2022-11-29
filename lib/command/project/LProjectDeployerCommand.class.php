@@ -33,7 +33,11 @@ class LProjectDeployerCommand implements LICommand {
             'set_exec_mode' => 3,
             'list_db' => 2,
             'backup_db_structure' => 4,
-            'backup_db_data' => 4
+            'backup_db_data' => 4,
+            'migrate_all' => 2,
+            'migrate_reset' => 2,
+            'migrate_list_done' => 2,
+            'migrate_list_missing' => 2
         ];
 
         if (LParameters::count()<1) {
@@ -96,6 +100,10 @@ class LProjectDeployerCommand implements LICommand {
             case 'list_db': $dc->list_db($deploy_key_name);break;
             case 'backup_db_structure': $dc->backup_db_structure($deploy_key_name,$parameter2,$parameter3);break;
             case 'backup_db_data': $dc->backup_db_data($deploy_key_name,$parameter2,$parameter3);break;
+            case 'migrate_all' : $dc->migrate_all($deploy_key_name);break;
+            case 'migrate_reset': $dc->migrate_reset($deploy_key_name);break;
+            case 'migrate_list_done': $dc->migrate_list_done($deploy_key_name);break;
+            case 'migrate_list_missing': $dc->migrate_list_missing($deploy_key_name);break;
 
             default : throw new \Exception("Command handler not implemented : ".$command);
 

@@ -506,6 +506,10 @@ class LDeployerClient {
 		echo "./bin/deployer.sh <deploy_key_name> list_db --> lists all the db connections available on the server\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> backup_db_structure <connection_name> <save_dir> --> makes a full backup of a remote database structures and saves the zipped sql in the specified folder\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> backup_db_data <connection_name> <save_dir> --> makes a full backup of a remote database data and saves it in the specified folder\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> migrate_all --> executes all the missing migrations on the main database of the deployer instance\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> migrate_reset --> cleans up all the migrations and the main database on the deployer instance\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> migrate_list_done --> lists all executed migrations on the deployer instance\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> migrate_list_missing --> lists all the missing migrations on the deployer instance\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> disappear --> deletes the remote deployer\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> reset --> deletes all the remote files but not the deployer one\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> temp_clean --> cleans up the remote temporary files folder\n\n";
@@ -990,6 +994,104 @@ class LDeployerClient {
 				echo "Backup db data file download successfully\n";
 				echo "[".$backup_file->getFilename()." - size ".$backup_file->getSize()." bytes] ...\n";
 			}
+			return true;
+
+		} else return false;
+	}
+
+	public function migrate_all(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
+			$result = $this->current_driver->migrateAll($this->current_password);
+
+			if ($this->isSuccess($result)) {
+				echo "Missing migrations executed successfully.\n";
+			} 
+			else 
+				return $this->failure("Unable to execute missing migrations on deployer installation.");
+		} else return false;
+	}
+
+
+	public function migrate_reset(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
+			$result = $this->current_driver->migrateReset($this->current_password);
+
+			if ($this->isSuccess($result)) {
+				echo "Remote database and migrations resetted successfully.\n";
+			} 
+			else 
+				return $this->failure("Unable to clean up main database and reset migrations on deployer installation.");
+		} else return false;
+	}
+
+
+	public function migrate_list_done(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
+			$r = $this->current_driver->migrateListDone($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get migration list from server : ".$this->getResultMessage($r));
+
+			$migration_list = $r['data'];
+
+			echo "Executed migration list available on deployer instance :\n\n";
+
+			foreach ($migration_list as $migration_name) {
+				echo "- ".$migration_name."\n";
+			}
+			echo "\n";
+
+			return true;
+
+		} else return false;
+	}
+
+	public function migrate_list_missing(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
+			$r = $this->current_driver->migrateListMissing($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to succesfully get migration list from server : ".$this->getResultMessage($r));
+
+			$migration_list = $r['data'];
+
+			echo "Missing migration list available on deployer instance :\n\n";
+
+			foreach ($migration_list as $migration_name) {
+				echo "- ".$migration_name."\n";
+			}
+			echo "\n";
+
 			return true;
 
 		} else return false;

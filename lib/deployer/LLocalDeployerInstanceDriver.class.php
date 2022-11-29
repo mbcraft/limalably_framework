@@ -184,4 +184,28 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
+	public function migrateAll($password) {
+
+		return $this->controller->migrateAll($password);
+
+	}
+
+	public function migrateReset($password) {
+
+		return $this->controller->migrateReset($password);
+
+	}
+
+	public function migrateListDone($password) {
+
+		return $this->controller->migrateListDone($password);
+
+	}
+
+	public function migrateListMissing($password) {
+
+		return $this->controller->migrateListMissing($password);
+
+	}
+
 }

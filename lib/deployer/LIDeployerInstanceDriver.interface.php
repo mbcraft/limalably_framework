@@ -47,4 +47,12 @@ interface LIDeployerInstanceDriver {
 
 	public function backupDbData($password,$connection_name,$save_file);
 
+	public function migrateAll($password);
+
+	public function migrateReset($password);
+
+	public function migrateListDone($password);
+
+	public function migrateListMissing($password);
+
 }

@@ -1661,7 +1661,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 69;
+    const BUILD_NUMBER = 70;
 
     const DEPLOYER_VERSION = "1.5";
 

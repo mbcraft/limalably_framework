@@ -80,7 +80,7 @@ class DFile extends DFileSystemElement
         return file_get_contents($this->__full_path);
     }
 
-    function getContentHash()
+    function getContentHash($excluded_paths=[])
     {
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 
@@ -107,10 +107,9 @@ class DFile extends DFileSystemElement
  */
     function delete()
     {
-        if (file_exists($this->__full_path))
-            return @unlink($this->__full_path);
-        else 
-            return false;
+        if (DFileSystemUtils::isDir($this->__full_path)) throw new \DIOException("This is a directory and it should not be!");
+
+        return @unlink($this->__full_path);
     }
 
     function isEmpty()

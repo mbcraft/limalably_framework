@@ -32,11 +32,15 @@ class DZipUtils
     
     public static function createArchive($save_file,$folder_to_zip,$local_dir="/")
     {
+        if ($save_file->exists()) $save_file->delete(); 
+
         if ($folder_to_zip instanceof DDir)
             $dir_to_zip = $folder_to_zip;
         else
             $dir_to_zip = new DDir($folder_to_zip);
         
+        if (!class_exists('ZipArchive')) throw new \Exception("Can't use zip files, ZipArchive class missing.");
+
         $zip_archive = new ZipArchive();
 
         $zip_archive->open($save_file->getFullPath(),  ZipArchive::CREATE);

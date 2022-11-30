@@ -115,6 +115,7 @@ class DStringUtils {
 
         return $result;
     }
+    
     private static function internalGetExceptionMessage(\Exception $ex,bool $print_stack_trace,bool $use_newline) {
         $NL = $use_newline ? "\n" : '<br>';
         $message = $ex->getMessage().$NL;

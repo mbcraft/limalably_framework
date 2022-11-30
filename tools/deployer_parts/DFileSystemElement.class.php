@@ -6,14 +6,14 @@
  *  
  */
 
-define('DS','/');
+if (!defined('DS')) define('DS','/');
 
 abstract class DFileSystemElement
 {
     protected $__full_path;
     protected $__path;
     
-    private static $defaultPermissionsRwx = "-rwxrwxrwx";
+    private static $defaultPermissionsRwx = "-rwxr-xr-x";
 
     public static function toOctalPermissions($rwx_permissions)
     {

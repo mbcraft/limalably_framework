@@ -42,6 +42,10 @@ class DDir extends DFileSystemElement
 
         if (!$this->exists()) return $result;
 
+        $path = $this->getPath();
+
+        if (DStringUtils::startsWith($path,$inspector->getExcludedPaths())) return $result;
+        
         $result = $inspector->visit($this);
         
         $all_folders = $this->listFolders();
@@ -98,7 +102,7 @@ class DDir extends DFileSystemElement
         else return false;
     }
 
-    function getContentHash() {
+    function getContentHash($excluded_paths=[]) {
 
         if (isset(self::$content_hash_cache[$this->__path])) return self::$content_hash_cache[$this->__path];
 
@@ -107,7 +111,9 @@ class DDir extends DFileSystemElement
         $all_hashes = "";
 
         foreach ($elements as $elem) {
-            $all_hashes .= $elem->getContentHash();
+            if (!DStringUtils::startsWith($elem->getPath(),$excluded_paths)) {
+                $all_hashes .= $elem->getContentHash($excluded_paths);
+            }
         }
 
         $result = sha1($all_hashes);
@@ -197,7 +203,7 @@ class DDir extends DFileSystemElement
     function isEmpty()
     {
         if (!$this->exists()) return true;
-
+        
         return count($this->listAll())===0;
     }
 
@@ -216,9 +222,9 @@ class DDir extends DFileSystemElement
  * TESTED
  */
     function listElements($myExcludes=self::DEFAULT_EXCLUDES,$filter = self::FILTER_ALL_FILES)
-    {     
-        if (!$this->exists()) throw new \DIOException("Directory does not exists, can't list elements.");
-
+    {   
+        if (!$this->exists()) throw new \DIOException("Directory does not exist, can't list elements.");
+        
         $excludesSet = false;
         
         if (!$excludesSet && $myExcludes === self::NO_HIDDEN_FILES) 
@@ -350,7 +356,7 @@ class DDir extends DFileSystemElement
 
     function newFile($name)
     {
-        return new DFile($this->__path.'/'.$name);
+        return new DFile($this->__full_path.'/'.$name);
     }
 
     /*
@@ -359,19 +365,23 @@ class DDir extends DFileSystemElement
      */
     function delete($recursive = false)
     {
+        $result = true;
+
         if ($recursive)
         {
             $dir_content = $this->listAll(DDir::SHOW_HIDDEN_FILES);
             foreach ($dir_content as $elem)
             {
                 if ($elem instanceof DDir)
-                    $elem->delete(true);
+                    $result &= $elem->delete(true);
                 else
-                    $elem->delete();
+                    $result &= $elem->delete();
             }
-        }
+        } 
 
-        return @rmdir($this->__full_path);
+        $result &= @rmdir($this->__full_path);
+
+        return $result;
     }
     
     function hasOnlyOneSubdir()
@@ -437,7 +447,7 @@ class DDir extends DFileSystemElement
                 }
                 throw new \DIOException("Unable to copy element of class : ".get_class($elem));
             }
-        } else throw new \DIOException("dest_dir is not a valid path or DDir instance!");
+        } else throw new \DIOException("dest_dir is not a valid path or LDir instance!");
 
     }
 

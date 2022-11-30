@@ -36,7 +36,7 @@ class LDir extends LFileSystemElement
         
     }
 
-    function explore($inspector,$excluded_paths=[])
+    function explore($inspector)
     {
         $result = [];
 
@@ -44,7 +44,7 @@ class LDir extends LFileSystemElement
 
         $path = $this->getPath();
 
-        if (LStringUtils::startsWith($path,$excluded_paths)) return $result;
+        if (LStringUtils::startsWith($path,$inspector->getExcludedPaths())) return $result;
         
         $result = $inspector->visit($this);
         
@@ -52,7 +52,7 @@ class LDir extends LFileSystemElement
         
         foreach ($all_folders as $fold)
         {
-            $r = $fold->explore($inspector,$excluded_paths);
+            $r = $fold->explore($inspector);
 
             $pre_result = array_remove_key_or_value($r,'');
 

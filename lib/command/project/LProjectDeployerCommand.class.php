@@ -37,7 +37,8 @@ class LProjectDeployerCommand implements LICommand {
             'migrate_all' => 2,
             'migrate_reset' => 2,
             'migrate_list_done' => 2,
-            'migrate_list_missing' => 2
+            'migrate_list_missing' => 2,
+            'fix_permissions' => 3
         ];
 
         if (LParameters::count()<1) {
@@ -104,6 +105,7 @@ class LProjectDeployerCommand implements LICommand {
             case 'migrate_reset': $dc->migrate_reset($deploy_key_name);break;
             case 'migrate_list_done': $dc->migrate_list_done($deploy_key_name);break;
             case 'migrate_list_missing': $dc->migrate_list_missing($deploy_key_name);break;
+            case 'fix_permissions': $dc->fix_permissions($deploy_key_name,$parameter2);break;
 
             default : throw new \Exception("Command handler not implemented : ".$command);
 

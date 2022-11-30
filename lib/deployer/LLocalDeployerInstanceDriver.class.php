@@ -208,4 +208,8 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 	}
 
+	public function fixPermissions($password,$permissions_to_set,$excluded_paths,$included_paths) {
+		return $this->controller->fixPermissions($password,$permissions_to_set,$excluded_paths,$included_paths);
+	}
+
 }

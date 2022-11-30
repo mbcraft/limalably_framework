@@ -462,6 +462,25 @@ class DFileSystemUtils
         return disk_total_space($path);
     }
 
+    static function isPermissionsFlagsValid(string $permissions_flags) {
+        if (strlen($permissions_flags)!=10) return false;
+
+        if ($permissions_flags[0]!='-') return false;
+
+        if ($permissions_flags[1]!='-' && $permissions_flags[1]!='r') return false;
+        if ($permissions_flags[2]!='-' && $permissions_flags[2]!='w') return false;
+        if ($permissions_flags[3]!='-' && $permissions_flags[3]!='x') return false;
+
+        if ($permissions_flags[4]!='-' && $permissions_flags[4]!='r') return false;
+        if ($permissions_flags[5]!='-' && $permissions_flags[5]!='w') return false;
+        if ($permissions_flags[6]!='-' && $permissions_flags[6]!='x') return false;
+
+        if ($permissions_flags[7]!='-' && $permissions_flags[7]!='r') return false;
+        if ($permissions_flags[8]!='-' && $permissions_flags[8]!='w') return false;
+        if ($permissions_flags[9]!='-' && $permissions_flags[9]!='x') return false;
+
+        return true;
+    }
 
 }
 
@@ -493,7 +512,7 @@ class DDir extends DFileSystemElement
         
     }
     
-    function explore($inspector,$excluded_paths=[])
+    function explore($inspector)
     {
         $result = [];
 
@@ -501,7 +520,7 @@ class DDir extends DFileSystemElement
 
         $path = $this->getPath();
 
-        if (DStringUtils::startsWith($path,$excluded_paths)) return $result;
+        if (DStringUtils::startsWith($path,$inspector->getExcludedPaths())) return $result;
         
         $result = $inspector->visit($this);
         
@@ -509,7 +528,7 @@ class DDir extends DFileSystemElement
         
         foreach ($all_folders as $fold)
         {
-            $r = $fold->explore($inspector,$excluded_paths);
+            $r = $fold->explore($inspector);
 
             $pre_result = array_remove_key_or_value($r,'');
 
@@ -1529,6 +1548,107 @@ class DStringUtils {
     }    
 }
 
+interface DIInspector {
+
+    public function visit($dir);
+
+    public function getExcludedPaths();
+
+    public function getIncludedPaths();
+
+}
+
+class ContentHashInspector implements DIInspector {
+
+    private $excluded_paths = [];
+    private $included_paths = [];
+
+    public function setExcludedPaths($excluded_paths) {
+        $this->excluded_paths = $excluded_paths;
+    }
+
+    public function getExcludedPaths() {
+        return $this->excluded_paths;
+    }
+
+    public function setIncludedPaths($included_paths) {
+        $this->included_paths = $included_paths;
+    }
+
+    public function getIncludedPaths() {
+        return $this->included_paths;
+    }
+
+    public function visit($dir) {
+
+        $result = [];
+
+        if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
+
+            if ($dir->getPath()!="") {
+               $result[$dir->getPath()] = $dir->getContentHash($this->excluded_paths);
+            }
+
+            $files = $dir->listFiles();
+
+            foreach ($files as $f) {
+                if (!in_array($f->getPath(),$this->excluded_paths)) {
+                    $result[$f->getPath()] = $f->getContentHash($this->excluded_paths);
+                }
+            }
+        }
+
+        return $result;
+
+    }
+}
+
+class PermissionsFixerInspector implements DIInspector {
+
+    private $excluded_paths = [];
+    private $included_paths = [];
+
+    function __construct($permissions_to_set) {
+        $this->permissions_to_set = $permissions_to_set;
+    }
+
+    public function setExcludedPaths($excluded_paths) {
+        $this->excluded_paths = $excluded_paths;
+    }
+
+    public function getExcludedPaths() {
+        return $this->excluded_paths;
+    }
+
+    public function setIncludedPaths($included_paths) {
+        $this->included_paths = $included_paths;
+    }
+
+    public function getIncludedPaths() {
+        return $this->included_paths;
+    }
+
+    public function visit($dir) {
+
+        $result = [];
+
+        if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
+
+            $files = $dir->listFiles();
+
+            foreach ($files as $f) {
+                if (!in_array($f->getPath(),$this->excluded_paths)) {
+                    $f->setPermissions($this->permissions_to_set);
+                }
+            }
+        }
+
+        return $result;
+
+    }
+}
+
+
 //misc important variables ---
 
 $current_dir = __DIR__;
@@ -1541,11 +1661,11 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 68;
+    const BUILD_NUMBER = 69;
 
-    const DEPLOYER_VERSION = "1.4";
+    const DEPLOYER_VERSION = "1.5";
 
-    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing'];
+    const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing','fixPermissions'];
 
 	private $deployer_file;
 	private $root_dir;
@@ -1602,32 +1722,6 @@ class DeployerController {
 
         return $final_value;
     }
-
-	private $excluded_paths = [];
-	private $included_paths = [];
-
-	public function visit($dir) {
-
-        $result = [];
-
-		if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
-
-            if ($dir->getPath()!="") {
-			   $result[$dir->getPath()] = $dir->getContentHash($this->excluded_paths);
-            }
-
-			$files = $dir->listFiles();
-
-			foreach ($files as $f) {
-				if (!in_array($f->getPath(),$this->excluded_paths)) {
-					$result[$f->getPath()] = $f->getContentHash($this->excluded_paths);
-				}
-			}
-		}
-
-        return $result;
-
-	}
 
     public function version($password) {
         if ($this->accessGranted($password)) {
@@ -1880,6 +1974,8 @@ class DeployerController {
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
 
+            LResult::disableOutput();
+
             LMigrationSupport::executeAllMigrations();
 
             return ['result' => self::SUCCESS_RESULT];
@@ -1901,6 +1997,8 @@ class DeployerController {
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
 
+            LResult::disableOutput();
+
             LMigrationSupport::resetAllMigrations();
 
             return ['result' => self::SUCCESS_RESULT];
@@ -1921,6 +2019,8 @@ class DeployerController {
             }
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            LResult::disableOutput();
 
             $mh_list = LMigrationSupport::printAllExecutedMigrations();
 
@@ -1946,6 +2046,8 @@ class DeployerController {
             }
 
             if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+
+            LResult::disableOutput();
 
             $mh_list = LMigrationSupport::printAllMissingMigrations();
 
@@ -2041,31 +2143,33 @@ class DeployerController {
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
-			$this->excluded_paths = $this->getFinalPathList($excluded_paths);
-			$this->included_paths = $this->getFinalPathList($included_paths);
+            $inspector = new ContentHashInspector();
+
+            $inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
+            $inspector->setIncludedPaths($this->getFinalPathList($included_paths));
 
             $pre_include_result = [];
 
-			if (count($this->included_paths)>0) {
-				foreach ($this->included_paths as $path) {
+			if (count($inspector->getIncludedPaths())>0) {
+				foreach ($inspector->getIncludedPaths() as $path) {
 					$my_dir = new DDir($this->root_dir->getFullPath().$path);
 
-					$pre_include_result = array_merge($my_dir->explore($this,$this->excluded_paths),$pre_include_result);
+					$pre_include_result = array_merge($my_dir->explore($inspector),$pre_include_result);
 				}
 			} else {
-				$pre_include_result = $this->root_dir->explore($this,$this->excluded_paths);
+				$pre_include_result = $this->root_dir->explore($inspector);
 			}
 
             $pre_result = array_remove_key_or_value($pre_include_result,'');
 
             $final_result = [];
 
-            if (empty($this->excluded_paths))
+            if (empty($inspector->getExcludedPaths()))
                 $final_result = $pre_result;
             else {
                 foreach ($pre_result as $path => $hash) {
                     $skip = false;
-                    foreach ($this->excluded_paths as $excluded) {
+                    foreach ($inspector->getExcludedPaths() as $excluded) {
                         if (DStringUtils::startsWith($path,$excluded)) 
                             $skip = true;
                         if (DStringUtils::startsWith($path,'config/deployer/'))
@@ -2081,6 +2185,45 @@ class DeployerController {
 
 		} else return $this->failure("Wrong password.");
 	}
+
+    public function fixPermissions($password,$permissions_to_set,$excluded_paths,$included_paths) {
+        if ($this->accessGranted($password)) {
+
+            if (!DFileSystemUtils::isPermissionsFlagsValid($permissions_to_set)) return $this->failure("Permissions flags are not in a valid form!");
+
+            if ($this->containsDeployerPath($excluded_paths)) {
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
+
+                if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
+            }
+
+            if ($this->containsDeployerPath($included_paths)) {
+                $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
+
+                if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
+            }
+
+            $inspector = new PermissionsFixerInspector($permissions_to_set);
+
+            $inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
+            $inspector->setIncludedPaths($this->getFinalPathList($included_paths));
+
+            $pre_include_result = [];
+
+            if (count($inspector->getIncludedPaths())>0) {
+                foreach ($inspector->getIncludedPaths() as $path) {
+                    $my_dir = new DDir($this->root_dir->getFullPath().$path);
+
+                    $my_dir->explore($inspector);
+                }
+            } else {
+                $this->root_dir->explore($inspector);
+            }
+
+            return ["result" => self::SUCCESS_RESULT];
+
+        } else return $this->failure("Wrong password.");
+    }
 
 	public function deleteFile($password,$path) {
 		if ($this->accessGranted($password)) {
@@ -2548,6 +2691,23 @@ class DeployerController {
 
 					break;
     			}
+                case 'FIX_PERMISSIONS' : {
+                    if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');
+                    else echo $this->preparePostResponse($this->failure("PASSWORD field missing in FIX_PERMISSIONS request."));
+
+                    if (isset($_POST['PERMISSIONS_TO_SET'])) $permissions_to_set = $this->getPostParameter('PERMISSIONS_TO_SET');
+                    else echo $this->preparePostResponse($this->failure("PERMISSIONS_TO_SET field missing in FIX_PERMISSIONS request."));
+
+                    if ($this->hasPostParameter('EXCLUDED_PATHS')) $excluded_paths = explode(',',$this->getPostParameter('EXCLUDED_PATHS'));
+                    else echo $this->preparePostResponse($this->failure("EXCLUDED_PATHS field missing in FIX_PERMISSIONS request."));
+
+                    if ($this->hasPostParameter('INCLUDED_PATHS')) $included_paths = explode(',',$this->getPostParameter('INCLUDED_PATHS'));
+                    else echo $this->preparePostResponse($this->failure("INCLUDED_PATHS field missing in FIX_PERMISSIONS request."));                   
+
+                    echo $this->preparePostResponse($this->fixPermissions($password,$permissions_to_set,$excluded_paths,$included_paths));
+
+                    break;
+                }
     			case 'COPY_FILE' : {
 
     				if ($this->hasPostParameter('PASSWORD')) $password = $this->getPostParameter('PASSWORD');

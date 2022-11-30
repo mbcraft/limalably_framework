@@ -513,6 +513,7 @@ class LDeployerClient {
 		echo "./bin/deployer.sh <deploy_key_name> disappear --> deletes the remote deployer\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> reset --> deletes all the remote files but not the deployer one\n\n";
 		echo "./bin/deployer.sh <deploy_key_name> temp_clean --> cleans up the remote temporary files folder\n\n";
+		echo "./bin/deployer.sh <deploy_key_name> fix_permissions <permissions_flags> --> fixes up the remote files permissions with the specified permissions flags\n\n";
 
 		echo "\n\n";
 
@@ -1348,6 +1349,29 @@ class LDeployerClient {
 		} else return false;
 	}
 
+	public function fix_permissions(string $key_name,string $permissions_to_set) {
+		if ($this->loadKey($key_name)) {
+
+			if (!LFileSystemUtils::isPermissionsFlagsValid($permissions_to_set)) return $this->failure("Permissions flag are not valid. They must be expressed as a string like '-rwxrw-r--'.");
+
+			$r = $this->current_driver->version($this->current_password);
+
+			if (!$this->isSuccess($r)) return $this->failure("Unable to successfully get version from deployer.");
+
+			echo "Deployer version : ".$r['version']."\n";
+			echo "Build number : ".$r['build']."\n";
+
+			echo "Fixing permissions on deployer instance ...\n";
+
+			$result = $this->current_driver->fixPermissions($this->current_password,$permissions_to_set,$this->getPermissionFixExcludeList(),[]);
+
+			if ($this->isSuccess($result)) {
+				return true;
+			}
+			else return $this->failure("Unable to fix permissions on deployer installation.");
+		} else return false;
+	}
+
 	private function getFrameworkIncludeList() {
 		return [FRAMEWORK_DIR_NAME."/"];
 	}
@@ -1477,6 +1501,18 @@ class LDeployerClient {
 
 		} else return false;
 
+	}
+
+	private function getPermissionFixDefaultExcludeList() {
+		return ['.alias','.bash_history','.bash_profile','.bashrc','.cshrc','.cache/','.config/','.gnupg/','Maildir/','.local/','.php/','composer.json','composer.lock','@','config/','bin/','logs/','temp/','composer.json'];
+	}
+
+	private function getPermissionFixExcludeList() {
+		$default_excludes = $this->getPermissionFixDefaultExcludeList();
+
+		$custom_ignores = $this->load_ignore_list($key_name);
+
+		return array_merge($default_excludes,$custom_ignores);
 	}
 
 	private function getProjectDefaultExcludeList() {

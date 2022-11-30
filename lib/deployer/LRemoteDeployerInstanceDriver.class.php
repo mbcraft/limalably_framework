@@ -295,5 +295,18 @@ class LRemoteDeployerInstanceDriver implements LIDeployerInstanceDriver {
 		return $this->asResult($result);
 	}
 
+	public function fixPermissions($password,$permissions_to_set,$excluded_paths,$included_paths) {
 
+		$params = [];
+		$params['METHOD'] = 'FIX_PERMISSIONS';
+		$params['PASSWORD'] = $password;
+		$params['PERMISSIONS_TO_SET'] = $permissions_to_set;
+		$params['EXCLUDED_PATHS'] = implode(',',$excluded_paths);
+		$params['INCLUDED_PATHS'] = implode(',',$included_paths);
+
+		$result = LHttp::post($this->full_deployer_url,$params);
+
+		return $this->asResult($result);
+
+	}
 }

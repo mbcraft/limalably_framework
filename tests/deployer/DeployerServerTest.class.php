@@ -450,5 +450,37 @@ class DeployerServerTest extends LTestCase {
 		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
 	}
 
+	function testDeployerFixPermissions() {
+
+		$this->reinit();
+
+		$deployer_controller = new DeployerController();
+
+		$result = $deployer_controller->hello();
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non ha dato esito positivo!");
+
+		$d_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/');
+
+		$d_dir->touch();
+
+		$f_source = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/data/a.txt');
+
+		$f_dest = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/a.txt');
+
+		$f_dest2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/prova/a.txt');
+
+		$f_source->copy($f_dest);
+
+		$f_source->copy($f_dest2);
+
+		$result = $deployer_controller->fixPermissions("",'-rwxr--r--',[],[]);
+
+		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
+
+		$this->assertEqual($f_dest->getPermissions(),"-rwxr--r--","I permessi del file non coincidono con quelli attesi!");
+		$this->assertEqual($f_dest2->getPermissions(),"-rwxr--r--","I permessi del file non coincidono con quelli attesi!");
+
+	}
 	
 }

@@ -55,4 +55,6 @@ interface LIDeployerInstanceDriver {
 
 	public function migrateListMissing($password);
 
+	public function fixPermissions($password,$permissions_to_set,$excluded_paths,$included_paths);
+
 }

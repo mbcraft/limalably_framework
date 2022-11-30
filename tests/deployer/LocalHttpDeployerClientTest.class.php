@@ -6,43 +6,48 @@
 *
 */
 
-class LocalFsDeployerClientTest extends LTestCase {
+class LocalHttpDeployerClientTest extends LTestCase {
 	
+
 	const TEST_DIR = "tests";
 
-	private function initEmptyServer() {
-		$deployer_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/');
-		$deployer_dir->delete(true);
-		$deployer_dir->touch();
-
-		$source_deployer_file = new LFile($_SERVER['FRAMEWORK_DIR'].'tools/deployer.php');
-
-		$target_deployer_file = $deployer_dir->newFile('deployer.php');
-
-		$source_deployer_file->copy($target_deployer_file);
-	}
-
-	private function initEmptyFakeProject() {
+	private function initLocalHttpWebSiteAndProject() {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
+		$deployer_file = new LFile($_SERVER['FRAMEWORK_DIR'].'tools/deployer.php');
+
+		$local_http_deployer_test_dir = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/');
+		$deployer_file->copy($local_http_deployer_test_dir);
+
+		$this->runFixAllPermissionsScript();
+		
+
+		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
+		if ($key_file->exists()) $key_file->delete();
+
+	}
+
+	private function runFixAllPermissionsScript() {
+		$fix_local_http_deployer_file_permissions_script = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/scripts/fix_http_deployer_local_site_permissions.sh');
+		$fix_local_http_deployer_file_permissions_script->execute(LFile::EXECUTE_RESULT_FORMAT_COMMAND_LINE);
 	}
 
 	private function initAll() {
-		$this->initEmptyFakeProject();
-		$this->initEmptyServer();
+		$this->disposeAll();
+		$this->initLocalHttpWebSiteAndProject();
 	}
 
 	private function disposeAll() {
 		unset($_SERVER['PROJECT_DIR']);
 
-		$deployer_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/');
-		$deployer_dir->delete(true);
-		$deployer_dir->touch();
-
 		$backup_save_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/backup_save/');
 		$backup_save_dir->delete(true);
 		$backup_save_dir->touch();
+
+		$empty_local_http_deployer_dir_script = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/scripts/delete_http_deployer_local_site_instance.sh');
+		$empty_local_http_deployer_dir_script->execute(LFile::EXECUTE_RESULT_FORMAT_COMMAND_LINE);
+
 	}
 
 	private function isSuccess($result) {
@@ -55,82 +60,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 		else return '';
 	}
 
-	
-	//ok
-	function testAddRemoveListIgnore() {
-		$this->initAll();
-
-		$dc = new LDeployerClient();
-
-		$ignore_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.ignore_list');
-
-		if ($ignore_file->exists()) $ignore_file->delete();
-
-		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
-
-		if ($key_file->exists()) $key_file->delete();
-
-		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
-
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
-
-		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
-
-		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
-
-		$r = $dc->hello('default_key');
-
-		$custom_ignore_list = $dc->print_ignore_list("default_key");
-
-		$this->assertTrue(empty($custom_ignore_list),"L'ignore list non è vuota come dovrebbe essere!");
-
-		$dc->add_to_ignore_list("default_key","qualcosa/");
-
-		$custom_ignore_list = $dc->print_ignore_list("default_key");
-
-		$this->assertTrue(count($custom_ignore_list)==1,"L'ignore list non è vuota come dovrebbe essere!");
-
-		$this->assertTrue($custom_ignore_list[0],"qualcosa/","L'elemento nella ignore list non corrisponde!");
-
-		$dc->rm_from_ignore_list("default_key","ahhh");
-
-		$dc->add_to_ignore_list("default_key","qualcosa/");
-
-		$custom_ignore_list = $dc->print_ignore_list("default_key");
-
-		$this->assertTrue(count($custom_ignore_list)==1,"L'ignore list non è vuota come dovrebbe essere!");
-
-		$this->assertTrue($custom_ignore_list[0],"qualcosa/","L'elemento nella ignore list non corrisponde!");
-
-		$dc->add_to_ignore_list("default_key","qualcosa/");
-
-		$custom_ignore_list = $dc->print_ignore_list("default_key");
-
-		$this->assertTrue(count($custom_ignore_list)==1,"L'ignore list non è vuota come dovrebbe essere!");
-
-		$this->assertTrue($custom_ignore_list[0],"qualcosa/","L'elemento nella ignore list non corrisponde!");
-
-		$dc->rm_from_ignore_list("default_key","qualcosa/");
-
-		$custom_ignore_list = $dc->print_ignore_list("default_key");
-
-		$this->assertTrue(empty($custom_ignore_list),"L'ignore list non è vuota come dovrebbe essere!");
-
-		$r = $dc->detach('default_key');
-
-		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
-
-		$this->assertFalse($key_file->exists(),"Il file della chiave non è stato eliminato! : ".$key_file->getFullPath());
-
-		$this->disposeAll();
-
-		if ($ignore_file->exists()) $ignore_file->delete();
-
-    }
-	
-	//ok
+	//ok-
 	function testGetExecMode() {
 		$this->initAll();
 
@@ -144,7 +74,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -158,7 +88,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($r,"Il comando è andato a buon fine senza un file di execution mode!");
 
-		$d = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/config/mode/');
+		$d = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/config/mode/');
 		$d->touch();
 
 		$f = $d->newFile('development.txt');
@@ -166,7 +96,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$r = $dc->get_exec_mode('default_key');
 
-		$this->assertEqual($r,"development","Il comando non è andato a buon fine e avrebbe dovuto!");
+		$this->assertTrue($r,"Il comando non è andato a buon fine e avrebbe dovuto!");
 
 		$r = $dc->detach('default_key');
 
@@ -178,7 +108,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 	}
 
-	//ok
+	//ok-
 	function testSetExecMode() {
 		$this->initAll();
 
@@ -192,7 +122,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -210,37 +140,25 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Il comando non è andato a buon fine!");
 
-		$f = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/config/mode/framework_development.txt');
-
-		$this->assertTrue($f->exists(),"Il file del config mode non è dove dovrebbe essere!");
-
 		$r = $dc->get_exec_mode('default_key');
 
-		$this->assertEqual($r,"framework_development","Il comando non è stato eseguito con successo!");
+		$this->assertTrue($r,"Il comando non è stato eseguito con successo!");
 
 		$r = $dc->set_exec_mode('default_key','testing');
 
 		$this->assertTrue($r,"Il comando non è andato a buon fine!");
 
-		$f = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/config/mode/testing.txt');
-
-		$this->assertTrue($f->exists(),"Il file del config mode non è dove dovrebbe essere!");
-
 		$r = $dc->get_exec_mode('default_key');
 
-		$this->assertEqual($r,"testing","Il comando non è stato eseguito con successo!");
+		$this->assertTrue($r,"Il comando non è stato eseguito con successo!");
 
 		$r = $dc->set_exec_mode('default_key','maintenance');
 
 		$this->assertTrue($r,"Il comando non è andato a buon fine!");
 
-		$f = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/config/mode/maintenance.txt');
-
-		$this->assertTrue($f->exists(),"Il file del config mode non è dove dovrebbe essere!");
-
 		$r = $dc->get_exec_mode('default_key');
 
-		$this->assertEqual($r,"maintenance","Il comando non è stato eseguito con successo!");
+		$this->assertTrue($r,"Il comando non è stato eseguito con successo!");
 
 		$r = $dc->detach('default_key');
 
@@ -251,8 +169,8 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
-	//ok
+	
+	//ok-
 	function testAttachDetach() {
 
 		$this->initAll();
@@ -261,13 +179,9 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
 
-		if ($key_file->exists()) $key_file->delete();
-
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -286,8 +200,8 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-	
-	//ok
+
+	//ok-
 	function testReset() {
 
 		$this->initAll();
@@ -296,17 +210,13 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
 
-		if ($key_file->exists()) $key_file->delete();
-
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
-		$enemy_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/enemy.txt');
+		$enemy_file = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/enemy.txt');
 
 		$this->assertFalse($enemy_file->exists(),"Il file intruso esiste già!");
 
@@ -328,7 +238,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 	}
 
-	//ok
+	//ok-
 	function testTempClean() {
 
 		$this->initAll();
@@ -337,25 +247,21 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$key_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/config/deployer/default_key.key');
 
-		if ($key_file->exists()) $key_file->delete();
-
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
-		$other_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/other/');
+		$other_dir = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/other/');
 
 		$other_dir->touch();
 
-		$temp_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/temp/');
+		$temp_dir = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/temp/');
 
 		$temp_dir->touch();
 
-		$enemy_file = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/temp/enemy.txt');
+		$enemy_file = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/temp/enemy.txt');
 
 		$this->assertFalse($enemy_file->exists(),"Il file intruso esiste già!");
 
@@ -380,14 +286,20 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
-	//ok
+	
+	//ok-
 	function testSetGetEnv() {
 		$this->initAll();
 
+		$df = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
+
+		$this->assertTrue($df->exists(),"Il deployer non è stato trovato al suo posto!");
+
+		$time1 = $df->getLastModificationTime();
+
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -399,17 +311,17 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$r = $dc->detach('default_key');
 
-		$this->assertTrue($this->isSuccess($r),"Il detach non è avvenuto con successo!");
+		$this->assertTrue($this->isSuccess($r),"Il detach non è avvenuto con successo! : ");
 
 		$this->disposeAll();
 	}
 	
-	//ok
+	//ok-
 	function testDeployerUpdate() {
 
 		$this->initAll();
 
-		$df = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$df = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
 
 		$this->assertTrue($df->exists(),"Il deployer non è stato trovato al suo posto!");
 
@@ -417,15 +329,17 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
 		sleep(1);
 
 		$r = $dc->set_deployer_path_from_root('default_key','deployer.php');
+
+		$r = $dc->get_deployer_path_from_root('default_key');
+
+		$this->assertEqual($r,"deployer.php","Il percorso del deployer dalla root non è corretto!");
 
 		$r = $dc->deployer_update('default_key');
 
@@ -435,29 +349,27 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$r = $dc->detach('default_key');
 
-		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
+		$this->assertTrue($this->isSuccess($r),"Il detach non è avvenuto con successo! : ");
 
 		$this->disposeAll();
 	}
 	
-	//ok
+	//ok-
 	function testProjectCheck() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+
+		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
 		$r = $dc->set_deployer_path_from_root('default_key','deployer.php');
 
 		$this->assertTrue($r,"Il set del percorso dalla root non è andato a buon fine!");
-
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
 		$r = $dc->project_check('default_key');
 
@@ -470,7 +382,6 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	
 	//ok
 	function testProjectUpdate() {
 
@@ -478,9 +389,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -494,15 +403,15 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'update non è andato a buon fine!");
 
-		$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_file.txt');
+		$f1 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_file.txt');
 
 		$this->assertTrue($f1->exists(),"Il file di progetto non è stato copiato con successo!");
 
-		$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/my_file.txt');
+		$f2 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_dir/my_file.txt');
 
 		$this->assertTrue($f2->exists(),"Il file di progetto nella sottodirectory non è stato copiato con successo!");
 
-		$f3 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/project_dir/subdir/my_subdir_file.txt');
+		$f3 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_dir/subdir/my_subdir_file.txt');
 
 		$this->assertTrue($f3->exists(),"Il file di progetto nella sotto sotto directory non è stato copiato con successo!");
 
@@ -513,16 +422,15 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	//ok
+
+	//ok-
 	function testFrameworkCheck() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -535,15 +443,13 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 	}
 	
-	//ok
+	//ok-
 	function testFrameworkUpdate() {
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -551,38 +457,24 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'update non è andato a buon fine!");
 
-		$f1 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/SampleClass.class.php');
-
-		$this->assertTrue($f1->exists(),"Il file del framework non è stato copiato con successo!");
-
-		$f2 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/bin/sample_command.sh');
-
-		$this->assertFalse($f2->exists(),"Il file nella sottodirectory del framework è stato copiato ma non doveva esserci!");
-
-		$f3 = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/lymz_framework/lib/subdir/SampleLib.class.php');
-
-		$this->assertTrue($f3->exists(),"Il file nella sotto sotto directory del framework non è stato copiato con successo!");
-
 		$r = $dc->detach('default_key');
 
 		$this->assertTrue($r,"Il detach non è avvenuto con successo!");
 
 		$this->disposeAll();
 	}
-
-	//ok
+	
+	//ok-
 	function testDisappear() {
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
-		$fd = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$fd = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
 
 		$this->assertTrue($fd->exists(),"Il deployer non è al suo posto!");
 
@@ -593,17 +485,14 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->assertFalse($fd->exists(),"Il deployer non è stato cancellato!");
 	}
 	
-
-	//ok
+	//ok-
 	function testAutoConfig() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -618,7 +507,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
+	
 	//ok
 	function testManualConfig() {
 
@@ -626,21 +515,26 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
-		$host_config = new LFile($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/config/hostnames/my_host/config.json');
+		$host_config = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/config/hostnames/my_host/config.json');
+
+		$internal_config = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/config/internal/framework.json');
 
 		$this->assertFalse($host_config->exists(),"Il file di configurazione esiste già nella destinazione e non dovrebbe!");
+
+		$this->assertFalse($internal_config->exists(),"Il file di configurazione esiste già nella destinazione e non dovrebbe!");
 
 		$r = $dc->manual_config('default_key','my_host');
 
 		$this->assertTrue($r,"La procedura di manual_config ha dato esito negativo!");
 
-		$this->assertTrue($host_config->exists(),"Il file di configurazione non è stato copiato con successo!");
+		$this->assertTrue($host_config->exists(),"Il file di configurazione non è stato copiato con successo! : ".$host_config->getFullPath());
+
+		$this->assertTrue($internal_config->exists(),"Il file di configurazione non è stato copiato con successo! : ".$internal_config->getFullPath());
+
 
 		$r = $dc->detach('default_key');
 
@@ -649,17 +543,15 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
-	//ok
+	
+	//ok-
 	function testDeployerVersion() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
-
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -674,19 +566,17 @@ class LocalFsDeployerClientTest extends LTestCase {
 		$this->disposeAll();
 
 	}
-
-	//ok
+	
+	//ok-
 	function testBackup() {
 
 		$this->initAll();
 
 		$dc = new LDeployerClient();
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php',$_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/tmp/deployer.php');
-
-		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
+		$this->assertTrue($this->isSuccess($r),"L'attach non è avvenuto con successo!");
 
 		$backup_save_dir = new LDir($_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/backup_save/');
 
@@ -698,7 +588,7 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$r = $dc->backup('default_key','/',$backup_save_dir->getFullPath());
 
-		$this->assertTrue($r,"La procedura di backup ha dato esito negativo!");
+		$this->assertTrue($this->isSuccess($r),"La procedura di backup ha dato esito negativo! : ".$this->getErrorMessage($r));
 
 		$file_list = $backup_save_dir->listFiles();
 
@@ -712,8 +602,42 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->disposeAll();
 	}
+	
+	//ok-
+	function testFixPermissions() {
 
-	//ok
+		$this->initAll();
+
+		$dc = new LDeployerClient();
+
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+
+		$dir_fix_permissions = new LDir("/home/marco/PhpProjects/DeployerTestLocalSite/my_perm_dir/");
+		$dir_fix_permissions->touch();
+		$p1 = $dir_fix_permissions->newFile("prova.txt");
+		$p1->setContent("Hello!");
+		$p1->setPermissions("-rw-------");
+
+		$this->runFixAllPermissionsScript();
+
+		$this->assertTrue($this->isSuccess($r),"L'attach non è avvenuto con successo!");
+
+		$p_flags = '-rwxr--r--';
+
+		$r = $dc->fix_permissions('default_key',$p_flags);
+
+		$this->assertTrue($this->isSuccess($r),"La procedura di fix permissions ha dato esito negativo! : ".$this->getErrorMessage($r));
+
+		$this->assertEqual($p1->getPermissions(),$p_flags,"I flag non sono stati impostati correttamente!!");
+
+		$dir_fix_permissions->delete(true);
+
+		$r = $dc->detach('default_key');
+
+		$this->disposeAll();
+	}
+
+	//ok-
 	function testHelp() {
 		$this->initAll();
 
@@ -723,6 +647,5 @@ class LocalFsDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"C'è stato un errore nella visualizzazione dell'help del deployer");
 	}
-	
 	
 }

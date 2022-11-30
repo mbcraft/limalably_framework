@@ -1558,7 +1558,7 @@ interface DIInspector {
 
 }
 
-class ContentHashInspector implements DIInspector {
+class DContentHashInspector implements DIInspector {
 
     private $excluded_paths = [];
     private $included_paths = [];
@@ -2143,7 +2143,7 @@ class DeployerController {
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
-            $inspector = new ContentHashInspector();
+            $inspector = new DContentHashInspector();
 
             $inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
             $inspector->setIncludedPaths($this->getFinalPathList($included_paths));

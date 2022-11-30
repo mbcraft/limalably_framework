@@ -77,6 +77,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 	}
 	
+	//ok
 	function testBackupDbStructure() {
 
 		$this->initAll();
@@ -129,7 +130,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 	}
 	
-	
+	//ok
 	function testBackupDbData() {
 
 		$this->initAll();

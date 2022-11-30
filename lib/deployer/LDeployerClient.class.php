@@ -289,31 +289,34 @@ class LDeployerClient {
 
 	private function clientListHashes($excluded_paths,$included_paths) {
 			
-		$this->excluded_paths = $this->getFinalPathList($excluded_paths);
-		$this->included_paths = $this->getFinalPathList($included_paths);
+
+		$inspector = new LContentHashInspector();
+
+		$inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
+		$inspector->setIncludedPaths($this->getFinalPathList($included_paths));
 
 		$pre_include_result = [];
 
-		if (count($this->included_paths)>0) {
-			foreach ($this->included_paths as $path) {
+		if (count($inspector->getIncludedPaths())>0) {
+			foreach ($inspector->getIncludedPaths() as $path) {
 				$my_dir = new LDir($this->root_dir->getFullPath().$path);
 
-				$pre_include_result = array_merge($my_dir->explore($this),$pre_include_result);
+				$pre_include_result = array_merge($my_dir->explore($inspector),$pre_include_result);
 			}
 		} else {
-			$pre_include_result = $this->root_dir->explore($this);
+			$pre_include_result = $this->root_dir->explore($inspector);
 		}
 
         $pre_result = array_remove_key_or_value($pre_include_result,'');
 
         $final_result = [];
 
-        if (empty($this->excluded_paths))
+        if (empty($inspector->getExcludedPaths()))
             $final_result = $pre_result;
         else {
 	        foreach ($pre_result as $path => $hash) {
 	            $skip = false;
-	            foreach ($this->excluded_paths as $excluded) {
+	            foreach ($inspector->getExcludedPaths() as $excluded) {
 	                if (LStringUtils::startsWith($path,$excluded)) 
 	                    $skip = true;
 	                if (LStringUtils::startsWith($path,'config/deployer/'))
@@ -1363,12 +1366,12 @@ class LDeployerClient {
 
 			echo "Fixing permissions on deployer instance ...\n";
 
-			$result = $this->current_driver->fixPermissions($this->current_password,$permissions_to_set,$this->getPermissionFixExcludeList(),[]);
+			$result = $this->current_driver->fixPermissions($this->current_password,$permissions_to_set,$this->getPermissionFixExcludeList($key_name),[]);
 
 			if ($this->isSuccess($result)) {
 				return true;
 			}
-			else return $this->failure("Unable to fix permissions on deployer installation.");
+			else return $this->failure("Unable to fix permissions on deployer installation : ".$result['message']);
 		} else return false;
 	}
 
@@ -1507,7 +1510,7 @@ class LDeployerClient {
 		return ['.alias','.bash_history','.bash_profile','.bashrc','.cshrc','.cache/','.config/','.gnupg/','Maildir/','.local/','.php/','composer.json','composer.lock','@','config/','bin/','logs/','temp/','composer.json'];
 	}
 
-	private function getPermissionFixExcludeList() {
+	private function getPermissionFixExcludeList($key_name) {
 		$default_excludes = $this->getPermissionFixDefaultExcludeList();
 
 		$custom_ignores = $this->load_ignore_list($key_name);

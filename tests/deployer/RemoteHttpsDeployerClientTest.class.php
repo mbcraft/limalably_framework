@@ -10,7 +10,6 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 	
 	const TEST_DIR = 'tests';	
 	
-	/*
 	//ok
 	function testProjectCheck() {
 
@@ -191,7 +190,7 @@ class RemoteHttpsDeployerClientTest extends LTestCase {
 
 		$_SERVER['FRAMEWORK_DIR'] = $old_framework_dir;
 	}
-	*/
+	
 	//ok
 	function testDeployerUpdate() {
 		$old_framework_dir = $_SERVER['FRAMEWORK_DIR'];

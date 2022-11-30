@@ -284,6 +284,14 @@ abstract class LFileSystemElement
         }
     }
 
+    function chown($user) {
+        return @chown($this->__full_path,$user);
+    }
+
+    function chgrp($group) {
+        return @chgrp($this->__full_path,$group);
+    }
+
     function __toString()
     {
         return $this->getFullPath();

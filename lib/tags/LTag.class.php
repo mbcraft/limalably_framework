@@ -99,19 +99,6 @@ class LTag implements LITagRenderingTips, ArrayAccess
             return $this;
         }
 
-        if (LStringUtils::startsWith($method_name,'ch_')) {
-            $child_name = substr($method_name,strlen('ch_'));
-
-            if (count($parameters)!=1) throw new \Exception("Invalid parameter number for child ".$child_name);
-
-            $child = $parameters[0];
-
-            $this->setChild($child_name,$child);
-
-            return $this;
-            
-        }
-
         if ($method_name=='class' || $method_name=='style') {
 
             if ($method_name=='class')
@@ -151,13 +138,8 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
         if (isset($this->attributes[$real_key])) {
             unset($this->attributes[$real_key]);
-            return;
         }        
 
-        if (isset($this->children[$real_key])) {
-            unset($this->children[$real_key]);
-            return;
-        }
     }
 
     function setAttribute($key,$value)
@@ -227,14 +209,6 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
         return $child;
     } 
-
-    function __get($child_name) {
-        return $this->getChild($this->realElementName($child_name));
-    }
-
-    function __set($child_name,$value) {
-        $this->setChild($child_name,$value);
-    }
 
     public function add(... $child)
     {

@@ -110,7 +110,7 @@ class TagTest extends LTestCase {
 		$c3->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
 		$c3->setIndentMode(LTag::INDENT_MODE_NORMAL);
 
-		$p3->my_child = $c3;
+		$p3["my_child"] = $c3;
 		$this->assertEqual($c3->getParent(),$p3,"Il parent non è stato sistemato correttamente!!");
 
 
@@ -122,7 +122,7 @@ class TagTest extends LTestCase {
 		$c4->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
 		$c4->setIndentMode(LTag::INDENT_MODE_NORMAL);
 
-		$p4->ch_testChild($c4);
+		$p4["testChild"] = $c4;
 		$this->assertEqual($c4->getParent(),$p4,"Il parent non è stato sistemato correttamente!!");
 
 
@@ -143,6 +143,10 @@ class TagTest extends LTestCase {
 		$p1[] = "This is my content";
 
 		$this->assertEqual("".$p1,'<abcd my_attribute="first_value" data-info="second_value" data-test-mode="Something \'cute\'!" another__attribute="another_value" presence_attribute >This is my content</abcd>',"Il rendering del tag non è corretto!");
+
+		unset($p1->presence_attribute);
+
+		$this->assertEqual("".$p1,'<abcd my_attribute="first_value" data-info="second_value" data-test-mode="Something \'cute\'!" another__attribute="another_value" >This is my content</abcd>',"Il rendering del tag non è corretto!");
 
 	}
 
@@ -168,6 +172,23 @@ class TagTest extends LTestCase {
 
 		$this->assertEqual("".$p1,'<abcd ></abcd>',"Il tag non è stato renderizzato correttamente!!");
 
+	}
+
+	public function testRequired() {
+		$p1 = new LTag('abcd');
+		$p1->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
+		$p1->setIndentMode(LTag::INDENT_MODE_SKIP_ALL);
+
+		$p1->addRequiredAttribute("class");
+
+		try {
+			echo "".$p1;
+			$this->fail("Renders without required attribute 'class'!");
+		} catch (\Exception $ex) {
+
+		}
+
+		$p1->class("something");
 	}
 
 }

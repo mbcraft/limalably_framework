@@ -6,7 +6,7 @@
  *  
  */
 
-class LXML implements LITagRenderingTips, ArrayAccess
+class LTag implements LITagRenderingTips, ArrayAccess
 {
     private $my_parent = null;
     private $required_attributes = array();
@@ -19,10 +19,11 @@ class LXML implements LITagRenderingTips, ArrayAccess
     private $tag_mode = self::TAG_MODE_AUTO;
     private $indent_mode = self::INDENT_MODE_AUTO;
 
-    private static function $indent_level = 0;
+    private static $indent_level = 0;
 
     function __construct(string $tag_name) {
         $this->original_tag_name = $tag_name;
+        $this->tag_name = $tag_name;
 
         if (LHtmlStandardTagTable::hasTagDefinition($tag_name)) {
             LHtmlStandardTagTable::setup($tag_name,$this);
@@ -45,6 +46,10 @@ class LXML implements LITagRenderingTips, ArrayAccess
 
     public function setParent($parent) {
         $this->my_parent = $parent;
+    }
+
+    public function getParent() {
+        return $this->my_parent;
     }
 
     public function setIndentMode($indent_mode) {
@@ -75,8 +80,7 @@ class LXML implements LITagRenderingTips, ArrayAccess
 
     function __call($method_name,$parameters) {
 
-        if ($this->mode == self::XML_MODE_AUTO) throw new \Exception("Mode is not correctly setup!");
-        if ($this->mode == self::)
+        if ($this->tag_mode == self::TAG_MODE_AUTO) throw new \Exception("Mode is not correctly setup!");
 
         if (count($parameters)==0) {
             $this->setAttribute($method_name,false);
@@ -90,7 +94,7 @@ class LXML implements LITagRenderingTips, ArrayAccess
 
             $child = $parameters[0];
 
-            $this->children[$child_name] = $child;
+            $this->children[$child_name] = $this->parentedChild($child);
 
             return $this;
             
@@ -194,8 +198,8 @@ class LXML implements LITagRenderingTips, ArrayAccess
 
     public function add(... $child)
     {
-        if ($this->mode == self::TAG_MODE_AUTO) throw new \Exception("Mode is not correctly setup!");
-        if ($this->mode != self::TAG_MODE_OPEN_CONTENT_CLOSE) throw new \Exception("Tag mode not valid for add child : ".$this->getPrintableTagMode());
+        if ($this->tag_mode == self::TAG_MODE_AUTO) throw new \Exception("Mode is not correctly setup!");
+        if ($this->tag_mode != self::TAG_MODE_OPEN_CONTENT_CLOSE) throw new \Exception("Tag mode not valid for add child : ".$this->getPrintableTagMode());
 
         foreach ($child as $c)
         {

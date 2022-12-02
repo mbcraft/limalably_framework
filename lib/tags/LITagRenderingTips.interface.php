@@ -1,6 +1,6 @@
 <?php
 
-interface LIXMLRenderingTips {
+interface LITagRenderingTips {
 
     const TAG_MODE_AUTO = 0;
     const TAG_MODE_OPEN_CONTENT_CLOSE = 1;

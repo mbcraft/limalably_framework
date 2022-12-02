@@ -43,6 +43,7 @@ class LAssert {
     }
 
     private function getValueAsString($value) {
+        if ($value===null) return "[NULL]";
         if ($value===true) return "true";
         if ($value===false) return "false";
         if (is_string($value)) return $value;

@@ -75,6 +75,10 @@ class LTag implements LITagRenderingTips, ArrayAccess
             default : return "Unknown mode : fix the code.";
         }
     }
+
+    private function realElementName($name) {
+        return str_replace('__','-',$name);
+    }
     
     //attributes management
 
@@ -94,7 +98,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
             $child = $parameters[0];
 
-            $this->children[$child_name] = $this->parentedChild($child);
+            $this->setChild($child_name,$child);
 
             return $this;
             
@@ -127,10 +131,13 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
     function setAttribute($key,$value)
     {
-        $this->attributes[$key] = $value;
+        $this->attributes[$this->realElementName($key)] = $value;
     }
 
     function getAttribute($key) {
+
+        $key = $this->realElementName($key);
+
         return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
     }
 
@@ -164,7 +171,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
     }
 
     public function addRequiredAttribute($attr_name) {
-        $this->required_attributes[] = $attr_name;
+        $this->required_attributes[] = $this->realElementName($attr_name);
     }
 
     private function checkRequiredAttributes() {
@@ -175,7 +182,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
     function hasAttribute($key)
     {
-        return isset($this->attributes[$key]);
+        return isset($this->attributes[$this->realElementName($key)]);
     }
 
     //child management
@@ -189,11 +196,11 @@ class LTag implements LITagRenderingTips, ArrayAccess
     } 
 
     function __get($child_name) {
-        return $this->getChild($child_name);
+        return $this->getChild($this->realElementName($child_name));
     }
 
     function __set($child_name,$value) {
-        $this->children[$child_name] = $this->parentedChild($value);
+        $this->setChild($child_name,$value);
     }
 
     public function add(... $child)
@@ -203,7 +210,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
         foreach ($child as $c)
         {
-            $this->children[] = $this->parentedChild($c);
+            $this->setChild(null,$c);
         }
 
         return $this;
@@ -215,18 +222,39 @@ class LTag implements LITagRenderingTips, ArrayAccess
     }
 
     function getChild($child_name) {
-        if (isset($this->children[$child_name])) return $this->children[$child_name];
+
+        $child_name = $this->realElementName($child_name);
+
+        if (isset($this->children[$$child_name])) return $this->children[$child_name];
         else {
             if (in_array($child_name,$this->required_children)) throw new \Exception("Missing children ".$child_name." in tag ".$this->original_tag_name);
             else return "<!-- empty child '".$child_name."' -->";
         }
     }
 
+    function setChild($offset,$child) {
+        if (is_null($child)) throw new \Exception("Unable to add null to this child list");
+
+        if (is_null($offset)) {
+            $this->children[] = $this->parentedChild($child);
+        } else {
+            if (is_string($offset)) $offset = $this->realElementName($offset);
+
+            $this->children[$offset] = $this->parentedChild($child);
+        }
+    }
+
     function hasChild($child_name) {
+
+        $child_name = $this->realElementName($child_name);
+
         return isset($this->children[$child_name]);
     }
 
     public function addRequiredChildren($child_name) {
+
+        $child_name = $this->realElementName($child_name);
+
         $this->required_children[] = $child_name;
     }
 
@@ -237,6 +265,9 @@ class LTag implements LITagRenderingTips, ArrayAccess
     }
 
     public function findAncestorChildByName($child_name) {
+
+        $child_name = $this->realElementName($child_name);
+
         if (isset($this->children[$child_name])) return $this->children[$child_name];
 
         if (in_array($child_name,$this->required_children)) throw new \Exception("Required children is missing from ".$this->original_tag_name);
@@ -251,6 +282,8 @@ class LTag implements LITagRenderingTips, ArrayAccess
      * ArrayAccess interface
     */
     public function offsetExists($offset) {
+
+        if (is_string($offset)) $offset = $this->realElementName($offset);
 
         return isset($this->children[$offset]);
     }
@@ -268,19 +301,15 @@ class LTag implements LITagRenderingTips, ArrayAccess
     */
     public function offsetSet($offset,$child) {
 
-        if (is_null($child)) throw new \Exception("Unable to add null to this child list");
-
-        if (is_null($offset)) {
-            $this->children[] = $this->parentedChild($child);
-        } else {
-            $this->children[$offset] = $this->parentedChild($child);
-        }
+        $this->setChild($offset,$child);
     }
 
     /**
      * ArrayAccess interface
     */
     public function offsetUnset($offset) {
+
+        if (is_string($offset)) $offset = $this->realElementName($offset);
 
         unset($this->children[$offset]);
     }

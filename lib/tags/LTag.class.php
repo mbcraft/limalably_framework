@@ -258,7 +258,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
         return isset($this->children[$child_name]);
     }
 
-    public function addRequiredChildren($child_name) {
+    public function addRequiredChild($child_name) {
 
         $child_name = $this->realElementName($child_name);
 

@@ -189,6 +189,33 @@ class TagTest extends LTestCase {
 		}
 
 		$p1->class("something");
+
+		try {
+			$p_res = "".$p1;
+		} catch (\Exception $ex) {
+			$this->fail("Do not renders with required attribute 'class'!");
+		}
+
+		$p2 = new LTag('abcd');
+		$p2->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
+		$p2->setIndentMode(LTag::INDENT_MODE_SKIP_ALL);
+
+		$p2->addRequiredChild("my_child");
+
+		try {
+			echo "".$p2;
+			$this->fail("Renders without required child 'my_child'!");
+		} catch (\Exception $ex) {
+
+		}
+
+		$p2['my_child'] = "something";
+
+		try {
+			$p_res2 = "".$p2;
+		} catch (\Exception $ex) {
+			$this->fail("Do not renders with required child 'my_child'!");
+		}
 	}
 
 }

@@ -60,7 +60,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
     private function checkIndentMode() {
         if ($this->tag_mode == self::TAG_MODE_OPEN_ONLY || $this->tag_mode== self::TAG_MODE_OPEN_EMPTY_CLOSE || $this->tag_mode==self::TAG_MODE_OPENCLOSE_NO_CONTENT) {
-            if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) throw new \Exception("Required intend mode for ".$this->getPrintableTagMode()." is INDENT_MODE_SKIP_ALL.");
+            if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) throw new \Exception("Required intent mode for ".$this->getPrintableTagMode()." is INDENT_MODE_SKIP_ALL.");
         }
     }
 
@@ -312,7 +312,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
                 $result .= " >";
 
-                if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) 
+                if ($this->indent_mode == self::INDENT_MODE_NORMAL) 
                     {
                         $result .= "\r\n";
                         self::$indent_level++;
@@ -320,7 +320,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
                 foreach ($this->children as $key => $child) {
                     if (is_numeric($key)) {
-                        if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) { 
+                        if ($this->indent_mode == self::INDENT_MODE_NORMAL) { 
                             for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
                         }
 
@@ -328,10 +328,16 @@ class LTag implements LITagRenderingTips, ArrayAccess
                     }
                 }
 
-                if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) self::$indent_level--;
+                if ($this->indent_mode == self::INDENT_MODE_NORMAL) $result .= "\r\n";
+
+                if ($this->indent_mode == self::INDENT_MODE_NORMAL) self::$indent_level--;
+
+                if ($this->indent_mode == self::INDENT_MODE_NORMAL) {
+                    for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
+                }
 
                 $result .= '</'.$this->tag_name.'>';
-                if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) $result .= "\r\n";
+                
 
                 return $result;
             }

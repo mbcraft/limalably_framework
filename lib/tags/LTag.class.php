@@ -112,8 +112,6 @@ class LTag implements LITagRenderingTips, ArrayAccess
             
         }
 
-        if ($method_name=='clazz') $method_name = 'class';
-
         if ($method_name=='class' || $method_name=='style') {
 
             if ($method_name=='class')
@@ -135,6 +133,31 @@ class LTag implements LITagRenderingTips, ArrayAccess
             return $this;
         }
 
+    }
+
+    function __isset($key) {
+
+        $real_key = $this->realElementName($key);
+
+        if (isset($this->attributes[$real_key])) return true;
+        if (isset($this->children[$real_key])) return true;
+
+        return false;
+    }
+
+    function __unset($key) {
+
+        $real_key = $this->realElementName($key);
+
+        if (isset($this->attributes[$real_key])) {
+            unset($this->attributes[$real_key]);
+            return;
+        }        
+
+        if (isset($this->children[$real_key])) {
+            unset($this->children[$real_key]);
+            return;
+        }
     }
 
     function setAttribute($key,$value)
@@ -159,7 +182,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
         }
         else {
             $current_value.= $char.$value;
-            $this->setAttribute($key,$value);
+            $this->setAttribute($key,$current_value);
         }
     }
 

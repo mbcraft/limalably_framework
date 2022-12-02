@@ -138,11 +138,24 @@ class TagTest extends LTestCase {
 		$p1->data__info("second_value");
 		$p1->data__test__mode('Something "cute"!');
 		$p1->another§attribute('another_value');
+		$p1->presence_attribute();
 
 		$p1[] = "This is my content";
 
-		$this->assertEqual("".$p1,'<abcd my_attribute="first_value" data-info="second_value" data-test-mode="Something \'cute\'!" another__attribute="another_value" >This is my content</abcd>',"Il rendering del tag non è corretto!");
+		$this->assertEqual("".$p1,'<abcd my_attribute="first_value" data-info="second_value" data-test-mode="Something \'cute\'!" another__attribute="another_value" presence_attribute >This is my content</abcd>',"Il rendering del tag non è corretto!");
 
+	}
+
+	public function testStyleAndClassAttributes() {
+		$p1 = new LTag('abcd');
+		$p1->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
+		$p1->setIndentMode(LTag::INDENT_MODE_SKIP_ALL);
+
+		$p1->class("something");
+		$p1->class("else");
+		$p1->class("equal");
+
+		$this->assertEqual("".$p1,'<abcd class="something else equal" ></abcd>',"Il tag non è renderizzato correttamente!!");	
 	}
 
 }

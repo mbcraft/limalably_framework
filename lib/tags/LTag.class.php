@@ -178,12 +178,15 @@ class LTag implements LITagRenderingTips, ArrayAccess
         $current_value = $this->getAttribute($key);
 
         if (!$current_value) {
-            $this->setAttribute($key,$value);
+            $current_value = $value;
         }
         else {
-            $current_value.= $char.$value;
-            $this->setAttribute($key,$current_value);
+            $current_value .= $value;
         }
+
+        if (!LStringUtils::endsWith($current_value,$char)) $current_value .= $char;
+
+        $this->setAttribute($key,$current_value);
     }
 
     private function renderAttribute($key,$value) {

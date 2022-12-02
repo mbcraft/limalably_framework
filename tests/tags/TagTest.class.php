@@ -155,7 +155,19 @@ class TagTest extends LTestCase {
 		$p1->class("else");
 		$p1->class("equal");
 
-		$this->assertEqual("".$p1,'<abcd class="something else equal" ></abcd>',"Il tag non è renderizzato correttamente!!");	
+		$p1->style("font-size:12px");
+		$p1->style("padding-top:10px");
+
+		$this->assertEqual("".$p1,'<abcd class="something else equal " style="font-size:12px;padding-top:10px;" ></abcd>',"Il tag non è renderizzato correttamente!!");	
+
+		unset($p1->style);
+
+		$this->assertEqual("".$p1,'<abcd class="something else equal " ></abcd>',"Il tag non è renderizzato correttamente!!");	
+
+		unset($p1->class);
+
+		$this->assertEqual("".$p1,'<abcd ></abcd>',"Il tag non è stato renderizzato correttamente!!");
+
 	}
 
 }

@@ -76,8 +76,16 @@ class LTag implements LITagRenderingTips, ArrayAccess
         }
     }
 
+    /**
+    Non è detto che in futuro non crei semplicemente una tabella di nomi di elementi di cui fare il replace in toto
+    in modo da usare comunque il singolo underscore per il trattino medio (-).
+    Comunque anche questa non è male come soluzione. Non è detto che non si possano usare entrambe.
+    */
     private function realElementName($name) {
-        return str_replace('__','-',$name);
+        $step1 = str_replace('__','-',$name);
+        $step2 = str_replace('§','__',$step1);
+
+        return $step2;
     }
     
     //attributes management
@@ -155,8 +163,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
         }
     }
 
-    private function renderAttribute($key) {
-        $value = $this->getAttribute($key);
+    private function renderAttribute($key,$value) {
 
         if (is_object($value)) $value = "".$value;
 
@@ -333,7 +340,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
         $result = '<'.$this->tag_name;
 
         foreach ($this->attributes as $key => $value) {
-            $result.= $this->renderAttribute($key);
+            $result.= $this->renderAttribute($key, $value);
         }
 
         switch ($this->tag_mode) {

@@ -127,7 +127,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
     function setAttribute($key,$value)
     {
-        $this->attributes[$key] = $attributes;
+        $this->attributes[$key] = $value;
     }
 
     function getAttribute($key) {
@@ -310,9 +310,13 @@ class LTag implements LITagRenderingTips, ArrayAccess
         switch ($this->tag_mode) {
             case self::TAG_MODE_OPEN_CONTENT_CLOSE : {
 
-                $result .= " >\r\n";
+                $result .= " >";
 
-                if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) self::$indent_level++;
+                if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) 
+                    {
+                        $result .= "\r\n";
+                        self::$indent_level++;
+                    }
 
                 foreach ($this->children as $key => $child) {
                     if (is_numeric($key)) {
@@ -327,7 +331,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
                 if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) self::$indent_level--;
 
                 $result .= '</'.$this->tag_name.'>';
-                $result .= "\r\n";
+                if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) $result .= "\r\n";
 
                 return $result;
             }

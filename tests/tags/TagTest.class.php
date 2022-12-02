@@ -4,6 +4,16 @@
 
 class TagTest extends LTestCase {
 	
+	function testVariousRenderingModes() {
+		$p1 = new LTag('abcd');
+		$p1->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
+		$p1->setIndentMode(LTag::INDENT_MODE_SKIP_ALL);
+
+		$p1->my_attribute("my_value");
+		$p1[] = "This is my content";
+
+		$this->assertEqual("".$p1,'<abcd my_attribute="my_value" >This is my content</abcd>',"Il rendering del tag non è corretto!");
+	}
 
 	function testParent() {
 

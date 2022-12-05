@@ -216,6 +216,35 @@ class TagTest extends LTestCase {
 		} catch (\Exception $ex) {
 			$this->fail("Do not renders with required child 'my_child'!");
 		}
+
+		$p3 = new LTag('abcd');
+		$p3->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
+		$p3->setIndentMode(LTag::INDENT_MODE_SKIP_ALL);
+		$p3->addRequiredStringInAttribute('prova',['a','b','c','d']);
+
+		try {
+			$p_res3 = "".$p3;
+			$this->fail("Do renders with missing attribute prova!");	
+		} catch (\Exception $ex) {
+		}
+
+		$p3->prova('a z');
+
+		try {
+			$p_res3 = "".$p3;
+		} catch (\Exception $ex) {
+			$this->fail("Do not renders with attribute prova!");
+		}
+
+		unset($p3->prova);
+
+		$p3->prova('r y');
+
+		try {
+			$p_res3 = "".$p3;
+			$this->fail("Do renders with missing correct string in attribute prova!");	
+		} catch (\Exception $ex) {
+		}
 	}
 
 }

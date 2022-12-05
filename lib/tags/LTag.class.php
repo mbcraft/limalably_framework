@@ -6,10 +6,11 @@
  *  
  */
 
-class LTag implements LITagRenderingTips, ArrayAccess
+class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 {
     private $my_parent = null;
     private $required_attributes = array();
+    private $required_string_in_attribute = array();
     private $attributes = array();
     private $required_children = array();
     private $children = array();
@@ -122,6 +123,14 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
     }
 
+    function __set($key,$value) {
+        throw new \Exception("Do not use this syntax. It is not supported.");
+    }
+
+    function __get($key) {
+        throw new \Exception("Do not use this syntax. It is not supported.");
+    }
+
     function __isset($key) {
 
         $real_key = $this->realElementName($key);
@@ -189,9 +198,35 @@ class LTag implements LITagRenderingTips, ArrayAccess
         $this->required_attributes[] = $this->realElementName($attr_name);
     }
 
+    public function addRequiredStringInAttribute($attr_name,$value_or_list) {
+
+        $real_attr_name = $this->realElementName($attr_name);
+
+        if (!isset($this->required_string_in_attribute[$real_attr_name])) $this->required_string_in_attribute[$real_attr_name] = [];
+
+        if (!is_array($value_or_list)) $value_or_list = [$value_or_list];
+
+        $this->required_string_in_attribute[$real_attr_name][] = $value_or_list;
+    }
+
     private function checkRequiredAttributes() {
         foreach ($this->required_attributes as $attr_name) {
-            if (!isset($this->attributes[$attr_name])) throw new \Exception("Missing required attribute '".$attr_name."' for ".$this->original_tag_name);
+            $real_attr_name = $this->realElementName($attr_name);
+
+            if (!isset($this->attributes[$real_attr_name])) throw new \Exception("Missing required attribute '".$real_attr_name."' for ".$this->original_tag_name);
+        }
+    }
+
+    private function checkRequiredStringsInAttributes() {
+        foreach ($this->required_string_in_attribute as $real_attr_name => $check_list) {
+            
+            if (!isset($this->attributes[$real_attr_name])) throw new \Exception("Attribute is not even specified inside tag ".$this->original_tag_name);
+
+            $attr_value = $this->attributes[$real_attr_name];
+
+            foreach ($check_list as $string_list) {
+                if (!LStringUtils::contains($attr_value,$string_list)) throw new \Exception("Attribute ".$real_attr_name." does not contains any of the strings [".implode(',',$string_list)."]");
+            }
         }
     }
 
@@ -203,7 +238,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
     //child management
 
     private function parentedChild($child) {
-        if ($child instanceof LTag) {
+        if ($child instanceof LTag || $child instanceof LTagReference) {
             $child->setParent($this);
         }
 
@@ -330,6 +365,7 @@ class LTag implements LITagRenderingTips, ArrayAccess
 
         $this->checkIndentMode();
         $this->checkRequiredAttributes();
+        $this->checkRequiredStringsInAttributes();
         $this->checkRequiredChildren();
 
         $result = "";

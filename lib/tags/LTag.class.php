@@ -18,17 +18,17 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     private $original_tag_name = null;
     private $tag_name = null;
     private $tag_mode = self::TAG_MODE_AUTO;
-    private $indent_mode = self::INDENT_MODE_AUTO;
+    private $indent_mode = self::TAG_INDENT_AUTO;
 
     private static $indent_level = 0;
 
-    function __construct(string $tag_name) {
-        $this->original_tag_name = $tag_name;
-        $this->tag_name = $tag_name;
+    function __construct(string $original_tag_name) {
+        $this->original_tag_name = $original_tag_name;
+        $this->tag_name = $original_tag_name;
+    }
 
-        if (LHtmlStandardTagTable::hasTagDefinition($tag_name)) {
-            LHtmlStandardTagTable::setup($tag_name,$this);
-        }
+    public function getOriginalTagName() {
+        return $this->original_tag_name;
     }
 
     //setup and dump functions
@@ -61,7 +61,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
     private function checkIndentMode() {
         if ($this->tag_mode == self::TAG_MODE_OPEN_ONLY || $this->tag_mode== self::TAG_MODE_OPEN_EMPTY_CLOSE || $this->tag_mode==self::TAG_MODE_OPENCLOSE_NO_CONTENT) {
-            if ($this->indent_mode != self::INDENT_MODE_SKIP_ALL) throw new \Exception("Required intent mode for ".$this->getPrintableTagMode()." is INDENT_MODE_SKIP_ALL.");
+            if ($this->indent_mode != self::TAG_INDENT_SKIP_ALL) throw new \Exception("Required intent mode for ".$this->getPrintableTagMode()." is TAG_INDENT_SKIP_ALL.");
         }
     }
 
@@ -75,6 +75,21 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
             default : return "Unknown mode : fix the code.";
         }
+    }
+
+    public function makeClone() {
+
+        $result = new LTag($this->original_tag_name);
+        $result->tag_name = $this->tag_name;
+        $result->tag_mode = $this->tag_mode;
+        $result->indent_mode = $this->indent_mode;
+        $result->attributes = $this->attributes;
+        $result->required_attributes = $this->required_attributes;
+        $result->required_string_in_attribute = $this->required_string_in_attribute;
+        $result->required_children = $this->required_children;
+
+        return $result;
+
     }
 
     /**
@@ -361,7 +376,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     function __toString() {
         if (!$this->tag_name) throw new \Exception("Tag name is not set.");
         if ($this->tag_mode == self::TAG_MODE_AUTO) throw new \Exception("Can't render tag with TAG_MODE_AUTO set.");
-        if ($this->indent_mode == self::INDENT_MODE_AUTO) throw new \Exception("Can't render tag with INDENT_MODE_AUTO set.");
+        if ($this->indent_mode == self::TAG_INDENT_AUTO) throw new \Exception("Can't render tag with TAG_INDENT_AUTO set.");
 
         $this->checkIndentMode();
         $this->checkRequiredAttributes();
@@ -369,7 +384,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
         $this->checkRequiredChildren();
 
         $result = "";
-        if ($this->indent_mode == self::INDENT_MODE_NORMAL) {
+        if ($this->indent_mode == self::TAG_INDENT_NORMAL) {
             for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
         }
 
@@ -384,7 +399,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
                 $result .= " >";
 
-                if ($this->indent_mode == self::INDENT_MODE_NORMAL) 
+                if ($this->indent_mode == self::TAG_INDENT_NORMAL) 
                     {
                         $result .= "\r\n";
                         self::$indent_level++;
@@ -392,7 +407,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
                 foreach ($this->children as $key => $child) {
                     if (is_numeric($key)) {
-                        if ($this->indent_mode == self::INDENT_MODE_NORMAL) { 
+                        if ($this->indent_mode == self::TAG_INDENT_NORMAL) { 
                             for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
                         }
 
@@ -400,11 +415,11 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
                     }
                 }
 
-                if ($this->indent_mode == self::INDENT_MODE_NORMAL) $result .= "\r\n";
+                if ($this->indent_mode == self::TAG_INDENT_NORMAL) $result .= "\r\n";
 
-                if ($this->indent_mode == self::INDENT_MODE_NORMAL) self::$indent_level--;
+                if ($this->indent_mode == self::TAG_INDENT_NORMAL) self::$indent_level--;
 
-                if ($this->indent_mode == self::INDENT_MODE_NORMAL) {
+                if ($this->indent_mode == self::TAG_INDENT_NORMAL) {
                     for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
                 }
 

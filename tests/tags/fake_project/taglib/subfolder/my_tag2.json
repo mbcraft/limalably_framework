@@ -1,0 +1,12 @@
+{
+	"tag" : "span",
+	"mode" : "OPEN_CONTENT_CLOSE",
+	"indent" : "SKIP_ALL",
+	"default_attributes" : {
+		"style" : "font-size:10px",
+		"class" : "my_custom_class"
+	},
+	"required_attributes" : [
+		"class"
+	]
+}

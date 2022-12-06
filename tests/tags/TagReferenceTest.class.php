@@ -9,7 +9,7 @@ class TagReferenceTest extends LTestCase {
 
 		$p = new LTag('abcd');
 		$p->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
-		$p->setIndentMode(LTag::INDENT_MODE_SKIP_ALL);
+		$p->setIndentMode(LTag::TAG_INDENT_SKIP_ALL);
 		$p["prova"] = "Ciao";
 
 		$p[] = new LTagReference('prova');
@@ -27,7 +27,7 @@ class TagReferenceTest extends LTestCase {
 
 		$p = new LTag('abcd');
 		$p->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
-		$p->setIndentMode(LTag::INDENT_MODE_SKIP_ALL);
+		$p->setIndentMode(LTag::TAG_INDENT_SKIP_ALL);
 		
 
 		$p[] = new LTagReference('prova');

@@ -274,39 +274,45 @@ class LDir extends LFileSystemElement
     
     function findElementsStartingWith($string,$filter = self::FILTER_ALL_ELEMENTS)
     {
-        $dot_escaped = str_replace(".", "[\.]", $string);
-        return $this->findElements("/\A".$dot_escaped."/",$filter);
+        $string = str_replace(".", "[\.]", $string);
+        $string = str_replace("-", "[\-]", $string);
+        return $this->findElements("/\A".$string."/",$filter);
     }
     
     function findFilesStartingWith($string)
     {
-        $dot_escaped = str_replace(".", "[\.]", $string);
-        return $this->findElements("/\A".$dot_escaped."/",self::FILTER_ALL_FILES);
+        $string = str_replace(".", "[\.]", $string);
+        $string = str_replace("-", "[\-]", $string);
+        return $this->findElements("/\A".$string."/",self::FILTER_ALL_FILES);
     }
 
     function findFoldersStartingWith($string)
     {
-        $dot_escaped = str_replace(".", "[\.]", $string);
-        return $this->findElements("/\A".$dot_escaped."/",self::FILTER_ALL_DIRECTORIES);
+        $string = str_replace(".", "[\.]", $string);
+        $string = str_replace("-", "[\-]", $string);
+        return $this->findElements("/\A".$string."/",self::FILTER_ALL_DIRECTORIES);
     }
     
 
     function findElementsEndingWith($string,$filter = self::FILTER_ALL_ELEMENTS)
     {
-        $dot_escaped = str_replace(".", "[\.]", $string);
-        return $this->findElements("/".$dot_escaped."\Z/",$filter);
+        $string = str_replace(".", "[\.]", $string);
+        $string = str_replace("-", "[\-]", $string);
+        return $this->findElements("/".$string."\Z/",$filter);
     }
 
     function findFilesEndingWith($string)
     {
-        $dot_escaped = str_replace(".", "[\.]", $string);
-        return $this->findElements("/".$dot_escaped."\Z/",self::FILTER_ALL_FILES);
+        $string = str_replace(".", "[\.]", $string);
+        $string = str_replace("-", "[\-]", $string);
+        return $this->findElements("/".$string."\Z/",self::FILTER_ALL_FILES);
     }
 
     function findFoldersEndingWith($string)
     {
-        $dot_escaped = str_replace(".", "[\.]", $string);
-        return $this->findElements("/".$dot_escaped."\Z/",self::FILTER_ALL_DIRECTORIES);
+        $string = str_replace(".", "[\.]", $string);
+        $string = str_replace("-", "[\-]", $string);
+        return $this->findElements("/".$string."\Z/",self::FILTER_ALL_DIRECTORIES);
     }
 
     function findFolders($myIncludes) {

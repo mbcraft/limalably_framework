@@ -283,6 +283,12 @@ class LDir extends LFileSystemElement
         $dot_escaped = str_replace(".", "[\.]", $string);
         return $this->findElements("/\A".$dot_escaped."/",self::FILTER_ALL_FILES);
     }
+
+    function findFoldersStartingWith($string)
+    {
+        $dot_escaped = str_replace(".", "[\.]", $string);
+        return $this->findElements("/\A".$dot_escaped."/",self::FILTER_ALL_DIRECTORIES);
+    }
     
 
     function findElementsEndingWith($string,$filter = self::FILTER_ALL_ELEMENTS)
@@ -297,12 +303,20 @@ class LDir extends LFileSystemElement
         return $this->findElements("/".$dot_escaped."\Z/",self::FILTER_ALL_FILES);
     }
 
+    function findFoldersEndingWith($string)
+    {
+        $dot_escaped = str_replace(".", "[\.]", $string);
+        return $this->findElements("/".$dot_escaped."\Z/",self::FILTER_ALL_DIRECTORIES);
+    }
+
+    function findFolders($myIncludes) {
+        return $this->findElements($myIncludes,self::FILTER_ALL_DIRECTORIES);
+    }
+
     function findFiles($myIncludes) {
         return $this->findElements($myIncludes,self::FILTER_ALL_FILES);
     }
 
-
-    
     function findElements($myIncludes,$filter = self::FILTER_ALL_ELEMENTS)
     {
         if (is_array($myIncludes))

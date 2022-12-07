@@ -29,6 +29,8 @@ class LTagLib {
 
 		$starting_dir = new LDir(self::TAGLIB_DIR);
 
+		if (!$starting_dir->exists()) return null;
+
 		return self::recursiveFindTagSpecFile($original_tag_name,$starting_dir);
 
 	}

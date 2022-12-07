@@ -17,12 +17,11 @@ class LDir extends LFileSystemElement
     const FILTER_ALL_FILES = 2;
     const FILTER_ALL_ELEMENTS = 3;
 
-    const DEFAULT_EXCLUDES = "NO_HIDDEN_FILES";
+    const DEFAULT_EXCLUDES = array("/\A\..*\Z/");
 
-    const NO_HIDDEN_FILES = "NO_HIDDEN_FILES";
-    static $noHiddenFiles = array("/\A\..*\Z/");
-    const SHOW_HIDDEN_FILES = "SHOW_HIDDEN_FILES";
-    static $showHiddenFiles = array("/\A[\.][\.]?\Z/");
+    const NO_HIDDEN_FILES = array("/\A\..*\Z/");
+    const SHOW_HIDDEN_FILES = array("/\A[\.][\.]?\Z/");
+
 
     static $content_hash_cache = [];
 
@@ -236,22 +235,6 @@ class LDir extends LFileSystemElement
     {     
         if (!$this->exists()) throw new \LIOException("Directory does not exists, can't list elements.");
 
-        $excludesSet = false;
-        
-        if (!$excludesSet && $myExcludes === self::NO_HIDDEN_FILES) 
-        {
-            $excludesSet = true;
-            $excludes = self::$noHiddenFiles;
-        }
-        
-        if (!$excludesSet && $myExcludes === self::SHOW_HIDDEN_FILES) 
-        {
-            $excludesSet = true;
-            $excludes = self::$showHiddenFiles;
-        }
-        if (!$excludesSet)
-            $excludes = $myExcludes;
-
         $all_results = scandir($this->__full_path);
 
         $all_dirs = array();
@@ -260,7 +243,7 @@ class LDir extends LFileSystemElement
         foreach ($all_results as $element)
         {            
             $skip = false;
-            foreach ($excludes as $pt)
+            foreach ($myExcludes as $pt)
             {
                 if (preg_match($pt, $element)) 
                 {

@@ -369,7 +369,7 @@ class PlainDirTest extends LTestCase
 
     function testPatternHiddenFiles()
     {
-        $pattern = LDir::$showHiddenFiles;
+        $pattern = LDir::SHOW_HIDDEN_FILES;
         
         $this->assertTrue(preg_match($pattern[0],"."),"Il pattern non corrisponde!");
         $this->assertTrue(preg_match($pattern[0],".."),"Il pattern non corrisponde!");
@@ -379,7 +379,7 @@ class PlainDirTest extends LTestCase
 
     function testPatternNoHiddenFiles()
     {
-        $pattern = LDir::$noHiddenFiles;
+        $pattern = LDir::NO_HIDDEN_FILES;
         
         $this->assertTrue(preg_match($pattern[0],"."),"Il pattern non corrisponde!");
         $this->assertTrue(preg_match($pattern[0],".."),"Il pattern non corrisponde!");

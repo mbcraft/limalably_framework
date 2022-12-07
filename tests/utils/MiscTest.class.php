@@ -8,6 +8,25 @@
 
 class MiscTest extends LTestCase {
     
+    const ARRAY_OF_STRING = ['a','b'];
+
+    private function my_function($param=self::ARRAY_OF_STRING) {
+        
+        $result = "";
+
+        foreach ($param as $k) $result .= $k;
+
+        $this->assertEqual($result,"ab","The parameter of array of strings is not admitted!");
+    }
+
+
+    function testParametersArrayOfStrings() {
+
+        $this->my_function();
+
+    }
+
+
     function testVarExport() {
         
         $var1 = "ciccio";

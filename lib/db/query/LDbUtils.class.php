@@ -61,19 +61,42 @@ class LDbUtils {
 
 		if (!$extraction_dir->exists()) return "Unable to create extraction dir!";
 
+		LResult::message("Extracting sql list zip archive");
+
 		LZipUtils::expandArchive($f,$extraction_dir);
+
+		LResult::messagenl(" --> OK");
 
 		$sql_files_list = $extraction_dir->listFiles();
 
+		LResult::message("Disabling foreign key checks");
+
 		foreign_key_checks(false)->go($db);
 
+		LResult::messagenl(" --> OK");
+
+		LResult::messagenl("Running sql files :");
+
 		foreach ($sql_files_list as $sql_file) {
+
+			LResult::message("	- ".$sql_file->getName().".".$sql_file->getFullExtension());
+
 			query_list_from_file($sql_file)->go($db);
+
+			LResult::messagenl(" --> OK");
 		}
+
+		LResult::message("Enabling foreign key checks");
 
 		foreign_key_checks(true)->go($db);
 
+		LResult::messagenl(" --> OK");
+
+		LResult::message("Cleaning up extraction dir");
+
 		$extraction_dir->delete(true);
+
+		LResult::messagenl(" --> OK");
 
 		return true;
 		

@@ -8,31 +8,84 @@
 
 class LMigrationHelper {
 	
-	const MIGRATION_LOG_DIRECTORY = "config/executed_migrations/";
-	
-	public static function getMigrationRunningModeLogDirectory() {
-		$running_mode_folder = LExecutionMode::getShort().'/';
+	const MIGRATIONS_TABLE_NAME = "migrations_log";
 
-		$base_dir = isset($_SERVER['DEPLOYER_PROJECT_DIR']) ? $_SERVER['DEPLOYER_PROJECT_DIR'] : $_SERVER['PROJECT_DIR'];
+	const MIGRATIONS_NAME_COLUMN = "name";
 
-		$result = new LDir($base_dir.self::MIGRATION_LOG_DIRECTORY.$running_mode_folder);
+	const MIGRATIONS_CONTEXT_COLUMN = "context";
 
-		return $result;
+	const MIGRATIONS_EXECUTION_TIME_COLUMN = "executed_at";
+
+	public static function migrationTableExists() {
+
+		$db = db();
+
+		$table_list = table_list()->go($db);
+
+		return in_array(self::MIGRATIONS_TABLE_NAME,$table_list);
 	}
 
-	public static function getMigrationLogDirectory($context) {
+	public static function ensureMigrationTableExist() {
 
-		$running_mode_folder = LExecutionMode::getShort().'/';
+		$db = db();
 
-		$context_folder = LStringUtils::endsWith($context,'/') ? $context : $context.'/';
+		if (self::migrationTableExists()) return;
 
-		$base_dir = isset($_SERVER['DEPLOYER_PROJECT_DIR']) ? $_SERVER['DEPLOYER_PROJECT_DIR'] : $_SERVER['PROJECT_DIR'];
+		create_table(self::MIGRATIONS_TABLE_NAME)
+		->column(col_def(self::MIGRATIONS_NAME_COLUMN)->t_text128())
+		->column(col_def(self::MIGRATIONS_CONTEXT_COLUMN)->t_text64())
+		->column(col_def(self::MIGRATIONS_EXECUTION_TIME_COLUMN)->t_datetime()->default_value(_expr('NOW()')))
+		->go($db);
 
-		$result = new LDir($base_dir.self::MIGRATION_LOG_DIRECTORY.$running_mode_folder.$context_folder);
+	}
 
-		$result->touch();
+	public static function dropMigrationTable() {
 
-		return $result;
+		$db = db();
+	
+		drop_table(self::MIGRATIONS_TABLE_NAME)->if_exists()->go($db);
+
+	}
+
+	public static function listMigrations() {
+
+		$db = db();
+
+		return select('*',self::MIGRATIONS_TABLE_NAME)->go($db);
+
+	}
+
+	public static function isMigrationExecuted($name,$context) {
+
+		$db = db();
+
+		$result = select('count(*) AS C',self::MIGRATIONS_TABLE_NAME)->where(_and(_eq(self::MIGRATIONS_NAME_COLUMN,$name)),_eq(self::MIGRATIONS_CONTEXT_COLUMN,$context))->go($db);
+
+		return $result[0]['C']==1;
+	}
+
+	public static function getMigrationExecutionTime($name,$context) {
+		
+		$db = db();
+
+		$result = select('*',self::MIGRATIONS_TABLE_NAME)->where(_and(_eq(self::MIGRATIONS_NAME_COLUMN,$name)),_eq(self::MIGRATIONS_CONTEXT_COLUMN,$context))->go($db);
+
+		if (count($result)!=1) return false;
+		else return $result[0][self::MIGRATIONS_EXECUTION_TIME_COLUMN];
+	}
+
+	public static function logMigration($name,$context) {
+
+		$db = db();
+
+		insert(self::MIGRATIONS_TABLE_NAME,[self::MIGRATIONS_NAME_COLUMN,self::MIGRATIONS_CONTEXT_COLUMN],[$name,$context])->go($db);
+
+	}
+
+	public static function removeMigrationLog($name,$context) {
+		$db = db();
+
+		delete(self::MIGRATIONS_TABLE_NAME)->where(_and(_eq(self::MIGRATIONS_NAME_COLUMN,$name)),_eq(self::MIGRATIONS_CONTEXT_COLUMN,$context))->go($db);
 	}
 
 	public static function getCleanContextName($context) {

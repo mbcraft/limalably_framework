@@ -37,27 +37,19 @@ class LMigrationHandler {
 		return $this->migration_file->getName();
 	}
 
-	public function getMigrationLogFile() {
-
-		$migration_dir = LMigrationHelper::getMigrationLogDirectory($this->context);
-
-		$migration_log = $migration_dir->newFile($this->getName().self::MIGRATION_LOG_EXTENSION);
-		
-		return $migration_log;
-	}
-
 	public function isAlreadyExecuted() {
 
-		$migration_log = $this->getMigrationLogFile();
+		LMigrationHelper::ensureMigrationTableExist();
 
-		return $migration_log->exists();
+		return LMigrationHelper::isMigrationExecuted($this->getName(),$this->context);
 	}
 
 	public function getExecutionTime() {
-		$migration_log = $this->getMigrationLogFile();
 
-		if (!$migration_log->exists()) return false;
-		else return $migration_log->getContent();
+		LMigrationHelper::ensureMigrationTableExist();
+		
+		return LMigrationHelper::getMigrationExecutionTime($this->getName(),$this->context);
+
 	}
 
 	public function isMigrationFile() {
@@ -120,13 +112,9 @@ class LMigrationHandler {
 
 	private function logExecuted() {
 
-		$migration_log_dir = LMigrationHelper::getMigrationLogDirectory($this->context);
+		LMigrationHelper::logMigration($this->getName(),$this->context);
 
-		$migration_log_file = $migration_log_dir->newFile($this->migration_file->getName().self::MIGRATION_LOG_EXTENSION);
-		$my_date = date('Y-m-d H:i:s');
-		$migration_log_file->setContent($my_date);
-
-		LResult::messagenl("Migration ".$this->migration_file->getName()." from context ".LMigrationHelper::getCleanContextName($this->context)." executed at ".$my_date.".");
+		LResult::messagenl("Migration ".$this->migration_file->getName()." from context ".LMigrationHelper::getCleanContextName($this->context)." executed at ".date('Y-m-d H:i:s').".");
 
 	}
 
@@ -155,22 +143,19 @@ class LMigrationHandler {
 	}
 
 	private function removeLogExecuted() {
-		$migration_log_dir = LMigrationHelper::getMigrationLogDirectory($this->context);
 
-		if (!$migration_log_dir->exists()) throw new \Exception("Migration log dir does not exists!");
+		LMigrationHelper::ensureMigrationTableExist();		
 
-		$migration_log_file = $migration_log_dir->newFile($this->migration_file->getName().self::MIGRATION_LOG_EXTENSION);
+		if (!LMigrationHelper::isMigrationExecuted($this->getName(),$this->context)) throw new \Exception("Migration log does not exists!");
 
-		if (!$migration_log_file->exists()) throw new \Exception("Migration log file does not exists!");
-		$my_date = date('Y-m-d H:i:s');
+		LResult::messagenl("Migration ".$this->getName()." from context ".LMigrationHelper::getCleanContextName($this->context)." reverted at ".date('Y-m-d H:i:s').".");
 
-		LResult::messagenl("Migration ".$this->migration_file->getName()." from context ".LMigrationHelper::getCleanContextName($this->context)." reverted at ".$my_date.".");
-
-		return $migration_log_file->delete();
+		LMigrationHelper::removeMigrationLog($this->getName(),$this->context);
+	
 	}
 
 	public function __toString() {
-		return "Migration '".$this->migration_file->getName()."'' on context ".LMigrationHelper::getCleanContextName($this->context);
+		return "Migration '".$this->getName()."'' on context ".LMigrationHelper::getCleanContextName($this->context);
 	}
 
 

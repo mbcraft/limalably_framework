@@ -10,26 +10,44 @@ class MigrationHelperTest extends LTestCase {
 	
 
 
-	function testMethods() {
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/';
+	function testMigrationTableCreation() {
 
-		$dir = LMigrationHelper::getMigrationRunningModeLogDirectory();
+		LMigrationHelper::dropMigrationTable();
 
-		$this->assertNotNull($dir,"La cartella ritornata è nulla!");
+		$this->assertFalse(LMigrationHelper::migrationTableExists(),"La tabella delle migrazioni esiste dopo il drop!");
 
-		$dir2 = LMigrationHelper::getMigrationLogDirectory('ctx');
+		LMigrationHelper::ensureMigrationTableExist();
 
-		$this->assertNotNull($dir,"La cartella ritornata è nulla!");
+		$this->assertTrue(LMigrationHelper::migrationTableExists(),"La tabella delle migrazioni non esiste dopo il create!");
 
-		$this->assertTrue(LStringUtils::startsWith($dir2->getPath(),$dir->getPath()),"La seconda cartella non è una sottocartella della prima cartella!");
+		LMigrationHelper::dropMigrationTable();
 
-		$this->assertTrue($dir2->exists(),"La cartella non è stata creata!");
+		$this->assertFalse(LMigrationHelper::migrationTableExists(),"La tabella delle migrazioni esiste dopo il drop!");
 
-		$dir3 = new LDir($_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/config/executed_migrations/');
+	}
 
-		if ($dir3->exists()) $dir3->delete(true);
+	function testMigrationMethods() {
 
-		unset($_SERVER['PROJECT_DIR']);
+		LMigrationHelper::ensureMigrationTableExist();
+
+		$this->assertFalse(LMigrationHelper::isMigrationExecuted('my_name','my_context'),"E' stata trovata una migrazione che non dovrebbe esistere!");
+
+		LMigrationHelper::logMigration('my_name','my_context');
+
+		$this->assertTrue(LMigrationHelper::isMigrationExecuted('my_name','my_context'),"E' stata trovata una migrazione che non dovrebbe esistere!");
+
+		$executed_at = LMigrationHelper::getMigrationExecutionTime('my_name','my_context');
+
+		$this->assertTrue(strlen($executed_at)>5,"Il tempo della migrazione non è corretto!");
+
+		LMigrationHelper::removeMigrationLog('my_name','my_context');
+
+		$this->assertFalse(LMigrationHelper::isMigrationExecuted('my_name','my_context'),"E' stata trovata una migrazione che non dovrebbe esistere!");
+
+		$this->assertFalse(LMigrationHelper::getMigrationExecutionTime('my_name','my_context'),"Il metodo del tempo di esecuzione non ritorna false quando la migrazione non esiste!");
+
+		LMigrationHelper::dropMigrationTable();
+
 	}
 
 }

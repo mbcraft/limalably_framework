@@ -37,15 +37,13 @@ class MigrationHandlerTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project/';
 		
-		$this->assertEqual($mh->getMigrationLogFile()->getPath(),"config/executed_migrations/ut/fw/TestMigration123.log","Il percorso del file di log della migrazione non coincide!");
+		LMigrationHelper::logMigration("TestMigration123",'fw');
 
 		$this->assertTrue($mh->isAlreadyExecuted(),"La migrazione nonostante il log non viene riconosciuta come già eseguita!");
 
-		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_no_mig/';
-		
-		$this->assertFalse($mh->isAlreadyExecuted(),"La migrazione viene riconosciuta come già eseguita!");
-
 		unset($_SERVER['PROJECT_DIR']);
+
+		LMigrationHelper::dropMigrationTable();
 	}
 
 	public function testMigrationRunAndRevert() {
@@ -56,10 +54,6 @@ class MigrationHandlerTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/';
 
-		$config_migrations_dir = new LDir($_SERVER['FRAMEWORK_DIR'].'tests/db2/migrations/fake_project_run/config/executed_migrations/');
-
-		$this->assertFalse($config_migrations_dir->exists(),"La cartella usata nella config esiste già!");
-
 		$this->assertFalse($mh->isAlreadyExecuted(),"La migrazione risulta già eseguita!");
 
 		$mh->executeIt();
@@ -67,8 +61,6 @@ class MigrationHandlerTest extends LTestCase {
 		$this->assertTrue(TestMigration123::executeDone(),"Execute was not done on migration!");
 
 		$this->assertFalse(TestMigration123::revertDone(),"Revert was done on migration!");
-
-		$this->assertTrue($config_migrations_dir->exists(),"La cartella usata nella config non è stata creata!");
 
 		$this->assertTrue($mh->isAlreadyExecuted(),"La migrazione non risulta eseguita!");
 
@@ -78,11 +70,9 @@ class MigrationHandlerTest extends LTestCase {
 
 		$this->assertFalse($mh->isAlreadyExecuted(),"La migrazione risulta già eseguita!");
 
-		$config_migrations_dir->delete(true);
-
-		$this->assertFalse($config_migrations_dir->exists(),"La cartella usata nella config esiste ancora!");
-
 		unset($_SERVER['PROJECT_DIR']);
+
+		LMigrationHelper::dropMigrationTable();
 
 	}
 

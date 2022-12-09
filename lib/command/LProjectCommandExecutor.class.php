@@ -33,6 +33,7 @@ class LProjectCommandExecutor implements LICommandExecutor {
             case 'project/url_alias_db_remove' : $cmd = new LProjectUrlAliasDbRemoveCommand();break;
             case 'project/deployer' : $cmd = new LProjectDeployerCommand();break;
             case 'project/migrate' : $cmd = new LProjectMigrateCommand();break;
+            case 'project/db_tool' : $cmd = new LProjectDbToolCommand();break;
         }
 
         if ($cmd) {

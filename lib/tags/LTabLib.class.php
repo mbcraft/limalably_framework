@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 function tag(string $original_tag_name) {
 	return LTagLib::createTagFromLibrary($original_tag_name);
 }

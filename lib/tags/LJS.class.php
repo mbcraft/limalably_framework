@@ -6,6 +6,10 @@
  *  
  */
 
+function require_js(string $name,string $path,$version='unknown') {
+	LJS::require($name,$path,$version);
+}
+
 class LJS {
 
 	use LAssetResourceManagerTrait;

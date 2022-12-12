@@ -6,6 +6,9 @@
  *  
  */
 
+function require_css(string $name,string $path,$version='unknown') {
+	LCSS::require($name,$path,$version);
+}
 
 class LCSS {
 

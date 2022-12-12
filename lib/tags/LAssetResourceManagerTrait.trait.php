@@ -11,12 +11,29 @@ trait LAssetResourceManagerTrait {
 
 	static $assets_to_include = [];
 
+	private static $override_standard_wwwpath = false;
+
+	public static function overrideStandardWwwPath(string $www_path) {
+		self::$override_standard_wwwpath = $www_path;
+	}
+
+	public static function getCurrentLibraryVersion($asset_name) {
+		if (isset(self::$assets_to_include[$asset_name])) {
+			$spec = self::$assets_to_include[$asset_name];
+
+			return $spec['version'];
+		} else return null;
+	}
 
 	private static function checkAssetPath($asset_path) {
 
-		$wwwroot_folder = LConfigReader::simple('/misc/wwwroot');
+		if (self::$override_standard_wwwpath!==false) {
+			$wwwroot_folder = self::$override_standard_wwwpath;
+		} else {
+			$wwwroot_folder = LConfigReader::simple('/misc/wwwroot');
 
-		$wwwroot_folder = str_replace('/','',$wwwroot_folder);
+			$wwwroot_folder = str_replace('/','',$wwwroot_folder);
+		}
 
 		$complete_path = $wwwroot_folder.$asset_path;
 
@@ -32,7 +49,7 @@ trait LAssetResourceManagerTrait {
 
 		$params = [
 			'path' => $asset_path,
-			'version' = $version
+			'version' => $version
 		];
 
 		$current_asset = isset($assets_to_include[$asset_name]) ? $assets_to_include[$asset_name] : null;

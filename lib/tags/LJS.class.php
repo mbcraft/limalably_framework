@@ -8,7 +8,7 @@
 
 class LJS {
 
-	use LAssetResourceManager;
+	use LAssetResourceManagerTrait;
 	
 	public static function renderTag($spec) {
 

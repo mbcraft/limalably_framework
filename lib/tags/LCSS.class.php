@@ -9,7 +9,7 @@
 
 class LCSS {
 
-	use LAssetResourceManager;
+	use LAssetResourceManagerTrait;
 	
 	public static function renderTag($spec) {
 		$tag = new LTag('link');

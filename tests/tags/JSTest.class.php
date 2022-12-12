@@ -22,4 +22,22 @@ class JSTest extends LTestCase {
 
 	}
 
+	function testArrayBehaviour() {
+
+
+		$data = [];
+
+		$data['hello'] = 12;
+		$data['b'] = 1;
+		$data['a'] = 3;
+		$data['prova'] = 5;
+
+		$keys = array_keys($data);
+
+		$this->assertEqual($keys[0],'hello',"La chiave non corrisponde!");
+		$this->assertEqual($keys[1],'b',"La chiave non corrisponde!");
+		$this->assertEqual($keys[2],'a',"La chiave non corrisponde!");
+		$this->assertEqual($keys[3],'prova',"La chiave non corrisponde!");
+	}
+
 }

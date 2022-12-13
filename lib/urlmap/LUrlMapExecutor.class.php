@@ -343,6 +343,16 @@ class LUrlMapExecutor {
 
             if (!$this->my_url_map->is_set('/format')) {
 
+                if (LStringUtils::endsWith($my_template_path, ".twig")) {
+                    LResult::trace("Setting response format as html.");
+                    $this->my_format = LFormat::HTML;
+                }
+
+                if (LStringUtils::endsWith($my_template_path, ".php")) {
+                    LResult::trace("Setting response format as html.");
+                    $this->my_format = LFormat::HTML;
+                }
+
                 if (LStringUtils::endsWith($my_template_path, LFormat::HTML)) {
                     LResult::trace("Setting response format as html.");
                     $this->my_format = LFormat::HTML;

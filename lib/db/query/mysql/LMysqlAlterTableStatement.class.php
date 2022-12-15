@@ -97,11 +97,21 @@ class LMysqlAlterTableStatement extends LMysqlAbstractQuery {
 	}
 
 	function add_unique_index($constraint_name,$column_name_list) {
-
+		if (!is_string($constraint_name)) throw new \Exception("Constraint name is not a string!");
 		if (is_string($column_name_list)) $column_name_list = array($column_name_list);
 		if (empty($column_name_list)) throw new \Exception("Column name list can't be empty in add_unique_index in mysql alter table statement");
 
 		$this->changes[] = "ADD CONSTRAINT ".$constraint_name." UNIQUE ( ".implode($column_name_list)." ) ";
+
+		return $this;
+	}
+
+	function add_fulltext_index($constraint_name,$column_name_list) {
+		if (!is_string($constraint_name)) throw new \Exception("Constraint name is not a string!");
+		if (is_string($column_name_list)) $column_name_list = array($column_name_list);
+		if (empty($column_name_list)) throw new \Exception("Column name list can't be empty in add_fulltext_index in mysql alter table statement");
+
+		$this->changes[] = "ADD FULLTEXT KEY ".$constraint_name."( ".implode($column_name_list)." ) ";
 
 		return $this;
 	}

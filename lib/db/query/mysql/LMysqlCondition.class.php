@@ -123,4 +123,40 @@ class LMysqlCondition {
 		return new LMysqlCondition('NOT','EXISTS(',trim($select),')');
 	}
 
+	public static function match_against($table_list,$term_list,$boolean_mode=false) {
+		$table_names = [];
+
+		if (is_string($table_list)) $table_list = array($table_list);
+		foreach ($table_list as $table_name) $table_names[] = new LMysqlTableName($table_name);
+
+		$final_term_list = [];
+
+		if (is_string($term_list)) $term_list = array($term_list);
+		foreach ($term_list as $term) {
+			$parts = explode("'",$term);
+			if (count($parts)==0) continue;
+			if (count($parts)==1) $token = $parts[0];
+			if (count($parts)==2) {
+				$l1 = strlen($parts[0]);
+				$l2 = strlen($parts[1]);
+				if ($l1>$l2) $token = $parts[0];
+				else $token = $parts[1];
+			}
+			if (count($parts)>2) continue;
+			
+			$final_term_list []= $token;
+		}
+
+		if ($boolean_mode) {
+			$term_string = implode(" ",$final_term_list);
+			$modifier = " IN BOOLEAN MODE";
+		}
+		else {
+			$term_string = implode(',',$final_term_list);
+			$modifier = "";
+		}
+
+		return "MATCH(".implode(',',$table_names).") AGAINST('".$term_string."' ".$modifier.")";
+	}
+
 }

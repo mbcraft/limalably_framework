@@ -21,7 +21,7 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 	private $if_not_exists_option = "";
 	private $col_defs = [];
 	private $primary_key = null;
-	private $unique_constraints = [];
+	private $indexes = [];
 	private $foreign_keys = [];
 	private $engine = "MyISAM";
 	private $charset_trailer = "";
@@ -80,12 +80,22 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 		return $this;
 	}
 
+	function fulltext($constraint_name,$column_name_list) {
+		if (!is_string($constraint_name)) throw new \Exception("Constraint name is not a string in fulltext index!");
+		if (is_string($column_name_list)) $column_name_list = array($column_name_list);
+		if (empty($column_name_list)) throw new \Exception("Column name list can't be empty in fulltext in mysql create table statement");
+
+		$this->indexes[] = " FULLTEXT KEY ".$constraint_name."( ".implode(',',$column_name_list)." )";
+
+		return $this;
+	}
+
 	function unique($constraint_name,$column_name_list) {
 
 		if (is_string($column_name_list)) $column_name_list = array($column_name_list);
 		if (empty($column_name_list)) throw new \Exception("Column name list can't be empty in unique in mysql create table statement");
 
-		$this->unique_constraints[] = " CONSTRAINT ".$constraint_name." UNIQUE ( ".implode(',',$column_name_list)." )";
+		$this->indexes[] = " CONSTRAINT ".$constraint_name." UNIQUE ( ".implode(',',$column_name_list)." )";
 
 		return $this;
 	}
@@ -134,7 +144,7 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery {
 
 		if ($this->isShow()) return $this->build_query($this->show_option,"CREATE","TABLE",$this->table_name);
 
-		$pk_and_fks = array_merge($this->unique_constraints,$this->foreign_keys);
+		$pk_and_fks = array_merge($this->indexes,$this->foreign_keys);
 		if ($this->primary_key) {
 			array_unshift($pk_and_fks,$this->primary_key);
 		}

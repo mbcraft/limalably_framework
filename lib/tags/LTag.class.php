@@ -20,7 +20,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     private $tag_mode = self::TAG_MODE_AUTO;
     private $indent_mode = self::TAG_INDENT_AUTO;
 
-    private static $indent_level = 0;
+    public static $indent_level = 0;
 
     function __construct(string $original_tag_name) {
         $this->original_tag_name = $original_tag_name;
@@ -253,7 +253,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     //child management
 
     private function parentedChild($child) {
-        if ($child instanceof LTag || $child instanceof LTagReference) {
+        if ($child instanceof LTag || $child instanceof LTagReference || $child instanceof LTagList) {
             $child->setParent($this);
         }
 

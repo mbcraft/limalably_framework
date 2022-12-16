@@ -150,13 +150,19 @@
                 "strict_variables": false,
                 "autoescape" : "name",
                 "import_into_variables": ["env", "env_string" , "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string","i18n","flags"],
-                "extension_search_list" : [".html",".xhtml",".json",".twig"]
+                "extension_search_list" : [".html",".xhtml",".twig"]
             },
             "php" : {
                 "source_factory_class" : "LPhpTemplateSourceFactory",
                 "root_folder": "template/",
-                "import_into_variables": ["env", "env_string" , "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string","i18n","flags"],
+                "import_into_variables": [],
                 "extension_search_list" : [".php"]  
+            },
+            "ljt" : {
+                "source_factory_class" : "LJTemplateSourceFactory",
+                "root_folder": "template/",
+                "import_into_variables": [],
+                "extension_search_list" : [".json",".ljt"]  
             }
         },
         "logging": {

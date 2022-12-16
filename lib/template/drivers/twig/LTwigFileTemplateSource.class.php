@@ -30,6 +30,9 @@ class LTwigFileTemplateSource implements LITemplateSource {
     }
 
     function searchTemplate($path) {
+
+        if ($this->loader->exists($path)) return $path;
+
         $extension_search_list = LConfigReader::simple('/template/'.$this->engine_name.'/extension_search_list');
 
         if ($this->loader->exists($path))

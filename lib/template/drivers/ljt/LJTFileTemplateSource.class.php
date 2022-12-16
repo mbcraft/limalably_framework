@@ -6,7 +6,7 @@
  *  
  */
 
-class LPhpFileTemplateSource implements LITemplateSource {
+class LJTFileTemplaceSource implements LITemplateSource {
 
 	private $templates_path;
 	private $engine_name;
@@ -20,9 +20,9 @@ class LPhpFileTemplateSource implements LITemplateSource {
 
     function searchTemplate($path) {
 
-        $f = new LFile($this->templates_path.$path);
+		$f = new LFile($this->templates_path.$path);
 
-        if ($f->exists()) return $path;
+		if ($f->exists()) return $path;
 
     	$extension_search_list = LConfigReader::simple('/template/'.$this->engine_name.'/extension_search_list');
 
@@ -40,7 +40,7 @@ class LPhpFileTemplateSource implements LITemplateSource {
 
     	$content = file_get_contents($this->templates_path.$path);
 
-    	return new LPhpTemplate($content);
+    	return new LJTemplate($content);
 
     }
 }

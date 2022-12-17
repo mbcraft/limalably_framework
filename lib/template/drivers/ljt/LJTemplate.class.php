@@ -21,7 +21,10 @@ class LJTemplate implements LITemplate {
 
     function render(array $params)
     {
+        $root = new LJTemplateRoot($my_tree);
+        $root->parse();
 
+        return "".$root;
     }  
     
     function getImplementationObject()

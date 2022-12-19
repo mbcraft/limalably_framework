@@ -6,6 +6,14 @@
  *  
  */
 
+function tag(string $original_tag_name) {
+    return LTagLib::createTagFromLibrary($original_tag_name);
+}
+
+function tagref($child_name) {
+    return new LTagReference($child_name);
+}
+
 class LJTemplate implements LITemplate {
     
 	private $my_data = null;

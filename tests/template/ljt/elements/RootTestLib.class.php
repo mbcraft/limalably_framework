@@ -14,7 +14,7 @@ class RootTestLib extends LJAbstractTemplatePart {
 
 	public function __toString() {
 
-		$result = "<root_element ";
+		$result = "<root ";
 		if ($this->has('root_one')) $result.="one='".$this('root_one')."' ";
 		if ($this->has('root_one')) $result.="two='".$this('root_two')."' ";
 		$result .= ">";
@@ -34,7 +34,7 @@ class RootTestLib extends LJAbstractTemplatePart {
 			$result .= "</list>";
 		}
 
-		$result.= "</root_element>";
+		$result.= "</root>";
 
 		return $result;
 			

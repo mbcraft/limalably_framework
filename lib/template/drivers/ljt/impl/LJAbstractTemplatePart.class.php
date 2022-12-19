@@ -158,7 +158,7 @@ abstract class LJAbstractTemplatePart {
 	}
 
 	public function has($field_name) {
-		if (!is_string($field_name)) throw new \Exception("field_name is not a valid string!");
+		if (!is_string($field_name)) throw new \Exception("field_name is not a valid string in element ".$this->tree_data_position);
 
 		return isset($this->data[$field_name]);
 	}
@@ -167,6 +167,8 @@ abstract class LJAbstractTemplatePart {
 		if (count($params)!=1) throw new \Exception("Exactly one parameter as 'field name' allowed.");
 
 		$field_name = $params[0];
+
+		if (!$this->has($field_name)) throw new \Exception("Readed field ".$field_name." does not exist on ".$this->tree_data_position);
 
 		return $this->data[$field_name];
 	}

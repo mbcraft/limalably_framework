@@ -1,5 +1,5 @@
 {
-	"RootTestLib" : {
+	"RootOneTestLib" : {
 		"root_one" : "a_value",
 		"root_two" : "another_value",
 		"t_root_one" : {
@@ -7,27 +7,27 @@
 				"e1-one" : 12,
 				"e1-two" : "ab",
 				"te1-two" : {
-					"AnotherElementTestLib" : {
+					"AnotherElementOneTestLib" : {
 						"AE-ONE" : 3,
-						"AE-TWOz" : "xyz"
+						"AE-TWO" : "xyz"
 					}
 				}
 			}
 		},
 		"ta_root_two" : [
 			{
-				"AnotherElementTestLib" : {
+				"AnotherElementOneTestLib" : {
 					"AE-ONE" : 1,
 					"AE-TWO" : 2
 				}
 			},
 			{
-				"AnotherElementTestLib" : {
+				"AnotherElementOneTestLib" : {
 					"AE-TWO" : "abc"
 				}
 			},
 			{
-				"AnotherElementTestLib" : {
+				"AnotherElementOneTestLib" : {
 					"AE-TWO" : "abcd",
 					"AE-ONE" : 123
 				}

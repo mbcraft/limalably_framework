@@ -6,7 +6,7 @@
  *  
  */
 
-class RootTestLib extends LJAbstractTemplatePart {
+class RootOneTestLib extends LJAbstractTemplatePart {
 	
 	const SIMPLE_FIELDS = ['root_one','root_two'];
 	const TEMPLATE_FIELDS = ['t_root_one','t_root_two'];
@@ -14,7 +14,7 @@ class RootTestLib extends LJAbstractTemplatePart {
 
 	public function __toString() {
 
-		$result = "<root ";
+		$result = "<root_one ";
 		if ($this->has('root_one')) $result.="one='".$this('root_one')."' ";
 		if ($this->has('root_one')) $result.="two='".$this('root_two')."' ";
 		$result .= ">";
@@ -34,7 +34,7 @@ class RootTestLib extends LJAbstractTemplatePart {
 			$result .= "</list>";
 		}
 
-		$result.= "</root>";
+		$result.= "</root_one>";
 
 		return $result;
 			

@@ -1,0 +1,6 @@
+{
+	"RootTwoTestLib" : {
+		"root_one" : "a_value",
+		"root_two" : "another_value"
+	
+}

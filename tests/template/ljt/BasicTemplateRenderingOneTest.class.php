@@ -6,12 +6,12 @@
  *  
  */
 
-class BasicTemplateRenderingTest extends LTestCase {
+class BasicTemplateRenderingOneTest extends LTestCase {
 	
 
 	function testExampleT1() {
 
-		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/examples/t1.json');
+		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/one/examples/t1.json');
 
 		$content = $tf->getContent();
 
@@ -31,7 +31,7 @@ class BasicTemplateRenderingTest extends LTestCase {
 
 	function testExampleT2() {
 
-		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/examples/t2_error.json');
+		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/one/examples/t2_error.json');
 
 		$content = $tf->getContent();
 
@@ -51,7 +51,7 @@ class BasicTemplateRenderingTest extends LTestCase {
 	
 	function testExampleT3() {
 
-		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/examples/t3.json');
+		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/one/examples/t3.json');
 
 		$content = $tf->getContent();
 
@@ -62,7 +62,7 @@ class BasicTemplateRenderingTest extends LTestCase {
 		try {
 			$result = $ti->render([]);
 			
-			$this->assertEqual($result,"<root one='a_value' two='another_value' ></root>","Il risultato del template non corrisponde a quello atteso!");
+			$this->assertEqual($result,"<root_one one='a_value' two='another_value' ></root_one>","Il risultato del template non corrisponde a quello atteso!");
 
 		} catch (\Exception $ex) {
 			$this->fail("Si è verificata un eccezione in fase di rendering del template : ".$ex->getMessage());
@@ -73,7 +73,7 @@ class BasicTemplateRenderingTest extends LTestCase {
 
 	function testExampleT4() {
 
-		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/examples/t4_json_error.json');
+		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/one/examples/t4_json_error.json');
 
 		$content = $tf->getContent();
 
@@ -96,7 +96,7 @@ class BasicTemplateRenderingTest extends LTestCase {
 
 	function testExampleT1Again() {
 
-		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/examples/t1.json');
+		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/one/examples/t1.json');
 
 		$content = $tf->getContent();
 
@@ -107,7 +107,7 @@ class BasicTemplateRenderingTest extends LTestCase {
 		try {
 			$result = $ti->render([]);
 
-			$this->assertEqual($result,"<root one='a_value' two='another_value' ><element_one e1-one='12' e1-two='ab' ><another_element AE-TWO='xyz' AE-ONE='3' ></another_element></element_one><list><another_element AE-TWO='2' AE-ONE='1' ></another_element><another_element AE-TWO='abc' ></another_element><another_element AE-TWO='abcd' AE-ONE='123' ></another_element></list></root>","Il risultato non corrisponde a quello atteso!");
+			$this->assertEqual($result,"<root_one one='a_value' two='another_value' ><element_one e1-one='12' e1-two='ab' ><another_element_one AE-TWO='xyz' AE-ONE='3' ></another_element_one></element_one><list><another_element_one AE-TWO='2' AE-ONE='1' ></another_element_one><another_element_one AE-TWO='abc' ></another_element_one><another_element_one AE-TWO='abcd' AE-ONE='123' ></another_element_one></list></root_one>","Il risultato non corrisponde a quello atteso!");
 			
 		} catch (\Exception $ex) {
 			$this->fail("Si è verificata un eccezione in fase di rendering del template : ".$ex->getMessage());

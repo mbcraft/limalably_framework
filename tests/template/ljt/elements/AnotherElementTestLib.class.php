@@ -12,7 +12,15 @@ class AnotherElementTestLib extends LJAbstractTemplatePart {
 	const MANDATORY_FIELDS = ['AE-TWO'];
 
 	public function __toString() {
-		return "";
+		
+		$result = "<another_element AE-TWO='".$this('AE-TWO')."' ";
+
+		if ($this->has('AE-ONE')) $result .= "AE-ONE='".$this('AE-ONE')."' ";
+
+		$result .=">";
+		$result .= "</another_element>";
+
+		return $result;
 	}
 
 }

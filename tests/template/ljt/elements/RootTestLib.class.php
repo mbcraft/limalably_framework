@@ -15,22 +15,22 @@ class RootTestLib extends LJAbstractTemplatePart {
 	public function __toString() {
 
 		$result = "<root_element ";
-		if (isset($this->data['root_one'])) $result.="one='".$this->data['root_one']."' ";
-		if (isset($this->data['root_one'])) $result.="two='".$this->data['root_two']."' ";
+		if ($this->has('root_one')) $result.="one='".$this('root_one')."' ";
+		if ($this->has('root_one')) $result.="two='".$this('root_two')."' ";
 		$result .= ">";
 
-		if (isset($this->data['t_root_one'])) $result .= $this->data['t_root_one'];
-		if (isset($this->data['t_root_two'])) $result .= $this->data['t_root_two'];
+		if ($this->has('t_root_one')) $result .= $this('t_root_one');
+		if ($this->has('t_root_two')) $result .= $this('t_root_two');
 
-		if (isset($this->data['ta_root_one'])) {
+		if ($this->has('ta_root_one')) {
 			$result .= "<list>";
-			$result .= $this->data['ta_root_one'];
+			$result .= $this('ta_root_one');
 			$result .= "</list>";
 		}
 
-		if (isset($this->data['ta_root_two'])) {
+		if ($this->has('ta_root_two')) {
 			$result .= "<list>";
-			$result .= $this->data['ta_root_two'];
+			$result .= $this('ta_root_two');
 			$result .= "</list>";
 		}
 

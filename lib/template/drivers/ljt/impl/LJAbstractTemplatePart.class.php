@@ -14,7 +14,7 @@ abstract class LJAbstractTemplatePart {
 
 	const MANDATORY_FIELDS = [];
 
-	protected $data = [];
+	private $data = [];
 
 	private $tree_data_position = null;
 
@@ -155,6 +155,20 @@ abstract class LJAbstractTemplatePart {
 			throw new \Exception("Invalid field ".$key." found inside ".$this->tree_data_position.". Check your template syntax.");
 		}
 
+	}
+
+	public function has($field_name) {
+		if (!is_string($field_name)) throw new \Exception("field_name is not a valid string!");
+
+		return isset($this->data[$field_name]);
+	}
+
+	public function __invoke(...$params) {
+		if (count($params)!=1) throw new \Exception("Exactly one parameter as 'field name' allowed.");
+
+		$field_name = $params[0];
+
+		return $this->data[$field_name];
 	}
 
 	public abstract function __toString();

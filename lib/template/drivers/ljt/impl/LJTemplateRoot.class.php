@@ -24,7 +24,7 @@ class LJTemplateRoot extends LJAbstractTemplatePart {
 
 	public function __toString() {
 
-		return "".$this->data['LAYOUT'];
+		return "".$this('LAYOUT');
 
 	}
 

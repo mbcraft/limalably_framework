@@ -79,7 +79,7 @@ abstract class LJAbstractTemplatePart {
 		return $template_class_name;
 	}
 
-	public function parseAsPlainField($key,$value) {
+	public function parseAsSimpleField($key,$value) {
 
 		$this->data[$key] = $value;
 	}
@@ -132,7 +132,7 @@ abstract class LJAbstractTemplatePart {
 
 				$value = $array_data[$key];
 
-				$this->parseAsPlainField($key,$value);
+				$this->parseAsSimpleField($key,$value);
 				continue;
 			}
 

@@ -6,23 +6,25 @@
  *  
  */
 
-class LJTemplateRoot extends LAbstractTemplatePart {
+class LJTemplateRoot extends LJAbstractTemplatePart {
 	
-	private $my_tree_data = null;
+	private $my_template_data = null;
 
 	function __construct($data) {
-		$this->my_tree_data = $data;
+		$this->my_template_data = $data;
 	}
 
-	public function parse() {
+	public function parseFully() {
 
-		$this->parseAsTemplateField('root',$this->my_tree_data);
+		$this->tree_data_position = '/';
+
+		$this->parseAsTemplateField('LAYOUT',$this->my_template_data);
 
 	}
 
 	public function __toString() {
 
-		return "".$this->data['root'];
+		return "".$this->data['LAYOUT'];
 
 	}
 

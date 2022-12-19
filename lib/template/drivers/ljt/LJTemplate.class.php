@@ -8,21 +8,20 @@
 
 class LJTemplate implements LITemplate {
     
-	private $my_tree = null;
+	private $my_data = null;
 
 	function __construct($content) {
 
-		$php_array = json_decode($content,true);
+		$this->my_data = json_decode($content,true);
 
-		$this->my_tree = new LTreeMap($php_array);
-
+        if (!$this->my_data) throw new \Exception("Error in json template syntax. Check it.");
 	}
 
 
     function render(array $params)
     {
-        $root = new LJTemplateRoot($my_tree);
-        $root->parse();
+        $root = new LJTemplateRoot($this->my_data);
+        $root->parseFully();
 
         return "".$root;
     }  

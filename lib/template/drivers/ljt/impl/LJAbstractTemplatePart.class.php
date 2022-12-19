@@ -8,13 +8,13 @@
 
 abstract class LJAbstractTemplatePart {
 
-	const PLAIN_FIELDS = [];
+	const SIMPLE_FIELDS = [];
 	const TEMPLATE_FIELDS = [];
 	const TEMPLATE_ARRAY_FIELDS = [];
 
 	const MANDATORY_FIELDS = [];
 
-	private $data = [];
+	protected $data = [];
 
 	private $tree_data_position = null;
 
@@ -23,19 +23,19 @@ abstract class LJAbstractTemplatePart {
 	}
 
 	private function checkFieldsDefinitions() {
-		$all_names_count = count(self::PLAIN_FIELDS)+count(self::TEMPLATE_FIELDS)+count(self::TEMPLATE_ARRAY_FIELDS);
+		$all_names_count = count(static::SIMPLE_FIELDS)+count(static::TEMPLATE_FIELDS)+count(static::TEMPLATE_ARRAY_FIELDS);
 
-		$all_fields = array_merge(self::PLAIN_FIELDS,self::TEMPLATE_FIELDS,self::TEMPLATE_ARRAY_FIELDS);
+		$all_fields = array_merge(static::SIMPLE_FIELDS,static::TEMPLATE_FIELDS,static::TEMPLATE_ARRAY_FIELDS);
 
 		if (count($all_fields)!=$all_names_count) throw new \Exception("It is not possible to use the same field name for different field types!");
 
-		foreach (self::MANDATORY_FIELDS as $f) {
+		foreach (static::MANDATORY_FIELDS as $f) {
 			if (!in_array($f,$all_fields)) throw new \Exception("The mandatory field ".$f." is not defined in any field type for this template part!");
 		}
 	}
 
 	private function checkMandatoryFields($array_data) {
-		foreach (self::MANDATORY_FIELDS as $k) {
+		foreach (static::MANDATORY_FIELDS as $k) {
 			if (!isset($array_data[$k])) throw new \Exception("The mandatory field ".$k." is not defined at the position ".$this->tree_data_position);
 		}
 	}
@@ -63,9 +63,12 @@ abstract class LJAbstractTemplatePart {
 		} catch (\Exception $ex) {
 			throw new \Exception("Error during template part parsing at position ".$position." : ".$ex->getMessage());
 		}
+
+		return $template_instance;
 	}
 
 	private static function getTemplateClassNameFromDef($template_def) {
+
 		$keys = array_keys($template_def);
 
 		if (count($keys)>1) throw new \Exception("Only one template is allowed in this array! (".$this->tree_data_position.")");
@@ -76,12 +79,12 @@ abstract class LJAbstractTemplatePart {
 		return $template_class_name;
 	}
 
-	private function parseAsPlainField($key,$value) {
+	public function parseAsPlainField($key,$value) {
 
 		$this->data[$key] = $value;
 	}
 
-	private function parseAsTemplateField($key,$template_def) {
+	public function parseAsTemplateField($key,$template_def) {
 
 		$template_class_name = self::getTemplateClassNameFromDef($template_def);
 
@@ -92,7 +95,7 @@ abstract class LJAbstractTemplatePart {
 		$this->data[$key] = $template_instance;
 	}
 
-	private function parseAsTemplateArrayField($key,$template_array_def) {
+	public function parseAsTemplateArrayField($key,$template_array_def) {
 		
 		$keys = array_keys($template_array_def);
 
@@ -125,7 +128,7 @@ abstract class LJAbstractTemplatePart {
 
 		foreach ($array_data as $key => $value) {
 
-			if (in_array($key,self::PLAIN_FIELDS)) {
+			if (in_array($key,static::SIMPLE_FIELDS)) {
 
 				$value = $array_data[$key];
 
@@ -133,7 +136,7 @@ abstract class LJAbstractTemplatePart {
 				continue;
 			}
 
-			if (in_array($key,self::TEMPLATE_FIELDS)) {
+			if (in_array($key,static::TEMPLATE_FIELDS)) {
 
 				$template_def = $array_data[$key];
 
@@ -141,7 +144,7 @@ abstract class LJAbstractTemplatePart {
 				continue;
 			}
 
-			if (in_array($key,self::TEMPLATE_ARRAY_FIELDS)) {
+			if (in_array($key,static::TEMPLATE_ARRAY_FIELDS)) {
 
 				$template_array_def = $array_data[$key];
 
@@ -149,7 +152,7 @@ abstract class LJAbstractTemplatePart {
 				continue;
 			}
 
-			throw new \Exception("Invalid field ".$key." found inside ".$this->tree_data_position.". This should never happen.");
+			throw new \Exception("Invalid field ".$key." found inside ".$this->tree_data_position.". Check your template syntax.");
 		}
 
 	}

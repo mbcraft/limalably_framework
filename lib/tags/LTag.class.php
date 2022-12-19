@@ -250,6 +250,18 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
         return isset($this->attributes[$this->realElementName($key)]);
     }
 
+    function __invoke(... $params) {
+        if (count($params)==1) {
+            $this->setAttribute($method_name,false);
+            return $this;
+        }
+        if (count($params)==2) {
+            $this->setAttribute($params[0],$params[1]);
+            return $this;
+        }
+        throw new \Exception("Invalid use of invoke : only one or two parameters are permitted for attribute setting.");
+    }
+
     //child management
 
     private function parentedChild($child) {

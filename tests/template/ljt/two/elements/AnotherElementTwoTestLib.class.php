@@ -18,7 +18,7 @@ class AnotherElementTwoTestLib extends LJAbstractTemplatePart {
 		$tag->setTagMode(LTag::TAG_MODE_OPEN_CONTENT_CLOSE);
 		$tag->setIndentMode(LTag::TAG_INDENT_SKIP_ALL);
 
-		$tag->AE__TWO($this('AE-TWO'));
+		$tag('AE-TWO',$this('AE-TWO'));
 
 		if ($this->has('AE-ONE')) $tag->AE__ONE($this('AE-ONE'));
 

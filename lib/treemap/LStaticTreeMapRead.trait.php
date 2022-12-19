@@ -8,6 +8,9 @@
 
 trait LStaticTreeMapRead {
     
+    public static function getRootTreeMap() {
+        return self::$tree_map;
+    }
     
     static function mustGetOriginal($path) {
         self::setupIfNeeded();

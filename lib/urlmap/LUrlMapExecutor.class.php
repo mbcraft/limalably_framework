@@ -66,7 +66,7 @@ class LUrlMapExecutor {
         $abs_input = $treeview_input->view('/');
         $abs_session = $treeview_session->view('/');
 
-        $this->output = new LTreeMap();
+        $this->output = LPageData::getRootTreeMap();
         $this->output->set('/success', true);
         $treeview_output = $this->output->view('/');
 

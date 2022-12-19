@@ -11,6 +11,8 @@ class AnotherElementOneTestLib extends LJAbstractTemplatePart {
 	const SIMPLE_FIELDS = ['AE-ONE','AE-TWO'];
 	const MANDATORY_FIELDS = ['AE-TWO'];
 
+	public function render() {}
+
 	public function __toString() {
 		
 		$result = "<another_element_one AE-TWO='".$this('AE-TWO')."' ";

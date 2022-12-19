@@ -11,7 +11,7 @@ class AnotherElementTwoTestLib extends LJAbstractTemplatePart {
 	const SIMPLE_FIELDS = ['AE-ONE','AE-TWO'];
 	const MANDATORY_FIELDS = ['AE-TWO'];
 
-	public function __toString() {
+	public function render() {
 		
 		$tag = new LTag('another_element_two');
 		$tag->setTagName('another_element_two');
@@ -22,7 +22,7 @@ class AnotherElementTwoTestLib extends LJAbstractTemplatePart {
 
 		if ($this->has('AE-ONE')) $tag->AE__ONE($this('AE-ONE'));
 
-		return "".$tag;
+		return $tag;
 	}
 
 }

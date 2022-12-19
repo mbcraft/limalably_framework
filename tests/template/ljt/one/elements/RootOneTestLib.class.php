@@ -12,6 +12,8 @@ class RootOneTestLib extends LJAbstractTemplatePart {
 	const TEMPLATE_FIELDS = ['t_root_one','t_root_two'];
 	const TEMPLATE_ARRAY_FIELDS = ['ta_root_one','ta_root_two'];
 
+	public function render() {}
+
 	public function __toString() {
 
 		$result = "<root_one ";

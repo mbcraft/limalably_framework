@@ -22,9 +22,13 @@ class LJTemplateRoot extends LJAbstractTemplatePart {
 
 	}
 
+	public function render() {
+		return $this('LAYOUT');
+	}
+
 	public function __toString() {
 
-		return "".$this('LAYOUT');
+		return "".$this->render();
 
 	}
 

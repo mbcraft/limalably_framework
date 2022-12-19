@@ -12,7 +12,7 @@ class RootTwoTestLib extends LJAbstractTemplatePart {
 	const TEMPLATE_FIELDS = ['t_root_one','t_root_two'];
 	const TEMPLATE_ARRAY_FIELDS = ['ta_root_one','ta_root_two'];
 
-	public function __toString() {
+	public function render() {
 
 		$tag = new LTag('root_two');
 		$tag->setTagName('root_two');
@@ -48,7 +48,7 @@ class RootTwoTestLib extends LJAbstractTemplatePart {
 			$tag [] = $list_tag;
 		}
 
-		return "".$tag;
+		return $tag;
 			
 	}
 }

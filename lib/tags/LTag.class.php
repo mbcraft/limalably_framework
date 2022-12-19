@@ -88,6 +88,14 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
         $result->required_string_in_attribute = $this->required_string_in_attribute;
         $result->required_children = $this->required_children;
 
+        $children = [];
+        foreach ($this->children as $child) {
+            if (is_string($child)) $children[] = $child;
+            else $children[] = $child->makeClone();
+        }
+
+        $result->children = $children;
+
         return $result;
 
     }

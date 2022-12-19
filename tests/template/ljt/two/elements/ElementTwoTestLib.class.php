@@ -12,7 +12,7 @@ class ElementTwoTestLib extends LJAbstractTemplatePart {
 	const TEMPLATE_FIELDS = ['te1-one','te1-two'];
 	const MANDATORY_FIELDS = ['e1-one'];
 
-	public function __toString() {
+	public function render() {
 
 		$tag = new LTag('element_two');
 		$tag->setTagName('element_two');
@@ -26,7 +26,7 @@ class ElementTwoTestLib extends LJAbstractTemplatePart {
 		if ($this->has('te1-one')) $tag[]=$this('te1-one');
 		if ($this->has('te1-two')) $tag[]=$this('te1-two');
 
-		return "".$tag;
+		return $tag;
 
 	}
 

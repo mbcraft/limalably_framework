@@ -173,6 +173,12 @@ abstract class LJAbstractTemplatePart {
 		return $this->data[$field_name];
 	}
 
-	public abstract function __toString();
+	public function __toString() {
+		return "".$this->render();
+	}
+
+	public abstract function render();
+
+
 	
 }

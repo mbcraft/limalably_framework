@@ -117,7 +117,7 @@ abstract class LJAbstractTemplatePart {
 			$field_result[] = $template_instance;
 		}
 
-		$this->data[$key] = $field_result;
+		$this->data[$key] = new LTemplateArrayFieldWrapper($field_result);
 	}
 
 	public function parse($array_data) {

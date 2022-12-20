@@ -16,17 +16,17 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     private $children = array();
 
     private $is_comment = false;
-    private $original_tag_name = null;
+    private $custom_tag_name = null;
     private $tag_name = null;
     private $tag_mode = self::TAG_MODE_AUTO;
     private $indent_mode = self::TAG_INDENT_AUTO;
 
     public static $indent_level = 0;
 
-    function __construct(string $original_tag_name=null) {
-        if ($original_tag_name) { 
-            $this->original_tag_name = $original_tag_name;
-            $this->tag_name = $original_tag_name;
+    function __construct(string $custom_tag_name=null) {
+        if ($custom_tag_name) { 
+            $this->custom_tag_name = $custom_tag_name;
+            $this->tag_name = $custom_tag_name;
         } else {
             $this->is_comment = true;
             $this->tag_mode = LITagRenderingTips::TAG_MODE_OPEN_CONTENT_CLOSE;
@@ -34,8 +34,8 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
         }
     }
 
-    public function getOriginalTagName() {
-        return $this->original_tag_name;
+    public function getCustomTagName() {
+        return $this->custom_tag_name;
     }
 
     //setup and dump functions
@@ -88,7 +88,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
     public function makeClone() {
 
-        $result = new LTag($this->original_tag_name);
+        $result = new LTag($this->custom_tag_name);
         $result->tag_name = $this->tag_name;
         $result->tag_mode = $this->tag_mode;
         $result->indent_mode = $this->indent_mode;
@@ -245,14 +245,14 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
         foreach ($this->required_attributes as $attr_name) {
             $real_attr_name = $this->realElementName($attr_name);
 
-            if (!isset($this->attributes[$real_attr_name])) throw new \Exception("Missing required attribute '".$real_attr_name."' for ".$this->original_tag_name);
+            if (!isset($this->attributes[$real_attr_name])) throw new \Exception("Missing required attribute '".$real_attr_name."' for ".$this->custom_tag_name);
         }
     }
 
     private function checkRequiredStringsInAttributes() {
         foreach ($this->required_string_in_attribute as $real_attr_name => $check_list) {
             
-            if (!isset($this->attributes[$real_attr_name])) throw new \Exception("Attribute is not even specified inside tag ".$this->original_tag_name);
+            if (!isset($this->attributes[$real_attr_name])) throw new \Exception("Attribute is not even specified inside tag ".$this->custom_tag_name);
 
             $attr_value = $this->attributes[$real_attr_name];
 
@@ -313,7 +313,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
         if (isset($this->children[$$child_name])) return $this->children[$child_name];
         else {
-            if (in_array($child_name,$this->required_children)) throw new \Exception("Missing children ".$child_name." in tag ".$this->original_tag_name);
+            if (in_array($child_name,$this->required_children)) throw new \Exception("Missing children ".$child_name." in tag ".$this->custom_tag_name);
             else return "<!-- empty child '".$child_name."' -->";
         }
     }
@@ -346,7 +346,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
     private function checkRequiredChildren() {
         foreach ($this->required_children as $child_name) {
-            if (!isset($this->children[$child_name])) throw new \Exception("Missing required children '".$child_name."' for ".$this->original_tag_name);
+            if (!isset($this->children[$child_name])) throw new \Exception("Missing required children '".$child_name."' for ".$this->custom_tag_name);
         }
     }
 
@@ -356,7 +356,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
         if (isset($this->children[$child_name])) return $this->children[$child_name];
 
-        if (in_array($child_name,$this->required_children)) throw new \Exception("Required children is missing from ".$this->original_tag_name);
+        if (in_array($child_name,$this->required_children)) throw new \Exception("Required children is missing from ".$this->custom_tag_name);
 
         $parent = $this->my_parent;
 

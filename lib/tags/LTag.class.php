@@ -15,6 +15,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     private $required_children = array();
     private $children = array();
 
+    private $is_comment = false;
     private $original_tag_name = null;
     private $tag_name = null;
     private $tag_mode = self::TAG_MODE_AUTO;
@@ -22,9 +23,15 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
     public static $indent_level = 0;
 
-    function __construct(string $original_tag_name) {
-        $this->original_tag_name = $original_tag_name;
-        $this->tag_name = $original_tag_name;
+    function __construct(string $original_tag_name=null) {
+        if ($original_tag_name) { 
+            $this->original_tag_name = $original_tag_name;
+            $this->tag_name = $original_tag_name;
+        } else {
+            $this->is_comment = true;
+            $this->tag_mode = LITagRenderingTips::TAG_MODE_OPEN_CONTENT_CLOSE;
+            $this->indent_mode = LITagRenderingTips::TAG_INDENT_NORMAL;
+        }
     }
 
     public function getOriginalTagName() {
@@ -35,6 +42,8 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
     public function setTagName(string $tag_name) {
         $this->tag_name = $tag_name;
+
+        $this->is_comment = false;
 
         return $this;
     }
@@ -394,36 +403,44 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     //rendering
 
     function __toString() {
-        if (!$this->tag_name) throw new \Exception("Tag name is not set.");
-        if ($this->tag_mode == self::TAG_MODE_AUTO) throw new \Exception("Can't render tag with TAG_MODE_AUTO set.");
-        if ($this->indent_mode == self::TAG_INDENT_AUTO) throw new \Exception("Can't render tag with TAG_INDENT_AUTO set.");
+        if (!$this->is_comment) {
+            if (!$this->tag_name) throw new \Exception("Tag name is not set.");
+            if ($this->tag_mode == self::TAG_MODE_AUTO) throw new \Exception("Can't render tag with TAG_MODE_AUTO set.");
+            if ($this->indent_mode == self::TAG_INDENT_AUTO) throw new \Exception("Can't render tag with TAG_INDENT_AUTO set.");
 
-        $this->checkIndentMode();
-        $this->checkRequiredAttributes();
-        $this->checkRequiredStringsInAttributes();
-        $this->checkRequiredChildren();
+            $this->checkIndentMode();
+            $this->checkRequiredAttributes();
+            $this->checkRequiredStringsInAttributes();
+            $this->checkRequiredChildren();
 
-        $result = "";
-        if ($this->indent_mode == self::TAG_INDENT_NORMAL) {
-            for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
+            $result = "";
+            if ($this->indent_mode == self::TAG_INDENT_NORMAL) {
+                for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
+            }
+
+            $result = '<'.$this->tag_name;
+
+
+            foreach ($this->attributes as $key => $value) {
+                $result.= $this->renderAttribute($key, $value);
+            }
         }
-
-        $result = '<'.$this->tag_name;
-
-        foreach ($this->attributes as $key => $value) {
-            $result.= $this->renderAttribute($key, $value);
+        else {
+            $result = "<!--";
         }
 
         switch ($this->tag_mode) {
             case self::TAG_MODE_OPEN_CONTENT_CLOSE : {
+                if (!$this->is_comment) {
+                    $result .= " >";
+                
 
-                $result .= " >";
-
-                if ($this->indent_mode == self::TAG_INDENT_NORMAL) 
+                    if ($this->indent_mode == self::TAG_INDENT_NORMAL) 
                     {
                         $result .= "\r\n";
                         self::$indent_level++;
                     }
+                }
 
                 foreach ($this->children as $key => $child) {
                     if (is_numeric($key)) {
@@ -435,16 +452,19 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
                     }
                 }
 
-                if ($this->indent_mode == self::TAG_INDENT_NORMAL) $result .= "\r\n";
+                if (!$this->is_comment) {
+                    if ($this->indent_mode == self::TAG_INDENT_NORMAL) $result .= "\r\n";
 
-                if ($this->indent_mode == self::TAG_INDENT_NORMAL) self::$indent_level--;
+                    if ($this->indent_mode == self::TAG_INDENT_NORMAL) self::$indent_level--;
 
-                if ($this->indent_mode == self::TAG_INDENT_NORMAL) {
-                    for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
+                    if ($this->indent_mode == self::TAG_INDENT_NORMAL) {
+                        for ($i=0;$i<self::$indent_level;$i++) $result .= "\t";
+                    }
+
+                    $result .= '</'.$this->tag_name.'>';
+                } else {
+                    $result .= "-->";
                 }
-
-                $result .= '</'.$this->tag_name.'>';
-                
 
                 return $result;
             }

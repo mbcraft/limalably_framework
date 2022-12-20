@@ -7,7 +7,11 @@
  */
 
 function tag(string $original_tag_name) {
-    return LTagLib::createTagFromLibrary($original_tag_name);
+    if ($original_tag_name) {
+        return LTagLib::createTagFromLibrary($original_tag_name);
+    } else {
+        return new LTag();
+    }
 }
 
 function tagref($child_name) {

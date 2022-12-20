@@ -340,4 +340,15 @@ class TagTest extends LTestCase {
 		}
 	}
 
+	function testComments() {
+
+		$t = new LTag();
+
+		$t[] = "This is a comment";
+
+		$this->assertEqual("".$t,"<!--This is a comment-->","Il tag non è renderizzato come un commento!");
+
+
+	}
+
 }

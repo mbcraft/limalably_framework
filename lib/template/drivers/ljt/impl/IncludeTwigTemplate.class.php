@@ -20,7 +20,9 @@ class IncludeTwigTemplate extends LJAbstractTemplatePart {
 
 			$template_root_folder = LConfigReader::simple('/template/twig/root_folder');
 
-			self::$file_template_source = $template_engine->createFileTemplateSource($template_root_folder);
+			$cache_folder = LConfigReader::simple('/template/twig/cache_folder');
+
+			self::$file_template_source = $template_engine->createFileTemplateSource($template_root_folder,$cache_folder);
 		}
 
 		$template_path = $this->getField('template');

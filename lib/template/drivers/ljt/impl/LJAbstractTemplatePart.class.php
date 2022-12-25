@@ -48,6 +48,14 @@ abstract class LJAbstractTemplatePart {
 		return $this->tree_data_position;
 	}
 
+	public function hasField($field_name) {
+		return array_key_exists($field_name,$this->data);
+	}
+
+	public function getField($field_name) {
+		return $this->data[$field_name];
+	}
+
 	public static function createTemplatePart($template_class_name,$position,$data) {
 		try {
 			$template_instance = new $template_class_name();

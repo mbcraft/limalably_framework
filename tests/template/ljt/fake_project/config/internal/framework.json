@@ -1,0 +1,270 @@
+{
+    "defaults": {
+        "database": {
+            "db_test_main_empty" : {
+                "driver" : "mysql",
+                "host" : "mysql.mbcraftlab.it",
+                "username" : "db_mbcraftlab",
+                "password" : "pdx1-mysql-a7-2b!",
+                "db_name" : "db_mbcraftlab_test"
+            },
+            "hosting_dreamhost_tests" : {
+                "driver" : "mysql",
+                "host" : "mysql.mbcraftlab.it",
+                "username" : "db_mbcraftlab",
+                "password" : "pdx1-mysql-a7-2b!",
+                "db_name" : "db_mbcraftlab_test"
+            },
+            "hosting_dreamhost_tests2" : {
+                "driver" : "mysql",
+                "host" : "mysql.mbcraftlab.it",
+                "username" : "db_mbcraftlab",
+                "password" : "pdx1-mysql-a7-2b!",
+                "db_name" : "db_mbcraftlab_test2"
+            },
+            "hosting_dfdt_tests" : {
+                "driver" : "mysql",
+                "host" : "51.38.33.34",
+                "username" : "m187937d1",
+                "password" : "vrjtun7o9rqzvqj3",
+                "db_name" : "m187937d1"
+            }
+        },
+        "execution_mode": {
+            "maintenance": {
+                "logging": {
+                    "type": "together-file",
+                    "min_level": "debug",
+                    "log_mode": "normal"
+                },
+                "urlmap": {
+                    "private_routes_visible": false
+                },
+                "template": {
+                    "twig" : {
+                        "auto_reload": true
+                    }
+                },
+                "request" : {
+                    "route_handler_class" : "LMaintenanceRouteExecutor"
+                }
+            },
+            "framework_development": {
+                "logging": {
+                    "type": "output",
+                    "min_level": "debug"
+                },
+                "urlmap": {
+                    "private_routes_visible": true
+                },
+                "template": {
+                    "twig" : {
+                        "auto_reload": true
+                    }
+                },
+                "misc" : {
+                    "errors" : {
+                        "log" : false,
+                        "display" : true
+                    }
+                }
+            },
+            "development": {
+                "logging": {
+                    "type": "distinct-file",
+                    "min_level": "debug"
+                },
+                "urlmap": {
+                    "private_routes_visible": true
+                },
+                "template": {
+                    "twig" : {
+                        "auto_reload": true
+                    }
+                },
+                "misc" : {
+                    "errors" : {
+                        "display" : true
+                    }
+                }
+            },
+            "testing": {
+                "logging": {
+                    "type": "distinct-file",
+                    "min_level": "error"
+                },
+                "urlmap": {
+                    "private_routes_visible": false
+                },
+                "template": {
+                    "twig" : {
+                        "auto_reload": false
+                    }
+                },
+                "misc" : {             
+                    "errors" : {
+                        "display" : true
+                    },
+                    "trace_enabled" : false,
+                    "debug_enabled" : false
+                }
+            },
+            "production": {
+                "logging": {
+                    "type": "distinct-file",
+                    "min_level": "error"
+                },
+                "urlmap": {
+                    "private_routes_visible": false
+                },
+                "template": {
+                    "twig" : {
+                        "auto_reload": false
+                    }
+                },
+                "misc" : {
+                    "trace_enabled" : false,
+                    "debug_enabled" : false,
+                    "introspection_enabled" : false
+                }
+            }
+        },
+        "urlmap": {
+            "static_routes_folder" : "urlmap/public/static/",
+            "alias_db_routes_folder" : "urlmap/public/alias_db/",
+            "private_routes_folder" : "urlmap/private/",
+            "search_order": "alias_db,static",
+            "special_matchall_route" : "_else",
+            "special_folder_route": "_folder",
+            "special_inherited_route": "_default",
+            "special_truncate_route": "_stop",
+            "ignore_missing_extends": false,
+            "ignore_missing_imports": false,
+            "validation_driver_class": "LRespectValidationDriver"
+        },
+        "template": {
+            "twig" : {
+                "source_factory_class": "LTwigTemplateSourceFactory",
+                "root_folder": "template/",
+                "cache_folder": "temp/cache/template/",
+                "strict_variables": false,
+                "autoescape" : "name",
+                "import_into_variables": ["env", "env_string" , "output_string" ,"input", "input_string","session", "session_string","capture", "capture_string","parameters", "parameters_string" ,"urlmap", "urlmap_string","i18n","flags"],
+                "extension_search_list" : [".html",".xhtml",".twig"]
+            },
+            "php" : {
+                "source_factory_class" : "LPhpTemplateSourceFactory",
+                "root_folder": "template/",
+                "import_into_variables": [],
+                "extension_search_list" : [".php"]  
+            },
+            "ljt" : {
+                "source_factory_class" : "LJTemplateSourceFactory",
+                "root_folder": "template/",
+                "import_into_variables": [],
+                "extension_search_list" : [".json",".ljt"]  
+            }
+        },
+        "logging": {
+            "distinct-file": {
+                "date_format": "d/m/Y H:i:s",
+                "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
+                "log_mode": "normal",
+                "max_mb": 10,
+                "log_folder": "logs/",
+                "min_level": "debug"
+            },
+            "together-file": {
+                "date_format": "d/m/Y H:i:s",
+                "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
+                "log_mode": "rolling",
+                "max_mb": 10,
+                "log_folder": "logs/",
+                "min_level": "debug"
+            },
+            "db": {
+                "log_mode": "normal",
+                "connection_name": "default",
+                "max_records": 1000000,
+                "table_name": "logs",
+                "min_level": "debug"
+            },
+            "output": {
+                "min_level": "debug"
+            }
+        },
+        "treemap": {
+            "false_values": ["false", "null", "0", "no", 0, false, null]
+        },
+        "classloader": {
+            "code_file_ends_with": [".class.php", ".interface.php", ".trait.php"],
+            "framework_folder_list": ["lib/"],
+            "project_folder_list": ["lib/", "urlmap/handlers/"],
+            "map_cache_file_path": "temp/cache/classloader/map/classloader_map_cache.php",
+            "class_cache_folder": "temp/cache/classloader/classes/",
+            "cache_commented_call_list": ["LLog::debug", "LLog::info"],
+            "skip_cache_route_list": [],
+            "skip_cache_query_parameter": null
+        },
+        "request": {
+            "input_source_list": ["files", "post", "get"],
+            "route_handler_class" : "LDefaultRouteExecutor"
+        },
+        "exec": {
+            "method_parameter_search_list": ["meta", "capture", "rel_input", "input", "rel_session", "session", "rel_output", "output", "default_value"]
+        },
+        "format": {
+            "html": {
+                "error_templates_folder": "errors/html/"
+            },
+            "json": {
+                "encode_options": ["THROW_ON_ERROR"],
+                "error_templates_folder": "errors/json/"
+            },
+            "default_error_format" : "html"
+        },
+        "session" : {
+        },
+
+        "misc" : {
+            "errors" : {
+                "log" : true,
+                "display" : false,
+                "continue_on_errors" : false,
+                "reporting" : {
+                    "error" : true,
+                    "warning" : true,
+                    "parse" : true,
+                    "notice" : true,
+                    "core_error" : true,
+                    "core_warning" : true,
+                    "compile_error" : true,
+                    "compile_warning" : true,
+                    "user_error" : true,
+                    "user_warning" : true,
+                    "user_notice" : true,
+                    "recoverable_error" : true
+                }
+            },
+            "trace_enabled" : true,
+            "debug_enabled" : true,
+            "introspection_enabled" : true,
+            "proc_folder": "proc/",
+            "proc_extension": ".proc.php",
+            "data_folder": "data/",
+            "autofix_folder_permissions" : true,
+            "wwwroot_folder" : "wwwroot/",
+            "build" : 0
+        },
+        "i18n" : {
+            "template_engine_name" : "twig",
+            "translations_root_folder" : "i18n/",
+            "capture_lang_variable" : "lang",
+            "session_lang_variable_path" : "/lang",
+            "cookie_lang_variable" : "lang",
+            "default_language" : "it",
+            "cache_folder" : "temp/cache/i18n/",
+            "override_default_lang" : true
+        }
+    }
+}

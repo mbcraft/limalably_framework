@@ -228,6 +228,10 @@ class LConfig {
         return self::$init_called;
     }
 
+    public static function reset() {
+        self::$init_called = false;
+    }
+
     public static function init() {
 
         if (self::$init_called) {

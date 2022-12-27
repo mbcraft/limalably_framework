@@ -13,7 +13,7 @@ Thanks to www.mysqltutorial.org for its documentation.
 */
 
 
-class LMysqlCreateTableStatement extends LMysqlAbstractQuery implements LICreateUpdateDeleteColumnConstants {
+class LMysqlCreateTableStatement extends LMysqlAbstractQuery implements LIStandardOperationsColumnConstants {
 	
 	private $show_option = "";
 	private $table_name;
@@ -71,7 +71,7 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery implements LICreate
 		return $this;
 	}
 
-	function safe_create_update_delete_columns() {
+	function standard_operations_columns() {
 		return $this->column(col_def(self::COLUMN_CREATED_AT)->t_datetime()->not_null()->default_value(_expr('NOW()')))
 		->column(col_def(self::COLUMN_CREATED_BY)->t_u_int())
 		->column(col_def(self::COLUMN_LAST_UPDATED_AT)->t_datetime()->not_null()->default_value(_expr('NOW()')))

@@ -25,6 +25,12 @@ class ComuneAutoDO extends LAbstractDataObject {
 	const TABLE = "comune";
 }
 
+class ProvaDO extends LAbstractDataObject {
+	const TABLE = "my_soft_prova";
+
+	const SOFT_COLUMNS = true;
+}
+
 class AutoDataObjectTest extends LTestCase {
 	
 
@@ -119,6 +125,83 @@ class AutoDataObjectTest extends LTestCase {
 
 		$this->assertEqual($r1_find->nome,$r1->nome,"Il nome della regione trovata non corrisponde!");
 		$this->assertEqual($r1_find->codice,$r1->codice,"Il codice della regione trovata non corrisponde!");
+
+
+	}
+
+
+	public function testProvaSoftColumns() {
+
+
+		$db = db('hosting_dreamhost_tests');
+
+		drop_table('my_soft_prova')->if_exists()->go($db);
+
+		create_table('my_soft_prova')->column(col_def('id')->t_id())
+		->column(col_def('text_value')->t_text32())
+		->column(col_def('int_value')->t_u_int())
+		->standard_operations_columns()->go($db);
+
+		$a1 = new ProvaDO();
+		$a1->text_value = "qualcosa";
+		$a1->int_value = 12;
+
+		$a1->created_by(3);
+		$a1->saveOrUpdate();
+
+		$a1_again = new ProvaDO(1);
+		$a1_again->last_updated_by(17);
+		$a1_again->saveOrUpdate();
+
+		$a1_again->soft_delete(7);
+
+
+		$this->assertEqual($a1_again->created_by,3,"L'id del created by non corrisponde!");
+		$this->assertEqual($a1_again->last_updated_by,17,"L'id del created by non corrisponde!");
+		$this->assertEqual($a1_again->deleted_by,7,"L'id del created by non corrisponde!");
+		$this->assertNotNull($a1_again->deleted_at,"La data del delete non è nulla!");
+
+		$a1_again->soft_undelete();
+
+		$this->assertNull($a1_again->deleted_at,"L'id del soft delete non è nullo dopo l'undelete!");
+		$this->assertNull($a1_again->deleted_by,"La data del soft delete non è nulla dopo l'undelete!");
+
+		$a2 = new ProvaDO();
+		$a2->text_value = "qualcosa";
+		$a2->int_value = 15;
+
+		$a2->created_by();
+		$a2->saveOrUpdate();
+
+		$a2->soft_delete();
+
+		$all_results = ProvaDO::findAll()::go();
+
+		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
+
+		$all_results = ProvaDO::findAll()::with_soft_deleted()::go();
+
+		$this->assertTrue(count($all_results)==2,"Il numero dei risultati non corrisponde!");
+
+		$all_results = ProvaDO::findAll()::only_soft_deleted()::go();
+
+		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
+
+		//adding a condition to test also the other part
+
+		$all_results = ProvaDO::findAll(_eq('text_value','qualcosa'))::go();
+
+		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
+
+		$all_results = ProvaDO::findAll(_eq('text_value','qualcosa'))::with_soft_deleted()::go();
+
+		$this->assertTrue(count($all_results)==2,"Il numero dei risultati non corrisponde!");
+
+		$all_results = ProvaDO::findAll(_eq('text_value','qualcosa'))::only_soft_deleted()::go();
+
+		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
+
+		drop_table('my_soft_prova')->if_exists()->go($db);
 
 
 	}

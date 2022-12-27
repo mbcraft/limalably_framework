@@ -46,6 +46,25 @@ function project_require($filename_relative_path) {
     require($_SERVER['PROJECT_DIR'].$filename_relative_path);
 }
 
+function get_printable_var($var) {
+    if ($var === null) return 'null';
+    if (is_bool($var)) {
+        if ($var) return 'true';
+        else return false;
+    }
+    if (is_array($var)) {
+        $result = "[";
+        $items = [];
+        foreach ($var as $el) $items[] = get_printable_var($el);
+        $result .= implode(',',$items);
+        $result .= "]";
+        return $result;
+    }
+    if (is_object($var)) return get_class($var);
+    return "".$var;
+
+}
+
 function ensure_all_strings_or_null($code_place_description,$var_list) {
     if (!is_array($var_list)) throw new \Exception("Invalid array of elements for ensure_all_strings_or_null function");
     foreach ($var_list as $var) {
@@ -69,7 +88,9 @@ function ensure_all_numbers_or_strings_or_null($code_place_description,$var_list
     if (!is_array($var_list)) throw new \Exception("Invalid array of elements in ensure_all_numbers_or_strings_or_null function");
     foreach ($var_list as $var) {
         if (!is_string($var) && !is_numeric($var) && !is_null($var))
-            throw new \Exception("Some variable is not a simple numeric type or string or null : ".get_class($var)." was found in ".$code_place_description.".");
+        {
+            throw new \Exception("Some variable is not a simple numeric type or string or null : ".get_printable_var($var)." was found in ".$code_place_description.".");
+        }
     }
 }
 
@@ -78,7 +99,7 @@ function ensure_all_numbers_or_strings($code_place_description,$var_list) {
     if (!is_array($var_list)) throw new \Exception("Invalid array of elements in ensure_all_numbers_or_strings function");
     foreach ($var_list as $var) {
         if (!is_string($var) && !is_numeric($var))
-            throw new \Exception("Some variable is not a simple numeric type or string. ".($var ? get_class($var) : "null" )." was found in ".$code_place_description.".");
+            throw new \Exception("Some variable is not a simple numeric type or string. ".get_printable_var($var)." was found in ".$code_place_description.".");
     }
 }
 
@@ -86,7 +107,7 @@ function ensure_all_numbers($code_place_description,$var_list) {
     if (!is_array($var_list)) throw new \Exception("Invalid array of elements in ensure_all_numbers_or_strings function");
     foreach ($var_list as $var) {
         if (!is_numeric($var))
-            throw new \Exception("Some variable is not a simple numeric type . ".get_class($var)." was found in ".$code_place_description.".");
+            throw new \Exception("Some variable is not a simple numeric type . ".get_printable_var($var)." was found in ".$code_place_description.".");
     }
 }
 
@@ -98,7 +119,7 @@ function ensure_instance_of($code_place_description,$var,$class_name_list) {
         if ($var instanceof $clazz) return;
     }    
 
-    throw new \Exception("Variable is not an instance of the listed classes : ".implode(',',$class_name_list)." in ".$code_place_description." - found object of class :".get_class($var));
+    throw new \Exception("Variable is not an instance of the listed classes : ".implode(',',$class_name_list)." in ".$code_place_description." - found object of class :".get_printable_var($var));
 }
 
 function ensure_all_instances_of($code_place_description,$var_list,$class_list) {

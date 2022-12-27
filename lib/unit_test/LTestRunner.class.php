@@ -16,9 +16,9 @@ class LTestRunner {
     
     static function collect($root_dir,$folder) {
         
-        if (LStringUtils::endsWith('_',$folder)) {
+        if (LStringUtils::startsWith($folder,'_') || LStringUtils::endsWith($folder,'_')) {
             
-            echo "Skipping folder '".$folder."' as it ends with '_' ...\n";
+            echo "Skipping folder '".$folder."' as it starts or ends with '_' ...\n";
 
             return;
         }

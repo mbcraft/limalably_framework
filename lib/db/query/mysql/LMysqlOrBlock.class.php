@@ -17,6 +17,9 @@ class LMysqlOrBlock
 	private $conditions;
 
 	public function __construct(... $conditions) {
+
+		if ($conditions && count($conditions)==1 && is_array($conditions[0])) $conditions = $conditions[0]; 
+
 		ensure_all_instances_of("mysql statement with 'or' block",$conditions,[LMysqlOrBlock::class,LMysqlAndBlock::class,LMysqlCondition::class]);
 		
 		$this->conditions = $conditions;

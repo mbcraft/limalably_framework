@@ -22,22 +22,26 @@ abstract class LMysqlAbstractConditionsBlock {
 		if ($mode!='where' && $mode!='having' && $mode!=' on') throw new \Exception("mode of conditions block is neither 'where' nor 'having'.");
 		$this->mode = $mode;
 
-		if (is_array($element)) {
-			if (count($element)>0) 
+		if (is_array($element) && !empty($element)) {
+			if (count($element)>1) 
 				$element = new LMysqlAndBlock(... $element);
 			else 
 				$element = $element[0];
 		}
 		if ($element instanceof LMysqlElementList) $element = new LMysqlAndBlock(... $element->getElements());
 
-		ensure_instance_of($mode." conditions block of mysql statement",$element,[LMysqlCondition::class,LMysqlOrBlock::class,LMysqlAndBlock::class]);
+		if ($element) {
+			ensure_instance_of($mode." conditions block of mysql statement",$element,[LMysqlCondition::class,LMysqlOrBlock::class,LMysqlAndBlock::class]);
 
-		$this->element = $element;
+			$this->element = $element;
+		}
 
 	}
 
 	public function __toString() {
-		return strtoupper($this->mode)." ".$this->element;
+		if ($this->element)
+			return strtoupper($this->mode)." ".$this->element;
+		else return "";
 	}
 
 }

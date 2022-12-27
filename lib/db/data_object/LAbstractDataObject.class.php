@@ -6,8 +6,14 @@
  *  
  */
 
-abstract class LAbstractDataObject {
+abstract class LAbstractDataObject implements LIStandardOperationsColumnConstants {
 	
+	const SOFT_DELETED_FILTER_DEFAULT = "default";
+	const SOFT_DELETED_FILTER_WITH = "with";
+	const SOFT_DELETED_FILTER_ONLY = "only";
+
+	const SESSION_USER_ID_PATH = "/user/id";
+
 	private $__columns = null;
 
 	private static $__reflection_class = null;
@@ -18,6 +24,8 @@ abstract class LAbstractDataObject {
 	const TABLE = null;
 	
 	const MY_DB = null;
+
+	const SOFT_COLUMNS = false;
 
 	private static $__my_db = null;
 
@@ -79,6 +87,39 @@ abstract class LAbstractDataObject {
 		$s = select($fields,$table);
 
 		if (self::$__distinct_option) $s = $s->with_distinct();
+
+		if (static::SOFT_COLUMNS) {
+			switch (self::$__soft_deleted_filter) {
+				case self::SOFT_DELETED_FILTER_DEFAULT : {
+					if (!self::$__conditions) {
+						self::$__conditions = [_is_null(static::COLUMN_DELETED_AT)];
+					} else {
+						$cond = self::$__conditions;
+
+						self::$__conditions = [_and(_and($cond),_is_null(static::COLUMN_DELETED_AT))];
+					}
+					break;
+				}
+				case self::SOFT_DELETED_FILTER_WITH : {
+
+					//nothing to do
+
+					break;
+				}
+				case self::SOFT_DELETED_FILTER_ONLY : {
+					if (!self::$__conditions) {
+						self::$__conditions = [_is_not_null(static::COLUMN_DELETED_AT)];
+					} else {
+						$cond = self::$__conditions;
+
+						self::$__conditions = [_and(_and($cond),_is_not_null(static::COLUMN_DELETED_AT))];
+					}
+					break;
+				}
+				default : throw new \Exception("Illegal state exception during setup of filters for soft delete items.");
+
+			}
+		}
 
 		if (self::$__conditions) $s = $s->where(... self::$__conditions);
 
@@ -421,10 +462,93 @@ abstract class LAbstractDataObject {
 			return $last_insert_id;
 
 		} else {
-			return $this->getField(static::ID_COLUMN);
+			return $this->getColumnValue(static::ID_COLUMN);
 		}
 
 		
+	}
+
+	public function created_by($user_id=true) {
+
+		$this->last_updated_by($user_id);
+
+		self::checkSoftColumns();
+		$user_id = $this->checkNumericUserId($user_id);
+
+		$this->{self::COLUMN_CREATED_BY} = $user_id;
+		$this->{self::COLUMN_CREATED_AT} = date('Y-m-d H:i:s');
+
+		return $this;
+	}
+
+	public function last_updated_by($user_id=true) {
+
+		self::checkSoftColumns();
+		$user_id = $this->checkNumericUserId($user_id);
+
+		$this->{self::COLUMN_LAST_UPDATED_BY} = $user_id;
+		$this->{self::COLUMN_LAST_UPDATED_AT} = date('Y-m-d H:i:s');
+
+		return $this;
+	}
+
+	public function soft_delete($user_id=true,$db=null) {
+
+		self::checkSoftColumns();
+		$user_id = $this->checkNumericUserId($user_id);
+
+		$this->{self::COLUMN_DELETED_BY} = $user_id;
+		$this->{self::COLUMN_DELETED_AT} = date('Y-m-d H:i:s');
+
+		return $this->saveOrUpdate($db);
+
+	}
+
+	public function soft_undelete($db=null) {
+
+		self::checkSoftColumns();
+
+		$this->{static::COLUMN_DELETED_AT} = null;
+		$this->{static::COLUMN_DELETED_BY} = null;
+
+		return $this->saveOrUpdate($db);
+
+	}
+
+	private static $__soft_deleted_filter = "default";
+
+	public static function with_soft_deleted() {
+		
+		self::checkSoftColumns();
+
+		self::$__soft_deleted_filter = "with";
+
+		return static::class;
+	}
+
+
+	public static function only_soft_deleted() {
+		
+		self::checkSoftColumns();
+
+		self::$__soft_deleted_filter = "only";
+
+		return static::class;
+	}
+
+	private function checkNumericUserId($user_id) {
+
+		if ($user_id===true) {
+			$user_id = LSession::get(self::SESSION_USER_ID_PATH);
+		}
+
+		if ($user_id && !is_numeric($user_id)) throw new \Exception("The user id for a safe create update delete column is not numeric!");
+
+		return $user_id;
+	}
+
+	private static function checkSoftColumns() {
+		if (!static::SOFT_COLUMNS) throw new \Exception("Soft columns are not enabled in this data object!");
 	}
 
 	public function __set($name,$value) {

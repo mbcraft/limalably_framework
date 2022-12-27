@@ -26,7 +26,7 @@ class MysqlCreateRenameDropTableTest extends LTestCase {
 
 		drop_table('my_test_table2')->if_exists()->go($db);
 
-		create_table('my_test_table2')->column(col_def('my_column')->t_boolean())->safe_create_update_delete_columns()->go($db);
+		create_table('my_test_table2')->column(col_def('my_column')->t_boolean())->standard_operations_columns()->go($db);
 
 		$table_list = table_list()->go($db);
 

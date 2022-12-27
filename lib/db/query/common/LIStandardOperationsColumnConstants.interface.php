@@ -1,7 +1,7 @@
 <?php
 
 
-interface LICreateUpdateDeleteColumnConstants {
+interface LIStandardOperationsColumnConstants {
 	
 
 	const COLUMN_CREATED_AT = 'created_at';

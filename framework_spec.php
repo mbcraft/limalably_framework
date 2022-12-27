@@ -1,7 +1,7 @@
 <?php
 
-if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','lymz');
-if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','lymz_framework');
+if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','limalably');
+if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','limalably_framework');
 
 if (!isset($_SERVER['FRAMEWORK_DIR'])) {
 	$uniform_file_path = str_replace('\\','/',__FILE__);

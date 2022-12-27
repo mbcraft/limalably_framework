@@ -17,7 +17,7 @@ class LHttpRedirect extends LHttpResponse {
     function execute($format=null) {
         
         header("Location: ".$this->location); 
-        Lymz::finish();
+        Limalably::finish();
         
     }
 

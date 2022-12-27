@@ -106,7 +106,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
 
-		$save_dir = new LDir('/home/marco/PhpProjects/lymz_framework/tmp/');
+		$save_dir = new LDir('/home/marco/PhpProjects/limalably_framework/tmp/');
 
 		$r = $dc->backup_db_structure('local_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
 
@@ -159,7 +159,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile eseguire la chiamata con successo.");
 
-		$save_dir = new LDir('/home/marco/PhpProjects/lymz_framework/tmp/');
+		$save_dir = new LDir('/home/marco/PhpProjects/limalably_framework/tmp/');
 
 		$r = $dc->backup_db_data('local_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
 

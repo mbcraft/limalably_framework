@@ -6,7 +6,7 @@
  *  
  */
 
-class Lymz {
+class Limalably {
 
     private static $boot_called = false;
 
@@ -30,7 +30,7 @@ class Lymz {
             foreach ($folder_checker->getErrors() as $error) {
                 echo $error."\n";
             }
-            Lymz::finish();
+            Limalably::finish();
         }
 
         LLog::init();
@@ -56,7 +56,7 @@ class Lymz {
             foreach ($folder_checker->getErrors() as $error) {
                 echo $error."\n<br />";
             }
-            Lymz::finish();
+            Limalably::finish();
         }
         
         LLog::init();

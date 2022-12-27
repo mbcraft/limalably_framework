@@ -6,7 +6,7 @@
  *  
  */
 
-function lymz_fatal_handler() {
+function limalably_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
         exit();
@@ -25,12 +25,12 @@ function lymz_fatal_handler() {
             $errline = $error["line"];
             $errstr = $error["message"];
 
-            lymz_report($errno, $errstr, $errfile, $errline, []);
+            limalably_report($errno, $errstr, $errfile, $errline, []);
         }
     }
 }
 
-function lymz_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=[]) {
+function limalably_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=[]) {
 
     $available_constants = [E_COMPILE_ERROR, E_COMPILE_WARNING, E_CORE_ERROR, E_CORE_WARNING, E_ERROR, E_PARSE, E_NOTICE, E_WARNING, E_RECOVERABLE_ERROR, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE];
 
@@ -118,9 +118,9 @@ class LErrorReportingInterceptors {
         if (LConfigReader::simple('/misc/errors/reporting/user_notice', false))
             $report_mask |= E_USER_NOTICE;
 
-        set_error_handler('lymz_report', $report_mask);
+        set_error_handler('limalably_report', $report_mask);
 
-        register_shutdown_function('lymz_fatal_handler');
+        register_shutdown_function('limalably_fatal_handler');
 
         error_reporting($report_mask);
     }

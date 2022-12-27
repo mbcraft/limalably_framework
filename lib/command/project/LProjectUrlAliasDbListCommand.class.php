@@ -13,7 +13,7 @@ class LProjectUrlAliasDbListCommand implements LICommand {
         
         if (empty($elements)) {
             echo "No routes found in url alias db.\n";
-            Lymz::finish(0);
+            Limalably::finish(0);
         }
         
         echo "Routes found in url alias db : ".count($elements)."\n\n";

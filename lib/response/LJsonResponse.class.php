@@ -22,7 +22,7 @@ class LJsonResponse extends LHttpResponse {
         
         echo $this->my_result;
 
-        Lymz::finish();
+        Limalably::finish();
     }
 
 }

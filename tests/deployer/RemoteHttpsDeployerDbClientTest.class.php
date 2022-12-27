@@ -98,7 +98,7 @@ class RemoteHttpsDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
 
-		$save_dir = new LDir('/home/marco/PhpProjects/lymz_framework/tmp/');
+		$save_dir = new LDir('/home/marco/PhpProjects/limalably_framework/tmp/');
 
 		$r = $dc->backup_db_structure('remote_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
 
@@ -147,7 +147,7 @@ class RemoteHttpsDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
 
-		$save_dir = new LDir('/home/marco/PhpProjects/lymz_framework/tmp/');
+		$save_dir = new LDir('/home/marco/PhpProjects/limalably_framework/tmp/');
 
 		$r = $dc->backup_db_data('remote_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
 

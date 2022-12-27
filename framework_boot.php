@@ -35,7 +35,7 @@ require_once ('lib/utils/LJsonUtils.class.php');
 require_once ('lib/db/functions.php');
 
 //lym
-require_once ('lib/Lymz.class.php');
+require_once ('lib/Limalably.class.php');
 
 LConfig::init();
 

@@ -27,7 +27,7 @@ class LFrameworkCommandExecutor implements LICommandExecutor {
             $cmd->execute();
         }
         
-        if ($this->hasExecutedCommand()) Lymz::finish ();
+        if ($this->hasExecutedCommand()) Limalably::finish ();
     }
 
     public function hasExecutedCommand() {

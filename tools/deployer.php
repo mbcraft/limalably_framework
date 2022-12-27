@@ -6,8 +6,8 @@
 *
 */
 
-if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','lymz');
-if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','lymz_framework');
+if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','limalably');
+if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','limalably_framework');
 
 if (!function_exists('array_remove_key_or_value')) {
     function array_remove_key_or_value(array $data,$to_remove) {
@@ -26,7 +26,7 @@ if (!function_exists('array_remove_key_or_value')) {
     }
 }
 
-function lymz_deployer_fatal_handler() {
+function limalably_deployer_fatal_handler() {
 
     if (isset($_SERVER['EXIT'])) {
         exit();
@@ -45,12 +45,12 @@ function lymz_deployer_fatal_handler() {
             $errline = $error["line"];
             $errstr = $error["message"];
 
-            lymz_deployer_report($errno, $errstr, $errfile, $errline);
+            limalably_deployer_report($errno, $errstr, $errfile, $errline);
         }
     }
 }
 
-function lymz_deployer_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=[]) {
+function limalably_deployer_report(int $errno, string $errstr, string $errfile, int $errline, array $errcontext=[]) {
 
     $available_constants = [E_COMPILE_ERROR, E_COMPILE_WARNING, E_CORE_ERROR, E_CORE_WARNING, E_ERROR, E_PARSE, E_NOTICE, E_WARNING, E_RECOVERABLE_ERROR, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE];
 
@@ -106,7 +106,7 @@ function lymz_deployer_report(int $errno, string $errstr, string $errfile, int $
     exit(0);
 }
 
-set_error_handler('lymz_deployer_report', E_ERROR | E_WARNING | E_PARSE | E_NOTICE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR | E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE);
+set_error_handler('limalably_deployer_report', E_ERROR | E_WARNING | E_PARSE | E_NOTICE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR | E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE);
 
 class DIOException extends \Exception
 {

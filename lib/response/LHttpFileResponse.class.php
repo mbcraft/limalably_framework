@@ -43,7 +43,7 @@ class LHttpFileResponse extends LHttpResponse {
         header('Connection: close');
         flush(); // Flush system output buffer
         readfile($this->file_full_path);
-        Lymz::finish();
+        Limalably::finish();
     }
     
     

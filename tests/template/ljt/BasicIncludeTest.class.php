@@ -24,6 +24,16 @@ class BasicIncludeTest extends LTestCase {
 		$this->assertEqual("".$obj,"Hello world!","Il rendering dell'include del template non è andato a buon fine!");
 	}
 
+	function testIncludeLjt() {
+		$obj = new IncludeLjtTemplate();
+
+		$obj->setTreeDataPosition("/LAYOUT/some/random/position");
+
+		$obj->parse(['template' => 'ljt/hello']);
+
+		$this->assertEqual("".$obj,"Hello world!","Il rendering dell'include del template non è andato a buon fine!");
+	}
+
 	/*
 	function testIncludeTwig() {
 		$obj = new IncludeTwigTemplate();

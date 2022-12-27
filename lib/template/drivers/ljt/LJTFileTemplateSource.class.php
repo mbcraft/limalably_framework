@@ -6,7 +6,7 @@
  *  
  */
 
-class LJTFileTemplaceSource implements LITemplateSource {
+class LJTFileTemplateSource implements LITemplateSource {
 
 	private $templates_path;
 	private $engine_name;

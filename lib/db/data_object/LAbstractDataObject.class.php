@@ -25,7 +25,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	
 	const MY_DB = null;
 
-	const SOFT_COLUMNS = false;
+	const STANDARD_OPERATIONS_COLUMNS = false;
 
 	private static $__my_db = null;
 
@@ -88,7 +88,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		if (self::$__distinct_option) $s = $s->with_distinct();
 
-		if (static::SOFT_COLUMNS) {
+		if (static::STANDARD_OPERATIONS_COLUMNS) {
 			switch (self::$__soft_deleted_filter) {
 				case self::SOFT_DELETED_FILTER_DEFAULT : {
 					if (!self::$__conditions) {
@@ -426,7 +426,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		return true;
 	}
 
-	public function delete($db=null) {
+	public function hard_delete($db=null) {
 
 		self::db($db);
 
@@ -441,6 +441,13 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		delete($table,[$id_column => $id_value])->go(self::$__my_db);
 
 		return last_affected_rows()->go($db);
+	}
+
+	public function delete($db=null) {
+		if (static::STANDARD_OPERATIONS_COLUMNS)
+			$this->soft_delete(true,$db);
+		else
+			$this->hard_delete($db);
 	}
 
 	public function saveOrUpdate($db=null) {
@@ -548,7 +555,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	}
 
 	private static function checkSoftColumns() {
-		if (!static::SOFT_COLUMNS) throw new \Exception("Soft columns are not enabled in this data object!");
+		if (!static::STANDARD_OPERATIONS_COLUMNS) throw new \Exception("Soft columns are not enabled in this data object!");
 	}
 
 	public function __set($name,$value) {

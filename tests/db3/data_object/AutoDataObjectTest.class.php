@@ -28,7 +28,7 @@ class ComuneAutoDO extends LAbstractDataObject {
 class ProvaDO extends LAbstractDataObject {
 	const TABLE = "my_soft_prova";
 
-	const SOFT_COLUMNS = true;
+	const STANDARD_OPERATIONS_COLUMNS = true;
 }
 
 class AutoDataObjectTest extends LTestCase {

@@ -20,6 +20,19 @@ class MysqlCreateRenameDropTableTest extends LTestCase {
 		
 	}
 
+	function testSafeCreateUpdateDeleteColumns() {
+
+		$db = db('hosting_dreamhost_tests');
+
+		drop_table('my_test_table2')->if_exists()->go($db);
+
+		create_table('my_test_table2')->column(col_def('my_column')->t_boolean())->safe_create_update_delete_columns()->go($db);
+
+		$table_list = table_list()->go($db);
+
+		$this->assertTrue(array_value_exists('my_test_table2',$table_list),"La tabella 'my_test_table2' non è stata creata!");
+	}
+
 	function testCreateRenameDropTable() {
 
 		$db = db('hosting_dreamhost_tests');

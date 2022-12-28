@@ -141,16 +141,16 @@ class LDeployerClient {
 			echo ">> ".$f."\n";
 		}
 		echo "\n";
-		echo count($this->dirs_to_delete)." dir to delete.\n";
-
-		foreach ($this->dirs_to_delete as $k => $d) {
-			echo ">> ".$d."\n";
-		}
-		echo "\n";
 		echo count($this->files_to_delete)." files to delete.\n";
 
 		foreach ($this->files_to_delete as $k => $f) {
 			echo ">> ".$f."\n";
+		}
+		echo "\n";
+		echo count($this->dirs_to_delete)." dir to delete.\n";
+
+		foreach ($this->dirs_to_delete as $k => $d) {
+			echo ">> ".$d."\n";
 		}
 		echo "\n\n";
 
@@ -214,20 +214,11 @@ class LDeployerClient {
 			}
 		}
 
-		$count_dirs_to_delete = 0;
-		$count_dirs_to_delete_ok = 0;
 		$count_files_to_delete = 0;
 		$count_files_to_delete_ok = 0;
-
-		foreach ($this->dirs_to_delete as $path) {
-			$count_dirs_to_delete++;
-			$r = $this->current_driver->deleteDir($this->current_password,$path,true);
-			if ($this->isSuccess($r)) {
-				echo "(d)";
-				$count_dirs_to_delete_ok++;
-			}
-			else echo "\nUnable to delete dir : '".$path."'\n";
-		} 
+		$count_dirs_to_delete = 0;
+		$count_dirs_to_delete_ok = 0;
+		
 		foreach ($this->files_to_delete as $path) {
 			$count_files_to_delete++;
 			$r = $this->current_driver->deleteFile($this->current_password,$path);
@@ -238,14 +229,24 @@ class LDeployerClient {
 				}
 			else echo "\nUnable to delete file : '".$path."'\n";
 		}
-		
+
+		foreach ($this->dirs_to_delete as $path) {
+			$count_dirs_to_delete++;
+			$r = $this->current_driver->deleteDir($this->current_password,$path,true);
+			if ($this->isSuccess($r)) {
+				echo "(d)";
+				$count_dirs_to_delete_ok++;
+			}
+			else echo "\nUnable to delete dir : '".$path."'\n";
+		} 
 
 		echo "\n\nOperations summary :\n\n";
 		echo "Dir added : ".$count_dirs_to_add_ok." of ".$count_dirs_to_add." -> ".($count_dirs_to_add_ok==$count_dirs_to_add ? 'OK' : 'FAILURE')."\n";
 		echo "Files added : ".$count_files_to_add_ok." of ".$count_files_to_add." -> ".($count_files_to_add_ok==$count_files_to_add ? 'OK' : 'FAILURE')."\n";
 		echo "Files updated : ".$count_files_to_update_ok." of ".$count_files_to_update." -> ".($count_files_to_update_ok==$count_files_to_update ? 'OK' : 'FAILURE')."\n";
-		echo "Dir deleted : ".$count_dirs_to_delete_ok." of ".$count_dirs_to_delete." -> ".($count_dirs_to_delete_ok==$count_dirs_to_delete ? 'OK' : 'FAILURE')."\n";
 		echo "Files deleted : ".$count_files_to_delete_ok." of ".$count_files_to_delete." -> ".($count_files_to_delete_ok==$count_files_to_delete ? 'OK' : 'FAILURE')."\n";
+		echo "Dir deleted : ".$count_dirs_to_delete_ok." of ".$count_dirs_to_delete." -> ".($count_dirs_to_delete_ok==$count_dirs_to_delete ? 'OK' : 'FAILURE')."\n";
+
 		echo "\n";
 
 	}

@@ -102,9 +102,10 @@ class LDeployerClient {
 		echo "\n";
 		echo count($this->files_to_update)." files to update.\n";
 		echo "\n";
-		echo count($this->dirs_to_delete)." dir to delete.\n";
-		echo "\n";
 		echo count($this->files_to_delete)." files to delete.\n";
+		echo "\n";
+		echo count($this->dirs_to_delete)." dir to delete.\n";
+
 		echo "\n\n";
 
 		if ($wait) {

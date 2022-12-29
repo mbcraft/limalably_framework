@@ -24,6 +24,16 @@ class BasicIncludeTest extends LTestCase {
 		$this->assertEqual("".$obj,"Hello world!","Il rendering dell'include del template non è andato a buon fine!");
 	}
 	
+	public function testTagLib() {
+
+		$template = new LJTemplate('{}');
+
+		$hello = tag('hello');
+
+		$this->assertEqual('<hello prova="ciao" ></hello>',"".$hello,"Il rendering del tag non corrisponde!");
+
+	}
+
 	function testIncludeLjt() {
 		$obj = new IncludeLjtTemplate();
 

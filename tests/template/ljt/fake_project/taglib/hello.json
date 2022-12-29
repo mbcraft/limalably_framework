@@ -1,0 +1,8 @@
+{
+	"tag" : "hello",
+	"mode" : "OPEN_CONTENT_CLOSE",
+	"indent" : "SKIP_ALL",
+	"default_attributes" : {
+		"prova" : "ciao"
+	}
+}

@@ -216,7 +216,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
         if (is_object($value)) $value = "".$value;
 
-        if ($value===false) return ' '.$key;
+        if ($value===false || $value===null) return ' '.$key;
 
         $result = ' '.$key.'="';
         if ($value==null) $value="";

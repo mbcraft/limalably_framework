@@ -119,7 +119,7 @@ class LTagLib {
 		if (isset($spec_data[self::SPEC_DEFAULT_ATTRIBUTES])) {
 
 			foreach ($spec_data[self::SPEC_DEFAULT_ATTRIBUTES] as $attr_name => $data) {
-				if (is_string($data)) continue;
+				if ($data === null || is_string($data)) continue;
 
 				self::checkAllStrings($original_tag_name,$attr_name.' in default_attributes',$data);
 			}
@@ -187,7 +187,7 @@ class LTagLib {
 			$default_attributes = $spec[self::SPEC_DEFAULT_ATTRIBUTES];
 
 			foreach ($default_attributes as $attr_name => $data) {
-				if (is_string($data)) $tag->setAttribute($attr_name,$data);
+				if ($data === null || is_string($data)) $tag->setAttribute($attr_name,$data);
 				else {
 					foreach ($data as $string) {
 						$tag->setAttribute($attr_name,$string);

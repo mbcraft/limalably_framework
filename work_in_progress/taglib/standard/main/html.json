@@ -1,0 +1,8 @@
+{
+	"tag" : "html",
+	"mode" : "OPEN_CONTENT_CLOSE",
+	"indent" : "DEFAULT",
+	"required_attributes" : [
+		"lang" 
+	]
+}

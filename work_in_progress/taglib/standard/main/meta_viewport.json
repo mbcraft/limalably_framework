@@ -1,0 +1,9 @@
+{
+	"tag" : "meta",
+	"mode" : "OPEN_ONLY",
+	"indent" : "SKIP_ALL",
+	"default_attributes" : {
+		"name" : "viewport",
+		"content" : "width=device-width, initial-scale=1"
+	}
+}

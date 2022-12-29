@@ -1,0 +1,8 @@
+{
+	"tag" : "script",
+	"mode" : "OPEN_CONTENT_CLOSE",
+	"indent" : "NORMAL",
+	"default_attributes" : {
+		"type" : "text/javascript"
+	}
+}

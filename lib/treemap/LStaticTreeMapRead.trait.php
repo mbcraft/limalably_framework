@@ -76,7 +76,9 @@ trait LStaticTreeMapRead {
     }
     
 
-    
+    public static function has($path) {
+        return self::is_set($path);
+    }
     /*
      * Ritorna true se un nodo dell'albero è stato definito, false altrimenti.
      */

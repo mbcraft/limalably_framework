@@ -1,0 +1,9 @@
+{
+	"tag" : "script",
+	"mode" : "OPEN_EMPTY_CLOSE",
+	"indent" : "SKIP_ALL",
+	"required_attributes" : [ "href" ],
+	"default_attributes" : {
+		"type" : "text/javascript"
+	}
+}

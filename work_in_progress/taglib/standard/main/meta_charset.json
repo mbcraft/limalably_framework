@@ -1,0 +1,8 @@
+{
+	"tag" : "meta",
+	"mode" : "OPEN_ONLY",
+	"indent" : "SKIP_ALL",
+	"default_attributes" : {
+		"charset" : "utf-8"
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"tag" : "meta",
+	"mode" : "OPEN_ONLY",
+	"indent" : "SKIP_ALL",
+	"default_attributes" : {
+		"name" : "keywords"
+	},
+	"required_attributes" : [ "content" ]
+}

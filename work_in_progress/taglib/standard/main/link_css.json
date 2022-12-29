@@ -1,0 +1,9 @@
+{
+	"tag" : "link",
+	"mode" : "OPEN_ONLY",
+	"indent" : "SKIP_ALL",
+	"default_attributes" : {
+		"rel" : "stylesheet"
+	},
+	"required_attributes" : [ "href" ]
+}

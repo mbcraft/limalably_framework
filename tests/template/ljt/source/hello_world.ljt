@@ -1,0 +1,18 @@
+{
+	".THtmlDoc" : {
+		"head" : { 
+			".THtmlHead" : {
+
+			} 
+		},
+		"body" : {
+			".THtmlBody" : {
+				"content" : [
+					{
+						".THelloWorld" : { }
+					}
+				]
+			}
+		}
+	}
+}

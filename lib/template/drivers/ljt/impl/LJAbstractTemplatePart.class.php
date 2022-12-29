@@ -57,11 +57,16 @@ abstract class LJAbstractTemplatePart {
 	}
 
 	public static function createTemplatePart($template_class_name,$position,$data) {
+		
+		if (!LStringUtils::startsWith($template_class_name,'.')) throw new \Exception("Template part names must start with a dot (.)");
+
+		$template_class_name_ok = substr($template_class_name,1);
+
 		try {
-			$template_instance = new $template_class_name();
+			$template_instance = new $template_class_name_ok();
 
 		} catch (\Exception $ex) {
-			throw new \Exception("Error during creation of template part '".$template_class_name."': ".$ex->getMessage());
+			throw new \Exception("Error during creation of template part '".$template_class_name_ok."': ".$ex->getMessage());
 		}
 
 		$template_instance->setTreeDataPosition($position);
@@ -171,6 +176,10 @@ abstract class LJAbstractTemplatePart {
 		return isset($this->data[$field_name]);
 	}
 
+	public function __get($field_name) {
+		return $this->data[$field_name];
+	}
+	
 	public function __invoke(...$params) {
 		if (count($params)!=1) throw new \Exception("Exactly one parameter as 'field name' allowed.");
 
@@ -180,7 +189,7 @@ abstract class LJAbstractTemplatePart {
 
 		return $this->data[$field_name];
 	}
-
+	
 	public function __toString() {
 		return "".$this->render();
 	}

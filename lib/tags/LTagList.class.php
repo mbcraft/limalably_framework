@@ -2,7 +2,7 @@
 
 
 
-class LTagList {
+class LTagList implements ArrayAccess, LITagRenderingTips {
 
 	private $my_parent = null;
     private $children = array();

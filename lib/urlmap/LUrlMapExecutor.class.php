@@ -359,8 +359,13 @@ class LUrlMapExecutor {
                 }
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::JSON)) {
-                    LResult::trace("Setting response format as json.");
-                    $this->my_format = LFormat::JSON;
+                    LResult::trace("Setting response format as html.");
+                    $this->my_format = LFormat::HTML;
+                }
+
+                if (LStringUtils::endsWith($my_template_path, LFormat::LJT)) {
+                    LResult::trace("Setting response format as html.");
+                    $this->my_format = LFormat::HTML;
                 }
 
                 if (LStringUtils::endsWith($my_template_path, LFormat::XML)) {

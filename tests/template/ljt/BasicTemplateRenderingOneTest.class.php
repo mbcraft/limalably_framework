@@ -8,7 +8,7 @@
 
 class BasicTemplateRenderingOneTest extends LTestCase {
 	
-
+	
 	function testExampleT1() {
 
 		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/one/examples/t1.json');
@@ -28,6 +28,7 @@ class BasicTemplateRenderingOneTest extends LTestCase {
 
 
 	}
+	
 
 	function testExampleT2() {
 
@@ -47,7 +48,7 @@ class BasicTemplateRenderingOneTest extends LTestCase {
 		}
 
 	}
-
+	
 	
 	function testExampleT3() {
 
@@ -69,7 +70,7 @@ class BasicTemplateRenderingOneTest extends LTestCase {
 		}
 
 	}
-
+	
 
 	function testExampleT4() {
 
@@ -93,6 +94,7 @@ class BasicTemplateRenderingOneTest extends LTestCase {
 		}
 
 	}
+
 
 	function testExampleT1Again() {
 

@@ -24,9 +24,16 @@ class LJTemplate implements LITemplate {
 
 	function __construct($content) {
 
-		$this->my_data = json_decode($content,true);
+        try {
 
-        if (!$this->my_data) throw new \Exception("Error in json template syntax. Check it.");
+		  $this->my_data = json_decode($content,true);
+
+        } catch (\Exception $ex) {
+            throw new \Exception("Error during json decode : ".$ex->getMessage());
+        }
+
+        if (!is_array($this->my_data)) throw new \Exception("Error in json template syntax. Check it : ".$this->my_data);
+
 	}
 
 

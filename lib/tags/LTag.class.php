@@ -269,7 +269,7 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
 
     function __invoke(... $params) {
         if (count($params)==1) {
-            $this->setAttribute($method_name,false);
+            $this->setAttribute($params[0],false);
             return $this;
         }
         if (count($params)==2) {

@@ -171,7 +171,7 @@
                 "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
                 "log_mode": "normal",
                 "max_mb": 10,
-                "log_folder": "logs/",
+                "log_folder": "my_logs/",
                 "min_level": "debug"
             },
             "together-file": {
@@ -179,7 +179,7 @@
                 "log_format": "[ {date} - {level_string} - {code} ] : {message}\n",
                 "log_mode": "rolling",
                 "max_mb": 10,
-                "log_folder": "logs/",
+                "log_folder": "my_logs/",
                 "min_level": "debug"
             },
             "db": {

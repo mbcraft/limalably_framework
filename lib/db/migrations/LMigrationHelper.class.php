@@ -10,9 +10,9 @@ class LMigrationHelper {
 	
 	const MIGRATIONS_TABLE_NAME = "migrations_log";
 
-	const MIGRATIONS_NAME_COLUMN = "name";
+	const MIGRATIONS_NAME_COLUMN = "migration_name";
 
-	const MIGRATIONS_CONTEXT_COLUMN = "context";
+	const MIGRATIONS_CONTEXT_COLUMN = "migration_context";
 
 	const MIGRATIONS_EXECUTION_TIME_COLUMN = "executed_at";
 

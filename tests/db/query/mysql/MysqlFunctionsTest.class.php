@@ -23,15 +23,15 @@ class MysqlFunctionsTest extends LTestCase {
 
 		drop_table('my_test_table')->if_exists()->go($db);
 
-		create_table('my_test_table')->column(col_def('id')->t_id())->column(col_def('value')->t_u_int())->go($db);
+		create_table('my_test_table')->column(col_def('id')->t_id())->column(col_def('value_col')->t_u_int())->go($db);
 
-		insert('my_test_table',['value'],[[1],[2],[3]])->go($db);
+		insert('my_test_table',['value_col'],[[1],[2],[3]])->go($db);
 
 		$q = select(
 			_case('CVAL')
-			->when(_eq('value',1),'A')
-			->when(_eq('value',2),'B')
-			->when(_eq('value',3),'C')->default('D'),'my_test_table');
+			->when(_eq('value_col',1),'A')
+			->when(_eq('value_col',2),'B')
+			->when(_eq('value_col',3),'C')->default('D'),'my_test_table');
 
 		$result = $q->go($db);
 

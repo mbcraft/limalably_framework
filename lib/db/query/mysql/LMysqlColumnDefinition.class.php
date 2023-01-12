@@ -26,6 +26,12 @@ class LMysqlColumnDefinition {
 	private $position_modifier = "";
 
 	function __construct($column_name) {
+
+		$upper_name = strtoupper($column_name);
+
+		if (in_array($upper_name,LMysqlKeywords::KEYWORD_LIST_UPPERCASE)) 
+			throw new \Exception("The column name '".$column_name."' is a reserved mysql keyword and can't be used as column name!");
+
 		$this->column_name = $column_name;
 	}
 

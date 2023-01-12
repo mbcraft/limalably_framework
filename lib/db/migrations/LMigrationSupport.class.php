@@ -171,11 +171,23 @@ class LMigrationSupport {
 
 		LResult::messagenl("Executing next context ".LMigrationHelper::getCleanContextName($this->context)." migrations ...");
 
-		$mh = $this->lmigration_list->findNextMissingMigration();
+		try {
 
-		return $mh->executeIt();
+			$mh = $this->lmigration_list->findNextMissingMigration();
 
-		LResult::messagenl("... done!");
+	    	$result = $mh->executeIt();
+
+	    	LResult::messagenl("... done!");
+
+	    	return $result;
+
+	 	} catch (\Exception $ex) {
+	 		LResult::exception($ex);
+
+	 		return false;
+	 	}
+
+		
 	}
 
 	public function executeAllContextMigrations($child_mode=false) {
@@ -185,13 +197,20 @@ class LMigrationSupport {
 		LResult::messagenl("Executing all context ".LMigrationHelper::getCleanContextName($this->context)." migrations ...");
 
 		do {
-			$mh = $this->lmigration_list->findNextMissingMigration();
+			try {
+				$mh = $this->lmigration_list->findNextMissingMigration();
 
-			if ($mh) $mh->executeIt();
+				if ($mh) $mh->executeIt();
+			} catch (\Exception $ex) {
+				LResult::exception($ex);
+				return false; 
+			}
 
 		} while ($mh!=null);
 
 		if (!$child_mode) LResult::messagenl("... done!");
+
+		return true;
 	}
 
 	public function revertLastContextMigration() {
@@ -200,11 +219,21 @@ class LMigrationSupport {
 
 		LResult::messagenl("Reverting last context ".LMigrationHelper::getCleanContextName($this->context)." migration ...");
 
-		$mh = $this->lmigration_list->findLastExecutedMigration();
+		try {
 
-		return $mh->revertIt();
+			$mh = $this->lmigration_list->findLastExecutedMigration();
 
-		LResult::messagenl("... done!");
+			$result = $mh->revertIt();
+
+			LResult::messagenl("... done!");
+
+			return $result;
+
+		} catch (\Exception $ex) {
+			LResult::exception($ex);
+			return false;
+		}
+
 	}
 
 	public function revertAllContextMigrations($child_mode=false) {
@@ -214,13 +243,21 @@ class LMigrationSupport {
 		LResult::messagenl("Reverting all context ".LMigrationHelper::getCleanContextName($this->context)." migrations ...");
 
 		do {
-			$mh = $this->lmigration_list->findLastExecutedMigration();
+			try {
+			
+				$mh = $this->lmigration_list->findLastExecutedMigration();
 
-			if ($mh) $mh->revertIt();
-
+				if ($mh) $mh->revertIt();
+			
+			} catch (\Exception $ex) {
+				LResult::exception($ex);
+				return false;
+			}
 		} while($mh!=null);
 
 		if (!$child_mode) LResult::messagenl("... done!");
+
+		return true;
 
 	}
 

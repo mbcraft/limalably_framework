@@ -10,6 +10,12 @@ class LDataObjectCollection implements ArrayAccess,Countable {
 
 	private $collection = array();
 
+	private $collection_class = null;
+
+	public function setCollectionClass($clazz) {
+		$this->collection_class = $clazz;
+	}
+
 	/**
 	Vari tipi di saveOrUpdate :
 	- replace con where a criterio secca in base alla find effettuata (1 query) x cambiamenti massivi
@@ -93,6 +99,20 @@ class LDataObjectCollection implements ArrayAccess,Countable {
 		$this->bulk_mode = false;
 
 		unset($this->collection[$offset]);
+	}
+
+	function __call($method_name,$arguments) {
+		
+		if (count($this->collection)>0) {
+			$m = $this->collection_class::getMethod($method_name);
+
+			foreach ($this->collection as $elem) {
+				$m->invoke($elem,$arguments);
+			}
+		}
+
+		return true;
+
 	}
 
 	function __toString() {

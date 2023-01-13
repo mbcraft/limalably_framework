@@ -66,7 +66,7 @@ class LUrlMapExecutor {
         $abs_input = $treeview_input->view('/');
         $abs_session = $treeview_session->view('/');
 
-        $this->output = LPageData::getRootTreeMap();
+        $this->output = new LTreeMap();
         $this->output->set('/success', true);
         $treeview_output = $this->output->view('/');
 
@@ -175,6 +175,10 @@ class LUrlMapExecutor {
             $input_validator = new LParameterGroupValidator( $treeview_input, $this->my_url_map->get('/input'));
             LErrorList::saveFromErrors('input', $input_validator->validate('input',$treeview_input, $treeview_session));
         }
+
+        //loading flash from session
+
+        LFlash::load_from_session();
 
         //before exec tree
 
@@ -289,6 +293,10 @@ class LUrlMapExecutor {
                 }
             }
         }
+
+        //saving flash messages
+
+        LFlash::save_to_session();
 
         //dynamic template
 

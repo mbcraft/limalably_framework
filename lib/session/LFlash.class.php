@@ -8,9 +8,8 @@
 
 class LFlash
 {
-    const FLASH_FORM_PARAMS_KEY = "form_params";
-
-    const FLASH_OK_MESSAGES_KEY = "ok_messages";
+    const FLASH_INFO_MESSAGES_KEY = "info_messages";
+    const FLASH_SUCCESS_MESSAGES_KEY = "success_messages";
     const FLASH_WARNING_MESSAGES_KEY = "warning_messages";
     const FLASH_ERROR_MESSAGES_KEY = "error_messages";
 
@@ -31,7 +30,7 @@ class LFlash
     /*
      * Carico le flash vars dalla sessione. Quelle che erano le 'next' diventano così le 'current'.
      */
-    public static function __load_from_session()
+    public static function load_from_session()
     {
         $f = new LFlash();
         if (LSession::is_set(self::SESSION_FLASH_KEY))
@@ -45,7 +44,7 @@ class LFlash
   /*
      * Salvo le flash vars 'next' in sessione, che diventeranno le 'current' alla prossima richiesta.
      */
-    public static function __save_to_session()
+    public static function save_to_session()
     {
         if (self::$keep_messages)
             $vars = self::$current->my_vars;
@@ -66,6 +65,7 @@ class LFlash
 
     private static function push_elem($section,$elem)
     {        
+
         if (!isset(self::$current->my_vars[$section])) self::$current->my_vars[$section] = array();
         self::$current->my_vars[$section][] = $elem;
 
@@ -77,9 +77,14 @@ class LFlash
      * Funzioni di scrittura
      */
     
-    public static function ok($message)
+    public static function info($message)
     {
-        self::push_elem(self::FLASH_OK_MESSAGES_KEY, $message);
+        self::push_elem(self::FLASH_INFO_MESSAGES_KEY, $message);
+    }
+
+    public static function success($message)
+    {
+        self::push_elem(self::FLASH_SUCCESS_MESSAGES_KEY, $message);
     }
     
     public static function warning($message)
@@ -96,11 +101,11 @@ class LFlash
      * Funzioni di controllo
      */
     
-    public static function hasOks()
+    public static function hasInfoMessages()
     {
-        if (isset(self::$current->my_vars[self::FLASH_OK_MESSAGES_KEY]))
+        if (isset(self::$current->my_vars[self::FLASH_INFO_MESSAGES_KEY]))
         {
-            return count(self::$current->my_vars[self::FLASH_OK_MESSAGES_KEY])>0;
+            return count(self::$current->my_vars[self::FLASH_INFO_MESSAGES_KEY])>0;
         }
         else
         {
@@ -108,7 +113,19 @@ class LFlash
         } 
     }
 
-    public static function hasWarnings()
+    public static function hasSuccessMessages()
+    {
+        if (isset(self::$current->my_vars[self::FLASH_SUCCESS_MESSAGES_KEY]))
+        {
+            return count(self::$current->my_vars[self::FLASH_SUCCESS_MESSAGES_KEY])>0;
+        }
+        else
+        {
+            return false;
+        } 
+    }
+
+    public static function hasWarningMessages()
     {
         if (isset(self::$current->my_vars[self::FLASH_WARNING_MESSAGES_KEY]))
         {
@@ -120,7 +137,7 @@ class LFlash
         } 
     }
 
-    public static function hasErrors()
+    public static function hasErrorMessages()
     {
         if (isset(self::$current->my_vars[self::FLASH_ERROR_MESSAGES_KEY]))
         {
@@ -132,10 +149,18 @@ class LFlash
         } 
     }
 
-    public static function getOkMessages()
+    public static function getInfoMessages()
     {
-        if (isset(self::$current->my_vars[self::FLASH_OK_MESSAGES_KEY]))
-            return self::$current->my_vars[self::FLASH_OK_MESSAGES_KEY];
+        if (isset(self::$current->my_vars[self::FLASH_INFO_MESSAGES_KEY]))
+            return self::$current->my_vars[self::FLASH_INFO_MESSAGES_KEY];
+        else
+            return array();
+    }
+
+    public static function getSuccessMessages()
+    {
+        if (isset(self::$current->my_vars[self::FLASH_SUCCESS_MESSAGES_KEY]))
+            return self::$current->my_vars[self::FLASH_SUCCESS_MESSAGES_KEY];
         else
             return array();
     }
@@ -159,14 +184,6 @@ class LFlash
     public static function keep()
     {
         self::$keep_messages = true;
-    }
-
-    public static function getLastFormParams()
-    {
-        if (isset(self::$current->my_vars[self::FLASH_FORM_PARAMS_KEY]))
-            return self::$current->my_vars[self::FLASH_FORM_PARAMS_KEY];
-        else
-            return array();
     }
 
 }

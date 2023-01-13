@@ -79,8 +79,10 @@ class LUploadedFile implements ArrayAccess {
         }
     }
     
-    function saveFileTo($folder,$name=null) {
+    function moveFileTo($folder,$name=null) {
         
+        if ($folder instanceof LDir) $folder = $folder->getPath();
+
         $final_folder_path = LStringUtils::startsWith($folder, '/') ? $folder : $_SERVER['PROJECT_DIR'].$folder;
         
         if (!LStringUtils::endsWith($final_folder_path, '/')) $final_folder_path = $final_folder_path . '/';
@@ -102,6 +104,20 @@ class LUploadedFile implements ArrayAccess {
 
     function getName() {
         return $this->name;
+    }
+
+    function getFullExtension() {
+        $parts = explode('.',$this->getName());
+
+        unset($parts[0]);
+
+        return '.'.join('.',$parts);
+    }
+
+    function getLastExtension() {
+        $parts = explode('.',$this->getName());
+
+        return '.'.end($parts);
     }
 
     function getTmpName() {

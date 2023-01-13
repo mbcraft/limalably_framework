@@ -20,14 +20,19 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	const __LAST_AFFECTED_ROWS_IS_INSERT = 1;
 
-	const ID_COLUMN = "id";
-	const TABLE = null;
+	const ID_COLUMN_NAME = "id";
+
+	const MY_TABLE = null;
 	
-	const MY_DB = null;
+	const MY_CONNECTION = null;
 
-	const STANDARD_OPERATIONS_COLUMNS = false;
+	const HAS_STANDARD_OPERATIONS_COLUMNS = false;
 
-	private static $__my_db = null;
+	const VIRTUAL_COLUMNS_LIST = [];
+
+	private $__virtual_columns = [];
+
+	private static $__my_connection = null;
 
 	private static $__distinct_option = false;
 	private static $__conditions = null;
@@ -40,6 +45,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	function __construct($pk = null,$db = null) {
 
+		//col valore 0 non carica nulla, ok
 		if ($pk!=null) {
 			$this->loadFromPk($pk,$db);
 		}
@@ -47,17 +53,21 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	private static function db($db = null) {
 		if ($db) {
-			self::$__my_db = LDbConnectionManager::get($db);
+			self::$__my_connection = LDbConnectionManager::get($db);
 			return self::class;
 		}
-		if (static::MY_DB) {
-			self::$__my_db = LDbConnectionManager::get(static::MY_DB);
+		if (static::MY_CONNECTION) {
+			self::$__my_connection = LDbConnectionManager::get(static::MY_CONNECTION);
 			return self::class;
 		}
 
-		self::$__my_db = LDbConnectionManager::getLastConnectionUsed();
+		self::$__my_connection = LDbConnectionManager::getLastConnectionUsed();
 		return static::class;
 
+	}
+
+	private static function getLastConnectionUsed() {
+		return self::$__my_connection;
 	}
 
 	private static function resetSearch() {
@@ -80,7 +90,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		$table = self::getTable();
 
-		$id_column = static::ID_COLUMN;
+		$id_column = static::ID_COLUMN_NAME;
 
 		$fields = self::$__search_mode == 'count' ? 'count(*) AS C' : '*';
 
@@ -88,7 +98,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		if (self::$__distinct_option) $s = $s->with_distinct();
 
-		if (static::STANDARD_OPERATIONS_COLUMNS) {
+		if (static::HAS_STANDARD_OPERATIONS_COLUMNS) {
 			switch (self::$__soft_deleted_filter) {
 				case self::SOFT_DELETED_FILTER_DEFAULT : {
 					if (!self::$__conditions) {
@@ -129,7 +139,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			if (self::$__page_size && self::$__page_number) $s = $s->paginate(self::$__page_size,self::$__page_number);
 		}
 
-		$result = self::processSearchResults($s->go(self::$__my_db));
+		$result = self::processSearchResults($s->go(self::$__my_connection));
 
 		self::resetSearch();
 
@@ -148,7 +158,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	public function navigateFromOtherTableColumn($column_name,$class) {
 
-		$id_value = $this->getColumnValue(self::ID_COLUMN);
+		$id_value = $this->getColumnValue(self::ID_COLUMN_NAME);
 
 		$result = $class::findAll(_eq($column_name,$id_value))::go();
 
@@ -286,8 +296,23 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			return $p;
 		}
 		catch (ReflectionException $ex) {
-			throw new \Exception("No property with name ".$name." is found in data object of class ".static::class);
+			throw new \Exception("No property with name '".$name."' is found in data object of class ".static::class);
 		}
+	}
+
+	public static function getMethod($name) {
+
+		try {
+
+			$p = self::$__reflection_class->getMethod($name);
+
+			return $p;
+
+		} catch (ReflectionException $ex) {
+			throw new \Exception("No method with name '".$name."' is found in data object of class ".static::class);
+		}
+
+
 	}
 
 	private static function isInternalPrivateProperty($name) {
@@ -295,9 +320,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	}
 
 	private static function getTable() {
-		$table = static::TABLE;
+		$table = static::MY_TABLE;
 
-		if (!$table) throw new \Exception("table constant in data object has not been defined!");
+		if (!$table) throw new \Exception("TABLE constant in data object has not been defined!");
 
 		return $table;
 	}
@@ -411,9 +436,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		$table = self::getTable();
 
-		$id_column = static::ID_COLUMN;
+		$id_column = static::ID_COLUMN_NAME;
 
-		$result = select('*',$table)->where(_eq($id_column,$pk))->go(self::$__my_db);
+		$result = select('*',$table)->where(_eq($id_column,$pk))->go(self::$__my_connection);
 
 		if (count($result)==0) return false;
 
@@ -432,19 +457,19 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		$table = self::getTable();
 
-		$id_column = static::ID_COLUMN;
+		$id_column = static::ID_COLUMN_NAME;
 
 		$id_value = $this->getColumnValue($id_column);
 
 		if ($id_value == null) throw new \Exception("Can't delete a data object with no id yet. You need to save or load it before it can be deleted from database.");
 
-		delete($table,[$id_column => $id_value])->go(self::$__my_db);
+		delete($table,[$id_column => $id_value])->go(self::$__my_connection);
 
 		return last_affected_rows()->go($db);
 	}
 
 	public function delete($db=null) {
-		if (static::STANDARD_OPERATIONS_COLUMNS)
+		if (static::HAS_STANDARD_OPERATIONS_COLUMNS)
 			$this->soft_delete(true,$db);
 		else
 			$this->hard_delete($db);
@@ -458,18 +483,18 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		$all_columns_data = $this->getAllColumnsData();
 
-		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($all_columns_data)->go(self::$__my_db);
+		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($all_columns_data)->go(self::$__my_connection);
 
-		$num_rows = last_affected_rows()->go(self::$__my_db);
+		$num_rows = last_affected_rows()->go(self::$__my_connection);
 
 		if ($num_rows == self::__LAST_AFFECTED_ROWS_IS_INSERT) {
 
-			$this->setColumnValue(self::ID_COLUMN,$last_insert_id);
+			$this->setColumnValue(self::ID_COLUMN_NAME,$last_insert_id);
 
 			return $last_insert_id;
 
 		} else {
-			return $this->getColumnValue(static::ID_COLUMN);
+			return $this->getColumnValue(static::ID_COLUMN_NAME);
 		}
 
 		
@@ -555,35 +580,53 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	}
 
 	private static function checkSoftColumns() {
-		if (!static::STANDARD_OPERATIONS_COLUMNS) throw new \Exception("Soft columns are not enabled in this data object!");
+		if (!static::HAS_STANDARD_OPERATIONS_COLUMNS) throw new \Exception("Soft columns are not enabled in this data object!");
+	}
+
+	private function isVirtualColumn($name) {
+		return in_array($name,static::VIRTUAL_COLUMNS_LIST);
 	}
 
 	public function __set($name,$value) {
-		if ($this->usesAutoColumns()) {
 
-			$this->__columns[$name] = $value;
+		if ($this->isVirtualColumn($name)) {
+			$this->__virtual_columns[$name] = $value;
 		} else {
-			throw new \Exception("Writing to unknown column : ".$name.". Declare it inside data object or remove all to use automatic mode.");
+
+
+			if ($this->usesAutoColumns()) {
+
+				$this->__columns[$name] = $value;
+			} else {
+				throw new \Exception("Writing to unknown column : ".$name.". Declare it inside data object or remove all to use automatic mode.");
+			}
 		}
 	}
 
 	public function __isset($name) {
-		if ($this->usesAutoColumns()) {
-
-			return isset($this->__columns[$name]);
+		if ($this->isVirtualColumn($name)) {
+			return isset($this->__virtual_columns[$name]);
 		} else {
-			 throw new \Exception("No column found with name ".$name." into this object.");
-		}
+			if ($this->usesAutoColumns()) {
 
+				return isset($this->__columns[$name]);
+			} else {
+				 throw new \Exception("No column found with name ".$name." into this object.");
+			}
+		}
 	}
 
 	public function __get($name) {
-		if ($this->usesAutoColumns()) {
-			if (isset($this->__columns[$name]))
-				return $this->__columns[$name];
-			else return null;
+		if ($this->isVirtualColumn($name)) {
+			return $this->__virtual_columns[$name];
 		} else {
-			throw new \Exception("No column with name ".$name." found in this data object.");
+			if ($this->usesAutoColumns()) {
+				if (isset($this->__columns[$name]))
+					return $this->__columns[$name];
+				else return null;
+			} else {
+				throw new \Exception("No column with name ".$name." found in this data object.");
+			}
 		}
 	}
 
@@ -597,6 +640,15 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$col_string = is_string($col_data) ? "'".$col_data."'" : $col_data;
 
 			$fields_list[] = "'".$col_key."' = ".$col_string;
+		}
+
+		$virtual_columns = $this->__virtual_columns;
+
+		foreach ($virtual_columns as $col_key => $col_data) {
+
+			$col_string = is_string($col_data) ? "'".$col_data."'" : $col_data;
+
+			$field_list[] = "(".$col_key.") = ".$col_string;
 		}
 		
 

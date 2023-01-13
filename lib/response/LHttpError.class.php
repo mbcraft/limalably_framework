@@ -30,12 +30,15 @@ class LHttpError extends LHttpResponse {
     function execute($format = null) {
         
         if ($format == null || $format == LFormat::DATA) $format = LConfigReader::simple('/format/default_error_format');
+
+        http_response_code($this->error_code);
         
-        //http_response_code($this->error_code);
-        
+        $engine_to_use = LConfigReader::simple('/format/'.$format.'/error_engine_name');
         $error_templates_folder = LConfigReader::executionMode('/format/'.$format.'/error_templates_folder');
         
         $template_renderer = new LTemplateRendering($this->urlmap,$this->input,$this->session,$this->capture,$this->parameters,$this->output);
+
+        $template_renderer->setupTemplateSource($engine_to_use);
         
         $template_path = $template_renderer->searchTemplate($error_templates_folder.$this->error_code.'.'.$format);
                 

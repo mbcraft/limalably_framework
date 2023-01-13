@@ -51,7 +51,9 @@ class LUrlMapExecutor {
             }
         } catch (\LHttpResponse $response) {
             $response->setup($this->my_url_map,$input_tree,$session_tree,$this->capture,$parameters,$this->output);
+
             $response->execute($this->my_format);
+
         } catch (\Exception $ex) {
             LResult::exception($ex);
         }
@@ -320,7 +322,9 @@ class LUrlMapExecutor {
         //handling http errors and http redirect
         
         if ($this->my_url_map->is_set('/http_redirect')) {
+            
             throw new LHttpRedirect($this->my_url_map->get('/http_redirect'));
+            
         }
         
         if ($this->my_url_map->is_set('/http_error')) {
@@ -339,6 +343,9 @@ class LUrlMapExecutor {
             $template_path = $this->my_url_map->get('/template/name');
 
             $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $this->capture, $parameters, $this->output);
+
+            $renderer->findEngineName();
+            $renderer->setupTemplateSource();
 
             LResult::trace("Searching for template : " . $template_path);
 

@@ -215,6 +215,7 @@
         },
         "format": {
             "html": {
+                "error_engine_name" : "twig",
                 "error_templates_folder": "errors/html/"
             },
             "json": {

@@ -8,11 +8,11 @@
 
 abstract class LHttpResponse extends \Exception {
 
+    protected $urlmap = null;
     protected $input = null;
     protected $session = null;
     protected $capture = null;
     protected $parameters = null;
-    protected $urlmap = null;
     protected $output = null;
 
     function setup($treemap_urlmap, $treemap_input, $treemap_session, $capture, $parameters, $treemap_output) {

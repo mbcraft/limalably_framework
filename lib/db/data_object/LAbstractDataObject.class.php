@@ -48,6 +48,10 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		//col valore 0 non carica nulla, ok
 		if ($pk!=null) {
 			$this->loadFromPk($pk,$db);
+		} else {
+			if (static::HAS_STANDARD_OPERATIONS_COLUMNS) {
+				$this->created_by();
+			}
 		}
 	}
 

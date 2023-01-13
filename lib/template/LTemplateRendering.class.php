@@ -31,13 +31,18 @@ class LTemplateRendering {
         $this->my_output = $output;
         
         $this->template_factory = new LUrlMapTemplateSourceFactory();
+    }
 
-        $this->findEngineName();
+    public function setupTemplateSource($engine_name=null) {
+
+        if ($engine_name) {
+            $this->engine_name = $engine_name;
+        }
 
         $this->template_source = $this->template_factory->createFileTemplateSource($this->engine_name);
     }
 
-    private function findEngineName() {
+    public function findEngineName() {
         $engine = null;
 
         if (isset($this->my_urlmap)) {
@@ -46,7 +51,11 @@ class LTemplateRendering {
                 $engine = $this->my_urlmap->get('/template/engine');
 
                 $this->engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
-            } else {
+
+                return;
+            } 
+
+            if ($this->my_urlmap->is_set('/template/name')) {
                 $template_name = $this->my_urlmap->get('/template/name');
 
                 $engine_list = LConfigReader::simple('/template');
@@ -61,6 +70,8 @@ class LTemplateRendering {
                         }
                     }
                 }
+
+                throw new \Exception("No suitable engine found for template : ".$template_name);
             }
         } else {
             $this->engine_name = "twig";

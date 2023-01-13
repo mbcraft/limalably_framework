@@ -43,13 +43,17 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	private static $__search_mode = null;
 
+	public static function hasStandardOperationsColumns() {
+		return static::HAS_STANDARD_OPERATIONS_COLUMNS;
+	}
+
 	function __construct($pk = null,$db = null) {
 
 		//col valore 0 non carica nulla, ok
 		if ($pk!=null) {
 			$this->loadFromPk($pk,$db);
 		} else {
-			if (static::HAS_STANDARD_OPERATIONS_COLUMNS) {
+			if (static::hasStandardOperationsColumns()) {
 				$this->created_by();
 			}
 		}
@@ -102,7 +106,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		if (self::$__distinct_option) $s = $s->with_distinct();
 
-		if (static::HAS_STANDARD_OPERATIONS_COLUMNS) {
+		if (static::hasStandardOperationsColumns()) {
 			switch (self::$__soft_deleted_filter) {
 				case self::SOFT_DELETED_FILTER_DEFAULT : {
 					if (!self::$__conditions) {
@@ -209,6 +213,8 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 				$obj->setAllColumnsData($row);
 				$result->add($obj);
 			}
+
+			$result->setCollectionClass(static::class);
 
 			return $result;
 		}
@@ -473,7 +479,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	}
 
 	public function delete($db=null) {
-		if (static::HAS_STANDARD_OPERATIONS_COLUMNS)
+		if (static::hasStandardOperationsColumns())
 			$this->soft_delete(true,$db);
 		else
 			$this->hard_delete($db);
@@ -584,7 +590,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	}
 
 	private static function checkSoftColumns() {
-		if (!static::HAS_STANDARD_OPERATIONS_COLUMNS) throw new \Exception("Soft columns are not enabled in this data object!");
+		if (!static::hasStandardOperationsColumns()) throw new \Exception("Soft columns are not enabled in this data object!");
 	}
 
 	private function isVirtualColumn($name) {

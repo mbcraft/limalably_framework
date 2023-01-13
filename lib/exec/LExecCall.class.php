@@ -33,6 +33,8 @@ class LExecCall {
         
         if (is_null($result)) return;
         
+        if ($result instanceof LHttpResponse) throw $result;
+
         if ($result instanceof LTreeMap) {
             $result = $result->get('/');
         }

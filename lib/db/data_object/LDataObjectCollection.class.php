@@ -6,11 +6,34 @@
  *  
  */
 
-class LDataObjectCollection implements ArrayAccess,Countable {
+class LDataObjectCollection implements ArrayAccess,Countable,Iterator {
 
 	private $collection = array();
 
 	private $collection_class = null;
+
+	private $position = 0;
+
+	public function current() {
+		return $this->collection[$this->position];
+	}
+
+	public function key() {
+		return $this->position;
+	}
+
+	public function next() {
+		$this->position++;
+	}
+
+	public function rewind() {
+		$this->position = 0;
+	}
+
+	public function valid() {
+		return $this->position<count($this->collection);
+	}
+
 
 	public function setCollectionClass($clazz) {
 		$this->collection_class = $clazz;
@@ -60,7 +83,6 @@ class LDataObjectCollection implements ArrayAccess,Countable {
 	 * ArrayAccess interface
 	*/
 	public function offsetExists($offset) {
-		$this->__loadDataObjects();
 
 		return isset($this->collection[$offset]);
 	}
@@ -69,7 +91,6 @@ class LDataObjectCollection implements ArrayAccess,Countable {
 	 * ArrayAccess interface
 	*/
 	public function offsetGet($offset) {
-		$this->__loadDataObjects();
 
 		return isset($this->collection[$offset]) ? $this->collection[$offset] : null;
 	}
@@ -80,9 +101,6 @@ class LDataObjectCollection implements ArrayAccess,Countable {
 	public function offsetSet($offset,$value) {
 
 		if (is_null($value)) throw new \Exception("Unable to add null to this collection");
-
-		$this->where_clause = null;
-		$this->bulk_mode = false;
 
 		if (is_null($offset)) {
 			$this->collection[] = $value;
@@ -95,8 +113,6 @@ class LDataObjectCollection implements ArrayAccess,Countable {
 	 * ArrayAccess interface
 	*/
 	public function offsetUnset($offset) {
-		$this->where_clause = null;
-		$this->bulk_mode = false;
 
 		unset($this->collection[$offset]);
 	}

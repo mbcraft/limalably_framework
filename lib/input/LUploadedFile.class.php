@@ -135,6 +135,10 @@ class LUploadedFile implements ArrayAccess {
         return $this->size;
     }
 
+    function getMimeType() {
+        return $this->type;
+    }
+
     public function offsetExists($offset): bool {
         if ($offset == 'name' || $offset == 'type' || $offset == 'tmp_name' || $offset == 'error' || $offset == 'size')
             return true;

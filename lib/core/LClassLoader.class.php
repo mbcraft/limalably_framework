@@ -87,7 +87,7 @@ function ensure_all_strings($code_place_description,$var_list) {
 function ensure_all_numbers_or_strings_or_null($code_place_description,$var_list) {
     if (!is_array($var_list)) throw new \Exception("Invalid array of elements in ensure_all_numbers_or_strings_or_null function");
     foreach ($var_list as $var) {
-        if (!is_string($var) && !is_numeric($var) && !is_null($var))
+        if (!is_bool($var) && !is_string($var) && !is_numeric($var) && !is_null($var))
         {
             throw new \Exception("Some variable is not a simple numeric type or string or null : ".get_printable_var($var)." was found in ".$code_place_description.".");
         }

@@ -496,7 +496,15 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		$all_columns_data = $this->getAllColumnsData();
 
-		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($all_columns_data)->go(self::$__my_connection);
+		$no_id_columns_data = $all_columns_data;
+		unset($no_id_columns_data[static::ID_COLUMN_NAME]);
+
+		if ($all_columns_data[static::ID_COLUMN_NAME]==0) {
+			$all_columns_data = $no_id_columns_data;	
+		}
+
+		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($no_id_columns_data)->go(self::$__my_connection);
+
 
 		$num_rows = last_affected_rows()->go(self::$__my_connection);
 

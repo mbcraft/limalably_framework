@@ -143,6 +143,10 @@ class LTreeMapView implements ArrayAccess, Iterator {
         return $this->view_map->is_set($this->viewPath($path));
     }
 
+    function has($path) {
+        return $this->is_set($path);
+    }
+
     function keys($path) {
 
         return $this->view_map->keys($this->viewPath($path));

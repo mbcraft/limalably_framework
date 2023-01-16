@@ -9,12 +9,14 @@
 class LUploadedFile implements ArrayAccess {
 
     static function normalizeFileUploads() {
+
         return self::normalizeArray($_FILES);
     }
     
     static function normalizeArray($data) {
         $t = new LTreeMap($data);
         $result = new LTreeMap();
+
         foreach ($data as $key => $value) {
             self::normalizeBranch($t, $key, '/', $value['name'] ,$result);
         }
@@ -22,6 +24,7 @@ class LUploadedFile implements ArrayAccess {
     }
     
     private static function normalizeBranch($treemap_data,$starting_part,$current_path,$current_value,$treemap_result) {
+
         if (is_string($current_value)) {
             $name = $treemap_data->get($starting_part.'/name'.$current_path);
             $type = $treemap_data->get($starting_part.'/type'.$current_path);
@@ -30,7 +33,7 @@ class LUploadedFile implements ArrayAccess {
             $size = $treemap_data->get($starting_part.'/size'.$current_path);
             
             $uploaded_file = new LUploadedFile($name, $type, $tmp_name, $error, $size);
-            
+
             $treemap_result->set($starting_part.$current_path,$uploaded_file);
         } else {
             foreach ($current_value as $key => $value) {

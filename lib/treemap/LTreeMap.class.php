@@ -314,6 +314,7 @@ class LTreeMap implements ArrayAccess, Iterator {
             $return_value = self::recursiveFilterVar($return_value);
             return $return_value;
         }
+        if (is_object($return_value)) return $return_value;
         else return filter_var($return_value,FILTER_DEFAULT);
     }
     

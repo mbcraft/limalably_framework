@@ -53,6 +53,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		if ($pk!=null) {
 			$this->loadFromPk($pk,$db);
 		} else {
+
+			$this->{static::ID_COLUMN_NAME} = 0;
+
 			if (static::hasStandardOperationsColumns()) {
 				$this->created_by();
 			}

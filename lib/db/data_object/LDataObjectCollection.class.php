@@ -120,7 +120,10 @@ class LDataObjectCollection implements ArrayAccess,Countable,Iterator {
 	function __call($method_name,$arguments) {
 		
 		if (count($this->collection)>0) {
-			$m = $this->collection_class::getMethod($method_name);
+
+			$r = new ReflectionClass($this->collection_class);
+
+			$m = $r->getMethod($method_name);
 
 			foreach ($this->collection as $elem) {
 				$m->invoke($elem,$arguments);

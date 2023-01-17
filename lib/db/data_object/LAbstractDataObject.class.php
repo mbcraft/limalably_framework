@@ -296,8 +296,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	}
 
 	private static function initializeReflectionClass() {
-		if (self::$__reflection_class == null)
-			self::$__reflection_class = new ReflectionClass(static::class);
+		self::$__reflection_class = new ReflectionClass(static::class);
 	}
 
 	private static function getObjectProperty($name) {
@@ -309,7 +308,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			return $p;
 		}
 		catch (ReflectionException $ex) {
-			throw new \Exception("No property with name '".$name."' is found in data object of class ".static::class);
+			throw new \Exception("No property with name '".$name."' is found in data object of class ".self::$__reflection_class);
 		}
 	}
 
@@ -646,6 +645,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 					return $this->__columns[$name];
 				else return null;
 			} else {
+
 				throw new \Exception("No column with name ".$name." found in this data object.");
 			}
 		}

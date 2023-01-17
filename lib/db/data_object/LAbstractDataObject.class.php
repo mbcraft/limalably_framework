@@ -15,8 +15,20 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	const SESSION_USER_ID_PATH = "/user/id";
 
 	private $__columns = null;
+	private $__virtual_columns = [];
 
-	private static $__reflection_class = null;
+	private $__reflection_class = null;
+
+	public $__my_connection = null;
+
+	public $__distinct_option = false;
+	public $__conditions = null;
+	public $__order_by = null;
+	
+	public $__page_size = null;
+	public $__page_number = null;
+
+	public $__search_mode = null;
 
 	const __LAST_AFFECTED_ROWS_IS_INSERT = 1;
 
@@ -29,19 +41,6 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	const HAS_STANDARD_OPERATIONS_COLUMNS = false;
 
 	const VIRTUAL_COLUMNS_LIST = [];
-
-	private $__virtual_columns = [];
-
-	private static $__my_connection = null;
-
-	private static $__distinct_option = false;
-	private static $__conditions = null;
-	private static $__order_by = null;
-	
-	private static $__page_size = null;
-	private static $__page_number = null;
-
-	private static $__search_mode = null;
 
 	public static function hasStandardOperationsColumns() {
 		return static::HAS_STANDARD_OPERATIONS_COLUMNS;
@@ -62,62 +61,62 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		}
 	}
 
-	private static function db($db = null) {
+	private function db($db = null) {
 		if ($db) {
-			self::$__my_connection = LDbConnectionManager::get($db);
-			return self::class;
+			$this->__my_connection = LDbConnectionManager::get($db);
+			return $this;
 		}
 		if (static::MY_CONNECTION) {
-			self::$__my_connection = LDbConnectionManager::get(static::MY_CONNECTION);
-			return self::class;
+			$this->__my_connection = LDbConnectionManager::get(static::MY_CONNECTION);
+			return $this;
 		}
 
-		self::$__my_connection = LDbConnectionManager::getLastConnectionUsed();
-		return static::class;
+		$this->__my_connection = LDbConnectionManager::getLastConnectionUsed();
+		return $this;
 
 	}
 
-	private static function getLastConnectionUsed() {
-		return self::$__my_connection;
+	private function getLastConnectionUsed() {
+		return $this->__my_connection;
 	}
 
-	private static function resetSearch() {
+	private function resetSearch() {
 
-		self::$__search_mode = null;
+		$this->__search_mode = null;
 
-		self::$__distinct_option = false;
-		self::$__conditions = null;
-		self::$__order_by = null;
-		self::$__page_size = null;
-		self::$__page_number = null;
+		$this->__distinct_option = false;
+		$this->__conditions = null;
+		$this->__order_by = null;
+		$this->__page_size = null;
+		$this->__page_number = null;
 
 	}
 
-	public static function go($db = null) {
+	public function go($db = null) {
 
-		if (!self::$__search_mode) throw new \Exception("Search not correctly specified!");
+		if (!$this->__search_mode) throw new \Exception("Search not correctly specified!");
 
-		self::db($db);
+		$this->db($db);
 
-		$table = self::getTable();
+		$table = $this->getTable();
 
 		$id_column = static::ID_COLUMN_NAME;
 
-		$fields = self::$__search_mode == 'count' ? 'count(*) AS C' : '*';
+		$fields = $this->__search_mode == 'count' ? 'count(*) AS C' : '*';
 
 		$s = select($fields,$table);
 
-		if (self::$__distinct_option) $s = $s->with_distinct();
+		if ($this->__distinct_option) $s = $s->with_distinct();
 
 		if (static::hasStandardOperationsColumns()) {
-			switch (self::$__soft_deleted_filter) {
+			switch ($this->__soft_deleted_filter) {
 				case self::SOFT_DELETED_FILTER_DEFAULT : {
-					if (!self::$__conditions) {
-						self::$__conditions = [_is_null(static::COLUMN_DELETED_AT)];
+					if (!$this->__conditions) {
+						$this->__conditions = [_is_null(static::COLUMN_DELETED_AT)];
 					} else {
-						$cond = self::$__conditions;
+						$cond = $this->__conditions;
 
-						self::$__conditions = [_and(_and($cond),_is_null(static::COLUMN_DELETED_AT))];
+						$this->__conditions = [_and(_and($cond),_is_null(static::COLUMN_DELETED_AT))];
 					}
 					break;
 				}
@@ -128,12 +127,12 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 					break;
 				}
 				case self::SOFT_DELETED_FILTER_ONLY : {
-					if (!self::$__conditions) {
-						self::$__conditions = [_is_not_null(static::COLUMN_DELETED_AT)];
+					if (!$this->__conditions) {
+						$this->__conditions = [_is_not_null(static::COLUMN_DELETED_AT)];
 					} else {
-						$cond = self::$__conditions;
+						$cond = $this->__conditions;
 
-						self::$__conditions = [_and(_and($cond),_is_not_null(static::COLUMN_DELETED_AT))];
+						$this->__conditions = [_and(_and($cond),_is_not_null(static::COLUMN_DELETED_AT))];
 					}
 					break;
 				}
@@ -142,17 +141,17 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			}
 		}
 
-		if (self::$__conditions) $s = $s->where(... self::$__conditions);
+		if ($this->__conditions) $s = $s->where(... $this->__conditions);
 
-		if (self::$__search_mode != 'count') {
-			if (self::$__order_by) $s = $s->order_by(... self::$__order_by);
+		if ($this->__search_mode != 'count') {
+			if ($this->__order_by) $s = $s->order_by(... $this->__order_by);
 
-			if (self::$__page_size && self::$__page_number) $s = $s->paginate(self::$__page_size,self::$__page_number);
+			if ($this->__page_size && $this->__page_number) $s = $s->paginate($this->__page_size,$this->__page_number);
 		}
 
-		$result = self::processSearchResults($s->go(self::$__my_connection));
+		$result = $this->processSearchResults($s->go($this->__my_connection));
 
-		self::resetSearch();
+		$this->resetSearch();
 
 		return $result;
 	}
@@ -171,23 +170,25 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		$id_value = $this->getColumnValue(self::ID_COLUMN_NAME);
 
-		$result = $class::findAll(_eq($column_name,$id_value))::go();
+		$instance = new $class();
+
+		$result = $instance->findAll(_eq($column_name,$id_value))->go();
 
 		return $result;
 
 	}
 
-	private static function processSearchResults(array $query_results) {
+	private function processSearchResults(array $query_results) {
 
 		$count = count($query_results);
 
-		if (self::$__search_mode == 'count') {
+		if ($this->__search_mode == 'count') {
 			if ($count!=1) throw new \Exception("Unable to count rows for data object ".static::class);
 
 			return $query_results[0]['C'];
 		}
 
-		if (self::$__search_mode == 'one') {
+		if ($this->__search_mode == 'one') {
 			if ($count!=1) throw new \Exception("Unable to find exactly one result : ".$count." results found.");
 
 			$result = new static();
@@ -197,7 +198,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			return $result;
 		}
 
-		if (self::$__search_mode == 'first') {
+		if ($this->__search_mode == 'first') {
 			if ($count == 0) throw new \Exception("Unable to find at least one row for search results.");
 
 			$result = new static();
@@ -207,7 +208,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			return $result;
 		}
 
-		if (self::$__search_mode == 'all') {
+		if ($this->__search_mode == 'all') {
 
 			$result = new LDataObjectCollection();
 
@@ -222,101 +223,102 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			return $result;
 		}
 
-		throw new \Exception("Unable to find valid search mode to process : ".self::$__search_mode);
+		throw new \Exception("Unable to find valid search mode to process : ".$this->__search_mode);
 
 	}
 
-	public static function count(... $conditions) {
-		self::$__search_mode = "count";
+	public function count(... $conditions) {
+		$this->__search_mode = "count";
 
 		if (!empty($conditions)) {
-			self::$__conditions = $conditions;
+			$this->__conditions = $conditions;
 		}
 
-		return static::class;
+		return $this;
 	}
 
-	public static function findFirst(... $conditions) {
+	public function findFirst(... $conditions) {
 		
-		self::$__search_mode = "first";
+		$this->__search_mode = "first";
 
 		if (!empty($conditions)) {
-			self::$__conditions = $conditions;
+			$this->__conditions = $conditions;
 		}
 
-		return static::class;
+		return $this;
 
 	}
 
-	public static function findOne(... $conditions) {
+	public function findOne(... $conditions) {
 
-		self::$__search_mode = "one";
+		$this->__search_mode = "one";
 
 		if (!empty($conditions)) {
-			self::$__conditions = $conditions;
+			$this->__conditions = $conditions;
 		}
 
-		return static::class;
+		return $this;
 	}
 
-	public static function findAll(... $conditions) {
+	public function findAll(... $conditions) {
 
-		self::$__search_mode = "all";
+		$this->__search_mode = "all";
 	
 		if (!empty($conditions)) {
-			self::$__conditions = $conditions;
+			$this->__conditions = $conditions;
 		}
 
-		return static::class;
+		return $this;
 	}
 
-	public static function distict() {
+	public function distict() {
 
-		self::$__distinct_option = true;
+		$this->__distinct_option = true;
 
-		return static::class;
+		return $this;
 	}
 
-	public static function orderBy(... $order_by_elements) {
+	public function orderBy(... $order_by_elements) {
 
-		self::$__order_by = $order_by_elements;
+		$this->__order_by = $order_by_elements;
 
-		return static::class;
-
-	}
-
-	public static function paginate($page_size,$page_number) {
-
-		self::$__page_size = $page_size;
-
-		self::$__page_number = $page_number;
-
-		return static::class;
+		return $this;
 
 	}
 
-	private static function initializeReflectionClass() {
-		self::$__reflection_class = new ReflectionClass(static::class);
+	public function paginate($page_size,$page_number) {
+
+		$this->__page_size = $page_size;
+
+		$this->__page_number = $page_number;
+
+		return $this;
+
 	}
 
-	private static function getObjectProperty($name) {
+	private function initializeReflectionClass() {
+		if (!$this->__reflection_class)
+			$this->__reflection_class = new ReflectionClass(static::class);
+	}
+
+	private function getObjectProperty($name) {
 		
 		try {
 
-			$p = self::$__reflection_class->getProperty($name);
+			$p = $this->__reflection_class->getProperty($name);
 
 			return $p;
 		}
 		catch (ReflectionException $ex) {
-			throw new \Exception("No property with name '".$name."' is found in data object of class ".self::$__reflection_class);
+			throw new \Exception("No property with name '".$name."' is found in data object of class ".$this->__reflection_class);
 		}
 	}
 
-	public static function getMethod($name) {
+	public function getMethod($name) {
 
 		try {
 
-			$p = self::$__reflection_class->getMethod($name);
+			$p = $this->__reflection_class->getMethod($name);
 
 			return $p;
 
@@ -327,14 +329,14 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	}
 
-	private static function isInternalPrivateProperty($name) {
+	private function isInternalPrivateProperty($name) {
 		return strpos($name,'__')===0;
 	}
 
-	private static function getTable() {
+	private function getTable() {
 		$table = static::MY_TABLE;
 
-		if (!$table) throw new \Exception("TABLE constant in data object has not been defined!");
+		if (!$table) throw new \Exception("MY_TABLE constant in data object has not been defined!");
 
 		return $table;
 	}
@@ -345,9 +347,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 				return $this->__columns[$name];
 			else return null;
 		} else {
-			self::initializeReflectionClass();
+			$this->initializeReflectionClass();
 
-			$p = self::getObjectProperty($name);
+			$p = $this->getObjectProperty($name);
 
 			return $p->getValue($this);
 		}
@@ -359,9 +361,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$this->__columns[$name] = $value;
 		} else {
 			
-			self::initializeReflectionClass();
+			$this->initializeReflectionClass();
 
-			$p = self::getObjectProperty($name);
+			$p = $this->getObjectProperty($name);
 
 			$p->setValue($this,$value);
 		}
@@ -392,13 +394,13 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		if ($this->usesAutoColumns()) $this->__columns = $data;
 		else {
-			self::initializeReflectionClass();
+			$this->initializeReflectionClass();
 
 			foreach ($data as $name => $value) {
 
-				if (self::isInternalPrivateProperty($name)) continue;
+				if ($this->isInternalPrivateProperty($name)) continue;
 
-				$p = self::getObjectProperty($name);
+				$p = $this->getObjectProperty($name);
 
 				$p->setValue($this,$value);
 			}
@@ -414,7 +416,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$result = [];
 
 			foreach ($object_vars as $name => $value) {
-				if (self::isInternalPrivateProperty($name)) continue;
+				if ($this->isInternalPrivateProperty($name)) continue;
 
 				$v = $name;
 
@@ -432,7 +434,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$object_vars = get_object_vars($this);
 
 		foreach ($object_vars as $name => $value) {
-			if (self::isInternalPrivateProperty($name)) continue;
+			if ($this->isInternalPrivateProperty($name)) continue;
 
 			return false;
 		}
@@ -444,13 +446,13 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	private function loadFromPk($pk,$db=null) {
 
-		self::db($db);
+		$this->db($db);
 
-		$table = self::getTable();
+		$table = $this->getTable();
 
 		$id_column = static::ID_COLUMN_NAME;
 
-		$result = select('*',$table)->where(_eq($id_column,$pk))->go(self::$__my_connection);
+		$result = select('*',$table)->where(_eq($id_column,$pk))->go($this->__my_connection);
 
 		if (count($result)==0) return false;
 
@@ -465,9 +467,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	public function hard_delete($db=null) {
 
-		self::db($db);
+		$this->db($db);
 
-		$table = self::getTable();
+		$table = $this->getTable();
 
 		$id_column = static::ID_COLUMN_NAME;
 
@@ -475,7 +477,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		if ($id_value == null) throw new \Exception("Can't delete a data object with no id yet. You need to save or load it before it can be deleted from database.");
 
-		delete($table,[$id_column => $id_value])->go(self::$__my_connection);
+		delete($table,[$id_column => $id_value])->go($this->__my_connection);
 
 		return last_affected_rows()->go($db);
 	}
@@ -489,9 +491,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	public function saveOrUpdate($db=null) {
 
-		self::db($db);
+		$this->db($db);
 
-		$table = self::getTable();
+		$table = $this->getTable();
 
 		$all_columns_data = $this->getAllColumnsData();
 
@@ -502,10 +504,10 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$all_columns_data = $no_id_columns_data;	
 		}
 
-		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($no_id_columns_data)->go(self::$__my_connection);
+		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($no_id_columns_data)->go($this->__my_connection);
 
 
-		$num_rows = last_affected_rows()->go(self::$__my_connection);
+		$num_rows = last_affected_rows()->go($this->__my_connection);
 
 		if ($num_rows == self::__LAST_AFFECTED_ROWS_IS_INSERT) {
 
@@ -567,25 +569,24 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	}
 
-	private static $__soft_deleted_filter = "default";
+	private $__soft_deleted_filter = "default";
 
-	public static function with_soft_deleted() {
+	public function with_soft_deleted() {
 		
 		self::checkSoftColumns();
 
-		self::$__soft_deleted_filter = "with";
+		$this->__soft_deleted_filter = "with";
 
-		return static::class;
+		return $this;
 	}
 
-
-	public static function only_soft_deleted() {
+	public function only_soft_deleted() {
 		
 		self::checkSoftColumns();
 
-		self::$__soft_deleted_filter = "only";
+		$this->__soft_deleted_filter = "only";
 
-		return static::class;
+		return $this;
 	}
 
 	private function checkNumericUserId($user_id) {

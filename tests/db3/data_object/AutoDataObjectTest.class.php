@@ -8,27 +8,25 @@
 
 class TarghettaAlberoAutoDO extends LAbstractDataObject {
 	
-
-	const TABLE = "targhetta_albero";
-
+	const MY_TABLE = "targhetta_albero";
 }
 
 class RegioneAutoDO extends LAbstractDataObject {
-	const TABLE = "regione";
+	const MY_TABLE = "regione";
 }
 
 class ProvinciaAutoDO extends LAbstractDataObject {
-	const TABLE = "provincia";
+	const MY_TABLE = "provincia";
 }
 
 class ComuneAutoDO extends LAbstractDataObject {
-	const TABLE = "comune";
+	const MY_TABLE = "comune";
 }
 
 class ProvaDO extends LAbstractDataObject {
-	const TABLE = "my_soft_prova";
+	const MY_TABLE = "my_soft_prova";
 
-	const STANDARD_OPERATIONS_COLUMNS = true;
+	const HAS_STANDARD_OPERATIONS_COLUMNS = true;
 }
 
 class AutoDataObjectTest extends LTestCase {
@@ -66,21 +64,23 @@ class AutoDataObjectTest extends LTestCase {
 
 		$this->assertEqual($t1_load_2->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");
 
-		$result = TarghettaAlberoAutoDO::findAll()::go();
+		$do = new TarghettaAlberoAutoDO();
+
+		$result = $do->findAll()->go();
 
 		//echo $result;
 
 		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
 
-		$first = TarghettaAlberoAutoDO::findFirst()::go();
+		$first = $do->findFirst()->go();
 
 		$this->assertTrue($first instanceof TarghettaAlberoAutoDO,"L'oggetto non è della classe attesa!");
 
-		$one = TarghettaAlberoAutoDO::findOne(_eq('id',1))::go();
+		$one = $do->findOne(_eq('id',1))->go();
 
 		$this->assertTrue($first instanceof TarghettaAlberoAutoDO,"L'oggetto non è della classe attesa!");
 
-		$count = TarghettaAlberoAutoDO::count()::go();
+		$count = $do->count()->go();
 
 		$this->assertEqual($count,2,"Il numero di righe trovate nella tabella non corrisponde a quelle attese!");
 
@@ -175,29 +175,31 @@ class AutoDataObjectTest extends LTestCase {
 
 		$a2->soft_delete();
 
-		$all_results = ProvaDO::findAll()::go();
+		$do = new ProvaDO();
+
+		$all_results = $do->findAll()->go();
 
 		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
 
-		$all_results = ProvaDO::findAll()::with_soft_deleted()::go();
+		$all_results = $do->findAll()->with_soft_deleted()->go();
 
 		$this->assertTrue(count($all_results)==2,"Il numero dei risultati non corrisponde!");
 
-		$all_results = ProvaDO::findAll()::only_soft_deleted()::go();
+		$all_results = $do->findAll()->only_soft_deleted()->go();
 
 		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
 
 		//adding a condition to test also the other part
 
-		$all_results = ProvaDO::findAll(_eq('text_value','qualcosa'))::go();
+		$all_results = $do->findAll(_eq('text_value','qualcosa'))->go();
 
 		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
 
-		$all_results = ProvaDO::findAll(_eq('text_value','qualcosa'))::with_soft_deleted()::go();
+		$all_results = $do->findAll(_eq('text_value','qualcosa'))->with_soft_deleted()->go();
 
 		$this->assertTrue(count($all_results)==2,"Il numero dei risultati non corrisponde!");
 
-		$all_results = ProvaDO::findAll(_eq('text_value','qualcosa'))::only_soft_deleted()::go();
+		$all_results = $do->findAll(_eq('text_value','qualcosa'))->only_soft_deleted()->go();
 
 		$this->assertTrue(count($all_results)==1,"Il numero dei risultati non corrisponde!");
 

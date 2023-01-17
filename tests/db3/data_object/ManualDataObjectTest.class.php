@@ -9,7 +9,7 @@
 class TarghettaAlberoManualDO extends LAbstractDataObject {
 	
 
-	const TABLE = "targhetta_albero";
+	const MY_TABLE = "targhetta_albero";
 
 	public $id;
 	public $codice_targhetta;
@@ -51,25 +51,27 @@ class ManualDataObjectTest extends LTestCase {
 
 		$this->assertEqual($t1_load_2->codice_targhetta,'abc1',"Il codice della targhetta letto non corrisponde!!");
 
-		$result = TarghettaAlberoManualDO::findAll()::go();
+		$do = new TarghettaAlberoManualDO();
+
+		$result = $do->findAll()->go();
 
 		//echo $result;
 
 		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
 
-		$result = TarghettaAlberoManualDO::findAll()::orderBy(desc('id'))::go();
+		$result = $do->findAll()->orderBy(desc('id'))->go();
 
 		$this->assertEqual(count($result),2,"Il numero di elementi della classe non corrisponde!");
 
-		$result = TarghettaAlberoManualDO::findAll()::paginate(1,2)::go();
+		$result = $do->findAll()->paginate(1,2)->go();
 
 		$this->assertEqual(count($result),1,"Il numero di elementi della classe non corrisponde!");
 
-		$first = TarghettaAlberoManualDO::findFirst()::go();
+		$first = $do->findFirst()->go();
 
 		$this->assertTrue($first instanceof TarghettaAlberoManualDO,"L'oggetto non è della classe attesa!");
 
-		$one = TarghettaAlberoManualDO::findOne(_eq('id',1))::go();
+		$one = $do->findOne(_eq('id',1))->go();
 
 		$this->assertTrue($first instanceof TarghettaAlberoManualDO,"L'oggetto non è della classe attesa!");
 	}

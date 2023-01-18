@@ -23,7 +23,7 @@ abstract class LMysqlAbstractConditionsBlock {
 		$this->mode = $mode;
 
 		if (is_array($element) && !empty($element)) {
-			if (count($element)>1) 
+			if (count($element)>0) 
 				$element = new LMysqlAndBlock(... $element);
 			else 
 				$element = $element[0];

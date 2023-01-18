@@ -477,9 +477,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		if ($id_value == null) throw new \Exception("Can't delete a data object with no id yet. You need to save or load it before it can be deleted from database.");
 
-		delete($table,[$id_column => $id_value])->go($this->__my_connection);
+		delete($table,_eq($id_column,$id_value))->go($this->__my_connection);
 
-		return last_affected_rows()->go($db);
+		return last_affected_rows()->go($this->__my_connection);
 	}
 
 	public function delete($db=null) {

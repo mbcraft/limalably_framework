@@ -47,9 +47,13 @@ abstract class LMysqlAbstractQuery {
 
 		$connection_handle = $connection->getHandle();
 
-		$result = mysqli_query($connection_handle,$this->end());
+		$query_text = $this->end();
 
-		if (!$result) throw new \Exception("Mysql query failed : ".mysqli_error($connection_handle));
+		$result = mysqli_query($connection_handle,$query_text);
+
+		if (!$result) {
+			throw new \Exception("Mysql query failed : ".mysqli_error($connection_handle)." : ".$query_text);
+		}
 		
 		if ($this instanceof LMysqlInsertStatement || $this instanceof LMysqlReplaceStatement) {
 			

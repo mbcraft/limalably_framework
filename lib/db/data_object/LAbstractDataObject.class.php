@@ -38,6 +38,10 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	
 	const MY_CONNECTION = null;
 
+	const MY_ORDER_COLUMN = null;
+
+	const MY_ORDER_GROUP_COLUMNS = null;
+
 	const HAS_STANDARD_OPERATIONS_COLUMNS = false;
 
 	const VIRTUAL_COLUMNS_LIST = [];
@@ -483,10 +487,32 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	}
 
 	public function delete($db=null) {
+
+		if (static::MY_ORDER_COLUMN!=null) {
+
+			$clazz = static::class;
+
+			$do = new $clazz();
+
+			$cond = _and(_not_in(static::ID_COLUMN_NAME,[$this->{static::ID_COLUMN_NAME}]));
+
+			$this->pushNotSoftDeletedCondition($cond);
+
+			foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+				$cond->add(_eq($col_name,$this->{$col_name}));
+			}
+
+			$all_other_elements = $do->findAll($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
+
+			$this->reorder_all($all_other_elements);			
+		}
+
 		if (static::hasStandardOperationsColumns())
 			$this->soft_delete(true,$db);
 		else
 			$this->hard_delete($db);
+
+
 	}
 
 	public function saveOrUpdate($db=null) {
@@ -675,6 +701,169 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		
 
 		return '[ '.implode(' , ',$fields_list).' ]';
+	}
+
+	private function pushNotSoftDeletedCondition($cond) {
+		if (static::hasStandardOperationsColumns()) {
+			$cond->add(_is_null('deleted_at'));
+		}
+	}
+
+	private function checkRequiredOrderingConstants() {
+		if (static::MY_ORDER_COLUMN==null) throw new \Exception("Constant MY_ORDER_COLUMN is required for ordering to work.");
+		if (static::MY_ORDER_GROUP_COLUMNS===null) throw new \Exception("Constant MY_ORDER_GROUP_COLUMNS is required for ordering to work.");
+	}
+
+	private function reorder_all($data) {
+
+		$this->checkRequiredOrderingConstants();
+
+		$order_val = 1;
+
+		foreach ($data as $el) {
+			$el->{static::MY_ORDER_COLUMN} = $order_val;
+			$el->saveOrUpdate();
+			$order_val++;
+		}
+
+	}
+
+	private function exchange_order($el1,$el2) {
+		$tmp1 = $el1->{static::MY_ORDER_COLUMN};
+		$tmp2 = $el2->{static::MY_ORDER_COLUMN};
+
+		$el1->order_val = $tmp2;
+		$el1->saveOrUpdate();
+
+		$el2->order_val = $tmp1;
+		$el2->saveOrUpdate();
+	}
+
+	private function findPreviousElement() {
+
+		$order_val = $this->{static::MY_ORDER_COLUMN};
+
+		$do = new AttachmentInElementDO();
+
+		$db = db();
+
+		$cond = _and(_lt(static::MY_ORDER_COLUMN,$order_val));
+
+		$this->pushNotSoftDeletedCondition($cond);
+
+		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+			$cond->add(_eq($col_name,$this->{$col_name}));
+		}
+
+		$previous = $do->findFirst($cond)->orderBy(desc(static::MY_ORDER_COLUMN))->go($db);
+
+		return $previous;
+	}
+
+	private function findNextElement() {
+
+		$order_val = $this->{static::MY_ORDER_COLUMN};
+
+		$do = new AttachmentInElementDO();
+
+		$db = db();
+
+		$cond = _and(_gt(static::MY_ORDER_COLUMN,$order_val));
+
+		$this->pushNotSoftDeletedCondition($cond);
+
+		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+			$cond->add(_eq($col_name,$this->{$col_name}));
+		}
+
+		$next = $do->findFirst($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
+
+		return $next;
+	}
+
+	public function move_to_previous() {
+
+		$this->checkRequiredOrderingConstants();
+
+		$previous = $this->findPreviousElement();
+
+		if ($previous) {
+			$this->exchange_order($previous,$this);
+		}
+
+	}
+
+	public function move_to_next() {
+
+		$this->checkRequiredOrderingConstants();
+		
+		$next = $this->findNextElement();
+
+		if ($next) {
+			$this->exchange_order($this,$next);
+		}
+
+	}
+
+	public function move_to_first() {
+
+		$this->checkRequiredOrderingConstants();
+
+		$clazz = get_class($this);
+
+		$do = new $clazz();
+
+		$db = db();
+
+		$cond = _and(_not_in('id',[$this->id]));
+
+		$this->pushNotSoftDeletedCondition($cond);
+
+		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+			$cond->add(_eq($col_name,$this->{$col_name}));
+		}
+
+		$all_elements = $do->findAll($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
+
+		$final_array = [$this];
+
+		foreach ($all_elements as $other_el) {
+			$final_array [] = $other_el;
+		}
+
+		$this->reorder_all($final_array);
+	}
+
+	public function move_to_last() {
+
+		$this->checkRequiredOrderingConstants();
+
+		$clazz = get_class($this);
+
+		$do = new $clazz();
+
+		$db = db();
+
+		$cond = _and(_not_in('id',[$this->id]));
+
+		$this->pushNotSoftDeletedCondition($cond);
+
+		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+			$cond->add(_eq($col_name,$this->{$col_name}));
+		}
+
+		$all_elements = $do->findAll($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
+
+		$final_array = [];
+
+		foreach ($all_elements as $other_el) {
+			$final_array [] = $other_el;
+		}
+
+		$final_array[] = $this;
+
+		$this->reorder_all($final_array);
+
 	}
 
 }

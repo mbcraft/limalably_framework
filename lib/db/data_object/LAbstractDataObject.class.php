@@ -521,13 +521,18 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		$table = $this->getTable();
 
+		if ($this->{static::ID_COLUMN_NAME}==0 && static::MY_ORDER_COLUMN!=null) {
+			$this->setupOrderColumnWithLastValue();
+		}
+
 		$all_columns_data = $this->getAllColumnsData();
 
 		$no_id_columns_data = $all_columns_data;
 		unset($no_id_columns_data[static::ID_COLUMN_NAME]);
 
 		if ($all_columns_data[static::ID_COLUMN_NAME]==0) {
-			$all_columns_data = $no_id_columns_data;	
+			$all_columns_data = $no_id_columns_data;
+
 		}
 
 		$last_insert_id = insert($table)->column_list(array_keys($all_columns_data))->data(array_values($all_columns_data))->on_duplicate_key_update($no_id_columns_data)->go($this->__my_connection);
@@ -706,6 +711,30 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	private function pushNotSoftDeletedCondition($cond) {
 		if (static::hasStandardOperationsColumns()) {
 			$cond->add(_is_null('deleted_at'));
+		}
+	}
+
+	private function setupOrderColumnWithLastValue() {
+
+		if ($this->{static::MY_ORDER_COLUMN}==null) {
+			$clazz = static::class;
+
+			$do = new $clazz();
+
+			$db = db();
+
+			$cond = _and();
+
+			$this->pushNotSoftDeletedCondition($cond);
+
+			foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+				$cond->add(_eq($col_name,$this->{$col_name}));
+			}
+
+			$total = $do->findAll($cond)->count()->go($db);
+
+			$this->{static::MY_ORDER_COLUMN} = $total + 1;
+
 		}
 	}
 

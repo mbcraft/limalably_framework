@@ -216,6 +216,16 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			return $result;
 		}
 
+		if ($this->__search_mode == 'first_or_null') {
+			if ($count == 0) return null;
+
+			$result = new static();
+
+			$result->setAllColumnsData($query_results[0]);
+
+			return $result;
+		}
+
 		if ($this->__search_mode == 'all') {
 
 			$result = new LDataObjectCollection();
@@ -248,6 +258,18 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	public function findFirst(... $conditions) {
 		
 		$this->__search_mode = "first";
+
+		if (!empty($conditions)) {
+			$this->__conditions = $conditions;
+		}
+
+		return $this;
+
+	}
+
+	public function findFirstOrNull(... $conditions) {
+		
+		$this->__search_mode = "first_or_null";
 
 		if (!empty($conditions)) {
 			$this->__conditions = $conditions;
@@ -450,6 +472,10 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$this->__columns = array();
 
 		return true;
+	}
+
+	public function reload() {
+		return $this->loadFromPk($this->{static::ID_COLUMN_NAME});
 	}
 
 	private function loadFromPk($pk,$db=null) {
@@ -793,7 +819,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$cond->add(_eq($col_name,$this->{$col_name}));
 		}
 
-		$previous = $do->findFirst($cond)->orderBy(desc(static::MY_ORDER_COLUMN))->go($db);
+		$previous = $do->findFirstOrNull($cond)->orderBy(desc(static::MY_ORDER_COLUMN))->go($db);
 
 		return $previous;
 	}
@@ -816,7 +842,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$cond->add(_eq($col_name,$this->{$col_name}));
 		}
 
-		$next = $do->findFirst($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
+		$next = $do->findFirstOrNull($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
 
 		return $next;
 	}

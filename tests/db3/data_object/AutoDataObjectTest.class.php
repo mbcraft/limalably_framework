@@ -29,6 +29,25 @@ class ProvaDO extends LAbstractDataObject {
 	const HAS_STANDARD_OPERATIONS_COLUMNS = true;
 }
 
+class ProvaOrderingDO extends LAbstractDataObject {
+	const MY_TABLE = "my_prova_ordering";
+
+	const MY_ORDER_COLUMN = "order_val";
+
+	const MY_ORDER_GROUP_COLUMNS = ["categoria_id"];
+}
+
+class ProvaOrderingStdColsDO extends LAbstractDataObject {
+	const MY_TABLE = "my_prova_ordering_std_cols";
+
+	const MY_ORDER_COLUMN = "order_val";
+
+	const MY_ORDER_GROUP_COLUMNS = ["categoria_id"];
+
+	const HAS_STANDARD_OPERATIONS_COLUMNS = true;
+
+}
+
 class AutoDataObjectTest extends LTestCase {
 	
 
@@ -206,5 +225,284 @@ class AutoDataObjectTest extends LTestCase {
 		drop_table('my_soft_prova')->if_exists()->go($db);
 
 
+	}
+
+	public function testProvaOrdering() {
+		$db = db('hosting_dreamhost_tests');
+
+		drop_table('my_prova_ordering')->if_exists()->go($db);
+
+		create_table('my_prova_ordering')->column(col_def('id')->t_id())
+		->column(col_def('text_value')->t_text32())
+		->column(col_def('int_value')->t_u_int())
+		->column(col_def('categoria_id')->t_u_int())
+		->column(col_def('order_val')->t_u_int())->go($db);
+
+		$p1 = new ProvaOrderingDO();
+		$p1->int_value = 1;
+		$p1->categoria_id = 3;
+		$p1->saveOrUpdate();
+
+		$p2 = new ProvaOrderingDO();
+		$p2->int_value = 2;
+		$p2->categoria_id = 3;
+		$p2->saveOrUpdate();
+
+		$p3 = new ProvaOrderingDO();
+		$p3->int_value = 3;
+		$p3->categoria_id = 3;
+		$p3->saveOrUpdate();
+
+		$p4 = new ProvaOrderingDO();
+		$p4->int_value = 4;
+		$p4->categoria_id = 1;
+		$p4->saveOrUpdate();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_last();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+		
+		$p1->move_to_first();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_next();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+		
+		$p1->move_to_previous();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_previous();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p3->move_to_next();
+		$p2->reload();
+		$p1->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_first();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p3->move_to_last();
+		$p2->reload();
+		$p1->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p4->delete();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		
+		$p1->delete();
+		$p2->reload();
+		$p3->reload();
+
+		$this->assertEqual($p2->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,2,"Il valore dell'ordine non corrisponde!");
+
+		$p2->delete();
+		$p3->reload();
+
+		$this->assertEqual($p3->order_val,1,"Il valore dell'ordine non corrisponde!");
+		
+		$p3->delete();
+
+	}
+
+	public function testProvaOrderingStandardCols() {
+		$db = db('hosting_dreamhost_tests');
+
+		drop_table('my_prova_ordering_std_cols')->if_exists()->go($db);
+
+		create_table('my_prova_ordering_std_cols')->column(col_def('id')->t_id())
+		->column(col_def('text_value')->t_text32())
+		->column(col_def('int_value')->t_u_int())
+		->column(col_def('categoria_id')->t_u_int())
+		->column(col_def('order_val')->t_u_int())
+		->standard_operations_columns()
+		->go($db);
+
+		$p1 = new ProvaOrderingStdColsDO();
+		$p1->int_value = 1;
+		$p1->categoria_id = 3;
+		$p1->saveOrUpdate();
+
+		$p2 = new ProvaOrderingStdColsDO();
+		$p2->int_value = 2;
+		$p2->categoria_id = 3;
+		$p2->saveOrUpdate();
+
+		$p3 = new ProvaOrderingStdColsDO();
+		$p3->int_value = 3;
+		$p3->categoria_id = 3;
+		$p3->saveOrUpdate();
+
+		$p4 = new ProvaOrderingStdColsDO();
+		$p4->int_value = 4;
+		$p4->categoria_id = 1;
+		$p4->saveOrUpdate();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_last();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+		
+		$p1->move_to_first();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_next();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+		
+		$p1->move_to_previous();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_previous();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p3->move_to_next();
+		$p2->reload();
+		$p1->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p1->move_to_first();
+		$p2->reload();
+		$p3->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p3->move_to_last();
+		$p2->reload();
+		$p1->reload();
+		$p4->reload();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p4->order_val,1,"Il valore dell'ordine non corrisponde!");
+
+		$p4->delete();
+
+		$this->assertEqual($p1->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p2->order_val,2,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,3,"Il valore dell'ordine non corrisponde!");
+		
+		$p1->delete();
+		$p2->reload();
+		$p3->reload();
+
+		$this->assertEqual($p2->order_val,1,"Il valore dell'ordine non corrisponde!");
+		$this->assertEqual($p3->order_val,2,"Il valore dell'ordine non corrisponde!");
+
+		$p2->delete();
+		$p3->reload();
+
+		$this->assertEqual($p3->order_val,1,"Il valore dell'ordine non corrisponde!");
+		
+		$p3->delete();
+		
+			
 	}
 }

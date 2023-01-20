@@ -8,10 +8,10 @@
 
 class LFlash
 {
-    const FLASH_INFO_MESSAGES_KEY = "info_messages";
-    const FLASH_SUCCESS_MESSAGES_KEY = "success_messages";
-    const FLASH_WARNING_MESSAGES_KEY = "warning_messages";
-    const FLASH_ERROR_MESSAGES_KEY = "error_messages";
+    const FLASH_INFO_MESSAGES_KEY = "info";
+    const FLASH_SUCCESS_MESSAGES_KEY = "success";
+    const FLASH_WARNING_MESSAGES_KEY = "warning";
+    const FLASH_ERROR_MESSAGES_KEY = "error";
 
     const SESSION_FLASH_KEY = "__flash_vars";
     
@@ -123,6 +123,12 @@ class LFlash
         {
             return false;
         } 
+    }
+
+    public static function getAllMessages() {
+        if (self::$current && self::$current->my_vars) {
+            return self::$current->my_vars;
+        } else return array();
     }
 
     public static function hasWarningMessages()

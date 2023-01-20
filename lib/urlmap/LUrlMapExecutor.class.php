@@ -71,6 +71,7 @@ class LUrlMapExecutor {
         $this->output = new LTreeMap();
         $this->output->set('/success', true);
         $treeview_output = $this->output->view('/');
+        $flashes = LFlash::getAllMessages();
 
         //checking for invalid nodes
         $current_keys = $this->my_url_map->keys('/');
@@ -149,7 +150,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'output' => $this->output, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'output' => $this->output, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters,'flash' => $flashes];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -199,7 +200,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'output' => $this->output, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'output' => $this->output, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters,'flash' => $flashes];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -224,7 +225,7 @@ class LUrlMapExecutor {
                 $merge = true;
             }
 
-            $call_params = ['output' => $this->output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $this->capture, 'parameters' => $parameters];
+            $call_params = ['output' => $this->output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $this->capture, 'parameters' => $parameters, 'flash' => $flashes];
 
             $dynamic = new LDynamicCall();
 
@@ -254,7 +255,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'output' => $this->output, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'output' => $this->output, 'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters, 'flash' => $flashes];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -283,7 +284,7 @@ class LUrlMapExecutor {
                 $input_view = $treeview_input->view($path);
                 $session_view = $treeview_session->view($path);
 
-                $call_params = ['rel_output' => $output_view, 'output' => $this->output ,'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters];
+                $call_params = ['rel_output' => $output_view, 'output' => $this->output ,'rel_input' => $input_view, 'rel_session' => $session_view, 'input' => $abs_input, 'session' => $abs_session, 'context_path' => $path, 'capture' => $this->capture, 'parameters' => $parameters, 'flash' => $flashes];
 
                 foreach ($exec_spec_list as $call_spec) {
                     $executor = new LExecCall();
@@ -296,10 +297,6 @@ class LUrlMapExecutor {
             }
         }
 
-        //saving flash messages
-
-        LFlash::save_to_session();
-
         //dynamic template
 
         if ($this->my_url_map->is_set('/dynamic_template')) {
@@ -310,7 +307,7 @@ class LUrlMapExecutor {
             } else {
                 $dynamic = new LDynamicCall();
 
-                $call_params = ['output' => $this->output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $this->capture, 'parameters' => $parameters];
+                $call_params = ['output' => $this->output, 'input' => $abs_input, 'rel_input' => $treeview_input, 'session' => $abs_session, 'rel_session' => $treeview_session, 'capture' => $this->capture, 'parameters' => $parameters, 'flash' => $flashes];
                 try {
                     $dynamic->saveIntoTemplate($dynamic_template_spec, $call_params, $this->my_url_map);
                 } catch (\Exception $ex) {

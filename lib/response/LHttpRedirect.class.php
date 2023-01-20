@@ -16,6 +16,8 @@ class LHttpRedirect extends LHttpResponse {
     
     function execute($format=null) {
         
+         LFlash::save_to_session();
+        
         header("Location: ".$this->location); 
         Limalably::finish();
         

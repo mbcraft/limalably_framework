@@ -15,7 +15,9 @@ class LHtmlResponse extends LHttpResponse {
     }
 
     public function execute($format=null) {
-        
+
+        LFlash::save_to_session();
+
         if ($format!=LFormat::HTML) throw new \Exception("Format inside response is not html.");
         
         header("Content-Type: text/html; charset=utf-8");

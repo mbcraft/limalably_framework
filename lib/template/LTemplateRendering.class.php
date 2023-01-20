@@ -8,7 +8,7 @@
 
 class LTemplateRendering {
 
-    const AVAILABLE_IMPORTS = ['urlmap', 'urlmap_string', 'relative_input', 'relative_input_string', 'absolute_input', 'absolute_input_string', 'relative_session', 'relative_session_string', 'absolute_session', 'absolute_session_string', 'parameters', 'parameters_string', 'capture', 'capture_string', 'env', 'env_string', 'output_string'];
+    const AVAILABLE_IMPORTS = ['urlmap', 'urlmap_string', 'relative_input', 'relative_input_string', 'absolute_input', 'absolute_input_string', 'relative_session', 'relative_session_string', 'absolute_session', 'absolute_session_string', 'parameters', 'parameters_string', 'capture', 'capture_string', 'env', 'env_string', 'output_string', 'flash'];
 
     private $my_urlmap = null;
     private $my_input = null;
@@ -145,6 +145,8 @@ class LTemplateRendering {
                         case 'i18n' : $this->my_output->set('i18n', LI18nUtils::getCurrentLangData()); 
                            break;
                         case 'flags' : $this->my_output->set('flags', array('debug_enabled' => LConfigReader::executionMode('/misc/debug_enabled'),'trace_enabled' => LConfigReader::executionMode('/misc/trace_enabled'),'introspection_enabled' => LConfigReader::executionMode('/misc/introspection_enabled'))); 
+                            break;
+                        case 'flash' : $this->my_output->set('flash', LFlash::getAllMessages()); 
                             break;
                         case 'output_string' : break; //already done to avoid output accumulation
 

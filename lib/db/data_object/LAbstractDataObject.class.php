@@ -65,6 +65,10 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		}
 	}
 
+	public function isNew() {
+		return $this->{static::ID_COLUMN_NAME} == 0;
+	}
+
 	private function db($db = null) {
 		if ($db) {
 			$this->__my_connection = LDbConnectionManager::get($db);
@@ -525,7 +529,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$this->setupOrderColumnWithLastValue();
 		}
 
-		if ($this->{static::ID_COLUMN_NAME}==0 && static::hasStandardOperationsColumns()) {
+		if ($this->{static::ID_COLUMN_NAME}==0 && static::hasStandardOperationsColumns() && !$this->created_at) {
 			$this->created_by();
 		}
 

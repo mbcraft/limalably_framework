@@ -529,7 +529,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$this->pushNotSoftDeletedCondition($cond);
 
 			foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
-				$cond->add(_eq($col_name,$this->{$col_name}));
+				$cond->add(_eq_null($col_name,$this->{$col_name}));
 			}
 
 			$all_other_elements = $do->findAll($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
@@ -761,7 +761,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$this->pushNotSoftDeletedCondition($cond);
 
 			foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
-				$cond->add(_eq($col_name,$this->{$col_name}));
+				$cond->add(_eq_null($col_name,$this->{$col_name}));
 			}
 
 			$total = $do->findAll($cond)->count()->go($db);
@@ -816,7 +816,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$this->pushNotSoftDeletedCondition($cond);
 
 		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
-			$cond->add(_eq($col_name,$this->{$col_name}));
+			$cond->add(_eq_null($col_name,$this->{$col_name}));
 		}
 
 		$previous = $do->findFirstOrNull($cond)->orderBy(desc(static::MY_ORDER_COLUMN))->go($db);
@@ -839,7 +839,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$this->pushNotSoftDeletedCondition($cond);
 
 		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
-			$cond->add(_eq($col_name,$this->{$col_name}));
+			$cond->add(_eq_null($col_name,$this->{$col_name}));
 		}
 
 		$next = $do->findFirstOrNull($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
@@ -886,7 +886,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$this->pushNotSoftDeletedCondition($cond);
 
 		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
-			$cond->add(_eq($col_name,$this->{$col_name}));
+			$cond->add(_eq_null($col_name,$this->{$col_name}));
 		}
 
 		$all_elements = $do->findAll($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
@@ -915,7 +915,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$this->pushNotSoftDeletedCondition($cond);
 
 		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
-			$cond->add(_eq($col_name,$this->{$col_name}));
+			$cond->add(_eq_null($col_name,$this->{$col_name}));
 		}
 
 		$all_elements = $do->findAll($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);

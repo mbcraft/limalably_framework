@@ -36,12 +36,30 @@ class LMysqlCondition {
 
 	public static function equal($column_name,$column_value) {
 		ensure_string_not_null("mysql 'equal' condition",$column_name);
+		if ($column_value===null) throw new \Exception("Column value is null with column ".$column_name);
 		return new LMysqlCondition(new LMysqlColumnName($column_name),'=',new LMysqlValueRenderer($column_value));
+	}
+
+	public static function equal_null($column_name,$column_value) {
+		ensure_string_not_null("mysql 'equal' condition",$column_name);
+		if ($column_value===null)
+			return new LMysqlCondition(new LMysqlColumnName($column_name),'IS','NULL');
+		else
+			return new LMysqlCondition(new LMysqlColumnName($column_name),'=',new LMysqlValueRenderer($column_value));
 	}
 
 	public static function not_equal($column_name,$column_value) {
 		ensure_string_not_null("mysql 'not equal' condition",$column_name);
+		if ($column_value===null) throw new \Exception("Column value is null with column ".$column_name);
 		return new LMysqlCondition(new LMysqlColumnName($column_name),'!=',new LMysqlValueRenderer($column_value));
+	}
+
+	public static function not_equal_null($column_name,$column_value) {
+		ensure_string_not_null("mysql 'not equal' condition",$column_name);
+		if ($column_value===null)
+			return new LMysqlCondition(new LMysqlColumnName($column_name),'IS','NOT','NULL');
+		else
+			return new LMysqlCondition(new LMysqlColumnName($column_name),'!=',new LMysqlValueRenderer($column_value));
 	}
 
 	public static function greater_than($column_name,$column_value) {

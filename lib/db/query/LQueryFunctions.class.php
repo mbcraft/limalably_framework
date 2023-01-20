@@ -152,11 +152,27 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function _eq_null(string $column_name,$column_value) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::equal_null($column_name,$column_value);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 
 		function _equal(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::equal($column_name,$column_value);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function _equal_null(string $column_name,$column_value) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::equal_null($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
@@ -169,11 +185,27 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();
 		}
 
+		function _n_eq_null(string $column_name,$column_value) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_equal_null($column_name,$column_value);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 
 		function _not_equal(string $column_name,$column_value) {
 			LQueryFunctions::checkLayerSelected();
 
 			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_equal($column_name,$column_value);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function _not_equal_null(string $column_name,$column_value) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return LMysqlCondition::not_equal_null($column_name,$column_value);
 
 			LQueryFunctions::throwQueryLayerNotFound();
 		}

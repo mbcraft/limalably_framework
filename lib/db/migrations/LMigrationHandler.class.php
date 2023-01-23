@@ -155,7 +155,7 @@ class LMigrationHandler {
 	}
 
 	public function __toString() {
-		return "Migration '".$this->getName()."'' on context ".LMigrationHelper::getCleanContextName($this->context);
+		return "Migration '".$this->getName()."' on context ".LMigrationHelper::getCleanContextName($this->context);
 	}
 
 

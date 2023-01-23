@@ -1661,7 +1661,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 72;
+    const BUILD_NUMBER = 74;
 
     const DEPLOYER_VERSION = "1.5";
 
@@ -1810,6 +1810,8 @@ class DeployerController {
         $f = new DFile($path_prefix.'lib/db/functions.php');
         if (!$f->exists()) return $path_prefix.'lib/db/functions.php not found.';
         $f->requireFileOnce();
+
+        $_SERVER['PROJECT_DIR'] = $_SERVER['DEPLOYER_PROJECT_DIR'];
 
         if (!LConfig::initCalled()) LConfig::init();
 

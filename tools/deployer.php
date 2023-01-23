@@ -1661,7 +1661,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 71;
+    const BUILD_NUMBER = 72;
 
     const DEPLOYER_VERSION = "1.5";
 
@@ -1819,6 +1819,10 @@ class DeployerController {
 
     }
 
+    private function failureNoConfigFilesForDbConnection() {
+        return $this->failure("No config files are present in order to look for database connections. Server root : ".$_SERVER['DEPLOYER_PROJECT_DIR'].' - hostname '.LEnvironmentUtils::getHostname().' - PHP CONFIG:'.(LConfig::phpConfigFound()?'true':'false').' - JSON CONFIG : '.(LConfig::jsonConfigFound()?'true':'false'));
+    }
+
     public function listDb($password) {
 
         if ($this->accessGranted($password)) {
@@ -1834,7 +1838,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             $db_list = LConfigReader::simple('/database');
 
@@ -1861,7 +1865,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1911,7 +1915,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1972,7 +1976,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 
@@ -1995,7 +1999,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 
@@ -2018,7 +2022,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 
@@ -2045,7 +2049,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 

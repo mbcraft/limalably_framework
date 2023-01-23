@@ -31,6 +31,16 @@ class ValidationDriverTest extends LTestCase {
         $this->assertTrue(count($result)>0,"Non ci sono messaggi d'errore risultanti!");       
         
     }
+
+    function testFailedValidationAgain() {
+    
+        $v = new LRespectValidationDriver();
+        
+        $result = $v->validate("ciccio_is_the_name_of_validation", "prova", ["Length(2,4)"],null,null);
+            
+        $this->assertTrue(count($result)>0,"Non ci sono messaggi d'errore risultanti!");       
+        
+    }
     
     function testMultipleFailures() {
         

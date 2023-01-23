@@ -175,14 +175,16 @@ class LConfig {
 
         // loading config ...
 
-        if (isset($_SERVER['PROJECT_DIR'])) {
+        if (isset($_SERVER['PROJECT_DIR']) || isset($_SERVER['DEPLOYER_PROJECT_DIR'])) {
 
             $path_parts = [];
             $path_parts[] = 'config';
             $path_parts[] = 'hostnames';
             $path_parts[] = $_SERVER['HOSTNAME'];
 
-            $config_dir_path = $_SERVER['PROJECT_DIR'] . implode('/', $path_parts) . '/';
+            $prefix = isset($_SERVER['PROJECT_DIR']) ? $_SERVER['PROJECT_DIR'] : $_SERVER['DEPLOYER_PROJECT_DIR'];
+
+            $config_dir_path = $prefix . implode('/', $path_parts) . '/';
 
             if (!is_dir($config_dir_path)) {
                 echo("Config dir not found : " . $config_dir_path."\n");

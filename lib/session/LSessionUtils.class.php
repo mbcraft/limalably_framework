@@ -18,21 +18,28 @@ class LSessionUtils {
         if (self::$session_tree) throw new \Exception("Session Create was already called!");
         
         $a = session_id();
+
+        $params = [];
+
         if(empty($a)) 
         {
             $session_params = LConfigReader::executionMode('/session');
             
-            $params = [];
             foreach ($session_params as $session_param => $value) {
                 if ($value !== null) {
                     $params['session.'.$session_param] = $value;
                 }
             }
-            
+                
             session_start($params);
+            
+        }
+        else {
             session_regenerate_id(true);
+            session_start();
         }
         
+
         self::$session_tree = new LTreeMap($_SESSION);
         
         return self::currentSessionTree();

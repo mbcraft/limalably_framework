@@ -58,7 +58,7 @@ class LMysqlCreateTableStatement extends LMysqlAbstractQuery implements LIStanda
 	}
 
 	function if_not_exists() {
-		$this->if_not_exists = "IF NOT EXISTS";
+		$this->if_not_exists_option = "IF NOT EXISTS";
 
 		return $this;
 	}

@@ -423,6 +423,9 @@ class LUrlMapExecutor {
 
         if ($this->my_format == LFormat::JSON) {
             $content = LJsonUtils::encodeResult($this->output);
+
+            LLog::error("CONTENT : ".$content);
+
             if ($this->is_root) {
                 throw new LJsonResponse($content);
             } else {

@@ -27,8 +27,8 @@ class LMysqlValueRenderer {
 		if ($this->value instanceof LMysqlExpression) return "".$this->value;
 		if ($this->value instanceof LMysqlReplaceValue) return "".$this->value;
 		if ($this->value instanceof LMysqlColumnName) return "".$this->value;
-		if (is_numeric($this->value)) return "".$this->value;
 		if (is_string($this->value)) return "'".mysqli_real_escape_string(LDbConnectionManager::getLastConnectionUsed()->getHandle(),$this->value)."'";
+		if (is_numeric($this->value)) return "".$this->value;
 		if ($this->value === false) return '0';
 		if ($this->value === true) return '1';
 

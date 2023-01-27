@@ -75,7 +75,7 @@ class LJsonUtils {
             }
         }
         try {
-            $content = json_encode($my_output, $encode_options);
+            $content = json_encode($my_output->getRoot(), $encode_options);
             LWarningList::clear();
             LErrorList::clear();
             return $content;

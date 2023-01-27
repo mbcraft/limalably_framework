@@ -51,6 +51,7 @@ class LJsonUtils {
     }
     
     public static function encodeResult($output) {
+
         $encode_options_list = LConfigReader::simple('/format/json/encode_options');
         $encode_options = 0;
         foreach ($encode_options_list as $enc_opt) {

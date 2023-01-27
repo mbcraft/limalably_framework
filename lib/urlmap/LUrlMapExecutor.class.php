@@ -69,7 +69,6 @@ class LUrlMapExecutor {
         $abs_session = $treeview_session->view('/');
 
         $this->output = new LTreeMap();
-        $this->output->set('/success', true);
         $treeview_output = $this->output->view('/');
         $flashes = LFlash::getAllMessages();
 
@@ -423,8 +422,6 @@ class LUrlMapExecutor {
 
         if ($this->my_format == LFormat::JSON) {
             $content = LJsonUtils::encodeResult($this->output);
-
-            LLog::error("CONTENT : ".$content);
 
             if ($this->is_root) {
                 throw new LJsonResponse($content);

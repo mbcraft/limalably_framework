@@ -8,38 +8,46 @@
 
 class LImageUtils
 {
-    /*
-     * Ridimensiona un'immagina per larghezza
-     * */
-    public static function multi_resize_by_width($source,$resize_array)
-    {
-        if ($source instanceof LFile)
-            $source_file = $source;
-        else
-            $source_file = new LFile($source);
+    private static function clamp($index,$wm_size,$img_size) {
+        if (($index+1)*$wm_size > $img_size) {
+            return $img_size-$index*$wm_size;
+        } else {
+            return $wm_size;
+        }
+    }
+    
+    public static function watermark_fully($source,$watermark,$dest) {
+        $src_img = self::load_image($source);
+        $wm_img = self::load_image($watermark);
+        
 
-        if ($dest instanceof LFile)
-            $dest_file = $dest;
-        else
-            $dest_file = new LFile($dest);
+        $src_info = self::get_image_data($source);
+        $wm_info = self::get_image_data($watermark);
 
-        $source_img = self::load_image($source_file);
+        $dest_img = @imagecreatetruecolor($src_info['width'],$src_info['height']);
+        imagealphablending($dest_img,true);
 
-        $info = self::get_image_data($source_file);
+        imagecopy($dest_img,$src_img,0,0,0,0,$src_info['width'],$src_info['height']);
+        
+        for ($ix=0;$ix<ceil($src_info['width']/$wm_info['width']);$ix++) {
+            for ($iy=0;$iy<ceil($src_info['height']/$wm_info['height']);$iy++) {
+                imagecopy($dest_img,$wm_img,$ix*$wm_info['width'],$iy*$wm_info['height'],0,0,self::clamp($ix,$wm_info['width'],$src_info['width']),self::clamp($iy,$wm_info['height'],$src_info['height']));      
+            }
+        }
 
-        $factor = $width / $info["width"];
+        self::save_image($dest_img,$dest);
 
-        $final_width = $info["width"] * $factor;
-        $final_heigth = $info["height"] * $factor;
+        self::close_image($src_img);
+        self::close_image($wm_img);
+        self::close_image($dest_img);
+           
+    }
 
+    private static function parameterAsFile($param) {
+        if ($param instanceof LFile) return $param;
+        if (is_string($param)) return new LFile($param);
 
-        $dest_img = imagecreatetruecolor($final_width,$final_heigth);
-
-        imagecopyresampled($dest_img,$source_img,0,0,0,0,$final_width,$final_heigth,$info["width"],$info["height"]);
-
-        self::save_image($dest_img,$dest_file);
-        imagedestroy($source_img);
-        imagedestroy($dest_img);
+        throw new \Exception("Parameter $param is not path or string.");
     }
 
     /*
@@ -47,15 +55,9 @@ class LImageUtils
      * */
     public static function resize_by_width($source,$dest,$width)
     {
-        if ($source instanceof LFile)
-            $source_file = $source;
-        else
-            $source_file = new LFile($source);
+        $source_file = self::parameterAsFile($source);
 
-        if ($dest instanceof LFile)
-            $dest_file = $dest;
-        else
-            $dest_file = new LFile($dest);
+        $dest_file = self::parameterAsFile($dest);
 
         $source_img = self::load_image($source_file);
 
@@ -81,15 +83,9 @@ class LImageUtils
      * */
     public static function resize_by_height($source,$dest,$height)
     {
-        if ($source instanceof LFile)
-            $source_file = $source;
-        else
-            $source_file = new LFile($source);
+        $source_file = self::parameterAsFile($source);
 
-        if ($dest instanceof LFile)
-            $dest_file = $dest;
-        else
-            $dest_file = new LFile($dest);
+        $dest_file = self::parameterAsFile($dest);
 
         $source_img = self::load_image($source_file);
 
@@ -111,9 +107,9 @@ class LImageUtils
 /*
  * Carica un'immagine.
  * */
-    private static function load_image($source_file)
+    private static function load_image($source)
     {
-    	if (is_string($source_file)) $source_file = new LFile($source_file);
+    	$source_file = self::parameterAsFile($source);
 
         $extension = $source_file->getExtension();
 
@@ -132,9 +128,9 @@ class LImageUtils
 /*
  * Salva un'immagina nel formato specificato.
  * */
-    private static function save_image($image,$dest_file)
+    private static function save_image($gdimage,$dest)
     {
-    	if (is_string($dest_file)) $dest_file = new LFile($dest_file);
+	    $dest_file = self::parameterAsFile($dest);
 
         $extension = $dest_file->getExtension();
 
@@ -142,25 +138,22 @@ class LImageUtils
 
         switch ($lower_case_extension)
         {
-            case "gif" : return imagegif($image,$dest_file->getFullPath());
+            case "gif" : return imagegif($gdimage,$dest_file->getFullPath());
             case "jpg":
             case "jpeg": 
-            case "jfif" : return imagejpeg($image,$dest_file->getFullPath(),92);
-            case "png" : return imagepng($image,$dest_file->getFullPath(),8);
+            case "jfif" : return imagejpeg($gdimage,$dest_file->getFullPath(),92);
+            case "png" : return imagepng($gdimage,$dest_file->getFullPath(),8);
             default : throw new ImageException("Estensione ".$extension." non supportata!!");
         }
     }
 
-    private static function close_image($image) {
-		imagedestroy($image);
+    private static function close_image($gdimage) {
+		imagedestroy($gdimage);
     }
 
     public static function get_image_data($source_file)
     {
-        if ($source_file instanceof LFile)
-            $f = $source_file;
-        else
-            $f = new LFile($source_file);
+        $f = self::parameterAsFile($source_file);
 
         $data = getimagesize($f->getFullPath());
 
@@ -172,5 +165,3 @@ class LImageUtils
         return $result;
     }
 }
-
-?>

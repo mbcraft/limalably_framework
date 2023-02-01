@@ -13,6 +13,8 @@ class MysqlTableListTest extends LTestCase {
 	function testTableList() {
 		$db = db('hosting_dreamhost_tests');
 
+		MysqlDbHelperTestLib::regenerateDb();
+
 		$result = table_list()->go($db);
 
 		$this->assertTrue(count($result)>10,"Il numero di tabelle restituite non corrisponde!");

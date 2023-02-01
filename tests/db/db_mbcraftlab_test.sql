@@ -45,7 +45,7 @@ CREATE TABLE `albero` (
 CREATE TABLE `check_up_albero` (
   `id` bigint UNSIGNED NOT NULL,
   `albero_id` bigint UNSIGNED DEFAULT NULL,
-  `data` date NOT NULL,
+  `data_check_up` date NOT NULL,
   `esito` tinyint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

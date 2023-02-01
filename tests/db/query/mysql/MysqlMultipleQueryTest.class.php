@@ -13,6 +13,8 @@ class MysqlMultipleQueryTest extends LTestCase {
 
 		$db = db('hosting_dreamhost_tests');
 
+		MysqlDbHelperTestLib::regenerateDb();
+
 		delete('regione')->go($db);
 
 		$this->assertEqual(0,select('count(*) AS C','regione')->go($db)[0]['C'],"Il numero dei valori all'interno della tabella non corrisponde!");
@@ -32,6 +34,8 @@ class MysqlMultipleQueryTest extends LTestCase {
 	function testSomeMoreQueries() {
 
 		$db = db('hosting_dreamhost_tests');
+
+		MysqlDbHelperTestLib::regenerateDb();
 
 		delete('check_up_albero')->go($db);
 
@@ -56,7 +60,7 @@ class MysqlMultipleQueryTest extends LTestCase {
 
 		$albero_id = insert('albero',['data_piantumazione','latitudine','longitudine','specie_albero_id','comune_id'],['2022-08-20',44.4105672,12.0095168,$specie_id,$comune_id])->go($db);
 		
-		$i_query = insert('check_up_albero',['albero_id','data','esito'],[[$albero_id,'2022-08-20',1],[$albero_id,'2022-08-20',2],[$albero_id,'2022-08-20',3],[$albero_id,'2022-08-20',4],[$albero_id,'2022-08-20',5]]);
+		$i_query = insert('check_up_albero',['albero_id','data_check_up','esito'],[[$albero_id,'2022-08-20',1],[$albero_id,'2022-08-20',2],[$albero_id,'2022-08-20',3],[$albero_id,'2022-08-20',4],[$albero_id,'2022-08-20',5]]);
 
 		//echo $i_query;
 
@@ -66,7 +70,7 @@ class MysqlMultipleQueryTest extends LTestCase {
 
 		$this->assertEqual($r_qs1[0]['C'],5,"Il numero di righe nella tabella check_up_albero non corrisponde a quelle attese!");
 
-		$qs2 = select(['a.latitudine,a.longitudine,cua.data,cua.esito'],'albero a')->left_join('check_up_albero cua',_eq('cua.albero_id',c('a.id')))->order_by(asc('data'))->paginate(2,1);
+		$qs2 = select(['a.latitudine,a.longitudine,cua.data_check_up,cua.esito'],'albero a')->left_join('check_up_albero cua',_eq('cua.albero_id',c('a.id')))->order_by(asc('data_check_up'))->paginate(2,1);
 
 		//echo $qs2;
 

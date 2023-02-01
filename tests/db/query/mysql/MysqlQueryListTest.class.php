@@ -12,6 +12,8 @@ class MysqlQueryListTest extends LTestCase {
 
 		$db = db("hosting_dreamhost_tests");
 
+		MysqlDbHelperTestLib::regenerateDb();
+
 		delete('specie_albero')->go($db);
 
 		delete('comune')->go($db);
@@ -72,6 +74,8 @@ END_OF_QUERY_LIST;
 	function testQueryListFromStringWithFetchResults() {
 
 		$db = db("hosting_dreamhost_tests");
+
+		MysqlDbHelperTestLib::regenerateDb();
 
 		delete('specie_albero')->go($db);
 
@@ -136,6 +140,8 @@ END_OF_QUERY_LIST;
 	function testQueryListFromStringWithFetchResultsWithFunction() {
 
 		$db = db("hosting_dreamhost_tests");
+
+		MysqlDbHelperTestLib::regenerateDb();
 
 		delete('specie_albero')->go($db);
 
@@ -202,6 +208,8 @@ END_OF_QUERY_LIST;
 
 		$db = db("hosting_dreamhost_tests");
 
+		MysqlDbHelperTestLib::regenerateDb();
+
 		$ql = <<<END_OF_QUERY_LIST
 
 SELECT * from specie_albero;
@@ -232,6 +240,8 @@ END_OF_QUERY_LIST;
 	function testQueryListFromFileFetchResults() {
 
 		$db = db("hosting_dreamhost_tests");
+
+		MysqlDbHelperTestLib::regenerateDb();
 
 		delete('specie_albero')->go($db);
 
@@ -270,6 +280,8 @@ END_OF_QUERY_LIST;
 	function testQueryListFromFileNoResults() {
 
 		$db = db("hosting_dreamhost_tests");
+
+		MysqlDbHelperTestLib::regenerateDb();
 
 		$f = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/db/query/mysql/multi_query_test.sql');
 

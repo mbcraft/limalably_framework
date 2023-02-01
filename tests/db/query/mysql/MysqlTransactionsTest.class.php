@@ -38,6 +38,8 @@ class MysqlTransactionsTest extends LTestCase {
 	function testRollback() {
 		$db = db('hosting_dreamhost_tests');
 
+		MysqlDbHelperTestLib::regenerateDb();
+
 		delete('targhetta_albero')->go($db);
 
 		$result = select('count(*) AS C','targhetta_albero')->go($db);

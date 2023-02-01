@@ -14,6 +14,8 @@ class MysqlResultIteratorTest extends LTestCase {
 
 		$db = db('hosting_dreamhost_tests');
 
+		MysqlDbHelperTestLib::regenerateDb();
+
 		delete('check_up_albero')->go($db);
 
 		delete('albero')->go($db);
@@ -37,7 +39,7 @@ class MysqlResultIteratorTest extends LTestCase {
 
 		$albero_id = insert('albero',['data_piantumazione','latitudine','longitudine','specie_albero_id','comune_id'],['2022-08-20',44.4105672,12.0095168,$specie_id,$comune_id])->go($db);
 		
-		$i_query = insert('check_up_albero',['albero_id','data','esito'],[[$albero_id,'2022-08-20',1],[$albero_id,'2022-08-20',2],[$albero_id,'2022-08-20',3],[$albero_id,'2022-08-20',4],[$albero_id,'2022-08-20',5]])->go($db);
+		$i_query = insert('check_up_albero',['albero_id','data_check_up','esito'],[[$albero_id,'2022-08-20',1],[$albero_id,'2022-08-20',2],[$albero_id,'2022-08-20',3],[$albero_id,'2022-08-20',4],[$albero_id,'2022-08-20',5]])->go($db);
 
 		$it = select('*','check_up_albero')->iterator($db);
 

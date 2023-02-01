@@ -13,9 +13,9 @@ class IniDataStorageTest extends LTestCase {
         $d = new LIniDataStorage();
         $d->init($_SERVER['FRAMEWORK_DIR'].'tests/');
         
-        $this->assertTrue($d->isSaved('data/my_data2'),"Il file con i dati non è stato trovato!");
+        $this->assertTrue($d->isSaved('data/repos/my_data2'),"Il file con i dati non è stato trovato!");
         
-        $my_data = $d->load('data/my_data2');
+        $my_data = $d->load('data/repos/my_data2');
                 
         $this->assertEqual($my_data['key']['something'],"value","Il valore letto dall'ini non corrisponde! : ".$my_data['key']['something']);
         $this->assertEqual($my_data['qualcosa']['ancora'],32,"Il valore letto dall'ini non corrisponde!");
@@ -27,7 +27,7 @@ class IniDataStorageTest extends LTestCase {
     
     function testSaveDataWithIniStorage() {
         $d = new LIniDataStorage();
-        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/tmp/');
+        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/data/tmp/');
 
         $d->delete("prova");
 
@@ -46,7 +46,7 @@ class IniDataStorageTest extends LTestCase {
     function testNestedKeys() {
 
         $d = new LIniDataStorage();
-        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/tmp/');
+        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/data/tmp/');
         
         $data = array('a' => 1,'b' => array('c' => 2,'d' => 3));
 
@@ -64,9 +64,9 @@ class IniDataStorageTest extends LTestCase {
         $d = new LIniDataStorage();
         $d->init($_SERVER['FRAMEWORK_DIR'].'tests/');
         
-        $this->assertTrue($d->isSaved('data/contacts'),"Il file con i dati non è stato trovato!");
+        $this->assertTrue($d->isSaved('data/repos/contacts'),"Il file con i dati non è stato trovato!");
         
-        $my_data = $d->load('data/contacts');
+        $my_data = $d->load('data/repos/contacts');
                 
         $this->assertEqual($my_data['contacts']['form']['phone']['label'],"Telefono","I dati letti non corrispondono! : ".$my_data['contacts']['form']['phone']['label']);
     }

@@ -14,11 +14,11 @@ class IniDatFileDataStorageTest extends LTestCase {
 
 
         $d = new LIniDatFileDataStorage();
-        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/tmp/');
+        $d->init($_SERVER['FRAMEWORK_DIR'].'tests/data/tmp/');
 
-        $dat_path = $_SERVER['FRAMEWORK_DIR'].'tests/tmp/dat/';
+        $dat_path = $_SERVER['FRAMEWORK_DIR'].'tests/data/tmp/dat/';
 
-        $storage_path = $_SERVER['FRAMEWORK_DIR'].'tests/tmp/prova.ifs';
+        $storage_path = $_SERVER['FRAMEWORK_DIR'].'tests/data/tmp/prova.ifs';
 
         $data = ['a' => 'alpha','b' => array('k' => 'beta','g' => 'theta')];
 

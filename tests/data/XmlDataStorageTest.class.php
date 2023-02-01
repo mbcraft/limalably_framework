@@ -13,7 +13,7 @@ class XmlDataStorageTest extends LTestCase {
         $storage = new LXmlDataStorage();
         $storage->init($_SERVER['FRAMEWORK_DIR']);
         
-        $data = $storage->load('tests/data/my_data3');
+        $data = $storage->load('tests/data/repos/my_data3');
         
         $this->assertEqual($data['qualcosa']['uno'],42,"Il dato letto non corrisponde!");
         $this->assertEqual($data['qualcosa']['ancora']['due'],"Ciao","Il dato letto non corrisponde!");
@@ -32,7 +32,7 @@ class XmlDataStorageTest extends LTestCase {
         $storage = new LXmlDataStorage();
         $storage->init($_SERVER['FRAMEWORK_DIR']);
         
-        $storage->init('tests/tmp/');
+        $storage->init('tests/data/tmp/');
 
         $test_html = <<<EOH
 

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<data>
-<entry path="/a">1</entry>
-<entry path="/b">2</entry>
-<entry path="/c">x</entry>
-<entry path="/d">
-<span>Hello world</span>
-</entry>
-</data>

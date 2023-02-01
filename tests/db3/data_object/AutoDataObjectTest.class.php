@@ -55,6 +55,11 @@ class AutoDataObjectTest extends LTestCase {
 		
 		$db = db('hosting_dreamhost_tests');
 
+		create_table('targhetta_albero')->if_not_exists()
+		->column(col_def('id')->t_id())
+		->column(col_def('codice_targhetta')->t_text256()->not_null())
+		->go($db);
+
 		truncate('targhetta_albero')->go($db);
 
 		$t1 = new TarghettaAlberoAutoDO();
@@ -110,6 +115,26 @@ class AutoDataObjectTest extends LTestCase {
 		$db = db('hosting_dreamhost_tests');
 
 		foreign_key_checks(false)->go($db);
+
+		create_table('regione')->if_not_exists()
+		->column(col_def('id')->t_id())
+		->column(col_def('nome')->t_text32()->not_null())
+		->column(col_def('codice')->t_text32()->not_null())
+		->go($db);
+
+		create_table('provincia')->if_not_exists()
+		->column(col_def('id')->t_id())
+		->column(col_def('nome')->t_text32()->not_null())
+		->column(col_def('codice')->t_text32()->not_null())
+		->column(col_def('regione_id')->t_external_id()->not_null())
+		->go($db);
+
+		create_table('comune')->if_not_exists()
+		->column(col_def('id')->t_id())
+		->column(col_def('nome')->t_text32()->not_null())
+		->column(col_def('codice')->t_text32()->not_null())
+		->column(col_def('provincia_id')->t_external_id()->not_null())
+		->go($db);
 
 		truncate('regione')->go($db);
 

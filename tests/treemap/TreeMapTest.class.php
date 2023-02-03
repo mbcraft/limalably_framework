@@ -376,6 +376,22 @@ class TreeMapTest extends LTestCase {
         $this->assertTrue($r->is_set("/html/head"),"Il nodo /html/head non e' stato trovato!!");
         $this->assertTrue($r->is_set("/html"),"Il nodo /html non e' stato trovato!!");
     }
+
+    function testRemove2() {
+
+        $r = new LTreeMap();
+
+        $r->set('/something',1);
+        $r->set('/else',2);
+
+        $this->assertEqual($r->get('/something'),1,"Il valore salvato nel nodo non corrisponde!");
+        $this->assertEqual($r->get('/else'),2,"Il valore salvato nel nodo non corrisponde!");
+
+        $r->remove('/something');
+
+        $this->assertEqual($r->get('/else'),2,"Il valore salvato nel nodo non corrisponde!");
+
+    }
     
     function testClear()
     {        

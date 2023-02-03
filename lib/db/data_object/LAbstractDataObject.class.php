@@ -14,21 +14,22 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	const SESSION_USER_ID_PATH = "/user/id";
 
-	private $__columns = null;
-	private $__virtual_columns = [];
+	private $__columns = null; //no need special clone behaviour
+	private $__virtual_columns = []; //no need special clone behaviour
 
-	private $__reflection_class = null;
+	private $__reflection_class = null; //no need special clone behaviour
 
-	public $__my_connection = null;
+	private $__my_connection_name = null;
+	private $__my_connection = null; //
 
 	public $__distinct_option = false;
-	public $__conditions = null;
-	public $__order_by = null;
+	public $__conditions = null; //needs special clone behaviour
+	public $__order_by = null; //needs special clone behaviour
 	
-	public $__page_size = null;
-	public $__page_number = null;
+	public $__page_size = null; //no need
+	public $__page_number = null; //no need
 
-	public $__search_mode = null;
+	public $__search_mode = null; //no need
 
 	const __LAST_AFFECTED_ROWS_IS_INSERT = 1;
 
@@ -48,6 +49,12 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	public static function hasStandardOperationsColumns() {
 		return static::HAS_STANDARD_OPERATIONS_COLUMNS;
+	}
+
+	function __clone() {
+		if ($this->__my_connection_name) {
+			$this->__my_connection = LDbConnectionManager::get($this->__my_connection_name);
+		}
 	}
 
 	function __construct($pk = null,$db = null) {
@@ -72,14 +79,17 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 	private function db($db = null) {
 		if ($db) {
 			$this->__my_connection = LDbConnectionManager::get($db);
+			$this->__my_connection_name = $this->__my_connection->getName();
 			return $this;
 		}
 		if (static::MY_CONNECTION) {
 			$this->__my_connection = LDbConnectionManager::get(static::MY_CONNECTION);
+			$this->__my_connection_name = $this->__my_connection->getName();
 			return $this;
 		}
 
 		$this->__my_connection = LDbConnectionManager::getLastConnectionUsed();
+		$this->__my_connection_name = $this->__my_connection->getName();
 		return $this;
 
 	}

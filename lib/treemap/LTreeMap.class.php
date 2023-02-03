@@ -257,21 +257,19 @@ class LTreeMap implements ArrayAccess, Iterator {
     function remove($path)
     {
         if (!$this->is_set($path)) return;
+        if ($path=='/') $this->data = array();
         else
         {
             $path_parts = self::all_but_last_path_tokens($path);
             
             $current_node = &$this->data;
-            if ($path_parts==null) {
-                $current_node = null;
+
+            foreach ($path_parts as $p)
+            {
+                $current_node = &$current_node[$p];
             }
-            else {
-                foreach ($path_parts as $p)
-                {
-                    $current_node = &$current_node[$p];
-                }
-                unset($current_node[self::last_path_token($path)]);
-            }
+                            
+            unset($current_node[self::last_path_token($path)]);
         
         }
     }

@@ -29,12 +29,13 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 
 	public function __construct($column_name_list,$table_name_list,$where_block=null) {
 
-
-		if (is_string($column_name_list) || is_object($column_name_list)) $fnl = new LMysqlElementList($column_name_list);
-		if (is_array($column_name_list)) $fnl = new LMysqlElementList(... $column_name_list);
-		if ($column_name_list instanceof LMysqlElementList) $fnl = $column_name_list;
-		ensure_instance_of("field name list of mysql select statement",$fnl,[LMysqlElementList::class]);
-		$this->column_name_list = $fnl;
+		if ($column_name_list!=null) {
+			if (is_string($column_name_list) || is_object($column_name_list)) $fnl = new LMysqlElementList($column_name_list);
+			if (is_array($column_name_list)) $fnl = new LMysqlElementList(... $column_name_list);
+			if ($column_name_list instanceof LMysqlElementList) $fnl = $column_name_list;
+			ensure_instance_of("field name list of mysql select statement",$fnl,[LMysqlElementList::class]);
+			$this->column_name_list = $fnl;
+		}
 
 		if ($table_name_list instanceof LMysqlTableName) $tnl = new LMysqlElementList([$table_name_list]);
 		if (is_string($table_name_list)) $tnl = new LMysqlElementList($table_name_list);
@@ -56,6 +57,14 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 
 		$this->order_by_clause = new LMysqlEmptyElementList();
 		$this->group_by_clause = new LMysqlEmptyElementList();
+	}
+
+	public function column_name_list($column_name_list) {
+		if (is_string($column_name_list) || is_object($column_name_list)) $fnl = new LMysqlElementList($column_name_list);
+		if (is_array($column_name_list)) $fnl = new LMysqlElementList(... $column_name_list);
+		if ($column_name_list instanceof LMysqlElementList) $fnl = $column_name_list;
+		ensure_instance_of("field name list of mysql select statement",$fnl,[LMysqlElementList::class]);
+		$this->column_name_list = $fnl;
 	}
 
 	public function where(... $elements) {

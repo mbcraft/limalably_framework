@@ -338,10 +338,13 @@ class LUrlMapExecutor {
             LResult::trace("Evaluating template ...");
             $template_path = $this->my_url_map->get('/template/name');
 
-            $renderer = new LTemplateRendering($this->my_url_map, $treeview_input, $treeview_session, $this->capture, $parameters, $this->output);
+            $par_setup = new LParametersSetup($this->my_url_map, $treeview_input, $treeview_session, $this->capture, $parameters, $this->output);
 
-            $renderer->findEngineName();
-            $renderer->setupTemplateSource();
+            $par_setup->findEngineName();
+            $par_setup->setupParameters();
+
+            $renderer = new LTemplateRendering();
+            $renderer->setupTemplateSource($par_setup->getEngineName());
 
             LResult::trace("Searching for template : " . $template_path);
 
@@ -390,7 +393,7 @@ class LUrlMapExecutor {
             }
             LResult::trace("Rendering template ...");
             
-            $result = $renderer->render($my_template_path);
+            $result = $renderer->render($my_template_path,$par_setup->getAllParameters());
             
             LResult::trace("Template rendered correctly.");
             if ($result) {

@@ -1,16 +1,27 @@
 <?php
 
-
 class LFiltersLogic {
 
 	const SESSION_FILTERS_KEY = "/__filters";
 
-	static function has_filter($filter_group,$name) {
-		return LSession::has(self::SESSION_FILTERS_KEY.'/'.$filter_group.'/'.$name);
+	private static $filter_group;
+
+	static function init($filter_group) {
+		self::$filter_group = $filter_group;
+
+		return array();
 	}
 
-	static function get_filter($filters_group,$name) {
-		return LSession::get(self::SESSION_FILTERS_KEY.'/'.$filter_group.'/'.$name);
+	static function has_filters() {
+		return LSession::has(self::SESSION_FILTERS_KEY.'/'.self::$filter_group);
+	}
+
+	static function has_filter($name) {
+		return LSession::has(self::SESSION_FILTERS_KEY.'/'.self::$filter_group.$name);
+	}
+
+	static function get_filter_value($name) {
+		return LSession::get(self::SESSION_FILTERS_KEY.'/'.self::$filter_group.$name);
 	}
 
 	function reset_filters($input) {
@@ -29,16 +40,8 @@ class LFiltersLogic {
 		$apply_filters_name = $input->get('/apply_filters_name');
 		$input->remove('/apply_filters_name');
 
-		$all = $input->get('/');
-
-		var_dump($all);
-
-		exit(1);
-
 		$redirect_to_after_apply = $input->get('/redirect_to_after_apply');
 		$input->remove('/redirect_to_after_apply');
-
-		die($redirect_to_after_apply);
 
 		$all_filters = $input->get('/');
 

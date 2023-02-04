@@ -36,7 +36,11 @@ class LHttpError extends LHttpResponse {
         $engine_to_use = LConfigReader::simple('/format/'.$format.'/error_engine_name');
         $error_templates_folder = LConfigReader::executionMode('/format/'.$format.'/error_templates_folder');
         
-        $template_renderer = new LTemplateRendering($this->urlmap,$this->input,$this->session,$this->capture,$this->parameters,$this->output);
+        $par_setup = new LParametersSetup($this->urlmap,$this->input,$this->session,$this->capture,$this->parameters,$this->output);
+        $par_setup->findEngineName();
+        $par_setup->setupParameters();
+
+        $template_renderer = new LTemplateRendering();
 
         $template_renderer->setupTemplateSource($engine_to_use);
         
@@ -47,7 +51,7 @@ class LHttpError extends LHttpResponse {
             LWarningList::mergeIntoTreeMap($this->output);
             LErrorList::mergeIntoTreeMap($this->output);
             
-            echo $template_renderer->render($template_path);
+            echo $template_renderer->render($template_path,$par_setup->getAllParameters());
 
         } else {
             echo "HTTP error ".$this->error_code.".\n";

@@ -14,6 +14,12 @@ class LDataObjectCollection implements ArrayAccess,Countable,Iterator {
 
 	private $position = 0;
 
+	public function select_by_id($id) {
+		foreach ($this->collection as $elem) {
+			if ($elem->id == $id) $elem->selected = true;
+		}
+	}
+
 	public function current() {
 		return $this->collection[$this->position];
 	}

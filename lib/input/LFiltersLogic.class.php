@@ -37,6 +37,8 @@ class LFiltersLogic {
 
 		LSession::remove(self::SESSION_FILTERS_KEY.'/'.$reset_filters_name);
 
+		LPaginator::removeCurrentPage($reset_filters_name);
+
 		return new LHttpRedirect($redirect_to_after_reset);
 	}
 
@@ -51,6 +53,8 @@ class LFiltersLogic {
 		$all_filters = $input->get('/');
 
 		LSession::set(self::SESSION_FILTERS_KEY.'/'.$apply_filters_name,$all_filters);
+
+		LPaginator::removeCurrentPage($apply_filters_name);
 
 		return new LHttpRedirect($redirect_to_after_apply);
 

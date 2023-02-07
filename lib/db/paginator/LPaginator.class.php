@@ -5,6 +5,8 @@ class LPaginator {
 	
 	const FULL_PAGE_LIST_PAGE_LIMIT = 11;
 
+	const ALLOWED_PAGE_SIZES = [10,25,50,75,100];
+
 	const DEFAULT_PAGE_SIZE = 25;
 
 	const SESSION_PAGINATION_KEY = '/__pagination';
@@ -19,8 +21,10 @@ class LPaginator {
 	private $page_count;
 
 	private $page_items = [];
+	private $psize_items = [];
 
-	private $setup_done = false;
+	private $setup_pagination_done = false;
+	private $setup_sizer_done = false;
 
 	function __construct($paginator_name,$link_base,$items_count) {
 		
@@ -53,6 +57,11 @@ class LPaginator {
 
 		$this->page_count = ceil($this->items_count/$this->page_size); 
 	
+	}
+
+	public static function removeCurrentPage($paginator_name) {
+		if (LSession::has(self::SESSION_PAGINATION_KEY.'/'.$paginator_name.'/current_page'))
+			LSession::remove(self::SESSION_PAGINATION_KEY.'/'.$paginator_name.'/current_page');
 	}
 
 	private function saveCurrentPage() {
@@ -99,10 +108,10 @@ class LPaginator {
 		return $this->page_count;
 	}
 
-	private function setup() {
+	private function setupPaginationItems() {
 
-		if ($this->setup_done) return;
-		$this->setup_done = true;
+		if ($this->setup_pagination_done) return;
+		$this->setup_pagination_done = true;
 
 		if ($this->page_count==1) return;
 
@@ -110,11 +119,43 @@ class LPaginator {
 		else $this->setupPartialPaginator();
 	}
 
+
+	private function setupPageSizerItems() {
+
+		if ($this->setup_sizer_done) return;
+		$this->setup_sizer_done = true;
+
+		foreach (self::ALLOWED_PAGE_SIZES as $ps) {
+
+			$item = new LPaginatorItem();
+			
+			$item->label = $ps;
+			if ($this->getPageSize()==$ps) {
+				$item->link = "";
+				$item->active = true;
+			} else {
+				$item->link = $this->link_base.'&page_size='.$ps;
+			}
+
+			$this->psize_items [] = $item;
+
+		}
+
+	}
+
 	public function getPaginationItems() {
 
-		$this->setup();
+		$this->setupPaginationItems();
 
 		return $this->page_items;
+	}
+
+	public function getPageSizerItems() {
+
+		$this->setupPageSizerItems();
+
+		return $this->psize_items;
+
 	}
 
 	private function setupAllPagesPaginator() {

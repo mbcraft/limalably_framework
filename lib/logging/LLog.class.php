@@ -164,7 +164,7 @@ class LLog {
     }
     
     public static function exception(\Exception $ex) {
-        if (self::$my_logger==null) throw new \Exception("Trying to log without a configured logger.");
+        if (self::$my_logger==null) throw $ex;
         
         if (!self::$my_logger->isInitialized()) {
             self::$my_logger->init();

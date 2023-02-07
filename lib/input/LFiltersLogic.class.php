@@ -17,11 +17,16 @@ class LFiltersLogic {
 	}
 
 	static function has_filter($name) {
-		return LSession::has(self::SESSION_FILTERS_KEY.'/'.self::$filter_group.$name);
+		$in_session = LSession::has(self::SESSION_FILTERS_KEY.'/'.self::$filter_group.$name);
+		$in_input = LInput::has($name);
+
+		return $in_session || $in_input;
 	}
 
 	static function get_filter_value($name) {
-		return LSession::get(self::SESSION_FILTERS_KEY.'/'.self::$filter_group.$name);
+		if (LSession::has(self::SESSION_FILTERS_KEY.'/'.self::$filter_group.$name))
+			return LSession::get(self::SESSION_FILTERS_KEY.'/'.self::$filter_group.$name);
+		return LInput::get($name);
 	}
 
 	function reset_filters($input) {

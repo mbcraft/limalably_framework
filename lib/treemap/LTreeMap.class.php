@@ -345,6 +345,10 @@ class LTreeMap implements ArrayAccess, Iterator {
         return true;
     }
 
+    public function has($path) {
+        return $this->is_set($path);
+    }
+
     /*
      * Ritorna tutte le chiavi trovate nella posizione specificata.
      *

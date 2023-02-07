@@ -25,7 +25,8 @@ class LParametersSetup {
     }
 
     public function findEngineName() {
-        $engine = null;
+
+        $this->engine_name = "twig";
 
         if (isset($this->my_urlmap)) {
             if ($this->my_urlmap->is_set('/template/engine'))  

@@ -1661,7 +1661,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 74;
+    const BUILD_NUMBER = 75;
 
     const DEPLOYER_VERSION = "1.5";
 
@@ -2793,6 +2793,6 @@ if (isset($_POST['METHOD'])) {
 	   $controller->processRequest();
 
     } catch (\Exception $ex) {
-        echo $controller->preparePostResponse($controller->failure("Server got an exception : ".$ex->getMessage()));
+        echo $controller->preparePostResponse($controller->failure("Server got an exception : ".$ex->getMessage()." - ".$ex->getTraceAsString()));
     }
 } else echo "Hello :)";

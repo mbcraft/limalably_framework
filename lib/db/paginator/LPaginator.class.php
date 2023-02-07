@@ -3,10 +3,13 @@
 
 class LPaginator {
 	
-
 	const FULL_PAGE_LIST_PAGE_LIMIT = 11;
 
 	const DEFAULT_PAGE_SIZE = 25;
+
+	const SESSION_PAGINATION_KEY = '/__pagination';
+
+	private $paginator_name;
 
 	private $link_base;
 	private $items_count;
@@ -15,19 +18,81 @@ class LPaginator {
 	private $current_page;
 	private $page_count;
 
-	function __construct($link_base,$items_count,$page_size=self::DEFAULT_PAGE_SIZE) {
-		$this->link_base = $link_base;
-		$this->items_count = $items_count;
-		$this->page_size = $page_size;
-	
-		$this->current_page = 1;
+	private $page_items = [];
 
-		if (LInput::has('/current_page'))
-			$this->current_page = LInput::get('/current_page'); 
+	private $setup_done = false;
+
+	function __construct($paginator_name,$link_base,$items_count) {
+		
+		$this->paginator_name = $paginator_name;
+
+		$this->link_base = $link_base.'?paginator='.$paginator_name;
+
+		$this->items_count = $items_count;
+
+		$this->loadPageSize();
+		$this->loadCurrentPage();
+
+		if (LInput::has('/paginator') && LInput::get('/paginator')==$this->paginator_name) {
+			if (LInput::has('/current_page')) {
+				
+				$this->current_page = LInput::get('/current_page');
+				$this->saveCurrentPage();
+
+			}
+			if (LInput::has('/page_size')) {
+				
+				$this->page_size = LInput::get('/page_size');
+				$this->savePageSize();
+
+				$this->current_page = 1;
+				$this->saveCurrentPage();
+			}
+		} 
+		
 
 		$this->page_count = ceil($this->items_count/$this->page_size); 
+	
+	}
 
-		$this->setup();
+	private function saveCurrentPage() {
+
+		LSession::set(self::SESSION_PAGINATION_KEY.'/'.$this->paginator_name.'/current_page',$this->current_page);
+
+	}
+
+	private function loadCurrentPage() {
+		$cp = 1;
+
+		if (LSession::has(self::SESSION_PAGINATION_KEY.'/'.$this->paginator_name.'/current_page'))
+			$cp = LSession::get(self::SESSION_PAGINATION_KEY.'/'.$this->paginator_name.'/current_page');
+
+	    $this->current_page = $cp;
+	}
+
+	public function getCurrentPage() {
+		return $this->current_page;
+	}
+
+	private function savePageSize() {
+		
+		LSession::set(self::SESSION_PAGINATION_KEY.'/'.$this->paginator_name.'/page_size',$this->page_size);
+
+	}
+
+	private function loadPageSize() {
+
+		$ps = self::DEFAULT_PAGE_SIZE;
+
+		if (LSession::has(self::SESSION_PAGINATION_KEY.'/'.$this->paginator_name.'/page_size')) {
+			$ps = LSession::get(self::SESSION_PAGINATION_KEY.'/'.$this->paginator_name.'/page_size');
+		}
+
+		$this->page_size = $ps;
+	}
+
+	public function getPageSize() {
+		return $this->page_size;
 	}
 
 	public function getPageCount() {
@@ -36,11 +101,18 @@ class LPaginator {
 
 	private function setup() {
 
+		if ($this->setup_done) return;
+		$this->setup_done = true;
+
+		if ($this->page_count==1) return;
+
 		if ($this->page_count<self::FULL_PAGE_LIST_PAGE_LIMIT) $this->setupAllPagesPaginator();
 		else $this->setupPartialPaginator();
 	}
 
 	public function getPaginationItems() {
+
+		$this->setup();
 
 		return $this->page_items;
 	}
@@ -53,7 +125,7 @@ class LPaginator {
 			$previous->disabled = true;
 			$previous->link = "";
 		} else {
-			$previous->link = $this->link_base.'?current_page='.($this->current_page-1);
+			$previous->link = $this->link_base.'&current_page='.($this->current_page-1);
 		}
 
 		$this->page_items [] = $previous;
@@ -66,7 +138,7 @@ class LPaginator {
 				$item->active = true;
 				$item->link = "";
 			} else {
-				$item->link = $this->link_base."?current_page=".$i;
+				$item->link = $this->link_base."&current_page=".$i;
 			}
 
 			$this->page_items [] = $item;
@@ -78,7 +150,7 @@ class LPaginator {
 			$next->disabled = true;
 			$next->link = "";
 		} else {
-			$next->link = $this->link_base.'?current_page='.($this->current_page+1);
+			$next->link = $this->link_base.'&current_page='.($this->current_page+1);
 		}
 
 		$this->page_items [] = $next;
@@ -93,7 +165,7 @@ class LPaginator {
 			$first->disabled = true;
 			$first->link = "";
 		} else {
-			$first->link = $this->link_base.'?current_page=1';
+			$first->link = $this->link_base.'&current_page=1';
 		}
 
 		$this->page_items [] = $first;
@@ -104,7 +176,7 @@ class LPaginator {
 			$previous->disabled = true;
 			$previous->link = "";
 		} else {
-			$previous->link = $this->link_base.'?current_page='.($this->current_page-1);
+			$previous->link = $this->link_base.'&current_page='.($this->current_page-1);
 		}
 
 		$this->page_items [] = $previous;
@@ -118,7 +190,7 @@ class LPaginator {
 				$item->active = true;
 				$item->link = "";
 			} else {
-				$item->link = $this->link_base.'?current_page='.$i;
+				$item->link = $this->link_base.'&current_page='.$i;
 			}
 
 			$this->page_items [] = $item;
@@ -159,7 +231,7 @@ class LPaginator {
 				$item->active = true;
 				$item->link = "";
 			} else {
-				$item->link = $this->link_base.'?current_page='.$i;
+				$item->link = $this->link_base.'&current_page='.$i;
 			}
 
 			$this->page_items [] = $item;
@@ -171,7 +243,7 @@ class LPaginator {
 			$next->disabled = true;
 			$next->link = "";
 		} else {
-			$next->link = $this->link_base.'?current_page='.($this->current_page+1);
+			$next->link = $this->link_base.'&current_page='.($this->current_page+1);
 		}
 
 		$this->page_items [] = $next;
@@ -182,7 +254,7 @@ class LPaginator {
 			$last->disabled = true;
 			$last->link = "";
 		} else {
-			$last->link = $this->link_base.'?current_page='.$this->page_count;
+			$last->link = $this->link_base.'&current_page='.$this->page_count;
 		}
 
 		$this->page_items [] = $last;

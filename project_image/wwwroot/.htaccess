@@ -1,6 +1,5 @@
 
 RewriteEngine On
-RewriteBase /
 
 RewriteRule ^bin/(.*)$ "/errors/418" [R,L]
 RewriteRule ^config/(.*)$ "/errors/418" [R,L]
@@ -13,7 +12,7 @@ RewriteRule ^template/(.*)$ "/errors/418" [R,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /_.php?routemap=$1 [L,QSA]
+RewriteRule ^(.*)(\??)(.*)$ _.php?routemap=$1$2 [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^(.*)$ /_.php?routemap=$1 [L,QSA]
+RewriteRule ^(.*)$ _.php?routemap=$1 [L,QSA]

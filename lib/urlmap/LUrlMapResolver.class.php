@@ -41,6 +41,8 @@ class LUrlMapResolver {
     
     private $ignore_missing_extends;
     private $ignore_missing_imports;
+
+    private $merge_wwwroot;
     
     const VARIABLE_PREFIX = '{';
     const VARIABLE_SUFFIX = '}';
@@ -62,6 +64,8 @@ class LUrlMapResolver {
         
         $this->ignore_missing_extends = LConfigReader::simple('/urlmap/ignore_missing_extends');
         $this->ignore_missing_imports = LConfigReader::simple('/urlmap/ignore_missing_imports');
+    
+        $this->merge_wwwroot = LConfigReader::simple('/misc/merge_wwwroot');
     }
     
     function init(string $root_folder,string $static_folder,string $alias_db_folder,string $private_folder) {
@@ -383,6 +387,24 @@ class LUrlMapResolver {
         
         if (!$this->isInitialized()) $this->initWithDefaults ();
                 
+        if ($this->merge_wwwroot) {
+
+            $www_folder = LConfigReader::simple('/misc/wwwroot_folder');
+
+            $full_route = $www_folder.$route;
+
+            if (LFileSystemUtils::isFile($full_route)) {
+
+                $f = new LFile($full_route);
+
+                if ($f->exists()) {
+                    //LLog::info("WWWROOT RESOURCE FOUND : ".$f->getFullPath());
+                    throw new LHttpFileResponse($f->getFullPath(),$f->getFilename(),true,$f->getMimeType());
+                }
+            }
+        }
+
+
         if (!$route) $route = $this->folder_route;
                 
         $this->original_route = $route;

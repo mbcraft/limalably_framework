@@ -74,6 +74,24 @@ class LFile extends LFileSystemElement
 
     }
 
+    function getMimeType() {
+        
+        switch ($this->getExtension()) {
+            case 'css' : return 'text/css';
+            case 'js' : return 'application/javascript';
+        
+            default : {
+                $result = mime_content_type($this->getFullPath());
+
+                if (!$result) return null;
+
+                return $result;
+            }
+        }
+
+
+    }
+
   /*
    * Rinomina il file senza effettuare spostamenti di sorta.
    * */
@@ -98,7 +116,10 @@ class LFile extends LFileSystemElement
     function getFilename()
     {
         $result = pathinfo($this->__full_path);
-        return $result['filename'].".".$result['extension'];
+
+        $string_result = $result['filename'];
+        if (isset($result['extension'])) $string_result .= ".".$result['extension'];
+        return $string_result;
     }
 /*
  * TESTED

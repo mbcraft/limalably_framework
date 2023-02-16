@@ -31,8 +31,12 @@ class LDefaultRouteExecutor implements LICommandExecutor {
         $route = $_SERVER['ROUTE'];
         
         $route_resolver = new LUrlMapResolver();
-        $urlmap = $route_resolver->resolveUrlMap($route, $search_flags);
-        
+        try {
+            $urlmap = $route_resolver->resolveUrlMap($route, $search_flags);
+        } catch (LHttpFileResponse $resp) {
+            $resp->execute();
+            return;
+        }
         if ($urlmap) {
             $executor = new LUrlMapExecutor($urlmap);
             

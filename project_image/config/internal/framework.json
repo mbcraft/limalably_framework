@@ -255,7 +255,9 @@
             "data_folder": "data/",
             "autofix_folder_permissions" : true,
             "wwwroot_folder" : "wwwroot/",
-            "build" : 0
+            "build" : 0,
+            "basedir" : "",
+            "merge_wwwroot" : false
         },
         "i18n" : {
             "template_engine_name" : "twig",

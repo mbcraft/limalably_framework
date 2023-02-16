@@ -122,8 +122,8 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 
 	public function paginate($page_size,$page_number) {
 		if ($page_number==0) throw new \Exception("Page number cannnot be zero, starts from one in mysql select statement limit clause.");
-		$limit_start = ($page_number-1)*$page_size;
-		$limit_end = ($page_number*$page_size);
+		$limit_start = (($page_number-1)*$page_size);
+		$limit_end = $page_size;
 
 		$this->limit_clause = "LIMIT ".$limit_start.",".$limit_end;
 
@@ -174,10 +174,13 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 			$export_to_csv_trailer = $this->export_to_csv_def->__write_header()." ".$this->export_to_csv_def->__trailer();
 		}
 
-		return $this->build_query("SELECT",$this->distinct_option,$this->column_name_list->toRawStringListWithoutParenthesis(),
+		$result = $this->build_query("SELECT",$this->distinct_option,$this->column_name_list->toRawStringListWithoutParenthesis(),
 			"FROM",$this->table_name_list->toRawStringListWithoutParenthesis(),implode(' ',$this->join_list),$this->where_block,
 			$this->group_by_prefix,$this->group_by_clause->toRawStringListWithoutParenthesis(),$this->with_rollup_option,$this->having_clause,
 			$this->order_by_clause,$this->limit_clause,$export_to_csv_trailer);
 
+		//LLog::info("SELECT : ".$result);
+
+		return $result;
 	}
 }

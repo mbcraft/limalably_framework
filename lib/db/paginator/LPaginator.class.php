@@ -113,14 +113,14 @@ class LPaginator {
 		if ($this->setup_pagination_done) return;
 		$this->setup_pagination_done = true;
 
-		if ($this->page_count==1) return;
+		if ($this->page_count<=1) return;
 
 		if ($this->page_count<self::FULL_PAGE_LIST_PAGE_LIMIT) $this->setupAllPagesPaginator();
 		else $this->setupPartialPaginator();
 	}
 
 
-	private function setupPageSizerItems() {
+	private function setupPageSizesItems() {
 
 		if ($this->setup_sizer_done) return;
 		$this->setup_sizer_done = true;
@@ -150,9 +150,9 @@ class LPaginator {
 		return $this->page_items;
 	}
 
-	public function getPageSizerItems() {
+	public function getPageSizesItems() {
 
-		$this->setupPageSizerItems();
+		$this->setupPageSizesItems();
 
 		return $this->psize_items;
 

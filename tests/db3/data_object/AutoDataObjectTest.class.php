@@ -110,7 +110,7 @@ class AutoDataObjectTest extends LTestCase {
 
 	}
 
-	function testNavigation() {
+	function testNavigationAndLoad() {
 
 		$db = db('hosting_dreamhost_tests');
 
@@ -149,17 +149,23 @@ class AutoDataObjectTest extends LTestCase {
 		$r1->codice = "R-A1";
 		$r1->saveOrUpdate();
 
+		$r1_id = $r1->id;
+
 		$p1 = new ProvinciaAutoDO();
 		$p1->nome = "ProvinciaA";
 		$p1->codice = "P-A1";
 		$p1->regione_id = $r1->id;
 		$p1->saveOrUpdate();
 
+		$p1_id = $p1->id;
+
 		$p2 = new ProvinciaAutoDO();
 		$p2->nome = "ProvinciaB";
 		$p2->codice = "P-B1";
 		$p2->regione_id = $r1->id;
 		$p2->saveOrUpdate();
+
+		$p2_id = $p2->id;
 
 		$p_list = $r1->navigateFromOtherTableColumn('regione_id',ProvinciaAutoDO::class);
 
@@ -170,6 +176,24 @@ class AutoDataObjectTest extends LTestCase {
 		$this->assertEqual($r1_find->nome,$r1->nome,"Il nome della regione trovata non corrisponde!");
 		$this->assertEqual($r1_find->codice,$r1->codice,"Il codice della regione trovata non corrisponde!");
 
+		$result = ProvinciaAutoDO::loadOrNull($p1_id);
+
+		$this->assertNotNull($result,"Non è riuscito a caricare un data object!");
+
+		$result = ProvinciaAutoDO::loadOrNull($p2_id);
+
+		$this->assertNotNull($result,"Non è riuscito a caricare un data object!");
+
+		$result = ProvinciaAutoDO::loadOrNull($p2_id+3);
+
+		$this->assertNull($result,"Ha caricato un data object ma non doveva!");
+
+		try {
+			$result = ProvinciaAutoDO::load($p2_id+3);
+			$this->fail("Non ha lanciato l'eccezione prevista!");
+		} catch (\Exception $ex) {
+
+		}
 
 	}
 

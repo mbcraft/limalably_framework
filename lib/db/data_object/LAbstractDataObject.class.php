@@ -61,7 +61,8 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		//col valore 0 non carica nulla, ok
 		if ($pk!=null) {
-			$this->loadFromPk($pk,$db);
+			$result = $this->loadFromPk($pk,$db);
+			if (!$result) throw new \Exception("Unable to find object of class ".static::class." with pk = ".$pk);
 		} else {
 
 			$this->{static::ID_COLUMN_NAME} = 0;
@@ -486,6 +487,19 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	public function reload() {
 		return $this->loadFromPk($this->{static::ID_COLUMN_NAME});
+	}
+
+	public static function loadOrNull($pk,$db=null) {
+		$do = new static();
+		$result = $do->loadFromPk($pk,$db);
+		if ($result) return $do;
+		else return null;
+	}
+
+	public static function load($pk,$db=null) {
+		$result = self::loadOrNull($pk,$db);
+		if (!$result) throw new \Exception("Unable to find object of class ".static::class." with pk = ".$pk);
+		return $result;
 	}
 
 	private function loadFromPk($pk,$db=null) {

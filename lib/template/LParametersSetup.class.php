@@ -1,9 +1,8 @@
 <?php
 
-
 class LParametersSetup {
 	
-    const AVAILABLE_IMPORTS = ['urlmap', 'urlmap_string', 'relative_input', 'relative_input_string', 'absolute_input', 'absolute_input_string', 'relative_session', 'relative_session_string', 'absolute_session', 'absolute_session_string', 'parameters', 'parameters_string', 'capture', 'capture_string', 'env', 'env_string', 'output_string', 'flash'];
+    const AVAILABLE_IMPORTS = ['basedir','urlmap', 'urlmap_string', 'relative_input', 'relative_input_string', 'absolute_input', 'absolute_input_string', 'relative_session', 'relative_session_string', 'absolute_session', 'absolute_session_string', 'parameters', 'parameters_string', 'capture', 'capture_string', 'env', 'env_string', 'output_string', 'flash'];
 
     private $my_urlmap = null;
     private $my_input = null;
@@ -83,7 +82,7 @@ class LParametersSetup {
             
         if (!$this->my_output) $this->my_output = new LTreeMap();
             //
-        
+
         //output_string goes before all the others
         if (in_array('output_string', $import_into_variables)) { //ok cerca nei valori
             if ($this->my_output) $this->my_output->set('output_string', $this->my_json_encode('output', $this->my_output->getRoot()));
@@ -91,6 +90,12 @@ class LParametersSetup {
         //import all the other variables
         foreach ($import_into_variables as $import_name) {
             switch ($import_name) {
+                case 'basedir' : {
+                    $basedir = LConfigReader::simple('/misc/basedir');
+                    $this->my_output->set('bd',$basedir);
+                    $this->my_output->set('basedir',$basedir);
+                    break;
+                }
                 case 'urlmap' : if ($this->my_urlmap) $this->my_output->set('urlmap', $this->my_urlmap->get('/'));
                     break;
                 case 'urlmap_string' : if ($this->my_urlmap) $this->my_output->set('urlmap_string', $this->my_json_encode('urlmap', $this->my_urlmap->get('/')));

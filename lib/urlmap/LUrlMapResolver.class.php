@@ -6,6 +6,17 @@
  *  
  */
 
+function bd($urldir=null) {
+    $basedir = LConfigReader::simple('/misc/basedir');
+
+    if ($urldir==null) return $basedir;
+    else return $basedir.$urldir;
+
+}
+
+define ('BD',bd());
+define ('BASEDIR',bd());
+
 class LUrlMapResolver {
     
     const URLMAP_EXTENSION = ".json";

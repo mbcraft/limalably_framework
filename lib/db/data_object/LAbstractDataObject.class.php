@@ -47,6 +47,8 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	const VIRTUAL_COLUMNS_LIST = [];
 
+	const MY_JSON_COLUMNS = [];
+
 	public static function hasStandardOperationsColumns() {
 		return static::HAS_STANDARD_OPERATIONS_COLUMNS;
 	}
@@ -421,7 +423,11 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 				else
 					$result[$key] = (int) $value;
 			} else {
-				$result[$key] = $value;
+				if (in_array($key,static::MY_JSON_COLUMNS)) {
+					$result[$key] = json_decode($value,true);
+				} else {
+					$result[$key] = $value;
+				}
 			}
 		}
 
@@ -448,9 +454,28 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		}
 	}
 
+	private function processJsonColumns($columns) {
+
+		$result = [];
+
+		foreach ($columns as $key => $value) {
+
+			if (in_array($key,static::MY_JSON_COLUMNS)) 
+			{
+				if (!is_array($value)) throw new \Exception("Column ".$key." must be an array to become JSON!");
+				$result[$key] = json_encode($value,true);
+			} else {
+				$result[$key] = $value;
+			}
+		}
+
+		return $result;
+
+	}
+
 	private function getAllColumnsData() {
 
-		if ($this->usesAutoColumns()) return $this->__columns;
+		if ($this->usesAutoColumns()) return $this->processJsonColumns($this->__columns);
 		else {
 			$object_vars = get_object_vars($this);
 
@@ -464,7 +489,7 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 				$result[$name] = $value;
 			}
 
-			return $result;
+			return $this->processJsonColumns($result);
 		}
 
 	}
@@ -702,7 +727,6 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 			$this->__virtual_columns[$name] = $value;
 		} else {
 
-
 			if ($this->usesAutoColumns()) {
 
 				$this->__columns[$name] = $value;
@@ -747,7 +771,10 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$fields_list = [];
 		foreach ($columns_data as $col_key => $col_data) {
 
-			$col_string = is_string($col_data) ? "'".$col_data."'" : $col_data;
+			if (is_array($col_data))
+				$col_string = json_encode($col_data,true);
+			else
+				$col_string = is_string($col_data) ? "'".$col_data."'" : $col_data;
 
 			$fields_list[] = "'".$col_key."' = ".$col_string;
 		}

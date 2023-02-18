@@ -59,6 +59,10 @@ class LMysqlSelectStatement extends LMysqlAbstractQuery {
 		$this->group_by_clause = new LMysqlEmptyElementList();
 	}
 
+	protected function supportsIterator() {
+		return true;
+	}
+
 	public function column_name_list($column_name_list) {
 		if (is_string($column_name_list) || is_object($column_name_list)) $fnl = new LMysqlElementList($column_name_list);
 		if (is_array($column_name_list)) $fnl = new LMysqlElementList(... $column_name_list);

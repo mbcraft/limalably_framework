@@ -566,6 +566,30 @@ class LQueryFunctions {
 			LQueryFunctions::throwQueryLayerNotFound();	
 		}
 
+		function create_view(string $view_name) {
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlCreateViewStatement($view_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function drop_view(string $view_name) {	
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlDropViewStatement($view_name);
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
+		function view_list() {	
+			LQueryFunctions::checkLayerSelected();
+
+			if (LQueryFunctions::usingMysqlLayer()) return new LMysqlShowViewsStatement();
+
+			LQueryFunctions::throwQueryLayerNotFound();
+		}
+
 		function table_indexes_list(string $table_name) {
 			LQueryFunctions::checkLayerSelected();
 

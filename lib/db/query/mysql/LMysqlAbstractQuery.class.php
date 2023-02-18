@@ -60,10 +60,12 @@ abstract class LMysqlAbstractQuery {
 			return mysqli_insert_id($connection_handle);
 			
 		}
-		if ($this instanceof LMysqlSelectStatement || $this instanceof LMysqlTableDescriptionStatement || $this instanceof LMysqlDescribeIndexesStatement || $this instanceof LMysqlShowPrivilegesStatement || ($this instanceof LMysqlCreateTableStatement && $this->isShow())) {
+		if ($this instanceof LMysqlSelectStatement || $this instanceof LMysqlTableDescriptionStatement || $this instanceof LMysqlShowViewsStatement || $this instanceof LMysqlDescribeIndexesStatement || $this instanceof LMysqlShowPrivilegesStatement || ($this instanceof LMysqlCreateTableStatement && $this->isShow())) {
 			$full_result = [];
 
 			while ($row = mysqli_fetch_assoc($result)) $full_result[] = $row;
+
+			if ($this instanceof LMysqlShowViewsStatement) return $this->extractResults($full_result);
 
 			if ($this instanceof LMysqlCreateTableStatement && $this->isShow()) return $full_result[0]['Create Table'];
 
@@ -76,7 +78,13 @@ abstract class LMysqlAbstractQuery {
 		return $this.";";
 	}
 
+	protected function supportsIterator() {
+		return false;
+	}
+
 	function iterator($connection) {
+
+		if (!$this->supportsIterator()) throw new \Exception("This class ".static::class." does not support iterating the results.");
 
 		if (!$connection) throw new \Exception("Connection is not set!");
 

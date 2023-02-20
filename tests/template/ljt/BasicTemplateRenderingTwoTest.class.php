@@ -9,6 +9,18 @@
 class BasicTemplateRenderingTwoTest extends LTestCase {
 	
 
+	function testDecodeFileT1() {
+
+		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/two/examples/t1.json');
+
+		$content = $tf->getContent();
+
+		$result = json_decode($content,true);
+
+		$this->assertTrue(is_array($result),"Il file non si decodifica correttamente come json!");
+
+	}
+
 	function testExampleT1() {
 
 		$tf = new LFile($_SERVER['FRAMEWORK_DIR'].'tests/template/ljt/two/examples/t1.json');

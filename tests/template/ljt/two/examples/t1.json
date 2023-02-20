@@ -1,38 +1,33 @@
 {
-	".RootTwoTestLib" : {
-		"root_one" : "a_value",
-		"root_two" : "another_value",
-		"t_root_one" : {
-			".ElementTwoTestLib" : {
-				"e1-one" : 12,
-				"e1-two" : "ab",
-				"te1-two" : {
-					".AnotherElementTwoTestLib" : {
-						"AE-ONE" : 3,
-						"AE-TWO" : "xyz"
-					}
-				}
-			}
+	"t" : "RootTwoTestLib",  
+	"root_one" : "a_value",
+	"root_two" : "another_value",
+	"t_root_one" : {
+		"t" : "ElementTwoTestLib", 
+		"e1-one" : 12,
+		"e1-two" : "ab",
+		"te1-two" : {
+			"t" : "AnotherElementTwoTestLib", 
+			"AE-ONE" : 3,
+			"AE-TWO" : "xyz"			
+		}
+	},
+	"ta_root_two" : [
+		{
+			"t" : "AnotherElementTwoTestLib", 
+			"AE-ONE" : 1,
+			"AE-TWO" : 2		
 		},
-		"ta_root_two" : [
-			{
-				".AnotherElementTwoTestLib" : {
-					"AE-ONE" : 1,
-					"AE-TWO" : 2
-				}
-			},
-			{
-				".AnotherElementTwoTestLib" : {
-					"AE-TWO" : "abc"
-				}
-			},
-			{
-				".AnotherElementTwoTestLib" : {
-					"AE-TWO" : "abcd",
-					"AE-ONE" : 123
-				}
-			}
+		{
+			"t" : "AnotherElementTwoTestLib", 
+			"AE-TWO" : "abc"
+		},
+		{
+			"t" : "AnotherElementTwoTestLib",
+			"AE-TWO" : "abcd",
+			"AE-ONE" : 123
+		}
 
-		]
-	}
+	]
+	
 }

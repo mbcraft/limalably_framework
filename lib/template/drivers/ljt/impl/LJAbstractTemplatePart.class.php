@@ -56,17 +56,21 @@ abstract class LJAbstractTemplatePart {
 		return $this->data[$field_name];
 	}
 
+	private static function getTemplateDataFromTemplateDef($template_def) {
+
+		if (isset($template_def['t'])) unset($template_def['t']);
+
+		return $template_def;
+
+	}
+
 	public static function createTemplatePart($template_class_name,$position,$data) {
 		
-		if (!LStringUtils::startsWith($template_class_name,'.')) throw new \Exception("Template part names must start with a dot (.)");
-
-		$template_class_name_ok = substr($template_class_name,1);
-
 		try {
-			$template_instance = new $template_class_name_ok();
+			$template_instance = new $template_class_name();
 
 		} catch (\Exception $ex) {
-			throw new \Exception("Error during creation of template part '".$template_class_name_ok."': ".$ex->getMessage());
+			throw new \Exception("Error during creation of template part '".$template_class_name."': ".$ex->getMessage());
 		}
 
 		$template_instance->setTreeDataPosition($position);
@@ -82,10 +86,9 @@ abstract class LJAbstractTemplatePart {
 
 	private static function getTemplateClassNameFromDef($template_def) {
 
-		$keys = array_keys($template_def);
+		if (!isset($template_def['t'])) throw new \Exception("No template found in template definition : ".var_export($template_def,true));
 
-		if (count($keys)>1) throw new \Exception("Only one template is allowed in this array! (".$this->tree_data_position.")");
-		$template_class_name = $keys[0];
+		$template_class_name = $template_def['t'];
 
 		if (is_numeric($template_class_name)) throw new \Exception("It is necessary to use a string as a template part name!"); 
 
@@ -101,7 +104,7 @@ abstract class LJAbstractTemplatePart {
 
 		$template_class_name = self::getTemplateClassNameFromDef($template_def);
 
-		$template_data = $template_def[$template_class_name];
+		$template_data = self::getTemplateDataFromTemplateDef($template_def);
 
 		$template_instance = self::createTemplatePart($template_class_name,$this->tree_data_position.'/'.$key.'/'.$template_class_name,$template_data);
 
@@ -123,7 +126,7 @@ abstract class LJAbstractTemplatePart {
 
 			$template_class_name = self::getTemplateClassNameFromDef($template_def);
 
-			$template_data = $template_def[$template_class_name];
+			$template_data = self::getTemplateDataFromTemplateDef($template_def);
 
 			$template_instance = self::createTemplatePart($template_class_name,$this->tree_data_position.'/'.$key.'/'.$template_class_name,$template_data);
 

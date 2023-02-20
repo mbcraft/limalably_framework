@@ -1,5 +1,4 @@
 {
-	".WriteTextTestLib" : {
-		"text" : "Hello world!"
-	}
+	"t" : "WriteTextTestLib", 
+	"text" : "Hello world!"	
 }

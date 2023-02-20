@@ -1,6 +1,6 @@
 {
     "require": {
-        "twig/twig": "v2.15.3",
+        "twig/twig": "v3.5.1",
 	"respect/validation" : "2.2.3"
     }
 }

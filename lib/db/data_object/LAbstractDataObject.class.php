@@ -31,6 +31,8 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	public $__search_mode = null; //no need
 
+	private static $__lastOrderingCache = [];
+
 	const __LAST_AFFECTED_ROWS_IS_INSERT = 1;
 
 	const ID_COLUMN_NAME = "id";
@@ -583,7 +585,9 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 			$all_other_elements = $do->findAll($cond)->orderBy(asc(static::MY_ORDER_COLUMN))->go($db);
 
-			$this->reorder_all($all_other_elements);			
+			$this->reorder_all($all_other_elements);
+
+			$this->invalidateOrderColumnLastCache();			
 		}
 
 		if (static::hasStandardOperationsColumns())
@@ -602,6 +606,8 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 		if ($this->{static::ID_COLUMN_NAME}==0 && static::MY_ORDER_COLUMN!=null) {
 			$this->setupOrderColumnWithLastValue();
+
+			$this->invalidateOrderColumnLastCache();
 		}
 
 		if ($this->{static::ID_COLUMN_NAME}==0 && static::hasStandardOperationsColumns() && !$this->created_at) {
@@ -798,27 +804,74 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		}
 	}
 
+	private function getOrderColumnLastCacheName() {
+
+		$name = static::class;
+
+		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+			
+			$value = $this->{$col_name};
+
+			if ($value===null) $name.= "_NULL";
+			else $name .= "_".$value;
+		}
+
+		$name.= "_LAST";
+
+		return $name;
+	}
+
+	private function getOrderColumnLast() {
+
+		$last_cache_name = $this->getOrderColumnLastCacheName();
+
+		if (isset(self::$__lastOrderingCache[$last_cache_name])) return self::$__lastOrderingCache[$last_cache_name];
+
+		$value = $this->calculateOrderColumnLast();
+
+		self::$__lastOrderingCache[$last_cache_name] = $value;
+
+		return $value; 
+
+	}
+
+	private function invalidateOrderColumnLastCache() {
+
+		$last_cache_name = $this->getOrderColumnLastCacheName();
+
+		if (isset(self::$__lastOrderingCache[$last_cache_name])) unset(self::$__lastOrderingCache[$last_cache_name]);
+
+	}
+
+	private function calculateOrderColumnLast() {
+
+		$clazz = static::class;
+
+		$do = new $clazz();
+
+		$db = db();
+
+		$cond = _and();
+
+		$this->pushNotSoftDeletedCondition($cond);
+
+		foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
+			$cond->add(_eq_null($col_name,$this->{$col_name}));
+		}
+
+		$total = $do->findAll($cond)->count()->go($db);
+
+		return $total;
+
+	}
+
 	private function setupOrderColumnWithLastValue() {
 
 		if ($this->{static::MY_ORDER_COLUMN}==null) {
-			$clazz = static::class;
-
-			$do = new $clazz();
-
-			$db = db();
-
-			$cond = _and();
-
-			$this->pushNotSoftDeletedCondition($cond);
-
-			foreach (static::MY_ORDER_GROUP_COLUMNS as $col_name) {
-				$cond->add(_eq_null($col_name,$this->{$col_name}));
-			}
-
-			$total = $do->findAll($cond)->count()->go($db);
-
+		
+			$total = $this->getOrderColumnLast();
+		
 			$this->{static::MY_ORDER_COLUMN} = $total + 1;
-
 		}
 	}
 
@@ -980,6 +1033,18 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 		$final_array[] = $this;
 
 		$this->reorder_all($final_array);
+
+	}
+
+	public function is_first() {
+
+		return $this->{static::MY_ORDER_COLUMN} == 1;
+
+	}
+
+	public function is_last() {
+
+		return $this->{static::MY_ORDER_COLUMN} == $this->getOrderColumnLast();
 
 	}
 

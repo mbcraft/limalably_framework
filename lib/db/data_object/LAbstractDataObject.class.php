@@ -1038,14 +1038,15 @@ abstract class LAbstractDataObject implements LIStandardOperationsColumnConstant
 
 	public function is_first() {
 
-		return $this->{static::MY_ORDER_COLUMN} == 1;
-
+		if (static::MY_ORDER_COLUMN)
+			return $this->{static::MY_ORDER_COLUMN} == 1;
+		else throw new \Exception("Can't use is_first() : MY_ORDER_COLUMN is not defined!");
 	}
 
 	public function is_last() {
-
-		return $this->{static::MY_ORDER_COLUMN} == $this->getOrderColumnLast();
-
+		if (static::MY_ORDER_COLUMN)
+			return $this->{static::MY_ORDER_COLUMN} == $this->getOrderColumnLast();
+		else throw new \Exception("Can't use is_last() : MY_ORDER_COLUMN is not defined!");
 	}
 
 }

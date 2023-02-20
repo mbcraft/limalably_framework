@@ -12,7 +12,7 @@ class ElementTwoTestLib extends LJAbstractTemplatePart {
 	const TEMPLATE_FIELDS = ['te1-one','te1-two'];
 	const MANDATORY_FIELDS = ['e1-one'];
 
-	public function render() {
+	public function customRenderImpl($parameters) {
 
 		$tag = new LTag('element_two');
 		$tag->setTagName('element_two');

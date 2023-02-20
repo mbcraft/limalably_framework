@@ -11,9 +11,8 @@ class LPhpFileTemplateSource implements LITemplateSource {
 	private $templates_path;
 	private $engine_name;
 
-	function __construct(string $engine_name,$templates_path) {
+	function __construct($templates_path) {
 
-		$this->engine_name = $engine_name;
 		$this->templates_path = $templates_path;
 
 	}
@@ -24,7 +23,7 @@ class LPhpFileTemplateSource implements LITemplateSource {
 
         if ($f->exists()) return $path;
 
-    	$extension_search_list = LConfigReader::simple('/template/'.$this->engine_name.'/extension_search_list');
+    	$extension_search_list = LConfigReader::simple('/template/php/extension_search_list');
 
     	foreach ($extension_search_list as $ext) {
 

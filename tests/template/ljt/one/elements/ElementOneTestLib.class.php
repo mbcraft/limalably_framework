@@ -12,9 +12,7 @@ class ElementOneTestLib extends LJAbstractTemplatePart {
 	const TEMPLATE_FIELDS = ['te1-one','te1-two'];
 	const MANDATORY_FIELDS = ['e1-one'];
 
-	public function render() {}
-
-	public function __toString() {
+	public function customRenderImpl($parameters) {
 		$result = "<element_one e1-one='".$this('e1-one')."' ";
 
 		if ($this->has('e1-two')) $result.= "e1-two='".$this('e1-two')."' ";

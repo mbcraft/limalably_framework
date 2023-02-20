@@ -12,7 +12,7 @@ class LTemplateUtils {
         
         $engine_list = LConfigReader::simple('/template');
 
-        if ($engine==null && count($engine_list)>1) throw new \Exception("Unable to find suitable template source factory name : ".var_export($engine_list));
+        if ($engine==null && count($engine_list)>1) throw new \Exception("Unable to find suitable template source factory name : ".var_export($engine_list,true));
 
 
         foreach ($engine_list as $engine_name => $engine_specs) {

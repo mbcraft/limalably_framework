@@ -14,7 +14,11 @@ abstract class LJAbstractTemplatePart {
 
 	const MANDATORY_FIELDS = [];
 
+	const EXTERNAL_TEMPLATE = null;
+
 	private $data = [];
+
+	private $global_data = [];
 
 	private $tree_data_position = null;
 
@@ -54,6 +58,90 @@ abstract class LJAbstractTemplatePart {
 
 	public function getField($field_name) {
 		return $this->data[$field_name];
+	}
+
+	public function setupGlobalData($global_data) {
+
+		$this->global_data = $global_data;
+
+		foreach (static::TEMPLATE_FIELDS as $field_name) {
+
+			if ($this->hasField($field_name)) {
+
+				$field = $this->getField($field_name);
+				
+				$field->setupGlobalData($global_data);
+			}
+
+		}
+
+		foreach (static::TEMPLATE_ARRAY_FIELDS as $field_name) {
+
+			if ($this->hasField($field_name)) {
+
+				$array_field = $this->getField($field_name);
+
+				foreach ($array_field as $element) {
+					$element->setupGlobalData($global_data);
+				}
+
+			}
+
+		}
+
+
+	}
+
+	private function renderExternalTemplate($parameters) {
+
+		if (!self::externalTemplateFileExists()) return "EXTERNAL TEMPLATE FILE NOT FOUND : ".self::getExternalTemplateFile()->getFullPath();
+
+		$path = static::EXTERNAL_TEMPLATE;
+
+		if (!$path) return null;
+
+		$template_rendering = new LTemplateRendering();
+		if (self::hasPhpExternalTemplate()) $template_rendering->setupTemplateSource('php');
+		if (self::hasTwigExternalTemplate()) $template_rendering->setupTemplateSource('twig');
+
+		$result = $template_rendering->render($path,$parameters);
+
+		return $result;
+	}
+
+	private static function externalTemplateFileExists() {
+		return self::getExternalTemplateFile()->exists();
+	}
+
+	private static function getExternalTemplateFile() {
+		$path = static::EXTERNAL_TEMPLATE;
+
+		if (!$path) return null;
+
+		$template_rendering = new LTemplateRendering();
+		if (self::hasPhpExternalTemplate()) $template_rendering->setupTemplateSource('php');
+		if (self::hasTwigExternalTemplate()) $template_rendering->setupTemplateSource('twig');
+
+		$final_path = $template_rendering->searchTemplate($path);
+
+		return new LFile($final_path);
+		
+	}
+
+	private static function hasExternalTemplate() {
+		return static::EXTERNAL_TEMPLATE != null;
+	}
+
+	private static function hasPhpExternalTemplate() {
+		if (static::EXTERNAL_TEMPLATE) {
+			return LStringUtils::endsWith(static::EXTERNAL_TEMPLATE,'php');
+		} else return false;
+	}
+
+	private static function hasTwigExternalTemplate() {
+		if (static::EXTERNAL_TEMPLATE) {
+			return LStringUtils::endsWith(static::EXTERNAL_TEMPLATE,'twig');
+		} else return false;
 	}
 
 	private static function getTemplateDataFromTemplateDef($template_def) {
@@ -193,11 +281,30 @@ abstract class LJAbstractTemplatePart {
 		return $this->data[$field_name];
 	}
 	
+	public function t() {
+		return $this->__toString();
+	}
+
 	public function __toString() {
 		return "".$this->render();
 	}
 
-	public abstract function render();
+	public function render() {
+
+		$parameters = array_merge($this->global_data,$this->data);
+
+		if ($this->hasExternalTemplate()) {
+			return $this->renderExternalTemplate($parameters);
+		} else {
+			
+
+			return $this->customRenderImpl($parameters);
+		}
+	}
+
+	protected function customRenderImpl($parameters) {
+		return "EMPTY CUSTOM RENDER IMPL for class ".static::class;
+	}
 
 
 	

@@ -8,14 +8,11 @@
 
 class LPhpStringArrayTemplateSource implements LITemplateSource {
 	
-	private $engine_name;
 	private $data_map;
 
-	function __construct(string $engine_name,$data_map) {
+	function __construct($data_map) {
 
-		$this->engine_name = $engine_name;
 		$this->data_map = $data_map;
-
 
 	}
 

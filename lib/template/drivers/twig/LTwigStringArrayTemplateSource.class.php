@@ -11,13 +11,13 @@ class LTwigStringArrayTemplateSource implements LITemplateSource {
     private $loader;
     private $env;
     
-    function __construct(string $engine_name,$data_map,$cache_path) {
+    function __construct($data_map,$cache_path) {
         $this->loader = new \Twig\Loader\ArrayLoader($data_map);
         
         $params = [];
         if ($cache_path) $params['cache'] = $cache_path;
-        $params['strict_variables'] = LConfigReader::executionMode('/template/'.$engine_name.'/strict_variables');
-        $params['auto_reload'] = LConfigReader::executionMode('/template/'.$engine_name.'/auto_reload');
+        $params['strict_variables'] = LConfigReader::executionMode('/template/twig/strict_variables');
+        $params['auto_reload'] = LConfigReader::executionMode('/template/twig/auto_reload');
         
         $this->env = new \Twig\Environment($this->loader,$params);
     }

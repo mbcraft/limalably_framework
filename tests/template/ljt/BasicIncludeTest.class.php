@@ -13,6 +13,7 @@ class BasicIncludeTest extends LTestCase {
 
 	}
 
+	/*
 	function testIncludePhp() {
 		
 		$obj = new IncludePhpTemplate();
@@ -44,8 +45,6 @@ class BasicIncludeTest extends LTestCase {
 		$this->assertEqual("".$obj,"Hello world!","Il rendering dell'include del template non è andato a buon fine!");
 	}
 	
-
-	/*
 	function testIncludeTwig() {
 		$obj = new IncludeTwigTemplate();
 

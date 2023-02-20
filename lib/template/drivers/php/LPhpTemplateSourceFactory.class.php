@@ -8,20 +8,14 @@
 
 class LPhpTemplateSourceFactory implements LITemplateSourceFactory {
 	
-
-	private $engine_name;
     private $root_path;
-
-	public function __construct(string $engine_name) {
-		$this->engine_name = $engine_name;
-	}
 
     public function supportsCache() {
         return false;
     }
 
     public function getEngineName() {
-    	return $this->engine_name;
+    	return 'php';
     }
 
     public function isTemplateSource(string $string_source) {
@@ -43,13 +37,13 @@ class LPhpTemplateSourceFactory implements LITemplateSourceFactory {
     function createFileTemplateSource(string $relative_folder_path,string $relative_cache_path=null) {
     	if (!$this->isInitialized()) $this->initWithDefaults ();
 
-    	return new LPhpFileTemplateSource($this->engine_name,$this->root_path.$relative_folder_path);
+    	return new LPhpFileTemplateSource($this->root_path.$relative_folder_path);
     }
     
     function createStringArrayTemplateSource(array $data_map,string $relative_cache_path=null) {
     	if (!$this->isInitialized()) $this->initWithDefaults ();
 
-    	return new LPhpStringArrayTemplateSource($this->engine_name,$data_map);
+    	return new LPhpStringArrayTemplateSource($data_map);
     }
     
     public function createTemplateFromString(string $template_source) {

@@ -122,7 +122,9 @@ abstract class LJAbstractTemplatePart {
 		if (self::hasPhpExternalTemplate()) $template_rendering->setupTemplateSource('php');
 		if (self::hasTwigExternalTemplate()) $template_rendering->setupTemplateSource('twig');
 
-		$final_path = $template_rendering->searchTemplate($path);
+		$pre_final_path = $template_rendering->searchTemplate($path);
+
+		if ($template_rendering->hasRootFolder()) $final_path = $template_rendering->getRootFolder() . $pre_final_path;
 
 		return new LFile($final_path);
 		

@@ -24,6 +24,14 @@ class LTemplateRendering {
     function searchTemplate($path) {
         return $this->template_source->searchTemplate($path);
     }
+
+    function hasRootFolder() {
+        return $this->template_source->hasRootFolder();
+    }
+
+    function getRootFolder() {
+        return $this->template_source->getRootFolder();
+    }
     
     function render($template_path,$parameters=[]) {
 

@@ -9,7 +9,6 @@
 class LPhpFileTemplateSource implements LITemplateSource {
 
 	private $templates_path;
-	private $engine_name;
 
 	function __construct($templates_path) {
 
@@ -33,6 +32,14 @@ class LPhpFileTemplateSource implements LITemplateSource {
     	}
 
     	return false;
+    }
+
+    function hasRootFolder() {
+        return true;
+    }
+
+    function getRootFolder() {
+        return $this->templates_path;
     }
     
     function getTemplate($path) {

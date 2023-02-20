@@ -22,6 +22,14 @@ class LTwigStringArrayTemplateSource implements LITemplateSource {
         $this->env = new \Twig\Environment($this->loader,$params);
     }
     
+    public function hasRootFolder() {
+        return false;
+    }
+
+    public function getRootFolder() {
+        return null;
+    }
+
     public function getTemplate($path) {
         return new LTwigTemplate($this->env->load($path));
     }

@@ -22,6 +22,14 @@ class LJTStringArrayTemplateSource implements LITemplateSource {
     	if (isset($this->data_map[$path])) return $path;
     	else return false;
     }
+
+    function hasRootFolder() {
+    	return false;
+    }
+
+    function getRootFolder() {
+    	return null;
+    }
     
     function getTemplate($path) {
 

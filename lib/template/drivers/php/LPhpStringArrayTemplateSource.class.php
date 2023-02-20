@@ -16,6 +16,14 @@ class LPhpStringArrayTemplateSource implements LITemplateSource {
 
 	}
 
+    function hasRootFolder() {
+        return false;
+    }
+
+    function getRootFolder() {
+        return null;
+    }
+
     function searchTemplate($path) {
     	if (isset($this->data_map[$path])) return $path;
     	else return false;

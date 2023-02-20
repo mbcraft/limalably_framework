@@ -13,7 +13,7 @@ class LUrlMapTemplateSourceFactory {
         $engine_name = LTemplateUtils::findTemplateSourceFactoryName($engine);
 
         $factory = LTemplateUtils::findTemplateSourceFactoryInstance($engine_name);
-        
+
         $root_folder = LConfigReader::simple('/template/'.$engine_name.'/root_folder');
 
         $cache_path = null;

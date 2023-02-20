@@ -9,11 +9,9 @@
 class LJTFileTemplateSource implements LITemplateSource {
 
 	private $templates_path;
-	private $engine_name;
 
-	function __construct(string $engine_name,$templates_path) {
+	function __construct($templates_path) {
 
-		$this->engine_name = $engine_name;
 		$this->templates_path = $templates_path;
 
 	}
@@ -24,7 +22,7 @@ class LJTFileTemplateSource implements LITemplateSource {
 
 		if ($f->exists()) return $path;
 
-    	$extension_search_list = LConfigReader::simple('/template/'.$this->engine_name.'/extension_search_list');
+    	$extension_search_list = LConfigReader::simple('/template/ljt/extension_search_list');
 
     	foreach ($extension_search_list as $ext) {
 
@@ -34,6 +32,14 @@ class LJTFileTemplateSource implements LITemplateSource {
     	}
 
     	return false;
+    }
+
+    function hasRootFolder() {
+    	return true;
+    }
+
+    function getRootFolder() {
+    	return $this->templates_path;
     }
     
     function getTemplate($path) {

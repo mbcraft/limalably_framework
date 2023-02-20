@@ -8,6 +8,10 @@
 
 interface LITemplateSource {
     
+    function hasRootFolder();
+
+    function getRootFolder();
+
     function searchTemplate($path);
     
     function getTemplate($path);

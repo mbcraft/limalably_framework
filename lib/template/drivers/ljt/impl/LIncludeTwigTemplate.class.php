@@ -5,13 +5,19 @@ class LIncludeTwigTemplate {
 	
 	private $path;
 	private $data;
-
+	private $position;
+	
 	private static $template_engine = null;
 	private static $file_template_source = null;
 
-	public function __construct($path,$data) {
+	public function __construct($path,$data,$position) {
 		$this->path = $path;
 		$this->data = $data;
+		$this->position = $position;
+	}
+
+	public function getTreeDataPosition() {
+		return $this->position;
 	}
 
 	public function render() {

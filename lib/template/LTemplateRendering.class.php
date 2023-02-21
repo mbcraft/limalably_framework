@@ -47,6 +47,8 @@ class LTemplateRendering {
             }
         } catch (\Exception $ex) {
             
+            echo $ex->getTraceAsString();
+
             LErrorList::saveFromException('template', $ex);
         }
     }

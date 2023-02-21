@@ -157,13 +157,19 @@ abstract class LJAbstractTemplatePart {
 	public static function createTemplatePart($template_name_spec,$position,$data) {
 		
 		if (LStringUtils::endsWith($template_name_spec,'.twig')) {
-			$template_instance = new LIncludeTwigTemplate($template_name_spec,$data);
+			$template_instance = new LIncludeTwigTemplate($template_name_spec,$data,$position);
 
 			return $template_instance;
 		}
 
 		if (LStringUtils::endsWith($template_name_spec,'.php')) {
-			$template_instance = new LIncludePhpTemplate($template_name_spec,$data);
+			$template_instance = new LIncludePhpTemplate($template_name_spec,$data,$position);
+
+			return $template_instance;
+		}
+
+		if (LStringUtils::endsWith($template_name_spec,'.ljt') || LStringUtils::endsWith($template_name_spec,'.json')) {
+			$template_instance = new LIncludeLjtTemplate($template_name_spec,$data,$position);
 
 			return $template_instance;
 		}

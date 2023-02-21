@@ -2,14 +2,18 @@
 
 
 
-class IncludePhpTemplate extends LJAbstractTemplatePart {
-	
-	const SIMPLE_FIELDS = ['vars','template'];
+class LIncludePhpTemplate {
 
-	const MANDATORY_FIELDS = ['vars','template'];
+	private $path;
+	private $data;
 	
 	private static $template_engine = null;
 	private static $file_template_source = null;
+
+	public function __construct($path,$data) {
+		$this->path = $path;
+		$this->data = $data;
+	}
 
 	public function render() {
 
@@ -23,15 +27,17 @@ class IncludePhpTemplate extends LJAbstractTemplatePart {
 			self::$file_template_source = $template_engine->createFileTemplateSource($template_root_folder);
 		}
 
-		$template_path = $this->getField('template');
+		$php_template_path = self::$file_template_source->searchTemplate($this->path);
 
-		$php_template_path = self::$file_template_source->searchTemplate($template_path);
-
-		if (!$php_template_path) throw new \Exception("Template file do not exists at : ".$template_root_folder.$template_path." inside ".$this->getTreeDataPosition());
+		if (!$php_template_path) throw new \Exception("Template file do not exists at : ".$template_root_folder.$this->path." inside ".$this->getTreeDataPosition());
 
 		$template_instance = self::$file_template_source->getTemplate($php_template_path);
 
-    	return $template_instance->render($this->getField('vars'));
+    	return $template_instance->render($this->data);
+	}
+
+	public function __toString() {
+		return "".$this->render();
 	}
 
 }

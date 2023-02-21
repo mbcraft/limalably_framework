@@ -154,13 +154,25 @@ abstract class LJAbstractTemplatePart {
 
 	}
 
-	public static function createTemplatePart($template_class_name,$position,$data) {
+	public static function createTemplatePart($template_name_spec,$position,$data) {
 		
+		if (LStringUtils::endsWith($template_name_spec,'.twig')) {
+			$template_instance = new LIncludeTwigTemplate($template_name_spec,$data);
+
+			return $template_instance;
+		}
+
+		if (LStringUtils::endsWith($template_name_spec,'.php')) {
+			$template_instance = new LIncludePhpTemplate($template_name_spec,$data);
+
+			return $template_instance;
+		}
+
 		try {
-			$template_instance = new $template_class_name();
+			$template_instance = new $template_name_spec();
 
 		} catch (\Exception $ex) {
-			throw new \Exception("Error during creation of template part '".$template_class_name."': ".$ex->getMessage());
+			throw new \Exception("Error during creation of template part '".$template_name_spec."': ".$ex->getMessage());
 		}
 
 		$template_instance->setTreeDataPosition($position);

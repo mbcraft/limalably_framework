@@ -2,7 +2,7 @@
 
 
 
-class LIncludePhpTemplate {
+class LIncludePhpTemplate implements LITreeDataPosition {
 
 	private $path;
 	private $data;
@@ -19,6 +19,10 @@ class LIncludePhpTemplate {
 
 	public function getTreeDataPosition() {
 		return $this->position;
+	}
+
+	public function dumpTreeDataPositions() {
+		echo "PHP : ".$this->position."\n";
 	}
 
 	public function render() {

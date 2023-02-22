@@ -6,7 +6,7 @@
  *  
  */
 
-abstract class LJAbstractTemplatePart {
+abstract class LJAbstractTemplatePart implements LITreeDataPosition {
 
 	const SIMPLE_FIELDS = [];
 	const TEMPLATE_FIELDS = [];
@@ -157,19 +157,19 @@ abstract class LJAbstractTemplatePart {
 	public static function createTemplatePart($template_name_spec,$position,$data) {
 		
 		if (LStringUtils::endsWith($template_name_spec,'.twig')) {
-			$template_instance = new LIncludeTwigTemplate($template_name_spec,$data,$position);
+			$template_instance = new LIncludeTwigTemplate($template_name_spec,$data,$position."[".$template_name_spec."]");
 
 			return $template_instance;
 		}
 
 		if (LStringUtils::endsWith($template_name_spec,'.php')) {
-			$template_instance = new LIncludePhpTemplate($template_name_spec,$data,$position);
+			$template_instance = new LIncludePhpTemplate($template_name_spec,$data,$position."[".$template_name_spec."]");
 
 			return $template_instance;
 		}
 
 		if (LStringUtils::endsWith($template_name_spec,'.ljt') || LStringUtils::endsWith($template_name_spec,'.json')) {
-			$template_instance = new LIncludeLjtTemplate($template_name_spec,$data,$position);
+			$template_instance = new LIncludeLjtTemplate($template_name_spec,$data,$position."[".$template_name_spec."]");
 
 			return $template_instance;
 		}
@@ -181,7 +181,7 @@ abstract class LJAbstractTemplatePart {
 			throw new \Exception("Error during creation of template part '".$template_name_spec."': ".$ex->getMessage());
 		}
 
-		$template_instance->setTreeDataPosition($position);
+		$template_instance->setTreeDataPosition($position.$template_name_spec);
 
 		try {
 			$template_instance->parse($data);
@@ -214,7 +214,7 @@ abstract class LJAbstractTemplatePart {
 
 		$template_data = self::getTemplateDataFromTemplateDef($template_def);
 
-		$template_instance = self::createTemplatePart($template_class_name,$this->tree_data_position.'/'.$key.'/'.$template_class_name,$template_data);
+		$template_instance = self::createTemplatePart($template_class_name,$this->tree_data_position.'/'.$key.'/',$template_data);
 
 		$this->data[$key] = $template_instance;
 	}
@@ -300,11 +300,29 @@ abstract class LJAbstractTemplatePart {
 
 		return $this->data[$field_name];
 	}
-	
-	public function t() {
-		return $this->__toString();
-	}
 
+	public function dumpTreeDataPositions() {
+		echo "T -> ".$this->tree_data_position."\n";
+
+		foreach (static::TEMPLATE_FIELDS as $template_field) {
+			if ($this->has($template_field))
+			{
+				$this->getField($template_field)->dumpTreeDataPositions();
+			}
+		}
+
+		foreach (static::TEMPLATE_ARRAY_FIELDS as $template_array_field) {
+			
+			if ($this->has($template_array_field)) {
+				$f = $this->getField($template_array_field);
+
+				foreach ($f as $t) {
+					$t->dumpTreeDataPositions();
+				}
+			}
+		}
+	}
+	
 	public function __toString() {
 		return "".$this->render();
 	}

@@ -1,7 +1,7 @@
 <?php
 
 
-class LIncludeTwigTemplate {
+class LIncludeTwigTemplate implements LITreeDataPosition {
 	
 	private $path;
 	private $data;
@@ -18,6 +18,10 @@ class LIncludeTwigTemplate {
 
 	public function getTreeDataPosition() {
 		return $this->position;
+	}
+
+	public function dumpTreeDataPositions() {
+		echo "TWIG : ".$this->position."\n";
 	}
 
 	public function render() {

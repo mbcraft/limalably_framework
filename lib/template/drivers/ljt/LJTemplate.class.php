@@ -20,7 +20,9 @@ function tagref($child_name) {
 
 class LJTemplate implements LITemplate {
     
+    private $root = null;
 	private $my_data = null;
+    private $current_position = "LAYOUT";
 
 	function __construct($content) {
 
@@ -36,13 +38,22 @@ class LJTemplate implements LITemplate {
 
 	}
 
+    public function dumpTreeDataPositions() {
+        $this->root->dumpTreeDataPositions();
+    }
+
+    function setNestedPosition($position) {
+        $this->current_position = $position;
+    }
 
     function render(array $params)
     {
-        $root = new LJTemplateRoot($this->my_data);
-        $root->parseFully();
+        $this->root = new LJTemplateRoot($this->my_data);
+        $this->root->overrideParameters($params);
+        $this->root->setupStartingPosition($this->current_position);
+        $this->root->parseFully();
 
-        return "".$root;
+        return "".$this->root;
     }  
     
     function getImplementationObject()

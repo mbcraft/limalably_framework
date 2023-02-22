@@ -2,7 +2,7 @@
 
 
 
-class LIncludeLjtTemplate {
+class LIncludeLjtTemplate implements LITreeDataPosition {
 		
 	private $path;
 	private $data;
@@ -19,6 +19,10 @@ class LIncludeLjtTemplate {
 
 	public function getTreeDataPosition() {
 		return $this->position;
+	}
+
+	public function dumpTreeDataPositions() {
+		echo "LJT : ".$this->position."\n";
 	}
 
 	public function render() {
@@ -38,6 +42,8 @@ class LIncludeLjtTemplate {
 		if (!$ljt_template_path) throw new \Exception("Template file do not exists at : ".$template_root_folder.$this->path." inside ".$this->getTreeDataPosition());
 
 		$template_instance = self::$file_template_source->getTemplate($ljt_template_path);
+
+		$template_instance->setNestedPosition($this->position."/INCLUDE");
 
     	return $template_instance->render($this->data);
 	}

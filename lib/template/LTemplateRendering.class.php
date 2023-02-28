@@ -42,7 +42,6 @@ class LTemplateRendering {
             } else {
                 $template = $this->template_source->getTemplate($template_path);
 
-                //LResult::trace("Data is ready, now doing real rendering ...");
                 return $template->render($parameters);
             }
         } catch (\Exception $ex) {

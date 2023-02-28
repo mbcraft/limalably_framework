@@ -35,7 +35,7 @@ class LJTStringArrayTemplateSource implements LITemplateSource {
 
     	$content = $this->data_map[$path];
 
-    	return new LJTemplate($content);
+    	return new LJTemplate($path,$content);
 
     }
 }

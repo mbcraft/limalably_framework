@@ -2,7 +2,7 @@
 
 
 
-class LIncludeLjtTemplate implements LITreeDataPosition {
+class LIncludeLjtTemplate {
 		
 	private $path;
 	private $data;
@@ -15,14 +15,6 @@ class LIncludeLjtTemplate implements LITreeDataPosition {
 		$this->path = $path;
 		$this->data = $data;
 		$this->position = $position;
-	}
-
-	public function getTreeDataPosition() {
-		return $this->position;
-	}
-
-	public function dumpTreeDataPositions() {
-		echo "LJT : ".$this->position."\n";
 	}
 
 	public function render() {
@@ -45,7 +37,13 @@ class LIncludeLjtTemplate implements LITreeDataPosition {
 
 		$template_instance->setNestedPosition($this->position."/INCLUDE");
 
-    	return $template_instance->render($this->data);
+		try {
+
+    		return $template_instance->render($this->data);
+
+    	} catch (\Exception $ex) {
+    		throw new \Exception("Exception in rendering ljt template at position ".$this->position);
+    	}
 	}
 
 	public function __toString() {

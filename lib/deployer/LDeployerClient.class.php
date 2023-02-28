@@ -1378,7 +1378,7 @@ class LDeployerClient {
 	}
 
 	private function getFrameworkIncludeList() {
-		return [FRAMEWORK_DIR_NAME."/"];
+		return [FRAMEWORK_DIR_NAME."/",'vendor/'];
 	}
 
 	private function getFrameworkExcludeList() {
@@ -1521,7 +1521,7 @@ class LDeployerClient {
 	}
 
 	private function getProjectDefaultExcludeList() {
-		return ['.alias','.bash_history','.bash_profile','.bashrc','.cshrc','.cache/','.config/','.gnupg/','Maildir/','.local/','.php/','composer.json','composer.lock','@','config/',FRAMEWORK_DIR_NAME.'/','bin/','logs/','temp/','composer.json'];
+		return ['.alias','.bash_history','.bash_profile','.bashrc','.cshrc','.cache/','.config/','.gnupg/','Maildir/','.local/','.php/','composer.json','composer.lock','@','config/',FRAMEWORK_DIR_NAME.'/','vendor/','bin/','logs/','temp/','composer.json'];
 	}
 
 	private function getProjectExcludeList($key_name) {

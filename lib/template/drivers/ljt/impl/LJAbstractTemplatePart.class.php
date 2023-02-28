@@ -6,7 +6,7 @@
  *  
  */
 
-abstract class LJAbstractTemplatePart implements LITreeDataPosition {
+abstract class LJAbstractTemplatePart {
 
 	const SIMPLE_FIELDS = [];
 	const TEMPLATE_FIELDS = [];
@@ -175,6 +175,9 @@ abstract class LJAbstractTemplatePart implements LITreeDataPosition {
 		}
 
 		try {
+
+			if (!class_exists($template_name_spec)) throw new \Exception("Template Part class ".$template_name_spec." not found!");
+
 			$template_instance = new $template_name_spec();
 
 		} catch (\Exception $ex) {
@@ -198,7 +201,7 @@ abstract class LJAbstractTemplatePart implements LITreeDataPosition {
 
 		$template_class_name = $template_def['t'];
 
-		if (is_numeric($template_class_name)) throw new \Exception("It is necessary to use a string as a template part name!"); 
+		if (is_numeric($template_class_name) || is_bool($template_class_name)) throw new \Exception("It is necessary to use a string as a template part name!"); 
 
 		return $template_class_name;
 	}
@@ -276,7 +279,8 @@ abstract class LJAbstractTemplatePart implements LITreeDataPosition {
 				continue;
 			}
 
-			throw new \Exception("Invalid field ".$key." found inside ".$this->tree_data_position.". Check your template syntax.");
+			//Commentata la riga in quanto tutti i dati passati facevano saltare per aria il rendering
+			//throw new \Exception("Invalid field ".$key." found inside ".$this->tree_data_position.". Check your template syntax.");
 		}
 
 	}
@@ -299,28 +303,6 @@ abstract class LJAbstractTemplatePart implements LITreeDataPosition {
 		if (!$this->has($field_name)) throw new \Exception("Readed field ".$field_name." does not exist on ".$this->tree_data_position);
 
 		return $this->data[$field_name];
-	}
-
-	public function dumpTreeDataPositions() {
-		echo "T -> ".$this->tree_data_position."\n";
-
-		foreach (static::TEMPLATE_FIELDS as $template_field) {
-			if ($this->has($template_field))
-			{
-				$this->getField($template_field)->dumpTreeDataPositions();
-			}
-		}
-
-		foreach (static::TEMPLATE_ARRAY_FIELDS as $template_array_field) {
-			
-			if ($this->has($template_array_field)) {
-				$f = $this->getField($template_array_field);
-
-				foreach ($f as $t) {
-					$t->dumpTreeDataPositions();
-				}
-			}
-		}
 	}
 	
 	public function __toString() {

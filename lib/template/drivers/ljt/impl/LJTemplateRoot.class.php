@@ -6,10 +6,11 @@
  *  
  */
 
-class LJTemplateRoot extends LJAbstractTemplatePart implements LITreeDataPosition {
+class LJTemplateRoot extends LJAbstractTemplatePart {
 	
 	private $my_template_data = null;
 	private $starting_pos;
+	private $parsed = false;
 
 	function __construct($data) {
 		$this->my_template_data = $data;
@@ -19,31 +20,25 @@ class LJTemplateRoot extends LJAbstractTemplatePart implements LITreeDataPositio
 		$this->starting_pos = $starting_pos;
 	}
 
-	public function parseFully() {
+	private function parseFully() {
+
+		if ($this->parsed) return;
 
 		$this->tree_data_position = '/'.$this->starting_pos;
 
 		$this->parseAsTemplateField('LAYOUT',$this->my_template_data);
 
+		$this->parsed = true;
 	}
 
-	public function getTreeDataPosition() {
-		return $this->tree_data_position;
-	}
-
-	public function dumpTreeDataPositions() {
-
-		echo "ROOT : ".$this->tree_data_position."\n";
-
-		$this->LAYOUT->dumpTreeDataPositions();
-	}
-
-
-	public function overrideParameters(array $params) {
-		$this->my_template_data = array_merge($this->my_template_data,$params);
+	public function isParsed() {
+		return $this->parsed;
 	}
 
 	public function render() {
+
+		$this->parseFully();
+
 		return $this->LAYOUT;
 	}
 

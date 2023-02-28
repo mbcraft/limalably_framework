@@ -20,23 +20,41 @@ function tagref($child_name) {
 
 class LJTemplate implements LITemplate {
     
+    private $path;
+    private $content;
     private $root = null;
 	private $my_data = null;
-    private $current_position = "LAYOUT";
+    private $current_position = "";
 
-	function __construct($content) {
+	function __construct($path,$content) {
+
+        $this->path = $path;
+        $this->content = $content;
+
+	}
+
+    private function loadTemplateData() {
+        if ($this->my_data) return;
 
         try {
 
-		  $this->my_data = json_decode($content,true);
+          $this->my_data = json_decode($this->content,true);
 
-        } catch (\Exception $ex) {
-            throw new \Exception("Error during json decode : ".$ex->getMessage());
+          } catch (\Exception $ex) {
+            throw new \Exception("Error during json decode in template ".$this->path." : ".$ex->getMessage());
         }
 
-        if (!is_array($this->my_data)) throw new \Exception("Error in json template syntax. Check it : ".$this->my_data);
+        if (!is_array($this->my_data)) throw new \Exception("Error in json template syntax of ".$this->path.". Check it.");
 
-	}
+    }
+
+    private function loadTemplateNode(array $params) {
+
+        $final_data = array_merge($this->my_data,$params);
+
+        $this->root = new LJTemplateRoot($final_data);
+        $this->root->setupStartingPosition($this->current_position);
+    }
 
     public function dumpTreeDataPositions() {
         $this->root->dumpTreeDataPositions();
@@ -48,10 +66,9 @@ class LJTemplate implements LITemplate {
 
     function render(array $params)
     {
-        $this->root = new LJTemplateRoot($this->my_data);
-        $this->root->overrideParameters($params);
-        $this->root->setupStartingPosition($this->current_position);
-        $this->root->parseFully();
+        $this->loadTemplateData();
+
+        $this->loadTemplateNode($params);
 
         return "".$this->root;
     }  

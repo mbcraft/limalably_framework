@@ -48,7 +48,7 @@ class LJTFileTemplateSource implements LITemplateSource {
 
     	$content = $file->getContent();
 
-    	return new LJTemplate($content);
+    	return new LJTemplate($path,$content);
 
     }
 }

@@ -6,18 +6,6 @@
  *  
  */
 
-function tag(string $original_tag_name) {
-    if ($original_tag_name) {
-        return LTagLib::createTagFromLibrary($original_tag_name);
-    } else {
-        return new LTag();
-    }
-}
-
-function tagref($child_name) {
-    return new LTagReference($child_name);
-}
-
 class LJTemplate implements LITemplate {
     
     private $path;
@@ -53,15 +41,6 @@ class LJTemplate implements LITemplate {
         $final_data = array_merge($this->my_data,$params);
 
         $this->root = new LJTemplateRoot($final_data);
-        $this->root->setupStartingPosition($this->current_position);
-    }
-
-    public function dumpTreeDataPositions() {
-        $this->root->dumpTreeDataPositions();
-    }
-
-    function setNestedPosition($position) {
-        $this->current_position = $position;
     }
 
     function render(array $params)
@@ -70,7 +49,7 @@ class LJTemplate implements LITemplate {
 
         $this->loadTemplateNode($params);
 
-        return "".$this->root;
+        return $this->root->render();
     }  
     
     function getImplementationObject()

@@ -6,25 +6,20 @@
  *  
  */
 
-class LJTemplateRoot extends LJAbstractTemplatePart {
-	
+class LJTemplateRoot extends LJAbstractTemplate {
+
 	private $my_template_data = null;
-	private $starting_pos;
 	private $parsed = false;
 
 	function __construct($data) {
 		$this->my_template_data = $data;
 	}
 
-	public function setupStartingPosition($starting_pos) {
-		$this->starting_pos = $starting_pos;
-	}
-
 	private function parseFully() {
 
 		if ($this->parsed) return;
 
-		$this->tree_data_position = '/'.$this->starting_pos;
+		$this->tree_data_position = '/';
 
 		$this->parseAsTemplateField('LAYOUT',$this->my_template_data);
 
@@ -40,12 +35,6 @@ class LJTemplateRoot extends LJAbstractTemplatePart {
 		$this->parseFully();
 
 		return $this->LAYOUT;
-	}
-
-	public function __toString() {
-
-		return "".$this->render();
-
 	}
 
 }

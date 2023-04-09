@@ -8,22 +8,37 @@
 
 class LTemplateArrayFieldWrapper {
 	
-	private $my_data;
+	private $collection;
 
 	function __construct($data) {
-		$this->my_data = $data;
+		$this->collection = $data;
 	}
 
 	public function __toString() {
 		$result = "";
 
 
-		foreach ($this->my_data as $element) {
+		foreach ($this->collection as $element) {
 			$result .= $element;
 		}
 
 		return $result;
 	}
 
+	public function isFirst($elem) {
+		$keys = array_keys($this->collection);
+		$key0 = $keys[0];
+
+		if ($this->collection[$key0]==$elem) return true;
+		else return false;
+	}
+
+	public function isLast($elem) {
+		$keys = array_keys($this->collection);
+		$key_last = end($keys);
+
+		if ($this->collection[$key_last]==$elem) return true;
+		else return false;	
+	}
 
 }

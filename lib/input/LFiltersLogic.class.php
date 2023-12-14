@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 class LFiltersLogic {
 
 	const SESSION_FILTERS_KEY = "/__filters";

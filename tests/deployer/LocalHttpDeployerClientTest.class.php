@@ -6,6 +6,8 @@
 *
 */
 
+if (!defined("SOFTWARE_DIR")) define("SOFTWARE_DIR","/home/marco/SoftwareProjects/MBCRAFT");
+
 class LocalHttpDeployerClientTest extends LTestCase {
 	
 
@@ -17,7 +19,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$deployer_file = new LFile($_SERVER['FRAMEWORK_DIR'].'tools/deployer.php');
 
-		$local_http_deployer_test_dir = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/');
+		$local_http_deployer_test_dir = new LDir(self::SOFTWARE_DIR.'/DeployerTestLocalSite/');
 		$deployer_file->copy($local_http_deployer_test_dir);
 
 		$this->runFixAllPermissionsScript();
@@ -88,7 +90,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($r,"Il comando è andato a buon fine senza un file di execution mode!");
 
-		$d = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/config/mode/');
+		$d = new LDir(self::SOFTWARE_DIR.'/DeployerTestLocalSite/config/mode/');
 		$d->touch();
 
 		$f = $d->newFile('development.txt');
@@ -216,7 +218,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
-		$enemy_file = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/enemy.txt');
+		$enemy_file = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/enemy.txt');
 
 		$this->assertFalse($enemy_file->exists(),"Il file intruso esiste già!");
 
@@ -253,15 +255,15 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
-		$other_dir = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/other/');
+		$other_dir = new LDir(self::SOFTWARE_DIR.'/DeployerTestLocalSite/other/');
 
 		$other_dir->touch();
 
-		$temp_dir = new LDir('/home/marco/PhpProjects/DeployerTestLocalSite/temp/');
+		$temp_dir = new LDir(self::SOFTWARE_DIR.'/DeployerTestLocalSite/temp/');
 
 		$temp_dir->touch();
 
-		$enemy_file = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/temp/enemy.txt');
+		$enemy_file = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/temp/enemy.txt');
 
 		$this->assertFalse($enemy_file->exists(),"Il file intruso esiste già!");
 
@@ -291,7 +293,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 	function testSetGetEnv() {
 		$this->initAll();
 
-		$df = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
+		$df = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/deployer.php');
 
 		$this->assertTrue($df->exists(),"Il deployer non è stato trovato al suo posto!");
 
@@ -321,7 +323,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->initAll();
 
-		$df = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
+		$df = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/deployer.php');
 
 		$this->assertTrue($df->exists(),"Il deployer non è stato trovato al suo posto!");
 
@@ -403,15 +405,15 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'update non è andato a buon fine!");
 
-		$f1 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_file.txt');
+		$f1 = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/project_file.txt');
 
 		$this->assertTrue($f1->exists(),"Il file di progetto non è stato copiato con successo!");
 
-		$f2 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_dir/my_file.txt');
+		$f2 = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/project_dir/my_file.txt');
 
 		$this->assertTrue($f2->exists(),"Il file di progetto nella sottodirectory non è stato copiato con successo!");
 
-		$f3 = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/project_dir/subdir/my_subdir_file.txt');
+		$f3 = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/project_dir/subdir/my_subdir_file.txt');
 
 		$this->assertTrue($f3->exists(),"Il file di progetto nella sotto sotto directory non è stato copiato con successo!");
 
@@ -474,7 +476,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
-		$fd = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/deployer.php');
+		$fd = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/deployer.php');
 
 		$this->assertTrue($fd->exists(),"Il deployer non è al suo posto!");
 
@@ -519,9 +521,9 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
-		$host_config = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/config/hostnames/my_host/config.json');
+		$host_config = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/config/hostnames/my_host/config.json');
 
-		$internal_config = new LFile('/home/marco/PhpProjects/DeployerTestLocalSite/config/internal/framework.json');
+		$internal_config = new LFile(self::SOFTWARE_DIR.'/DeployerTestLocalSite/config/internal/framework.json');
 
 		$this->assertFalse($host_config->exists(),"Il file di configurazione esiste già nella destinazione e non dovrebbe!");
 
@@ -612,7 +614,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
 
-		$dir_fix_permissions = new LDir("/home/marco/PhpProjects/DeployerTestLocalSite/my_perm_dir/");
+		$dir_fix_permissions = new LDir(self::SOFTWARE_DIR."/DeployerTestLocalSite/my_perm_dir/");
 		$dir_fix_permissions->touch();
 		$p1 = $dir_fix_permissions->newFile("prova.txt");
 		$p1->setContent("Hello!");

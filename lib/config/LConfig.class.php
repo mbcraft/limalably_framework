@@ -207,7 +207,7 @@ class LConfig {
                     $json_config = LJsonUtils::parseContent('config',$config_dir_path . 'config'.self::CONFIG_EXTENSION,file_get_contents($config_dir_path . 'config'.self::CONFIG_EXTENSION));
                     
                 } catch (\Exception $ex) {
-                    LResult::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config".self::CONFIG_EXTENSION." ... ah se qualcuno/a dovesse leggere la colpa non è di chi ha creato il sito, ma di chi offre l'hosting, che è davvero ridicolo ...");
+                    LResult::error_message("Errore nella lettura del file di configurazione " . $config_dir_path . "config".self::CONFIG_EXTENSION." ...".$ex->getMessage());
                     LResult::exception($ex);
                     Limalably::finish(1);
                 }

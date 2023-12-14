@@ -1425,7 +1425,7 @@ class DStringUtils {
     {
             $string[0] = strtoupper($string[0]);
 
-            $func = create_function('$c', 'return strtoupper($c[1]);');
+            $func = function($c)  { return strtoupper($c[1]); } ;
             return preg_replace_callback('/_([a-z])/', $func, $string);
     }
     /*
@@ -1558,7 +1558,7 @@ interface DIInspector {
 
 }
 
-class ContentHashInspector implements DIInspector {
+class DContentHashInspector implements DIInspector {
 
     private $excluded_paths = [];
     private $included_paths = [];
@@ -1603,7 +1603,7 @@ class ContentHashInspector implements DIInspector {
     }
 }
 
-class PermissionsFixerInspector implements DIInspector {
+class DPermissionsFixerInspector implements DIInspector {
 
     private $excluded_paths = [];
     private $included_paths = [];
@@ -1661,7 +1661,7 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 class DeployerController {
 
-    const BUILD_NUMBER = 69;
+    const BUILD_NUMBER = 76;
 
     const DEPLOYER_VERSION = "1.5";
 
@@ -1811,12 +1811,18 @@ class DeployerController {
         if (!$f->exists()) return $path_prefix.'lib/db/functions.php not found.';
         $f->requireFileOnce();
 
+        $_SERVER['PROJECT_DIR'] = $_SERVER['DEPLOYER_PROJECT_DIR'];
+
         if (!LConfig::initCalled()) LConfig::init();
 
         if (!LClassLoader::initCalled()) LClassLoader::init();
 
         return true;
 
+    }
+
+    private function failureNoConfigFilesForDbConnection() {
+        return $this->failure("No config files are present in order to look for database connections. Server root : ".$_SERVER['DEPLOYER_PROJECT_DIR'].' - hostname '.LEnvironmentUtils::getHostname().' - PHP CONFIG:'.(LConfig::phpConfigFound()?'true':'false').' - JSON CONFIG : '.(LConfig::jsonConfigFound()?'true':'false'));
     }
 
     public function listDb($password) {
@@ -1834,7 +1840,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             $db_list = LConfigReader::simple('/database');
 
@@ -1861,7 +1867,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1911,7 +1917,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1972,7 +1978,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 
@@ -1995,7 +2001,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 
@@ -2018,7 +2024,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 
@@ -2045,7 +2051,7 @@ class DeployerController {
                 return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
             }
 
-            if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+            if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
             LResult::disableOutput();
 
@@ -2143,7 +2149,7 @@ class DeployerController {
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
-            $inspector = new ContentHashInspector();
+            $inspector = new DContentHashInspector();
 
             $inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
             $inspector->setIncludedPaths($this->getFinalPathList($included_paths));
@@ -2203,7 +2209,7 @@ class DeployerController {
                 if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
             }
 
-            $inspector = new PermissionsFixerInspector($permissions_to_set);
+            $inspector = new DPermissionsFixerInspector($permissions_to_set);
 
             $inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
             $inspector->setIncludedPaths($this->getFinalPathList($included_paths));
@@ -2787,6 +2793,6 @@ if (isset($_POST['METHOD'])) {
 	   $controller->processRequest();
 
     } catch (\Exception $ex) {
-        echo $controller->preparePostResponse($controller->failure("Server got an exception : ".$ex->getMessage()));
+        echo $controller->preparePostResponse($controller->failure("Server got an exception : ".$ex->getMessage()." - ".$ex->getTraceAsString()));
     }
 } else echo "Hello :)";

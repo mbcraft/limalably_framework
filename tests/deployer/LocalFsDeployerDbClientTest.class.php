@@ -49,7 +49,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/SoftwareProjects/LocalDeployerTestDb/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -88,7 +88,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/SoftwareProjects/LocalDeployerTestDb/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -98,7 +98,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
 
-		$save_dir = new LDir('/home/marco/PhpProjects/limalably_framework/tmp/');
+		$save_dir = new LDir('/home/marco/SoftwareProjects/limalably_framework/tmp/');
 
 		$r = $dc->backup_db_structure('local_key','hosting_dreamhost_tests',$save_dir->getFullPath());
 
@@ -135,7 +135,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/SoftwareProjects/LocalDeployerTestDb/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -145,7 +145,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$this->assertTrue($r,"Impossibile verificare correttamente l'accesso col token.");
 
-		$save_dir = new LDir('/home/marco/PhpProjects/limalably_framework/tmp/');
+		$save_dir = new LDir('/home/marco/SoftwareProjects/limalably_framework/tmp/');
 
 		$r = $dc->backup_db_data('local_key','hosting_dreamhost_tests',$save_dir->getFullPath());
 
@@ -182,7 +182,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/SoftwareProjects/LocalDeployerTestDb/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -221,7 +221,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/SoftwareProjects/LocalDeployerTestDb/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -260,7 +260,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/SoftwareProjects/LocalDeployerTestDb/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -299,7 +299,7 @@ class LocalFsDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/PhpProjects/LocalDeployerTestDb/deployer.php');
+		$r = $dc->attach('local_key','wwwroot/deployer.php','/home/marco/SoftwareProjects/LocalDeployerTestDb/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 

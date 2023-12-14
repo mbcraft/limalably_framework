@@ -10,11 +10,11 @@ class StringUtilsTest extends LTestCase {
     
     function testRemoveInitialWww()
     {
-        $current_host = "www.eShopManager.it";
+        $current_host = "www.mbcraft.it";
         $no_www = substr($current_host,4);
 
         $this->assertTrue(strpos($current_host,"www.")===0,"La posizione del www non e' stata rilevata correttamente!!");
-        $this->assertEqual("eShopManager.it",$no_www,"La rimozione della stringa iniziale www non e' andata a buon fine!!");
+        $this->assertEqual("mbcraft.it",$no_www,"La rimozione della stringa iniziale www non e' andata a buon fine!!");
     }
 
     function testUnderscoreToCamelCase()

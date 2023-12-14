@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','limalably');
 if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','limalably_framework');
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
 
 class RemoteHttpsDeployerDbClientTest extends LTestCase {
 		const TEST_DIR = "tests";

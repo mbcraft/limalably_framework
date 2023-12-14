@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
+
 $current_dir = __DIR__;
 
 if (!DStringUtils::endsWith($current_dir,'/')) $current_dir.='/';

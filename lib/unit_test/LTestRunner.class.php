@@ -6,6 +6,14 @@
  *  
  */
 
+/*
+Le classi che finiscono con TestLib.class.php sono considerate classi di libreria e vengono caricate per poter eseguire i test .
+Le classi dei test devono finire con Test.class.php .
+
+I percorsi che cominciano con underscore (_) vengono saltati. 
+
+*/
+
 class LTestRunner {
     
     static $test_classes = [];
@@ -14,32 +22,45 @@ class LTestRunner {
         self::$test_classes = [];
     }
     
-    static function collect($root_dir,$folder) {
+    static function collect($root_dir,$path) {
         
-        if (LStringUtils::startsWith($folder,'_') || LStringUtils::endsWith($folder,'_')) {
+        if (LStringUtils::startsWith($path,'_')) {
             
-            echo "Skipping folder '".$folder."' as it starts or ends with '_' ...\n";
+            echo "Skipping folder '".$path."' as it starts with '_' ...\n";
 
             return;
         }
 
-        $elements = scandir($root_dir.$folder); 
-        
-        foreach ($elements as $elem) {
-            if ($elem!='.' && $elem!='..')
-            {    
-                $full_path = $root_dir.$folder.$elem;
-                
-                if (is_file($full_path) && strpos($elem,'TestLib.class.php')===(strlen($elem)-strlen('TestLib.class.php'))) {
-                    require_once ($full_path);
-                }
+        if (LStringUtils::endsWith($path,'/')) {
 
-                if (is_file($full_path) && strpos($elem,'Test.class.php')===(strlen($elem)-strlen('Test.class.php'))) {
-                    self::$test_classes[] = $root_dir.$folder.$elem;
+            $elements = scandir($root_dir.$path); 
+            
+            foreach ($elements as $elem) {
+                if ($elem!='.' && $elem!='..')
+                {    
+                    $full_path = $root_dir.$folder.$elem;
+                    
+                    if (is_file($full_path) && strpos($elem,'TestLib.class.php')===(strlen($elem)-strlen('TestLib.class.php'))) {
+                        require_once ($full_path);
+                    }
+
+                    if (is_file($full_path) && strpos($elem,'Test.class.php')===(strlen($elem)-strlen('Test.class.php'))) {
+                        self::$test_classes[] = $root_dir.$folder.$elem;
+                    }
+                    if (is_dir($full_path.'/')) {
+                        self::collect($root_dir,substr($full_path, strlen($root_dir)).'/');
+                    }
                 }
-                if (is_dir($full_path.'/')) {
-                    self::collect($root_dir,substr($full_path, strlen($root_dir)).'/');
-                }
+            }
+
+        }
+
+        if (LStringUtils::endsWith($path,'.php')) {
+
+            $full_path = $root_dir.$path;
+
+            if (is_file($full_path) && strpos($full_path,'Test.class.php')===(strlen($full_path)-strlen('Test.class.php'))) {
+                self::$test_classes[] = $full_path;
             }
         }
     }
@@ -48,7 +69,7 @@ class LTestRunner {
         LExecutionMode::setUnitTesting();
 
         foreach (self::$test_classes as $test_class) {
-            //echo "Test class  : ".$test_class."\n";
+            
             require_once($test_class);
             $path_parts = explode('/',$test_class);
             $filename = array_pop($path_parts);
@@ -62,8 +83,7 @@ class LTestRunner {
     }
     
     static function printSummary() {
-        //uso LResult ...
-        //$NL = $_SERVER['ENVIRONMENT'] == 'script' ? "\n" : "<br>";
+        
         LResult::messagenl('');
         LResult::message('Unit test summary : ');
         LResult::messagenl(LTestCase::getTestCaseCount().' TEST CASES, '.LTestCase::getTestErrorsCount().' ERRORS, '.LTestCase::getTestMethodsCount().' METHODS, '.LTestCase::getAssertionsCount().' ASSERTIONS, '.LTestCase::getFailuresCount().' FAILURES.');

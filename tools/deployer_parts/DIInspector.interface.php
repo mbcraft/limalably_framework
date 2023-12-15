@@ -6,12 +6,14 @@
  *  
  */
 
-interface DIInspector {
+if (!class_exists('DIInspector')) {
+    interface DIInspector {
 
-    public function visit($dir);
+        public function visit($dir);
 
-    public function getExcludedPaths();
+        public function getExcludedPaths();
 
-    public function getIncludedPaths();
+        public function getIncludedPaths();
 
+    }
 }

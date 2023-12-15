@@ -20,6 +20,7 @@ class LFrameworkCommandExecutor implements LICommandExecutor {
         switch ($route) {
             case 'framework/run_tests' : $cmd = new LFrameworkRunTestsCommand();break;
             case 'framework/run_tests_fast' : $cmd = new LFrameworkRunTestsFastCommand();break;
+            case 'framework/rebuild_deployer' : $cmd = new LRebuildDeployerCommand();break;
         }
 
         if ($cmd) {

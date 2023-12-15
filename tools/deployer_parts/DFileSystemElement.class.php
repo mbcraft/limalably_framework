@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
- * 
- *  
- */
 
 if (!defined('DS')) define('DS','/');
 
@@ -289,5 +284,3 @@ if (!class_exists('DFileSystemElement')) {
 
     }
 }
-
-?>

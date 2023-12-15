@@ -492,5 +492,3 @@ class LTag implements LITagRenderingTips, LIParentable, ArrayAccess
     }
 
 }
-
-?>

@@ -44,5 +44,3 @@ class LCookie
         return $result;
     }
 }
-
-?>

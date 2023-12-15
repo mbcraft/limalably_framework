@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
- * 
- *  
- */
 
 if (!class_exists('DFileReader')) {
     class DFileReader
@@ -121,5 +116,3 @@ if (!class_exists('DFileReader')) {
         }
     }
 }
-
-?>

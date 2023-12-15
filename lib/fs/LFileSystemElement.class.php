@@ -300,5 +300,3 @@ abstract class LFileSystemElement
     abstract function getName();
 
 }
-
-?>

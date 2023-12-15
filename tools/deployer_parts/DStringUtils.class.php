@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
- * 
- *  
- */
 
 if (!class_exists('DStringUtils')) {
     class DStringUtils {

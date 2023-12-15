@@ -1,10 +1,11 @@
 <?php
 
+
 /**
-* @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it 
-*
-*
-*/
+ * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
+ * 
+ *  
+ */
 
 if (!defined('FRAMEWORK_NAME')) define ('FRAMEWORK_NAME','limalably');
 if (!defined('FRAMEWORK_DIR_NAME')) define ('FRAMEWORK_DIR_NAME','limalably_framework');
@@ -490,8 +491,9 @@ if (!class_exists('DFileSystemUtils')) {
 
     }
 }
-
-
+/*
+ * Rappresenta un puntatore a un determinato percorso, in questo caso una directory
+ */
 if (!class_exists('DDir')) {
     class DDir extends DFileSystemElement
     {
@@ -963,8 +965,9 @@ if (!class_exists('DDir')) {
 
     }
 }
-
-
+/*
+ * Rappresenta un puntatore a un determinato percorso, in questo caso un file
+ */
 if (!class_exists('DFile')) {
     class DFile extends DFileSystemElement
     {
@@ -1190,7 +1193,6 @@ if (!class_exists('DFile')) {
     }
 }
 
-
 if (!class_exists('DFileReader')) {
     class DFileReader
     {
@@ -1307,7 +1309,6 @@ if (!class_exists('DFileReader')) {
     }
 }
 
-
 if (!class_exists('DFileWriter')) {
     class DFileWriter extends DFileReader
     {
@@ -1371,7 +1372,6 @@ if (!class_exists('DFileWriter')) {
         
     }
 }
-
 
 if (!class_exists('DZipUtils')) {
     class DZipUtils
@@ -1578,7 +1578,6 @@ if (!class_exists('DIInspector')) {
 
     }
 }
-
 if (!class_exists('DContentHashInspector')) {
     class DContentHashInspector implements DIInspector {
 
@@ -1673,9 +1672,6 @@ if (!class_exists('DPermissionsFixerInspector')) {
     }
 }
 
-
-//misc important variables ---
-
 $current_dir = __DIR__;
 
 if (!DStringUtils::endsWith($current_dir,'/')) $current_dir.='/';
@@ -1685,9 +1681,12 @@ $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 //starting deployer controller ---
 
 if (!class_exists('DeployerController')) {
+    
+    //starting deployer controller ---
+
     class DeployerController {
 
-        const BUILD_NUMBER = 70;
+        const BUILD_NUMBER = 76;
 
         const DEPLOYER_VERSION = "1.5";
 
@@ -1697,7 +1696,7 @@ if (!class_exists('DeployerController')) {
         private $root_dir;
 
         //password
-        private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; 
+        private static $PWD = /*!P_W_D!*/"rqgflozdoibezswxqzitlqsicfhafqticywo"/*!P_W_D!*/; 
 
         //deployer path from root
         private static $DPFR = /*!D_P_F_R!*/"deployer.php"/*!D_P_F_R!*/; 
@@ -1837,12 +1836,18 @@ if (!class_exists('DeployerController')) {
             if (!$f->exists()) return $path_prefix.'lib/db/functions.php not found.';
             $f->requireFileOnce();
 
+            $_SERVER['PROJECT_DIR'] = $_SERVER['DEPLOYER_PROJECT_DIR'];
+
             if (!LConfig::initCalled()) LConfig::init();
 
             if (!LClassLoader::initCalled()) LClassLoader::init();
 
             return true;
 
+        }
+
+        private function failureNoConfigFilesForDbConnection() {
+            return $this->failure("No config files are present in order to look for database connections. Server root : ".$_SERVER['DEPLOYER_PROJECT_DIR'].' - hostname '.LEnvironmentUtils::getHostname().' - PHP CONFIG:'.(LConfig::phpConfigFound()?'true':'false').' - JSON CONFIG : '.(LConfig::jsonConfigFound()?'true':'false'));
         }
 
         public function listDb($password) {
@@ -1860,7 +1865,7 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
                 }
 
-                if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+                if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
                 $db_list = LConfigReader::simple('/database');
 
@@ -1887,7 +1892,7 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
                 }
 
-                if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+                if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
                 if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1937,7 +1942,7 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
                 }
 
-                if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+                if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
                 if (!LDbConnectionManager::has($connection_name)) return $this->failure("Unable to find db connection with name : ".$connection_name);
 
@@ -1998,7 +2003,7 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
                 }
 
-                if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+                if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
                 LResult::disableOutput();
 
@@ -2021,7 +2026,7 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
                 }
 
-                if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+                if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
                 LResult::disableOutput();
 
@@ -2044,7 +2049,7 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
                 }
 
-                if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+                if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
                 LResult::disableOutput();
 
@@ -2071,7 +2076,7 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Some framework classes are missing, use framework_update to upload framework classes ...");
                 }
 
-                if (!LConfigReader::has('/database')) return $this->failure("No config files are present in order to look for database connections.");
+                if (!LConfigReader::has('/database')) return $this->failureNoConfigFilesForDbConnection();
 
                 LResult::disableOutput();
 
@@ -2802,6 +2807,7 @@ if (!class_exists('DeployerController')) {
             }
         }
     }
+
 }
 
 //--launch

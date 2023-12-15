@@ -91,5 +91,3 @@ class LHttp
         return $response;
     }
 }
-
-?>

@@ -28,5 +28,3 @@ class LSitemap
         echo "</urlset>\r\n";
     }
 }
-
-?>

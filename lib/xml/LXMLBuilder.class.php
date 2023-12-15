@@ -66,5 +66,3 @@ class XMLBuilder
         return $this->doc->saveXML();
     }
 }
-
-?>

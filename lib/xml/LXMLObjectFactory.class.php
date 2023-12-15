@@ -68,5 +68,3 @@ class LXMLObjectFactory
         return $ob;
     }
 }
-
-?>

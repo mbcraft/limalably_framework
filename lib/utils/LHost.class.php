@@ -37,5 +37,3 @@ class LHost
             return false;
     }
 }
-
-?>

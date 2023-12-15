@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
- * 
- *  
- */
 
 if (!class_exists('DZipUtils')) {
     class DZipUtils
@@ -68,5 +63,3 @@ if (!class_exists('DZipUtils')) {
         }
     }
 }
-
-?>

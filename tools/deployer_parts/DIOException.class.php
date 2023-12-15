@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @author MBCRAFT di Marco Bagnaresi - mail : info@mbcraft.it
- * 
- *  
- */
 
 if (!class_exists('DIOException')) {
     class DIOException extends \Exception
@@ -14,5 +9,3 @@ if (!class_exists('DIOException')) {
         }
     }
 }
-
-?>

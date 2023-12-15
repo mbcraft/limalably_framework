@@ -61,5 +61,3 @@ class LSitemapEntry
         echo T."</url>".CRLF;
     }
 }
-
-?>

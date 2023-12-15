@@ -119,5 +119,3 @@ class LFileReader
         return $this->my_handle;
     }
 }
-
-?>

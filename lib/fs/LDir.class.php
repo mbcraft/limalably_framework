@@ -526,5 +526,3 @@ class LDir extends LFileSystemElement
     }
 
 }
-
-?>

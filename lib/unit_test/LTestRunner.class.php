@@ -38,14 +38,14 @@ class LTestRunner {
             foreach ($elements as $elem) {
                 if ($elem!='.' && $elem!='..')
                 {    
-                    $full_path = $root_dir.$folder.$elem;
+                    $full_path = $root_dir.$path.$elem;
                     
                     if (is_file($full_path) && strpos($elem,'TestLib.class.php')===(strlen($elem)-strlen('TestLib.class.php'))) {
                         require_once ($full_path);
                     }
 
                     if (is_file($full_path) && strpos($elem,'Test.class.php')===(strlen($elem)-strlen('Test.class.php'))) {
-                        self::$test_classes[] = $root_dir.$folder.$elem;
+                        self::$test_classes[] = $root_dir.$path.$elem;
                     }
                     if (is_dir($full_path.'/')) {
                         self::collect($root_dir,substr($full_path, strlen($root_dir)).'/');

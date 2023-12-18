@@ -45,7 +45,7 @@ class LTestRunner {
                     }
 
                     if (is_file($full_path) && strpos($elem,'Test.class.php')===(strlen($elem)-strlen('Test.class.php'))) {
-                        self::$test_classes[] = $root_dir.$path.$elem;
+                        self::$test_classes[] = $full_path;
                     }
                     if (is_dir($full_path.'/')) {
                         self::collect($root_dir,substr($full_path, strlen($root_dir)).'/');

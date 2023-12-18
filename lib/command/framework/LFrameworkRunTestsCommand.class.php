@@ -22,20 +22,20 @@ class LFrameworkRunTestsCommand implements LICommand {
 
             if (LStringUtils::endsWith($param,'.php')) {
 
-                echo "Running only one unit test ...\n";
-
                 $path = $starting_dir.LParameters::getByIndex(0);
+
+                echo "Running only one unit test : ".$path;
 
             } else {
              
-                echo "Running only tests in subfolder '".$subfolder."' ...\n";
+                $path = $starting_dir.LParameters::getByIndex(0).'/';
 
-                $path = $starting_dir.LParameters::getByIndex(0).'/';    
+                echo "Running only tests in subfolder '".$path."' ...\n";    
             
             }
             
         } else {
-            echo "Executing all tests subfolders unit tests ...\n";
+            echo "Executing all unit tests ...\n";
         }
 
         LTestRunner::collect($_SERVER['FRAMEWORK_DIR'], $path);

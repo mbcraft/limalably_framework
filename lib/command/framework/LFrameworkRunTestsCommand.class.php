@@ -36,6 +36,8 @@ class LFrameworkRunTestsCommand implements LICommand {
             
         } else {
             echo "Executing all unit tests ...\n";
+
+            $path = $starting_dir;
         }
 
         LTestRunner::collect($_SERVER['FRAMEWORK_DIR'], $path);

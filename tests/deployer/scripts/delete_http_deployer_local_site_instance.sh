@@ -4,6 +4,6 @@
 
 echo "Deleting local http website deployer instance ...";
 
-sudo rm -rf /home/marco/PhpProjects/DeployerTestLocalSite/*
+sudo rm -rf /home/marco/SoftwareProjects/MBCRAFT/DeployerTestLocalSite/*
 
 

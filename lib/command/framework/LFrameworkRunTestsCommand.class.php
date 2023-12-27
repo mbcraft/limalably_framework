@@ -11,6 +11,8 @@ class LFrameworkRunTestsCommand implements LICommand {
 
 
     public function execute() {
+
+        $path = "";
         
         LTestRunner::clear();
 

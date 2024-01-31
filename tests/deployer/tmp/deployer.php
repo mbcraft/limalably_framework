@@ -1696,7 +1696,7 @@ if (!class_exists('LDeployerController')) {
         private $root_dir;
 
         //password
-        private static $PWD = /*!P_W_D!*/""/*!P_W_D!*/; 
+        private static $PWD = /*!P_W_D!*/"wofbnkroaghzbomnkymyqmhrephbdkkhmtqa"/*!P_W_D!*/; 
 
         //deployer path from root
         private static $DPFR = /*!D_P_F_R!*/"deployer.php"/*!D_P_F_R!*/; 

@@ -15,7 +15,7 @@ if (!class_exists('LDeployerController')) {
 
     class LDeployerController {
 
-        const BUILD_NUMBER = 76;
+        const BUILD_NUMBER = 77;
 
         const DEPLOYER_VERSION = "1.5";
 

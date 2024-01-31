@@ -447,7 +447,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->assertTrue($this->isSuccess($result),"La chiamata non è andata a buon fine!");
 
-		$this->assertTrue($result['data'] instanceof DFile,"L'elemento restituito non è un file!");
+		$this->assertTrue($result['data'] instanceof LDFile,"L'elemento restituito non è un file!");
 	}
 
 	function testDeployerFixPermissions() {

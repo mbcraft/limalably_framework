@@ -15,11 +15,11 @@ if (!class_exists('LDeployerController')) {
 
     class LDeployerController {
 
-        const BUILD_NUMBER = 77;
+        const BUILD_NUMBER = 78;
 
         const DEPLOYER_VERSION = "1.5";
 
-        const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloaLDDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing','fixPermissions'];
+        const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing','fixPermissions'];
 
         private $deployer_file;
         private $root_dir;

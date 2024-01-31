@@ -1,15 +1,15 @@
 <?php
 
 
-if (!class_exists('DFileWriter')) {
-    class DFileWriter extends DFileReader
+if (!class_exists('LDFileWriter')) {
+    class LDFileWriter extends LDFileReader
     {
         const CR = "\r";
         const LF = "\n";
 
         static function newTmpFile()
         {
-            return new DFileWriter(tmpfile());
+            return new LDFileWriter(tmpfile());
         }
 
         /*

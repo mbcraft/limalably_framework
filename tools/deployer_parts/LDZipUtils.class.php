@@ -1,23 +1,23 @@
 <?php
 
 
-if (!class_exists('DZipUtils')) {
-    class DZipUtils
+if (!class_exists('LDZipUtils')) {
+    class LDZipUtils
     {
         public static function expandArchive($zip_file,$target_folder)
         {
             $zip_archive = new ZipArchive();
          
-            if ($zip_file instanceof DFile)
+            if ($zip_file instanceof LDFile)
                 $real_zip_file = $zip_file;
             else
-                $real_zip_file = new DFile($zip_file);
+                $real_zip_file = new LDFile($zip_file);
             
             
-            if ($target_folder instanceof DDir)
+            if ($target_folder instanceof LDDir)
                 $target_dir = $target_folder;
             else
-                $target_dir = new DDir($target_folder);
+                $target_dir = new LDDir($target_folder);
             
             $zip_archive->open($real_zip_file->getFullPath());
             
@@ -30,10 +30,10 @@ if (!class_exists('DZipUtils')) {
         {
             if ($save_file->exists()) $save_file->delete(); 
 
-            if ($folder_to_zip instanceof DDir)
+            if ($folder_to_zip instanceof LDDir)
                 $dir_to_zip = $folder_to_zip;
             else
-                $dir_to_zip = new DDir($folder_to_zip);
+                $dir_to_zip = new LDDir($folder_to_zip);
             
             if (!class_exists('ZipArchive')) throw new \Exception("Can't use zip files, ZipArchive class missing.");
 
@@ -41,7 +41,7 @@ if (!class_exists('DZipUtils')) {
 
             $zip_archive->open($save_file->getFullPath(),  ZipArchive::CREATE);
 
-            DZipUtils::recursiveZipFolder($zip_archive, $dir_to_zip,$local_dir);
+            LDZipUtils::recursiveZipFolder($zip_archive, $dir_to_zip,$local_dir);
 
             $zip_archive->close();
         }
@@ -57,7 +57,7 @@ if (!class_exists('DZipUtils')) {
                 else
                 {
                     $zip_archive->addEmptyDir($local_dir.$dir_entry->getName().'/');
-                    DZipUtils::recursiveZipFolder($zip_archive, $dir_entry,$local_dir.$dir_entry->getName().'/');
+                    LDZipUtils::recursiveZipFolder($zip_archive, $dir_entry,$local_dir.$dir_entry->getName().'/');
                 }
             }
         }

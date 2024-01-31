@@ -40,16 +40,19 @@ class LTestRunner {
                 {    
                     $full_path = $root_dir.$path.$elem;
                     
+
                     if (is_file($full_path) && strpos($elem,'TestLib.class.php')===(strlen($elem)-strlen('TestLib.class.php'))) {
                         require_once ($full_path);
-                    }
+                    } 
 
                     if (is_file($full_path) && strpos($elem,'Test.class.php')===(strlen($elem)-strlen('Test.class.php'))) {
                         self::$test_classes[] = $full_path;
-                    }
+                    } 
+
                     if (is_dir($full_path.'/')) {
                         self::collect($root_dir,substr($full_path, strlen($root_dir)).'/');
                     }
+
                 }
             }
 
@@ -61,6 +64,8 @@ class LTestRunner {
 
             if (is_file($full_path) && strpos($full_path,'Test.class.php')===(strlen($full_path)-strlen('Test.class.php'))) {
                 self::$test_classes[] = $full_path;
+            } else {
+                echo "\n\nTest class not found!! : ".$path."\n\n";
             }
         }
     }

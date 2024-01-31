@@ -1,8 +1,8 @@
 <?php
 
 
-if (!class_exists('DIInspector')) {
-    interface DIInspector {
+if (!class_exists('LDIInspector')) {
+    interface LDIInspector {
 
         public function visit($dir);
 

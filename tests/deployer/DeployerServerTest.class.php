@@ -56,7 +56,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -84,7 +84,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -109,7 +109,7 @@ class DeployerServerTest extends LTestCase {
 	function testWriteFileContent() {
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -133,7 +133,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -150,7 +150,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -180,7 +180,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -209,7 +209,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -244,7 +244,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -293,7 +293,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -320,7 +320,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -364,7 +364,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -419,7 +419,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 
@@ -454,7 +454,7 @@ class DeployerServerTest extends LTestCase {
 
 		$this->reinit();
 
-		$deployer_controller = new DeployerController();
+		$deployer_controller = new LDeployerController();
 
 		$result = $deployer_controller->hello();
 

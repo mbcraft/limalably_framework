@@ -1,8 +1,8 @@
 <?php
 
 
-if (!class_exists('DFileReader')) {
-    class DFileReader
+if (!class_exists('LDFileReader')) {
+    class LDFileReader
     {
         protected $my_handle;
         protected $open;
@@ -15,7 +15,7 @@ if (!class_exists('DFileReader')) {
 
         protected function checkClosed()
         {
-            if (!$this->open) throw new \DIOException("The stream is closed!!");
+            if (!$this->open) throw new \LDIOException("The stream is closed!!");
         }
 
         function isOpen()
@@ -106,7 +106,7 @@ if (!class_exists('DFileReader')) {
                 $this->my_handle = null;
             }
             else
-                throw new \DIOException("Reader/Writer already closed.");
+                throw new \LDIOException("Reader/Writer already closed.");
 
         }
         

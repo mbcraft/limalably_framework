@@ -1,8 +1,8 @@
 <?php
 
 
-if (!class_exists('DStringUtils')) {
-    class DStringUtils {
+if (!class_exists('LDStringUtils')) {
+    class LDStringUtils {
         
         static function underscoredToCamelCase($string)
         {

@@ -15,7 +15,7 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 
 		$deployer_instance_file->requireFileOnce();
 
-		$this->controller = new DeployerController();
+		$this->controller = new LDeployerController();
 	}
 
 	private function isSuccess($result) {

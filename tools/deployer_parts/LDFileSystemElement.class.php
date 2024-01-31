@@ -3,8 +3,8 @@
 
 if (!defined('DS')) define('DS','/');
 
-if (!class_exists('DFileSystemElement')) {
-    abstract class DFileSystemElement
+if (!class_exists('LDFileSystemElement')) {
+    abstract class LDFileSystemElement
     {
         protected $__full_path;
         protected $__path;
@@ -127,7 +127,7 @@ if (!class_exists('DFileSystemElement')) {
                 $this->__full_path = $base_folder.$path;
             }
 
-            if (DFileSystemUtils::isDir($this->__full_path) && !DStringUtils::endsWith($this->__full_path,'/')) {
+            if (LDFileSystemUtils::isDir($this->__full_path) && !LDStringUtils::endsWith($this->__full_path,'/')) {
                 $this->__path .= '/';
                 $this->__full_path .= '/';
             }
@@ -137,7 +137,7 @@ if (!class_exists('DFileSystemElement')) {
 
         function equals($file_or_dir)
         {
-            if ($file_or_dir instanceof DFileSystemElement)
+            if ($file_or_dir instanceof LDFileSystemElement)
                 return $this->getFullPath() == $file_or_dir->getFullPath();
             else 
                 return false;
@@ -215,7 +215,7 @@ if (!class_exists('DFileSystemElement')) {
             if ($this->isDir())
             {
                 if ($new_name!=null) {
-                    $dest = new LDir($target_dir_or_file->getFullPath());
+                    $dest = new LDDir($target_dir_or_file->getFullPath());
 
                     $dest->touch();
                 }
@@ -224,7 +224,7 @@ if (!class_exists('DFileSystemElement')) {
 
                     $target_dir_or_file->touch();
 
-                    $dest = new LDir($target_dir_or_file->getFullPath().'/'.$name.'/');
+                    $dest = new LDDir($target_dir_or_file->getFullPath().'/'.$name.'/');
                 }
 
             }
@@ -240,7 +240,7 @@ if (!class_exists('DFileSystemElement')) {
 
         function dump()
         {
-            echo "DUMP DFileSystemElement : ".$this->__full_path;
+            echo "DUMP LDFileSystemElement : ".$this->__full_path;
         }
 
         function getPath() {
@@ -263,7 +263,7 @@ if (!class_exists('DFileSystemElement')) {
                 return $this->prepareRelativePath($this->__path);
             else
             {
-                if ($relative_to instanceof DDir)
+                if ($relative_to instanceof LDDir)
                     $path = $relative_to->getPath();
                 else
                     $path = $relative_to;
@@ -271,7 +271,7 @@ if (!class_exists('DFileSystemElement')) {
                 {
                     return $this->prepareRelativePath(substr($this->__path,strlen($path)));
                 }
-                else throw new \DIOException("The path does not begin with the specified path : ".$this->__path." does not begin with ".$path);
+                else throw new \LDIOException("The path does not begin with the specified path : ".$this->__path." does not begin with ".$path);
             }
         }
 

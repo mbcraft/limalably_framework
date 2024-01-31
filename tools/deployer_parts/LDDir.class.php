@@ -3,8 +3,8 @@
 /*
  * Rappresenta un puntatore a un determinato percorso, in questo caso una directory
  */
-if (!class_exists('DDir')) {
-    class DDir extends DFileSystemElement
+if (!class_exists('LDDir')) {
+    class LDDir extends LDFileSystemElement
     {
         const TMP_DIR = "temp/";
 
@@ -39,7 +39,7 @@ if (!class_exists('DDir')) {
 
             $path = $this->getPath();
 
-            if (DStringUtils::startsWith($path,$inspector->getExcludedPaths())) return $result;
+            if (LDStringUtils::startsWith($path,$inspector->getExcludedPaths())) return $result;
             
             $result = $inspector->visit($this);
             
@@ -85,7 +85,7 @@ if (!class_exists('DDir')) {
 
         static function getTempDir() {
            
-            return new DDir(self::TMP_DIR);
+            return new LDDir(self::TMP_DIR);
         }
 
         function newTempFile($prefix='tmp_') {
@@ -93,7 +93,7 @@ if (!class_exists('DDir')) {
             if (!$this->exists()) $this->touch();
 
             $result = tempnam($this->getFullPath(),$prefix);
-            if ($result) return new DFile($result);
+            if ($result) return new LDFile($result);
             else return false;
         }
 
@@ -106,7 +106,7 @@ if (!class_exists('DDir')) {
             $all_hashes = "";
 
             foreach ($elements as $elem) {
-                if (!DStringUtils::startsWith($elem->getPath(),$excluded_paths)) {
+                if (!LDStringUtils::startsWith($elem->getPath(),$excluded_paths)) {
                     $all_hashes .= $elem->getContentHash($excluded_paths);
                 }
             }
@@ -123,7 +123,7 @@ if (!class_exists('DDir')) {
         {
             $parent_dir = dirname($this->__full_path);
             
-            return new DDir($parent_dir);
+            return new LDDir($parent_dir);
         }
 
         /*
@@ -132,13 +132,13 @@ if (!class_exists('DDir')) {
         function rename($new_name)
         {
             if (strstr($new_name,"/")!==false)
-                throw new \DIOException("The new name contains invalid characters : / !!");
+                throw new \LDIOException("The new name contains invalid characters : / !!");
 
             $parent_dir = $this->getParentDir();
 
             $target_path = $parent_dir->getFullPath()."/".$new_name;
 
-            $target_dir = new DDir($target_path);
+            $target_dir = new LDDir($target_path);
             if ($target_dir->exists()) return false;
 
             return rename($this->__full_path,$target_dir->getFullPath());
@@ -169,27 +169,27 @@ if (!class_exists('DDir')) {
         
         function newSubdir($name)
         {
-            if (DFileSystemUtils::isDir($this->__path.'/'.$name))
+            if (LDFileSystemUtils::isDir($this->__path.'/'.$name))
             {
                 //directory already exists
                 //echo "Directory already exists : ".$this->__full_path."/".$name;
-                return new DDir($this->__path.'/'.$name);
+                return new LDDir($this->__path.'/'.$name);
             }
-            if (DFileSystemUtils::isFile($this->__path.'/'.$name))
+            if (LDFileSystemUtils::isFile($this->__path.'/'.$name))
             {
-                throw new \DIOException("A file with this name already exists");
+                throw new \LDIOException("A file with this name already exists");
             }
             //directory or files do not exists
             
             if (!file_exists($this->__full_path)) {
-                $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
+                $result = @mkdir($this->__full_path.$name, LDFileSystemElement::getDefaultPermissionsOctal(),true);
             
                 if ($result==true) {
-                    chmod($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal());
-                    return new DDir($this->__path.$name);
+                    chmod($this->__full_path.$name, LDFileSystemElement::getDefaultPermissionsOctal());
+                    return new LDDir($this->__path.$name);
                 }
             }
-            else return new DDir($this->__full_path);
+            else return new LDDir($this->__full_path);
 
         }
     /*
@@ -218,7 +218,7 @@ if (!class_exists('DDir')) {
      */
         function listElements($myExcludes=self::DEFAULT_EXCLUDES,$filter = self::FILTER_ALL_FILES)
         {   
-            if (!$this->exists()) throw new \DIOException("Directory does not exist, can't list elements.");
+            if (!$this->exists()) throw new \LDIOException("Directory does not exist, can't list elements.");
             
             $excludesSet = false;
             
@@ -258,12 +258,12 @@ if (!class_exists('DDir')) {
                     $final_path = $this->__full_path.$element;
                     
                     if (($filter & self::FILTER_ALL_DIRECTORIES) == self::FILTER_ALL_DIRECTORIES) {
-                        if (DFileSystemUtils::isDir($final_path))
-                            $all_dirs[] = new DDir($final_path.'/');
+                        if (LDFileSystemUtils::isDir($final_path))
+                            $all_dirs[] = new LDDir($final_path.'/');
                     }
                     if (($filter & self::FILTER_ALL_FILES) == self::FILTER_ALL_FILES) {
-                        if (DFileSystemUtils::isFile($final_path))
-                            $all_files[] = new DFile($final_path);
+                        if (LDFileSystemUtils::isFile($final_path))
+                            $all_files[] = new LDFile($final_path);
                     }
                 }                
 
@@ -335,12 +335,12 @@ if (!class_exists('DDir')) {
                     if ($this->isDir())
                         $partial_path = $this->__path.$element;
                     if (($filter & self::FILTER_ALL_DIRECTORIES) == self::FILTER_ALL_DIRECTORIES) {
-                        if (DFileSystemUtils::isDir($this->__path.$element))
-                            $all_dirs[] = new DDir($partial_path);
+                        if (LDFileSystemUtils::isDir($this->__path.$element))
+                            $all_dirs[] = new LDDir($partial_path);
                     }
                     if (($filter & self::FILTER_ALL_FILES) == self::FILTER_ALL_FILES) {
-                        if (DFileSystemUtils::isFile($this->__path.DS.$element))
-                            $all_files[] = new DFile($partial_path);
+                        if (LDFileSystemUtils::isFile($this->__path.DS.$element))
+                            $all_files[] = new LDFile($partial_path);
                     }
                 }                
 
@@ -351,7 +351,7 @@ if (!class_exists('DDir')) {
 
         function newFile($name)
         {
-            return new DFile($this->__full_path.'/'.$name);
+            return new LDFile($this->__full_path.'/'.$name);
         }
 
         /*
@@ -364,10 +364,10 @@ if (!class_exists('DDir')) {
 
             if ($recursive)
             {
-                $dir_content = $this->listAll(DDir::SHOW_HIDDEN_FILES);
+                $dir_content = $this->listAll(LDDir::SHOW_HIDDEN_FILES);
                 foreach ($dir_content as $elem)
                 {
-                    if ($elem instanceof DDir)
+                    if ($elem instanceof LDDir)
                         $result &= $elem->delete(true);
                     else
                         $result &= $elem->delete();
@@ -397,9 +397,9 @@ if (!class_exists('DDir')) {
             {
                 $dir_elem = $content[0];
                 if ($dir_elem->isDir()) return $dir_elem;
-                throw new \DIOException("The element inside the folder is not a folder.");
+                throw new \LDIOException("The element inside the folder is not a folder.");
             }
-            throw new \DIOException("Unable to find a single subdir. Too many folders found:".count($content));
+            throw new \LDIOException("Unable to find a single subdir. Too many folders found:".count($content));
         }
 
         function hasSubdirs()
@@ -420,8 +420,8 @@ if (!class_exists('DDir')) {
             $dest_dir_ok = null;
 
             if (is_string($dest_dir))
-                $dest_dir_ok = new DDir($dest_dir);
-            if ($dest_dir instanceof DDir)
+                $dest_dir_ok = new LDDir($dest_dir);
+            if ($dest_dir instanceof LDDir)
                 $dest_dir_ok = $dest_dir;
 
             if ($dest_dir_ok)
@@ -430,28 +430,28 @@ if (!class_exists('DDir')) {
 
                 foreach ($all_elems as $elem)
                 {
-                    if ($elem instanceof DFile) {
+                    if ($elem instanceof LDFile) {
                         $elem->copy($dest_dir_ok);
                         continue;
                     }
-                    if ($elem instanceof DDir)
+                    if ($elem instanceof LDDir)
                     {
                         $subdir = $dest_dir_ok->newSubdir($elem->getName());
                         $elem->copy($subdir);
                         continue;
                     }
-                    throw new \DIOException("Unable to copy element of class : ".get_class($elem));
+                    throw new \LDIOException("Unable to copy element of class : ".get_class($elem));
                 }
-            } else throw new \DIOException("dest_dir is not a valid path or LDir instance!");
+            } else throw new \LDIOException("dest_dir is not a valid path or LDir instance!");
 
         }
 
         function isParentOf($folder)
         {
-            if ($folder instanceof DDir)
+            if ($folder instanceof LDDir)
                 $d = $folder;
             else
-                $d = new DDir($folder);
+                $d = new LDDir($folder);
 
             $path_a = $this->getPath();
             $path_b = $d->getPath();

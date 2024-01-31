@@ -1,8 +1,8 @@
 <?php
 
 
-if (!class_exists('DFileSystemUtils')) {
-    class DFileSystemUtils
+if (!class_exists('LDFileSystemUtils')) {
+    class LDFileSystemUtils
     {
         static function isCurrentDirName(string $name)
         {

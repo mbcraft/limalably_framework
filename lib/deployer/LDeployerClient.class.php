@@ -453,7 +453,7 @@ class LDeployerClient {
 				$df = $dir->newFile(self::STANDARD_DEPLOYER_FILENAME);
 
 				if ($df->exists()) $deployer_uri = $df->getFullPath();
-				else throw new \Exception("Unable to locate deployer file path on local file system.");
+				else throw new \Exception("Unable to locate deployer file path on local file system : searched at ".$df->getFullPath());
 			}
 		}		
 

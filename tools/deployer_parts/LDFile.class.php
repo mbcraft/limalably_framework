@@ -3,14 +3,14 @@
 /*
  * Rappresenta un puntatore a un determinato percorso, in questo caso un file
  */
-if (!class_exists('DFile')) {
-    class DFile extends DFileSystemElement
+if (!class_exists('LDFile')) {
+    class LDFile extends LDFileSystemElement
     {
         static $content_hash_cache = [];
 
         function getDirectory()
         {
-            return new DDir(dirname($this->__full_path));
+            return new LDDir(dirname($this->__full_path));
         }
         
         function getName()
@@ -25,13 +25,13 @@ if (!class_exists('DFile')) {
         function rename($new_name)
         {
             if (strstr($new_name,"/")!==false)
-                throw new \DIOException("The name contains forbidden characters : / !!");
+                throw new \LDIOException("The name contains forbidden characters : / !!");
 
             $this_dir = $this->getDirectory();
 
             $target_path = $this_dir->getPath()."/".$new_name;
 
-            $target_file = new DFile($target_path);
+            $target_file = new LDFile($target_path);
             if ($target_file->exists()) return false;
 
             return rename($this->__full_path,$target_file->getFullPath());
@@ -102,7 +102,7 @@ if (!class_exists('DFile')) {
      */
         function delete()
         {
-            if (DFileSystemUtils::isDir($this->__full_path)) throw new \DIOException("This is a directory and it should not be!");
+            if (LDFileSystemUtils::isDir($this->__full_path)) throw new \LDIOException("This is a directory and it should not be!");
 
             return @unlink($this->__full_path);
         }
@@ -114,11 +114,11 @@ if (!class_exists('DFile')) {
 
         function copy($dest_dir_or_file)
         {      
-            if ($dest_dir_or_file instanceof DDir)
+            if ($dest_dir_or_file instanceof LDDir)
             {
                 return copy($this->__full_path,$dest_dir_or_file->__full_path.$this->getFilename());
             }
-            if ($dest_dir_or_file instanceof DFile) {
+            if ($dest_dir_or_file instanceof LDFile) {
                 return copy($this->__full_path,$dest_dir_or_file->__full_path);
             }
         }
@@ -136,16 +136,16 @@ if (!class_exists('DFile')) {
 
         public function openReader()
         {
-            if (!$this->exists()) throw new \DIOException("Unable to open file reader at path : ".$this->__full_path.". The file does not exist!!");
+            if (!$this->exists()) throw new \LDIOException("Unable to open file reader at path : ".$this->__full_path.". The file does not exist!!");
 
 
             $handle = fopen($this->__full_path,"r");
 
-            if ($handle===false) throw new \DIOException("Unable to open file reader at path : ".$this->__full_path.".");
+            if ($handle===false) throw new \LDIOException("Unable to open file reader at path : ".$this->__full_path.".");
 
             if (flock($handle, LOCK_SH))
             {
-                return new DFileReader($handle);
+                return new LDFileReader($handle);
             }
             else 
             {
@@ -158,11 +158,11 @@ if (!class_exists('DFile')) {
         {
             $handle = fopen($this->__full_path,"c+");
 
-            if ($handle===false) throw new \DIOException("Unable to open file writer at path : ".$this->__full_path);
+            if ($handle===false) throw new \LDIOException("Unable to open file writer at path : ".$this->__full_path);
 
             if (flock($handle,LOCK_EX))
             {
-                return new DFileWriter($handle);
+                return new LDFileWriter($handle);
             }
             else 
             {

@@ -1,15 +1,10 @@
 <?php
 
-
-if (!class_exists('DPermissionsFixerInspector')) {
-    class DPermissionsFixerInspector implements DIInspector {
+if (!class_exists('LDContentHashInspector')) {
+    class LDContentHashInspector implements LDIInspector {
 
         private $excluded_paths = [];
         private $included_paths = [];
-
-        function __construct($permissions_to_set) {
-            $this->permissions_to_set = $permissions_to_set;
-        }
 
         public function setExcludedPaths($excluded_paths) {
             $this->excluded_paths = $excluded_paths;
@@ -33,11 +28,15 @@ if (!class_exists('DPermissionsFixerInspector')) {
 
             if ($dir->exists() && !in_array($dir->getPath(),$this->excluded_paths)) {
 
+                if ($dir->getPath()!="") {
+                   $result[$dir->getPath()] = $dir->getContentHash($this->excluded_paths);
+                }
+
                 $files = $dir->listFiles();
 
                 foreach ($files as $f) {
                     if (!in_array($f->getPath(),$this->excluded_paths)) {
-                        $f->setPermissions($this->permissions_to_set);
+                        $result[$f->getPath()] = $f->getContentHash($this->excluded_paths);
                     }
                 }
             }

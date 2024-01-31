@@ -112,7 +112,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$save_dir = new LDir('/home/marco/SoftwareProjects/MBCRAFT/limalably_framework/tmp/');
 
-		$r = $dc->backup_db_structure('local_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
+		$r = $dc->backup_db_structure('local_http_key','my_local_test_database',$save_dir->getFullPath());
 
 		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine!");
 
@@ -165,7 +165,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$save_dir = new LDir('/home/marco/SoftwareProjects/MBCRAFT/limalably_framework/tmp/');
 
-		$r = $dc->backup_db_data('local_http_key','hosting_dreamhost_tests',$save_dir->getFullPath());
+		$r = $dc->backup_db_data('local_http_key','my_local_test_database',$save_dir->getFullPath());
 
 		$this->assertTrue($this->isSuccess($r),"La chiamata non è andata a buon fine!");
 

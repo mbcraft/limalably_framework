@@ -102,7 +102,7 @@ function limalably_deployer_report(int $errno, string $errstr, string $errfile, 
     $msg .= "File : " . $errfile . " - ";
     $msg .= "Line number : " . $errline;
 
-    echo json_encode(['result' => DeployerController::FAILURE_RESULT,'message' => $msg]);
+    echo json_encode(['result' => LDeployerController::FAILURE_RESULT,'message' => $msg]);
 
     exit(0);
 }
@@ -110,8 +110,8 @@ function limalably_deployer_report(int $errno, string $errstr, string $errfile, 
 set_error_handler('limalably_deployer_report', E_ERROR | E_WARNING | E_PARSE | E_NOTICE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR | E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE);
 
 
-if (!class_exists('DIOException')) {
-    class DIOException extends \Exception
+if (!class_exists('LDIOException')) {
+    class LDIOException extends \Exception
     {
         function  __construct($message, $code=null, $previous=null) {
             parent::__construct($message);
@@ -121,8 +121,8 @@ if (!class_exists('DIOException')) {
 
 if (!defined('DS')) define('DS','/');
 
-if (!class_exists('DFileSystemElement')) {
-    abstract class DFileSystemElement
+if (!class_exists('LDFileSystemElement')) {
+    abstract class LDFileSystemElement
     {
         protected $__full_path;
         protected $__path;
@@ -245,7 +245,7 @@ if (!class_exists('DFileSystemElement')) {
                 $this->__full_path = $base_folder.$path;
             }
 
-            if (DFileSystemUtils::isDir($this->__full_path) && !DStringUtils::endsWith($this->__full_path,'/')) {
+            if (LDFileSystemUtils::isDir($this->__full_path) && !LDStringUtils::endsWith($this->__full_path,'/')) {
                 $this->__path .= '/';
                 $this->__full_path .= '/';
             }
@@ -255,7 +255,7 @@ if (!class_exists('DFileSystemElement')) {
 
         function equals($file_or_dir)
         {
-            if ($file_or_dir instanceof DFileSystemElement)
+            if ($file_or_dir instanceof LDFileSystemElement)
                 return $this->getFullPath() == $file_or_dir->getFullPath();
             else 
                 return false;
@@ -333,7 +333,7 @@ if (!class_exists('DFileSystemElement')) {
             if ($this->isDir())
             {
                 if ($new_name!=null) {
-                    $dest = new LDir($target_dir_or_file->getFullPath());
+                    $dest = new LDDir($target_dir_or_file->getFullPath());
 
                     $dest->touch();
                 }
@@ -342,7 +342,7 @@ if (!class_exists('DFileSystemElement')) {
 
                     $target_dir_or_file->touch();
 
-                    $dest = new LDir($target_dir_or_file->getFullPath().'/'.$name.'/');
+                    $dest = new LDDir($target_dir_or_file->getFullPath().'/'.$name.'/');
                 }
 
             }
@@ -358,7 +358,7 @@ if (!class_exists('DFileSystemElement')) {
 
         function dump()
         {
-            echo "DUMP DFileSystemElement : ".$this->__full_path;
+            echo "DUMP LDFileSystemElement : ".$this->__full_path;
         }
 
         function getPath() {
@@ -381,7 +381,7 @@ if (!class_exists('DFileSystemElement')) {
                 return $this->prepareRelativePath($this->__path);
             else
             {
-                if ($relative_to instanceof DDir)
+                if ($relative_to instanceof LDDir)
                     $path = $relative_to->getPath();
                 else
                     $path = $relative_to;
@@ -389,7 +389,7 @@ if (!class_exists('DFileSystemElement')) {
                 {
                     return $this->prepareRelativePath(substr($this->__path,strlen($path)));
                 }
-                else throw new \DIOException("The path does not begin with the specified path : ".$this->__path." does not begin with ".$path);
+                else throw new \LDIOException("The path does not begin with the specified path : ".$this->__path." does not begin with ".$path);
             }
         }
 
@@ -403,8 +403,8 @@ if (!class_exists('DFileSystemElement')) {
     }
 }
 
-if (!class_exists('DFileSystemUtils')) {
-    class DFileSystemUtils
+if (!class_exists('LDFileSystemUtils')) {
+    class LDFileSystemUtils
     {
         static function isCurrentDirName(string $name)
         {
@@ -494,8 +494,8 @@ if (!class_exists('DFileSystemUtils')) {
 /*
  * Rappresenta un puntatore a un determinato percorso, in questo caso una directory
  */
-if (!class_exists('DDir')) {
-    class DDir extends DFileSystemElement
+if (!class_exists('LDDir')) {
+    class LDDir extends LDFileSystemElement
     {
         const TMP_DIR = "temp/";
 
@@ -530,7 +530,7 @@ if (!class_exists('DDir')) {
 
             $path = $this->getPath();
 
-            if (DStringUtils::startsWith($path,$inspector->getExcludedPaths())) return $result;
+            if (LDStringUtils::startsWith($path,$inspector->getExcludedPaths())) return $result;
             
             $result = $inspector->visit($this);
             
@@ -576,7 +576,7 @@ if (!class_exists('DDir')) {
 
         static function getTempDir() {
            
-            return new DDir(self::TMP_DIR);
+            return new LDDir(self::TMP_DIR);
         }
 
         function newTempFile($prefix='tmp_') {
@@ -584,7 +584,7 @@ if (!class_exists('DDir')) {
             if (!$this->exists()) $this->touch();
 
             $result = tempnam($this->getFullPath(),$prefix);
-            if ($result) return new DFile($result);
+            if ($result) return new LDFile($result);
             else return false;
         }
 
@@ -597,7 +597,7 @@ if (!class_exists('DDir')) {
             $all_hashes = "";
 
             foreach ($elements as $elem) {
-                if (!DStringUtils::startsWith($elem->getPath(),$excluded_paths)) {
+                if (!LDStringUtils::startsWith($elem->getPath(),$excluded_paths)) {
                     $all_hashes .= $elem->getContentHash($excluded_paths);
                 }
             }
@@ -614,7 +614,7 @@ if (!class_exists('DDir')) {
         {
             $parent_dir = dirname($this->__full_path);
             
-            return new DDir($parent_dir);
+            return new LDDir($parent_dir);
         }
 
         /*
@@ -623,13 +623,13 @@ if (!class_exists('DDir')) {
         function rename($new_name)
         {
             if (strstr($new_name,"/")!==false)
-                throw new \DIOException("The new name contains invalid characters : / !!");
+                throw new \LDIOException("The new name contains invalid characters : / !!");
 
             $parent_dir = $this->getParentDir();
 
             $target_path = $parent_dir->getFullPath()."/".$new_name;
 
-            $target_dir = new DDir($target_path);
+            $target_dir = new LDDir($target_path);
             if ($target_dir->exists()) return false;
 
             return rename($this->__full_path,$target_dir->getFullPath());
@@ -660,27 +660,27 @@ if (!class_exists('DDir')) {
         
         function newSubdir($name)
         {
-            if (DFileSystemUtils::isDir($this->__path.'/'.$name))
+            if (LDFileSystemUtils::isDir($this->__path.'/'.$name))
             {
                 //directory already exists
                 //echo "Directory already exists : ".$this->__full_path."/".$name;
-                return new DDir($this->__path.'/'.$name);
+                return new LDDir($this->__path.'/'.$name);
             }
-            if (DFileSystemUtils::isFile($this->__path.'/'.$name))
+            if (LDFileSystemUtils::isFile($this->__path.'/'.$name))
             {
-                throw new \DIOException("A file with this name already exists");
+                throw new \LDIOException("A file with this name already exists");
             }
             //directory or files do not exists
             
             if (!file_exists($this->__full_path)) {
-                $result = @mkdir($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal(),true);
+                $result = @mkdir($this->__full_path.$name, LDFileSystemElement::getDefaultPermissionsOctal(),true);
             
                 if ($result==true) {
-                    chmod($this->__full_path.$name, LFileSystemElement::getDefaultPermissionsOctal());
-                    return new DDir($this->__path.$name);
+                    chmod($this->__full_path.$name, LDFileSystemElement::getDefaultPermissionsOctal());
+                    return new LDDir($this->__path.$name);
                 }
             }
-            else return new DDir($this->__full_path);
+            else return new LDDir($this->__full_path);
 
         }
     /*
@@ -709,7 +709,7 @@ if (!class_exists('DDir')) {
      */
         function listElements($myExcludes=self::DEFAULT_EXCLUDES,$filter = self::FILTER_ALL_FILES)
         {   
-            if (!$this->exists()) throw new \DIOException("Directory does not exist, can't list elements.");
+            if (!$this->exists()) throw new \LDIOException("Directory does not exist, can't list elements.");
             
             $excludesSet = false;
             
@@ -749,12 +749,12 @@ if (!class_exists('DDir')) {
                     $final_path = $this->__full_path.$element;
                     
                     if (($filter & self::FILTER_ALL_DIRECTORIES) == self::FILTER_ALL_DIRECTORIES) {
-                        if (DFileSystemUtils::isDir($final_path))
-                            $all_dirs[] = new DDir($final_path.'/');
+                        if (LDFileSystemUtils::isDir($final_path))
+                            $all_dirs[] = new LDDir($final_path.'/');
                     }
                     if (($filter & self::FILTER_ALL_FILES) == self::FILTER_ALL_FILES) {
-                        if (DFileSystemUtils::isFile($final_path))
-                            $all_files[] = new DFile($final_path);
+                        if (LDFileSystemUtils::isFile($final_path))
+                            $all_files[] = new LDFile($final_path);
                     }
                 }                
 
@@ -826,12 +826,12 @@ if (!class_exists('DDir')) {
                     if ($this->isDir())
                         $partial_path = $this->__path.$element;
                     if (($filter & self::FILTER_ALL_DIRECTORIES) == self::FILTER_ALL_DIRECTORIES) {
-                        if (DFileSystemUtils::isDir($this->__path.$element))
-                            $all_dirs[] = new DDir($partial_path);
+                        if (LDFileSystemUtils::isDir($this->__path.$element))
+                            $all_dirs[] = new LDDir($partial_path);
                     }
                     if (($filter & self::FILTER_ALL_FILES) == self::FILTER_ALL_FILES) {
-                        if (DFileSystemUtils::isFile($this->__path.DS.$element))
-                            $all_files[] = new DFile($partial_path);
+                        if (LDFileSystemUtils::isFile($this->__path.DS.$element))
+                            $all_files[] = new LDFile($partial_path);
                     }
                 }                
 
@@ -842,7 +842,7 @@ if (!class_exists('DDir')) {
 
         function newFile($name)
         {
-            return new DFile($this->__full_path.'/'.$name);
+            return new LDFile($this->__full_path.'/'.$name);
         }
 
         /*
@@ -855,10 +855,10 @@ if (!class_exists('DDir')) {
 
             if ($recursive)
             {
-                $dir_content = $this->listAll(DDir::SHOW_HIDDEN_FILES);
+                $dir_content = $this->listAll(LDDir::SHOW_HIDDEN_FILES);
                 foreach ($dir_content as $elem)
                 {
-                    if ($elem instanceof DDir)
+                    if ($elem instanceof LDDir)
                         $result &= $elem->delete(true);
                     else
                         $result &= $elem->delete();
@@ -888,9 +888,9 @@ if (!class_exists('DDir')) {
             {
                 $dir_elem = $content[0];
                 if ($dir_elem->isDir()) return $dir_elem;
-                throw new \DIOException("The element inside the folder is not a folder.");
+                throw new \LDIOException("The element inside the folder is not a folder.");
             }
-            throw new \DIOException("Unable to find a single subdir. Too many folders found:".count($content));
+            throw new \LDIOException("Unable to find a single subdir. Too many folders found:".count($content));
         }
 
         function hasSubdirs()
@@ -911,8 +911,8 @@ if (!class_exists('DDir')) {
             $dest_dir_ok = null;
 
             if (is_string($dest_dir))
-                $dest_dir_ok = new DDir($dest_dir);
-            if ($dest_dir instanceof DDir)
+                $dest_dir_ok = new LDDir($dest_dir);
+            if ($dest_dir instanceof LDDir)
                 $dest_dir_ok = $dest_dir;
 
             if ($dest_dir_ok)
@@ -921,28 +921,28 @@ if (!class_exists('DDir')) {
 
                 foreach ($all_elems as $elem)
                 {
-                    if ($elem instanceof DFile) {
+                    if ($elem instanceof LDFile) {
                         $elem->copy($dest_dir_ok);
                         continue;
                     }
-                    if ($elem instanceof DDir)
+                    if ($elem instanceof LDDir)
                     {
                         $subdir = $dest_dir_ok->newSubdir($elem->getName());
                         $elem->copy($subdir);
                         continue;
                     }
-                    throw new \DIOException("Unable to copy element of class : ".get_class($elem));
+                    throw new \LDIOException("Unable to copy element of class : ".get_class($elem));
                 }
-            } else throw new \DIOException("dest_dir is not a valid path or LDir instance!");
+            } else throw new \LDIOException("dest_dir is not a valid path or LDir instance!");
 
         }
 
         function isParentOf($folder)
         {
-            if ($folder instanceof DDir)
+            if ($folder instanceof LDDir)
                 $d = $folder;
             else
-                $d = new DDir($folder);
+                $d = new LDDir($folder);
 
             $path_a = $this->getPath();
             $path_b = $d->getPath();
@@ -968,14 +968,14 @@ if (!class_exists('DDir')) {
 /*
  * Rappresenta un puntatore a un determinato percorso, in questo caso un file
  */
-if (!class_exists('DFile')) {
-    class DFile extends DFileSystemElement
+if (!class_exists('LDFile')) {
+    class LDFile extends LDFileSystemElement
     {
         static $content_hash_cache = [];
 
         function getDirectory()
         {
-            return new DDir(dirname($this->__full_path));
+            return new LDDir(dirname($this->__full_path));
         }
         
         function getName()
@@ -990,13 +990,13 @@ if (!class_exists('DFile')) {
         function rename($new_name)
         {
             if (strstr($new_name,"/")!==false)
-                throw new \DIOException("The name contains forbidden characters : / !!");
+                throw new \LDIOException("The name contains forbidden characters : / !!");
 
             $this_dir = $this->getDirectory();
 
             $target_path = $this_dir->getPath()."/".$new_name;
 
-            $target_file = new DFile($target_path);
+            $target_file = new LDFile($target_path);
             if ($target_file->exists()) return false;
 
             return rename($this->__full_path,$target_file->getFullPath());
@@ -1067,7 +1067,7 @@ if (!class_exists('DFile')) {
      */
         function delete()
         {
-            if (DFileSystemUtils::isDir($this->__full_path)) throw new \DIOException("This is a directory and it should not be!");
+            if (LDFileSystemUtils::isDir($this->__full_path)) throw new \LDIOException("This is a directory and it should not be!");
 
             return @unlink($this->__full_path);
         }
@@ -1079,11 +1079,11 @@ if (!class_exists('DFile')) {
 
         function copy($dest_dir_or_file)
         {      
-            if ($dest_dir_or_file instanceof DDir)
+            if ($dest_dir_or_file instanceof LDDir)
             {
                 return copy($this->__full_path,$dest_dir_or_file->__full_path.$this->getFilename());
             }
-            if ($dest_dir_or_file instanceof DFile) {
+            if ($dest_dir_or_file instanceof LDFile) {
                 return copy($this->__full_path,$dest_dir_or_file->__full_path);
             }
         }
@@ -1101,16 +1101,16 @@ if (!class_exists('DFile')) {
 
         public function openReader()
         {
-            if (!$this->exists()) throw new \DIOException("Unable to open file reader at path : ".$this->__full_path.". The file does not exist!!");
+            if (!$this->exists()) throw new \LDIOException("Unable to open file reader at path : ".$this->__full_path.". The file does not exist!!");
 
 
             $handle = fopen($this->__full_path,"r");
 
-            if ($handle===false) throw new \DIOException("Unable to open file reader at path : ".$this->__full_path.".");
+            if ($handle===false) throw new \LDIOException("Unable to open file reader at path : ".$this->__full_path.".");
 
             if (flock($handle, LOCK_SH))
             {
-                return new DFileReader($handle);
+                return new LDFileReader($handle);
             }
             else 
             {
@@ -1123,11 +1123,11 @@ if (!class_exists('DFile')) {
         {
             $handle = fopen($this->__full_path,"c+");
 
-            if ($handle===false) throw new \DIOException("Unable to open file writer at path : ".$this->__full_path);
+            if ($handle===false) throw new \LDIOException("Unable to open file writer at path : ".$this->__full_path);
 
             if (flock($handle,LOCK_EX))
             {
-                return new DFileWriter($handle);
+                return new LDFileWriter($handle);
             }
             else 
             {
@@ -1193,8 +1193,8 @@ if (!class_exists('DFile')) {
     }
 }
 
-if (!class_exists('DFileReader')) {
-    class DFileReader
+if (!class_exists('LDFileReader')) {
+    class LDFileReader
     {
         protected $my_handle;
         protected $open;
@@ -1207,7 +1207,7 @@ if (!class_exists('DFileReader')) {
 
         protected function checkClosed()
         {
-            if (!$this->open) throw new \DIOException("The stream is closed!!");
+            if (!$this->open) throw new \LDIOException("The stream is closed!!");
         }
 
         function isOpen()
@@ -1298,7 +1298,7 @@ if (!class_exists('DFileReader')) {
                 $this->my_handle = null;
             }
             else
-                throw new \DIOException("Reader/Writer already closed.");
+                throw new \LDIOException("Reader/Writer already closed.");
 
         }
         
@@ -1309,15 +1309,15 @@ if (!class_exists('DFileReader')) {
     }
 }
 
-if (!class_exists('DFileWriter')) {
-    class DFileWriter extends DFileReader
+if (!class_exists('LDFileWriter')) {
+    class LDFileWriter extends LDFileReader
     {
         const CR = "\r";
         const LF = "\n";
 
         static function newTmpFile()
         {
-            return new DFileWriter(tmpfile());
+            return new LDFileWriter(tmpfile());
         }
 
         /*
@@ -1373,23 +1373,23 @@ if (!class_exists('DFileWriter')) {
     }
 }
 
-if (!class_exists('DZipUtils')) {
-    class DZipUtils
+if (!class_exists('LDZipUtils')) {
+    class LDZipUtils
     {
         public static function expandArchive($zip_file,$target_folder)
         {
             $zip_archive = new ZipArchive();
          
-            if ($zip_file instanceof DFile)
+            if ($zip_file instanceof LDFile)
                 $real_zip_file = $zip_file;
             else
-                $real_zip_file = new DFile($zip_file);
+                $real_zip_file = new LDFile($zip_file);
             
             
-            if ($target_folder instanceof DDir)
+            if ($target_folder instanceof LDDir)
                 $target_dir = $target_folder;
             else
-                $target_dir = new DDir($target_folder);
+                $target_dir = new LDDir($target_folder);
             
             $zip_archive->open($real_zip_file->getFullPath());
             
@@ -1402,10 +1402,10 @@ if (!class_exists('DZipUtils')) {
         {
             if ($save_file->exists()) $save_file->delete(); 
 
-            if ($folder_to_zip instanceof DDir)
+            if ($folder_to_zip instanceof LDDir)
                 $dir_to_zip = $folder_to_zip;
             else
-                $dir_to_zip = new DDir($folder_to_zip);
+                $dir_to_zip = new LDDir($folder_to_zip);
             
             if (!class_exists('ZipArchive')) throw new \Exception("Can't use zip files, ZipArchive class missing.");
 
@@ -1413,7 +1413,7 @@ if (!class_exists('DZipUtils')) {
 
             $zip_archive->open($save_file->getFullPath(),  ZipArchive::CREATE);
 
-            DZipUtils::recursiveZipFolder($zip_archive, $dir_to_zip,$local_dir);
+            LDZipUtils::recursiveZipFolder($zip_archive, $dir_to_zip,$local_dir);
 
             $zip_archive->close();
         }
@@ -1429,15 +1429,15 @@ if (!class_exists('DZipUtils')) {
                 else
                 {
                     $zip_archive->addEmptyDir($local_dir.$dir_entry->getName().'/');
-                    DZipUtils::recursiveZipFolder($zip_archive, $dir_entry,$local_dir.$dir_entry->getName().'/');
+                    LDZipUtils::recursiveZipFolder($zip_archive, $dir_entry,$local_dir.$dir_entry->getName().'/');
                 }
             }
         }
     }
 }
 
-if (!class_exists('DStringUtils')) {
-    class DStringUtils {
+if (!class_exists('LDStringUtils')) {
+    class LDStringUtils {
         
         static function underscoredToCamelCase($string)
         {
@@ -1567,8 +1567,8 @@ if (!class_exists('DStringUtils')) {
     }
 }
 
-if (!class_exists('DIInspector')) {
-    interface DIInspector {
+if (!class_exists('LDIInspector')) {
+    interface LDIInspector {
 
         public function visit($dir);
 
@@ -1578,8 +1578,8 @@ if (!class_exists('DIInspector')) {
 
     }
 }
-if (!class_exists('DContentHashInspector')) {
-    class DContentHashInspector implements DIInspector {
+if (!class_exists('LDContentHashInspector')) {
+    class LDContentHashInspector implements LDIInspector {
 
         private $excluded_paths = [];
         private $included_paths = [];
@@ -1625,8 +1625,8 @@ if (!class_exists('DContentHashInspector')) {
     }
 }
 
-if (!class_exists('DPermissionsFixerInspector')) {
-    class DPermissionsFixerInspector implements DIInspector {
+if (!class_exists('LDPermissionsFixerInspector')) {
+    class LDPermissionsFixerInspector implements LDIInspector {
 
         private $excluded_paths = [];
         private $included_paths = [];
@@ -1674,23 +1674,23 @@ if (!class_exists('DPermissionsFixerInspector')) {
 
 $current_dir = __DIR__;
 
-if (!DStringUtils::endsWith($current_dir,'/')) $current_dir.='/';
+if (!LDStringUtils::endsWith($current_dir,'/')) $current_dir.='/';
 
 $_SERVER['DEPLOYER_PROJECT_DIR'] = $current_dir;
 
 //starting deployer controller ---
 
-if (!class_exists('DeployerController')) {
+if (!class_exists('LDeployerController')) {
     
     //starting deployer controller ---
 
-    class DeployerController {
+    class LDeployerController {
 
         const BUILD_NUMBER = 76;
 
         const DEPLOYER_VERSION = "1.5";
 
-        const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing','fixPermissions'];
+        const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloaLDDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing','fixPermissions'];
 
         private $deployer_file;
         private $root_dir;
@@ -1706,11 +1706,11 @@ if (!class_exists('DeployerController')) {
 
         function __construct() {
 
-            $this->deployer_file = new DFile(__FILE__);
+            $this->deployer_file = new LDFile(__FILE__);
 
             $path_parts = explode('/',self::$DPFR);
 
-            $current_dir = new DDir(__DIR__);
+            $current_dir = new LDDir(__DIR__);
 
             for ($i=0;$i<count($path_parts)-1;$i++) $current_dir = $current_dir->getParentDir();
 
@@ -1721,7 +1721,7 @@ if (!class_exists('DeployerController')) {
         }
 
         private function logWithFile(string $file_name,string $content) {
-            $f = new DFile($file_name);
+            $f = new LDFile($file_name);
             $f->setContent($content);
         }
 
@@ -1775,64 +1775,64 @@ if (!class_exists('DeployerController')) {
 
             $path_prefix = FRAMEWORK_DIR_NAME.'/';
 
-            $f = new DFile($path_prefix.'framework_spec.php');
+            $f = new LDFile($path_prefix.'framework_spec.php');
             if (!$f->exists()) return $path_prefix.'framework_spec.php not found.';
             $f->requireFileOnce();
 
-            $f = new DFile($path_prefix.'lib/treemap/LTreeMap.class.php');
+            $f = new LDFile($path_prefix.'lib/treemap/LTreeMap.class.php');
             if (!$f->exists()) return $path_prefix.'lib/treemap/LTreeMap.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/treemap/LTreeMapView.class.php');
+            $f = new LDFile($path_prefix.'lib/treemap/LTreeMapView.class.php');
             if (!$f->exists()) return $path_prefix.'lib/treemap/LTreeMapView.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
+            $f = new LDFile($path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php');
             if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapBase.trait.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
+            $f = new LDFile($path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php');
             if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapRead.trait.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
+            $f = new LDFile($path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php');
             if (!$f->exists()) return $path_prefix.'lib/treemap/LStaticTreeMapWrite.trait.php not found.';
             $f->requireFileOnce();
 
             //config
-            $f = new DFile($path_prefix.'lib/config/LConfig.class.php');
+            $f = new LDFile($path_prefix.'lib/config/LConfig.class.php');
             if (!$f->exists()) return $path_prefix.'lib/config/LConfig.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/config/LConfigReader.class.php');
+            $f = new LDFile($path_prefix.'lib/config/LConfigReader.class.php');
             if (!$f->exists()) return $path_prefix.'lib/config/LConfigReader.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/config/LExecutionMode.class.php');
+            $f = new LDFile($path_prefix.'lib/config/LExecutionMode.class.php');
             if (!$f->exists()) return $path_prefix.'lib/config/LExecutionMode.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/config/LEnvironmentUtils.class.php');
+            $f = new LDFile($path_prefix.'lib/config/LEnvironmentUtils.class.php');
             if (!$f->exists()) return $path_prefix.'lib/config/LEnvironmentUtils.class.php not found.';
             $f->requireFileOnce();
 
             //core
-            $f = new DFile($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
+            $f = new LDFile($path_prefix.'lib/core/LErrorReportingInterceptors.class.php');
             if (!$f->exists()) return $path_prefix.'lib/core/LErrorReportingInterceptors.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/core/LInvalidParameterException.class.php');
+            $f = new LDFile($path_prefix.'lib/core/LInvalidParameterException.class.php');
             if (!$f->exists()) return $path_prefix.'lib/core/LInvalidParameterException.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/core/LResult.class.php');
+            $f = new LDFile($path_prefix.'lib/core/LResult.class.php');
             if (!$f->exists()) return $path_prefix.'lib/core/LResult.class.php not found.';
             $f->requireFileOnce();
 
-            $f = new DFile($path_prefix.'lib/core/LClassLoader.class.php');
+            $f = new LDFile($path_prefix.'lib/core/LClassLoader.class.php');
             if (!$f->exists()) return $path_prefix.'lib/core/LClassLoader.class.php not found.';
             $f->requireFileOnce();
 
             //utils
-            $f = new DFile($path_prefix.'lib/utils/LStringUtils.class.php');
+            $f = new LDFile($path_prefix.'lib/utils/LStringUtils.class.php');
             if (!$f->exists()) return $path_prefix.'lib/utils/LStringUtils.class.php not found.';
             $f->requireFileOnce();
-            $f = new DFile($path_prefix.'lib/utils/LJsonUtils.class.php');
+            $f = new LDFile($path_prefix.'lib/utils/LJsonUtils.class.php');
             if (!$f->exists()) return $path_prefix.'lib/utils/LJsonUtils.class.php not found.';
             $f->requireFileOnce();
 
-            $f = new DFile($path_prefix.'lib/db/functions.php');
+            $f = new LDFile($path_prefix.'lib/db/functions.php');
             if (!$f->exists()) return $path_prefix.'lib/db/functions.php not found.';
             $f->requireFileOnce();
 
@@ -1898,7 +1898,7 @@ if (!class_exists('DeployerController')) {
 
                 $connection = LDbConnectionManager::get($connection_name);
 
-                $zip_dir = new DDir('temp/backup/db/structure/'.$connection_name.'/');
+                $zip_dir = new LDDir('temp/backup/db/structure/'.$connection_name.'/');
                 if ($zip_dir->exists()) $zip_dir->delete(true);
                 sleep(3);
                 $zip_dir->touch();
@@ -1921,9 +1921,9 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Exception during query phase : ".$ex->getMessage());
                 } 
 
-                $zip_file = new DFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
+                $zip_file = new LDFile('temp/backup/db/structure/'.$connection_name.'_structure_bkp.zip');
 
-                DZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/','');
+                LDZipUtils::createArchive($zip_file,'temp/backup/db/structure/'.$connection_name.'/','');
 
                 return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -1948,7 +1948,7 @@ if (!class_exists('DeployerController')) {
 
                 $connection = LDbConnectionManager::get($connection_name);
 
-                $zip_dir = new DDir('temp/backup/db/data/'.$connection_name.'/');
+                $zip_dir = new LDDir('temp/backup/db/data/'.$connection_name.'/');
                 if ($zip_dir->exists()) $zip_dir->delete(true);
                 $zip_dir->touch();
 
@@ -1982,9 +1982,9 @@ if (!class_exists('DeployerController')) {
                     return $this->failure("Exception during query phase : ".$ex->getMessage());
                 } 
 
-                $zip_file = new DFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
+                $zip_file = new LDFile('temp/backup/db/data/'.$connection_name.'_data_bkp.zip');
 
-                DZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/','');
+                LDZipUtils::createArchive($zip_file,'temp/backup/db/data/'.$connection_name.'/','');
 
                 return ["result" => self::SUCCESS_RESULT,"data" => $zip_file];
 
@@ -2105,7 +2105,7 @@ if (!class_exists('DeployerController')) {
         public function readFileContent($password,$path) {
             if ($this->accessGranted($password)) {
 
-                $f = new DFile($path);
+                $f = new LDFile($path);
 
                 if (!$f->exists()) return $this->failure("File at path '".$path."' do not exists on this deployer instance.");
 
@@ -2121,7 +2121,7 @@ if (!class_exists('DeployerController')) {
         public function writeFileContent($password,$path,$content) {
             if ($this->accessGranted($password)) {
 
-                $f = new DFile($path);
+                $f = new LDFile($path);
 
                 $parent_dir = $f->getDirectory();
 
@@ -2139,9 +2139,9 @@ if (!class_exists('DeployerController')) {
         public function listElements($password,$folder) {
             if ($this->accessGranted($password)) {
 
-                if (!DStringUtils::endsWith($folder,'/')) return $this->failure("Folder name to list does not end with /.");
+                if (!LDStringUtils::endsWith($folder,'/')) return $this->failure("Folder name to list does not end with /.");
 
-                $dir = new DDir($this->root_dir->getFullPath().$folder);
+                $dir = new LDDir($this->root_dir->getFullPath().$folder);
 
                 if ($dir->exists() && $dir->isReadable()) {
 
@@ -2163,18 +2163,18 @@ if (!class_exists('DeployerController')) {
             if ($this->accessGranted($password)) {
 
                 if ($this->containsDeployerPath($excluded_paths)) {
-                    $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
+                    $calc_deployer_file = new LDFile($this->root_dir->getFullPath().self::$DPFR);
 
                     if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
                 }
 
                 if ($this->containsDeployerPath($included_paths)) {
-                    $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
+                    $calc_deployer_file = new LDFile($this->root_dir->getFullPath().self::$DPFR);
 
                     if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
                 }
 
-                $inspector = new DContentHashInspector();
+                $inspector = new LDContentHashInspector();
 
                 $inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
                 $inspector->setIncludedPaths($this->getFinalPathList($included_paths));
@@ -2183,7 +2183,7 @@ if (!class_exists('DeployerController')) {
 
                 if (count($inspector->getIncludedPaths())>0) {
                     foreach ($inspector->getIncludedPaths() as $path) {
-                        $my_dir = new DDir($this->root_dir->getFullPath().$path);
+                        $my_dir = new LDDir($this->root_dir->getFullPath().$path);
 
                         $pre_include_result = array_merge($my_dir->explore($inspector),$pre_include_result);
                     }
@@ -2201,9 +2201,9 @@ if (!class_exists('DeployerController')) {
                     foreach ($pre_result as $path => $hash) {
                         $skip = false;
                         foreach ($inspector->getExcludedPaths() as $excluded) {
-                            if (DStringUtils::startsWith($path,$excluded)) 
+                            if (LDStringUtils::startsWith($path,$excluded)) 
                                 $skip = true;
-                            if (DStringUtils::startsWith($path,'config/deployer/'))
+                            if (LDStringUtils::startsWith($path,'config/deployer/'))
                                 $skip = true;
                         }
 
@@ -2220,21 +2220,21 @@ if (!class_exists('DeployerController')) {
         public function fixPermissions($password,$permissions_to_set,$excluded_paths,$included_paths) {
             if ($this->accessGranted($password)) {
 
-                if (!DFileSystemUtils::isPermissionsFlagsValid($permissions_to_set)) return $this->failure("Permissions flags are not in a valid form!");
+                if (!LDFileSystemUtils::isPermissionsFlagsValid($permissions_to_set)) return $this->failure("Permissions flags are not in a valid form!");
 
                 if ($this->containsDeployerPath($excluded_paths)) {
-                    $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
+                    $calc_deployer_file = new LDFile($this->root_dir->getFullPath().self::$DPFR);
 
                     if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
                 }
 
                 if ($this->containsDeployerPath($included_paths)) {
-                    $calc_deployer_file = new DFile($this->root_dir->getFullPath().self::$DPFR);
+                    $calc_deployer_file = new LDFile($this->root_dir->getFullPath().self::$DPFR);
 
                     if ($calc_deployer_file->getFullPath()!=$this->deployer_file->getFullPath()) return $this->failure("Deployer path from root dir is not correctly set!");
                 }
 
-                $inspector = new DPermissionsFixerInspector($permissions_to_set);
+                $inspector = new LDPermissionsFixerInspector($permissions_to_set);
 
                 $inspector->setExcludedPaths($this->getFinalPathList($excluded_paths));
                 $inspector->setIncludedPaths($this->getFinalPathList($included_paths));
@@ -2243,7 +2243,7 @@ if (!class_exists('DeployerController')) {
 
                 if (count($inspector->getIncludedPaths())>0) {
                     foreach ($inspector->getIncludedPaths() as $path) {
-                        $my_dir = new DDir($this->root_dir->getFullPath().$path);
+                        $my_dir = new LDDir($this->root_dir->getFullPath().$path);
 
                         $my_dir->explore($inspector);
                     }
@@ -2259,13 +2259,13 @@ if (!class_exists('DeployerController')) {
         public function deleteFile($password,$path) {
             if ($this->accessGranted($password)) {
 
-                if (DStringUtils::endsWith($path,'/')) return $this->failure("Use deleteDir to delete directories. Actual path found is : ".$path);
+                if (LDStringUtils::endsWith($path,'/')) return $this->failure("Use deleteDir to delete directories. Actual path found is : ".$path);
 
                 $full_path = $this->root_dir->getFullPath().$path;
 
-                if (DFileSystemUtils::isDir($full_path)) return $this->failure("Actual path is a directory and should be deleted using deleteDir. Path is : ".$path);
+                if (LDFileSystemUtils::isDir($full_path)) return $this->failure("Actual path is a directory and should be deleted using deleteDir. Path is : ".$path);
 
-                $f = new DFile($this->root_dir->getFullPath().$path);
+                $f = new LDFile($this->root_dir->getFullPath().$path);
 
                 if ($f->exists()) {
 
@@ -2285,9 +2285,9 @@ if (!class_exists('DeployerController')) {
         public function makeDir($password,$path) {
             if ($this->accessGranted($password)) {
 
-                if (!DStringUtils::endsWith($path,'/')) return $this->failure("Directory name to create does not end with /.");
+                if (!LDStringUtils::endsWith($path,'/')) return $this->failure("Directory name to create does not end with /.");
 
-                $dest = new DDir($this->root_dir->getFullPath().$path);
+                $dest = new LDDir($this->root_dir->getFullPath().$path);
 
                 $dest->touch();
 
@@ -2300,9 +2300,9 @@ if (!class_exists('DeployerController')) {
         public function deleteDir($password,$path,$recursive) {
             if ($this->accessGranted($password)) {
 
-                if (!DStringUtils::endsWith($path,'/')) return $this->failure("The directory name does not ends with /.");
+                if (!LDStringUtils::endsWith($path,'/')) return $this->failure("The directory name does not ends with /.");
 
-                $dest = new DDir($this->root_dir->getFullPath().$path);
+                $dest = new LDDir($this->root_dir->getFullPath().$path);
 
                 if (!$dest->exists()) return $this->failure("Directory to delete does not exist : ".$dest->getFullPath());
 
@@ -2319,13 +2319,13 @@ if (!class_exists('DeployerController')) {
             if ($this->accessGranted($password)) {
                 if (isset($_FILES['f']) && $_FILES['f']['error'] == UPLOAD_ERR_OK) {
 
-                    if (DStringUtils::endsWith($path,'/')) return $this->failure("File name should not end with a directory separator.");
+                    if (LDStringUtils::endsWith($path,'/')) return $this->failure("File name should not end with a directory separator.");
 
                     $content = file_get_contents($_FILES['f']['tmp_name']);
 
                     if ($content===null) return $this->failure("Unable to read content of uploaded file!");
 
-                    $dest = new DFile($this->root_dir->getFullPath().$path);
+                    $dest = new LDFile($this->root_dir->getFullPath().$path);
 
                     $dir = $dest->getDirectory();
 
@@ -2350,15 +2350,15 @@ if (!class_exists('DeployerController')) {
         public function downloadDir($password,$path) {
             if ($this->accessGranted($password)) {
 
-                if (!DStringUtils::endsWith($path,'/')) return $this->failure("Folder to zip does not ends with /.");
+                if (!LDStringUtils::endsWith($path,'/')) return $this->failure("Folder to zip does not ends with /.");
 
-                $source = new DDir($this->root_dir->getFullPath().$path);
+                $source = new LDDir($this->root_dir->getFullPath().$path);
 
                 if (!$source->exists()) return $this->failure("Directory to zip and get does not exist.");
 
                 $zip_file = $this->root_dir->newFile("my_dir.zip");
 
-                DZipUtils::createArchive($zip_file,$source);
+                LDZipUtils::createArchive($zip_file,$source);
 
                 if (!$zip_file->exists()) return $this->failure("Unable to create zip file.");
 
@@ -2409,7 +2409,7 @@ if (!class_exists('DeployerController')) {
                     $final_string = str_replace("'",'"',$final_string);
                 }
 
-                $env_var_delimiter = DStringUtils::getCommentDelimitedReplacementsStringSeparator($env_var_name);
+                $env_var_delimiter = LDStringUtils::getCommentDelimitedReplacementsStringSeparator($env_var_name);
 
                 $tokens = explode("/*!".$env_var_delimiter."!*/",$deployer_content);
 
@@ -2488,7 +2488,7 @@ if (!class_exists('DeployerController')) {
                     header('Content-Length: ' . $f->getSize());
                     header('Connection: close');
                     flush(); // Flush system output buffer
-                    readfile($f->getFullPath());
+                    reaLDfile($f->getFullPath());
                     
                     exit();
                 } else {
@@ -2558,7 +2558,7 @@ if (!class_exists('DeployerController')) {
 
                         if ($this->isSuccess($result)) {
 
-                            $this->sendFileFromResult($result);
+                            $this->senLDFileFromResult($result);
                         }
                         else {
 
@@ -2578,7 +2578,7 @@ if (!class_exists('DeployerController')) {
                         $result = $this->backupDbData($password,$connection_name);
 
                         if ($this->isSuccess($result)) {
-                            $this->sendFileFromResult($result);
+                            $this->senLDFileFromResult($result);
                         }
                         else {
                             echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
@@ -2629,7 +2629,7 @@ if (!class_exists('DeployerController')) {
                         if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
                         else echo $this->preparePostResponse($this->failure("PATH field missing in READ_FILE_CONTENT request."));
 
-                        echo $this->preparePostResponse($this->readFileContent($password,$path));
+                        echo $this->preparePostResponse($this->reaLDFileContent($password,$path));
 
                         break;
                     }
@@ -2794,9 +2794,9 @@ if (!class_exists('DeployerController')) {
                         if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
                         else echo $this->preparePostResponse($this->failure("PATH field missing in DOWNLOAD_DIR request."));
 
-                        $result = $this->downloadDir($password,$path);
+                        $result = $this->downloaLDDir($password,$path);
 
-                        $this->sendFileFromResult($result);
+                        $this->senLDFileFromResult($result);
 
                         break;
                     }
@@ -2815,7 +2815,7 @@ if (!class_exists('DeployerController')) {
 if (isset($_POST['METHOD'])) {
 
     try {
-       $controller = new DeployerController();
+       $controller = new LDeployerController();
 
 	   $controller->processRequest();
 

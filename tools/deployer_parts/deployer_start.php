@@ -5,7 +5,7 @@
 if (isset($_POST['METHOD'])) {
 
     try {
-       $controller = new DeployerController();
+       $controller = new LDeployerController();
 
 	   $controller->processRequest();
 

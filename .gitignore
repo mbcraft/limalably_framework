@@ -1,5 +1,5 @@
-*/composer.phar
-*/installer
-*/nbproject/
-*/vendor/
-*/tests/template/cache/
+/composer.phar
+/vendor/
+/tests/template/cache/
+/tmp/
+/work_in_progress/

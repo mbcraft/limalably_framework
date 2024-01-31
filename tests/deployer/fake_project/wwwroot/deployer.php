@@ -101,7 +101,7 @@ function limalably_deployer_report(int $errno, string $errstr, string $errfile, 
     $msg .= "File : " . $errfile . " - ";
     $msg .= "Line number : " . $errline;
 
-    echo json_encode(['result' => DeployerController::FAILURE_RESULT,'message' => $msg]);
+    echo json_encode(['result' => LDeployerController::FAILURE_RESULT,'message' => $msg]);
 
     exit(0);
 }

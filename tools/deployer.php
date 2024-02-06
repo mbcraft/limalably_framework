@@ -290,7 +290,7 @@ if (!class_exists('LDFileSystemElement')) {
         {
             $octal_permissions = self::toOctalPermissions($rwx_permissions);
 
-            chmod($this->__full_path, $octal_permissions);
+            return chmod($this->__full_path, $octal_permissions);
         }
 
         function isReadable() {
@@ -1055,7 +1055,7 @@ if (!class_exists('LDFile')) {
      */
         function setContent($content)
         {
-            file_put_contents($this->__full_path, $content, LOCK_EX);
+            return file_put_contents($this->__full_path, $content, LOCK_EX)!==false;
         }
 
         function getSize()
@@ -1686,11 +1686,11 @@ if (!class_exists('LDeployerController')) {
 
     class LDeployerController {
 
-        const BUILD_NUMBER = 76;
+        const BUILD_NUMBER = 80;
 
         const DEPLOYER_VERSION = "1.5";
 
-        const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloaLDDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing','fixPermissions'];
+        const DEPLOYER_FEATURES = ['version','listElements','listHashes','deleteFile','makeDir','deleteDir','copyFile','downloadDir','setEnv','getEnv','listEnv','hello','fileExists','writeFileContent','readFileContent','listDb','backupDbStructure','backupDbData','migrateAll','migrateReset','migrateListDone','migrateListMissing','fixPermissions'];
 
         private $deployer_file;
         private $root_dir;
@@ -2331,9 +2331,13 @@ if (!class_exists('LDeployerController')) {
 
                     if (!$dir->exists()) return $this->failure("Parent directory does not exist.");
 
-                    $dest->setContent($content);
+                    $result = $dest->setContent($content);
 
-                    $dest->setPermissions('-rw-r--r--');
+                    if (!$result) $this->failure("Unable to set content of a file.");
+
+                    $result = $dest->setPermissions('-rw-r--r--');
+
+                    if (!$result) $this->failure("Unable to set permissions on a file.");
 
                     if ($dest->getSize()!=$_FILES['f']['size']) {
                         $dest->delete();
@@ -2488,7 +2492,7 @@ if (!class_exists('LDeployerController')) {
                     header('Content-Length: ' . $f->getSize());
                     header('Connection: close');
                     flush(); // Flush system output buffer
-                    reaLDfile($f->getFullPath());
+                    readfile($f->getFullPath());
                     
                     exit();
                 } else {
@@ -2509,6 +2513,7 @@ if (!class_exists('LDeployerController')) {
         }
 
         public function processRequest() {
+
             if ($this->hasPostParameter('METHOD')) {
                 $method = $this->getPostParameter('METHOD');
 
@@ -2558,7 +2563,7 @@ if (!class_exists('LDeployerController')) {
 
                         if ($this->isSuccess($result)) {
 
-                            $this->senLDFileFromResult($result);
+                            $this->sendFileFromResult($result);
                         }
                         else {
 
@@ -2578,7 +2583,7 @@ if (!class_exists('LDeployerController')) {
                         $result = $this->backupDbData($password,$connection_name);
 
                         if ($this->isSuccess($result)) {
-                            $this->senLDFileFromResult($result);
+                            $this->sendFileFromResult($result);
                         }
                         else {
                             echo $this->preparePostResponse($this->failure("Unable to correctly prepare file to send for backup db structure : ".$this->getResultMessage($result)));
@@ -2629,7 +2634,7 @@ if (!class_exists('LDeployerController')) {
                         if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
                         else echo $this->preparePostResponse($this->failure("PATH field missing in READ_FILE_CONTENT request."));
 
-                        echo $this->preparePostResponse($this->reaLDFileContent($password,$path));
+                        echo $this->preparePostResponse($this->readFileContent($password,$path));
 
                         break;
                     }
@@ -2794,9 +2799,9 @@ if (!class_exists('LDeployerController')) {
                         if ($this->hasPostParameter('PATH')) $path = $this->getPostParameter('PATH');
                         else echo $this->preparePostResponse($this->failure("PATH field missing in DOWNLOAD_DIR request."));
 
-                        $result = $this->downloaLDDir($password,$path);
+                        $result = $this->downloadDir($password,$path);
 
-                        $this->senLDFileFromResult($result);
+                        $this->sendFileFromResult($result);
 
                         break;
                     }

@@ -76,7 +76,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -124,7 +124,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -183,7 +183,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -214,7 +214,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
@@ -251,7 +251,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$this->assertFalse($key_file->exists(),"Il file della chiave esiste già!");
 
-		$dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($key_file->exists(),"Il file della chiave non è stato creato! : ".$key_file->getFullPath());
 
@@ -301,7 +301,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -331,7 +331,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -363,7 +363,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -391,7 +391,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -432,7 +432,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -451,7 +451,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -472,7 +472,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -494,7 +494,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -517,7 +517,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -553,7 +553,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($r,"L'attach non è avvenuto con successo!");
 
@@ -576,7 +576,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"L'attach non è avvenuto con successo!");
 
@@ -612,7 +612,7 @@ class LocalHttpDeployerClientTest extends LTestCase {
 
 		$dc = new LDeployerClient();
 
-		$r = $dc->attach('default_key','wwwroot/deployer.php','http://local__deployer_test/deployer.php');
+		$r = $dc->attach('default_key','wwwroot/deployer.php','http://deployer__local_test/deployer.php');
 
 		$dir_fix_permissions = new LDir(SOFTWARE_DIR."/DeployerTestLocalSite/my_perm_dir/");
 		$dir_fix_permissions->touch();

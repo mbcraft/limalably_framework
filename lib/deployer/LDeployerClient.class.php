@@ -375,7 +375,7 @@ class LDeployerClient {
 
 			$lr->close();
 
-			echo "Local deployer path is project : ".$this->DPFR."\n";
+			echo "Local deployer path in project : ".$this->DPFR."\n";
 			echo "Deployer uri found in key : ".$this->current_uri."\n";
 			echo "Waiting 3 seconds to let you block if the uri is wrong ...\n";
 			sleep(3);
@@ -756,7 +756,10 @@ class LDeployerClient {
 
 		if ($this->isSuccess($r)) {
 			return $r['data'];
-		} else return false;
+		} else {
+			echo "Unable to get user. Error : ".$r['message']."\n";
+			return false;
+		}
 	}
 
 	public function get_exec_mode(string $key_name) {
@@ -1201,7 +1204,7 @@ class LDeployerClient {
 
 			$updated_deployer = new LFile($_SERVER['FRAMEWORK_DIR'].'/tools/deployer.php');
 
-			$r = $this->current_driver->setEnv($this->current_password,"PWD","");
+			$r0 = $this->current_driver->setEnv($this->current_password,"PWD","");
 
 			echo "Waiting for file cache to update correctly ...\n";
 
@@ -1216,6 +1219,8 @@ class LDeployerClient {
 			$deployer_path_from_root = $result['data'];
 
 			$r1 = $this->current_driver->copyFile("",$deployer_path_from_root,$updated_deployer);
+
+			if (!$this->isSuccess($r1)) echo "Unable to update deployer instance : ".$r1['message']."\n";
 
 			echo "Waiting for file cache to update correctly again ...\n";
 
@@ -1235,7 +1240,10 @@ class LDeployerClient {
 
 			$r4 = $this->current_driver->hello($this->current_password);
 
-			if (!$this->isSuccess($r1) || !$this->isSuccess($r2) || !$this->isSuccess($r3) || !$this->isSuccess($r4)) return $this->failure("Unable to complete deployer update procedure. Use set_deployer_path_from_root to fix deployer path env var on server.");
+			if (!$this->isSuccess($r0) || !$this->isSuccess($r1) || !$this->isSuccess($r2) || !$this->isSuccess($r3) || !$this->isSuccess($r4)) {
+
+				return $this->failure("Unable to complete deployer update procedure. Use set_deployer_path_from_root to fix deployer path env var on server .... r0 = ".$r0['result']." - r1 = ".$r1['result']." - r2 = ".$r2['result']." - r3 = ".$r3['result']." - r4 = ".$r4['result']);
+			}
 
 			echo "Deployer update completed successfully.\n";
 
@@ -1375,6 +1383,15 @@ class LDeployerClient {
 			}
 			else return $this->failure("Unable to fix permissions on deployer installation : ".$result['message']);
 		} else return false;
+	}
+
+	public function check_integrity(string $key_name) {
+		if ($this->loadKey($key_name)) {
+
+			echo "Checking integrity on deployer instance ...\n";
+
+			//TODO complete implementation
+		}
 	}
 
 	private function getFrameworkIncludeList() {

@@ -13,6 +13,8 @@ class LLocalDeployerInstanceDriver implements LIDeployerInstanceDriver {
 	function __construct($deployer_instance_file) {
 		if (!$deployer_instance_file instanceof LFile) throw new \Exception("Deployer file not found!");
 
+		echo "Loading file : ".$deployer_instance_file->getFullPath()." ...\n";
+
 		$deployer_instance_file->requireFileOnce();
 
 		$this->controller = new LDeployerController();

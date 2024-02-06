@@ -176,7 +176,7 @@ abstract class LFileSystemElement
     {
         $octal_permissions = self::toOctalPermissions($rwx_permissions);
 
-        chmod($this->__full_path, $octal_permissions);
+        return chmod($this->__full_path, $octal_permissions);
     }
 
     function isReadable() {

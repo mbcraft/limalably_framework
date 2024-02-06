@@ -53,7 +53,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://deployer__local_test_db/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -96,7 +96,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://deployer__local_test_db/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -149,7 +149,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://deployer__local_test_db/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -202,7 +202,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://deployer__local_test_db/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -245,7 +245,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://deployer__local_test_db/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -288,7 +288,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://deployer__local_test_db/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 
@@ -331,7 +331,7 @@ class LocalHttpDeployerDbClientTest extends LTestCase {
 
 		$_SERVER['PROJECT_DIR'] = $_SERVER['FRAMEWORK_DIR'].self::TEST_DIR.'/deployer/fake_project/';
 
-		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://local__deployer_test_db/deployer.php');
+		$r = $dc->attach('local_http_key','wwwroot/deployer.php','http://deployer__local_test_db/deployer.php');
 
 		$this->assertTrue($this->isSuccess($r),"Impossibile effettuare l'attach con successo! : ".$this->getErrorMessage($r));
 

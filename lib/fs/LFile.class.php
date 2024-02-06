@@ -166,7 +166,7 @@ class LFile extends LFileSystemElement
  */
     function setContent($content)
     {
-        file_put_contents($this->__full_path, $content, LOCK_EX);
+        return file_put_contents($this->__full_path, $content, LOCK_EX)!==false;
     }
 
     function getLastModificationTime() {

@@ -17,6 +17,8 @@ class LProjectDeployerCommand implements LICommand {
             'help' => 1,
             'attach' => 4,
             'detach' => 2,
+            'enable_https_only' => 2,
+            'disable_https_only' => 2,
             'set_deployer_path_from_root' => 3,
             'get_deployer_path_from_root' => 2,
             'add_ignore' => 3,
@@ -84,6 +86,8 @@ class LProjectDeployerCommand implements LICommand {
             case 'help' : $dc->help();break;
             case 'attach': $dc->attach($deploy_key_name,$parameter2,$parameter3);break;
             case 'detach' : $dc->detach($deploy_key_name);break;
+            case 'enable_https_only' : $dc->enable_https_only($deploy_key_name);break;
+            case 'disable_https_only' : $dc->disable_https_only($deploy_key_name);break;
             case 'get_deployer_path_from_root' : $dc->get_deployer_path_from_root($deploy_key_name);break;
             case 'set_deployer_path_from_root' : $dc->set_deployer_path_from_root($deploy_key_name,$parameter2);break;
             case 'add_ignore' : $dc->add_to_ignore_list($deploy_key_name,$parameter2); break;
